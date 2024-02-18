@@ -3,6 +3,7 @@
     "target": "es2016",
     "module": "es2020",
     "moduleResolution": "bundler",
+    "types": ["vitest/globals"],
     "declaration": true,
     "outDir": "./dist",
     "esModuleInterop": true,
@@ -10,5 +11,5 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["src", "tests"]
+  "include": ["src", "**/tests"]
 }
