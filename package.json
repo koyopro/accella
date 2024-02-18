@@ -16,5 +16,8 @@
     "url": "https://github.com/koyopro/accella/issues"
   },
   "homepage": "https://github.com/koyopro/accella#readme",
-  "private": true
+  "private": true,
+  "workspaces": [
+    "packages/accel-record-core"
+  ]
 }
