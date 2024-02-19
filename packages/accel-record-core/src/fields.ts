@@ -8,17 +8,83 @@ export type Association = {
   field: DMMF.Field;
 };
 
+export class Field {
+  name: string;
+  type: string;
+  relationName: string | null;
+  isList: boolean;
+  isRequired: boolean;
+  kind: "scalar" | "object" | "enum" | "unsupported";
+  isUpdatedAt: boolean;
+  default: any;
+
+  constructor(field: DMMF.Field) {
+    this.name = field.name;
+    this.type = field.type;
+    this.relationName = field.relationName?.toString() ?? null;
+    this.isList = !!field.isList;
+    this.isRequired = !!field.isRequired;
+    this.kind = field.kind.toString() as
+      | "scalar"
+      | "object"
+      | "enum"
+      | "unsupported";
+    this.isUpdatedAt = !!field.isUpdatedAt;
+    this.default = field.default?.valueOf() ?? undefined;
+  }
+
+  get columnDefault() {
+    if (this.default) {
+      const default_ = this.default as any;
+      if (default_.name === "autoincrement") {
+        return undefined;
+      }
+      if (this.isList) return [];
+      return default_.value;
+    }
+    if (this.isUpdatedAt) {
+      return undefined;
+    }
+    if (this.isRequired) {
+      return this.defaultValue;
+    }
+    return undefined;
+  }
+
+  get defaultValue() {
+    switch (this.type) {
+      case "BigInt":
+      case "Decimal":
+      case "Float":
+      case "Int":
+        return 0;
+      case "Bytes":
+      case "String":
+        return "";
+      case "Boolean":
+        return false;
+      case "DateTime":
+        return new Date();
+      case "JSON":
+        return {};
+      default:
+        return undefined;
+    }
+  }
+}
+
+// TODO: set on run
 let dmmf: BaseDMMF;
 
 export abstract class Fields {
   static table: string;
 
-  static get fields(): Readonly<DMMF.Field[]> {
+  static get fields(): Readonly<Field[]> {
     return (
       dmmf.datamodel.models.find(
         (model) => model.name.toLowerCase() === this.table
       )?.fields ?? []
-    );
+    ).map((field) => new Field(field));
   }
 
   static get columns() {
@@ -27,7 +93,7 @@ export abstract class Fields {
       .map((field) => field.name);
   }
 
-  static get columns2(): Readonly<DMMF.Field[]> {
+  static get columns2(): Readonly<Field[]> {
     return this.fields.filter((f) => f.relationName == undefined);
   }
 

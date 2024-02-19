@@ -1,4 +1,3 @@
-import { DMMF } from "prisma/prisma-client/runtime/library.js";
 import { Connection } from "./connection";
 import { rpcClient } from "./database.js";
 import { Fields } from "./fields";
@@ -15,9 +14,8 @@ export class Model extends classIncludes(Connection, Fields) {
   static build(input: any) {
     const instance: any = new this();
     for (const column of this.columns2) {
-      const d = getColumnDefault(column);
-      if (d !== undefined) {
-        instance[column.name] = d;
+      if (column.columnDefault !== undefined) {
+        instance[column.name] = column.columnDefault;
       }
       if (column.name in input) {
         instance[column.name] = input[column.name];
@@ -119,42 +117,3 @@ export class Model extends classIncludes(Connection, Fields) {
     );
   }
 }
-
-const getColumnDefault = (field: DMMF.Field) => {
-  if (field.default) {
-    const default_ = field.default as any;
-    if (default_.name === "autoincrement") {
-      return undefined;
-    }
-    if (field.isList) return [];
-    return default_.value;
-  }
-  if (field.isUpdatedAt) {
-    return undefined;
-  }
-  if (field.isRequired) {
-    return getScalarDefault(field);
-  }
-  return undefined;
-};
-
-const getScalarDefault = (field: DMMF.Field) => {
-  switch (field.type) {
-    case "BigInt":
-    case "Decimal":
-    case "Float":
-    case "Int":
-      return 0;
-    case "Bytes":
-    case "String":
-      return "";
-    case "Boolean":
-      return false;
-    case "DateTime":
-      return new Date();
-    case "JSON":
-      return {};
-    default:
-      return undefined;
-  }
-};
