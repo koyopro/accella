@@ -73,8 +73,12 @@ export class Field {
   }
 }
 
-// TODO: set on run
 let dmmf: BaseDMMF;
+
+export const loadDmmf = async () => {
+  const { Prisma } = await import("@prisma/client");
+  dmmf = Prisma.dmmf;
+};
 
 export abstract class Fields {
   static table: string;

@@ -1,0 +1,14 @@
+{
+  "name": "accel-record",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "author": "koyopro <koyopro2.0@gmail.com>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "accel-record-core": "^0.0.1"
+  }
+}
