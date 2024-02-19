@@ -1,10 +1,10 @@
 import { Post } from "./post";
 import { User } from "./user";
-import { _user } from "../factories/user";
+import { $user } from "../factories/user";
 
 describe("User#tojson()", () => {
   test("serialize()", () => {
-    const u = _user.build({ name: "hoge", email: "AAA" });
+    const u = $user.build({ name: "hoge", email: "AAA" });
     const serialized = u.serialize();
     expect(serialized).toEqual({
       name: "hoge",
@@ -40,7 +40,7 @@ describe("User#tojson()", () => {
       Post.build({ title: "post1" }),
       Post.build({ title: "post2" }),
     ];
-    const u = _user.build({ posts });
+    const u = $user.build({ posts });
     expect(u.save()).toBe(true);
     expect(Post.all().get()).toHaveLength(2);
   });
@@ -49,7 +49,7 @@ describe("User#tojson()", () => {
     expect(() => {
       User.find(1);
     }).toThrow("Record Not found");
-    const u = _user.create({ name: "hoge", email: "hoge@example.com" });
+    const u = $user.create({ name: "hoge", email: "hoge@example.com" });
     const s = User.find(u.id!);
     expect(s).toBeInstanceOf(User);
     expect(s.id).toBe(u.id!);
@@ -58,8 +58,8 @@ describe("User#tojson()", () => {
   });
 
   test(".all()", () => {
-    _user.create({ name: "hoge" });
-    _user.create({ name: "fuga" });
+    $user.create({ name: "hoge" });
+    $user.create({ name: "fuga" });
 
     {
       /*
@@ -87,14 +87,14 @@ describe("User#tojson()", () => {
   // });
 
   test("#isPersisted()", () => {
-    expect(_user.build().isPersisted()).toBe(false);
-    expect(_user.create().isPersisted()).toBe(true);
+    expect($user.build().isPersisted()).toBe(false);
+    expect($user.create().isPersisted()).toBe(true);
   });
 
   test(".findBy()", () => {
     expect(User.findBy({ name: "hoge" })).toBeUndefined();
 
-    _user.create({ name: "hoge", email: "hoge@example.com" });
+    $user.create({ name: "hoge", email: "hoge@example.com" });
     const u = User.findBy({ name: "hoge" });
     expect(u).toBeInstanceOf(User);
     expect(u!.name).toBe("hoge");
@@ -104,7 +104,7 @@ describe("User#tojson()", () => {
   test(".where", () => {
     expect(User.where({ name: "hoge" }).get()).toEqual([]);
 
-    _user.create({ name: "hoge", email: "hoge@example.com" });
+    $user.create({ name: "hoge", email: "hoge@example.com" });
     const users = User.where({ name: "hoge" }).get();
     expect(users).toHaveLength(1);
     const u = users[0];
@@ -114,7 +114,7 @@ describe("User#tojson()", () => {
   });
 
   test(".includes()", () => {
-    const u = _user.create();
+    const u = $user.create();
     Post.create({ title: "post1", authorId: u.id });
     Post.create({ title: "post2", authorId: u.id });
     {

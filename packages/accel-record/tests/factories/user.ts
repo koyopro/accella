@@ -6,4 +6,4 @@ export const UserFactory = defineFactory(User, ({ seq }) => ({
   email: `user${seq}@email.com`,
 }));
 
-export { UserFactory as _user };
+export { UserFactory as $user };
