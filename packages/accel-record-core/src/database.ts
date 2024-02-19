@@ -1,7 +1,7 @@
 import { fileURLToPath } from "url";
 import path from "path";
 import Knex from "knex";
-import SyncRpc from "sync-rpc";
+import SyncRpc from "./sync-rpc/index.cjs";
 import { loadDmmf } from "./fields";
 
 export const knex = Knex({

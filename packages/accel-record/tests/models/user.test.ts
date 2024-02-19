@@ -80,11 +80,11 @@ describe("User#tojson()", () => {
     }
   });
 
-  // test(".count()", () => {
-  //   expect(User.count()).toBe(0);
-  //   _user.create({ name: "hoge" });
-  //   expect(User.count()).toBe(1);
-  // });
+  test(".count()", () => {
+    expect(User.count()).toBe(0);
+    $user.create({ name: "hoge" });
+    expect(User.count()).toBe(1);
+  });
 
   test("#isPersisted()", () => {
     expect($user.build().isPersisted()).toBe(false);
