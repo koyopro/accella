@@ -1,6 +1,7 @@
-import { fileURLToPath } from "url";
-import path from "path";
+import { rpcClient } from "accel-record-core/src/database";
 import { execSync } from "child_process";
+import path from "path";
+import { fileURLToPath } from "url";
 
 beforeAll(() => {
   process.env.DATABASE_URL = `file:./test${process.env.VITEST_POOL_ID}.db`;
@@ -12,9 +13,9 @@ beforeAll(() => {
 });
 
 beforeEach(async () => {
-  console.log("beforeEach");
+  rpcClient({ sql: "BEGIN TRANSACTION test_transaction", bindings: [] });
 });
 
 afterEach(async () => {
-  console.log("afterEach");
+  rpcClient({ sql: "ROLLBACK TRANSACTION test_transaction", bindings: [] });
 });

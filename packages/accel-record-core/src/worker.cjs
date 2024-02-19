@@ -1,5 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 
+process.env.DATABASE_URL = `file:./test${process.env.VITEST_POOL_ID}.db`;
+
 const prisma = new PrismaClient();
 
 function init(connection) {

@@ -1,3 +1,5 @@
-test('test', () => {
-  console.log('test');
+import { User } from './models/user';
+
+it('should create a user', () => {
+  User.create({ name: 'test' });
 });
