@@ -37,6 +37,8 @@ exports.stringify = function stringify(o) {
     return JSON.stringify(/^:/.test(o) ? ':' + o : o);
   } else if ('undefined' === typeof o) {
     return 'null';
+  } else if ('bigint' === typeof o) {
+    return Number(o);
   } else return JSON.stringify(o);
 };
 
