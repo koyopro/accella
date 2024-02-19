@@ -19,7 +19,8 @@
   "private": true,
   "workspaces": [
     "packages/accel-record-core",
-    "packages/accel-record"
+    "packages/accel-record",
+    "packages/accel-record-factory"
   ],
   "devDependencies": {
     "@types/node": "^20.11.19",

@@ -9,6 +9,7 @@
   "author": "koyopro <koyopro2.0@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "accel-record-core": "^0.0.1"
+    "accel-record-core": "^0.0.1",
+    "accel-record-factory": "^0.0.1"
   }
 }
