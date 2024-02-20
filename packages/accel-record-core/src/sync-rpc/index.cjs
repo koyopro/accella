@@ -4,6 +4,7 @@ const path = require('path');
 const spawn = require('child_process').spawn;
 const spawnSync = require('child_process').spawnSync;
 const JSON = require('./json-buffer');
+const v8 = require('node:v8');
 
 const host = '127.0.0.1';
 function nodeNetCatSrc(port, input) {
@@ -133,10 +134,10 @@ function sendMessage(input) {
   if (!started) start();
   const res = configuration.fastestFunction(
     configuration.port,
-    JSON.stringify(input) + '\r\n'
+    v8.serialize(input).toString('base64') + '\r\n'
   );
   try {
-    return JSON.parse(res.stdout.toString('utf8'));
+    return v8.deserialize(Buffer.from(res.stdout.toString('utf8'), 'base64'));
   } catch (ex) {
     if (res.error) {
       if (typeof res.error === 'string') res.error = new Error(res.error);
