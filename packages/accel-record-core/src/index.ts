@@ -1,6 +1,7 @@
 import { Connection } from "./connection";
 import { rpcClient } from "./database.js";
 import { Fields } from "./fields";
+import { Persistence } from "./persistence";
 import { Relation } from "./relation.js";
 import { classIncludes } from "./utils";
 
@@ -12,7 +13,7 @@ export const registerModel = (model: any) => {
   Models[model.name] = model;
 };
 
-export class Model extends classIncludes(Connection, Fields) {
+export class Model extends classIncludes(Connection, Fields, Persistence) {
   static build(input: any) {
     const instance: any = new this();
     for (const column of this.columns2) {
@@ -79,28 +80,6 @@ export class Model extends classIncludes(Connection, Fields) {
     });
 
     return new Relation(this, { includes });
-  }
-
-  save(): boolean {
-    const data: any = {};
-    for (const column of this.columns as (keyof this)[]) {
-      if (this[column] !== undefined) {
-        data[column as string] = this[column];
-      }
-    }
-    const query = this.client.insert(data).toSQL();
-    const id = rpcClient(query);
-    (this as any).id = id;
-    for (const [key, { foreignKey }] of Object.entries(this.assosiations)) {
-      const value = this[key as keyof this];
-      if (Array.isArray(value)) {
-        for (const instance of value) {
-          instance[foreignKey] = id;
-          instance.save();
-        }
-      }
-    }
-    return true;
   }
 
   serialize(): Record<string, unknown> {
