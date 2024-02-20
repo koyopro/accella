@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "test:migrate": "DATABASE_URL=file:./test.db npx prisma migrate dev --schema=tests/prisma/schema.prisma"
   },
   "author": "koyopro <koyopro2.0@gmail.com>",
   "license": "Apache-2.0",
