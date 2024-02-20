@@ -1,12 +1,36 @@
 {
   "name": "prisma-generator-accel-record",
-  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
-  "devDependencies": {},
+  "version": "0.0.1",
+  "main": "dist/generator.js",
+  "license": "Apache-2.0",
+  "bin": {
+    "prisma-generator-ar": "dist/bin.js"
+  },
+  "engines": {
+    "node": ">=16.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dist/bin.js",
+    "dev": "npx tsc -w",
+    "build": "npx tsc",
+    "prepack": "yarn build",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.0.0",
+    "@prisma/generator-helper": "^5.0.0",
+    "prettier": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.0",
+    "prisma": "^5.0.0",
+    "typescript": "^5.0.0"
   },
   "author": "koyopro <koyopro2.0@gmail.com>",
-  "license": "Apache-2.0"
+  "keywords": [
+    "prisma",
+    "prisma2",
+    "generator"
+  ]
 }
