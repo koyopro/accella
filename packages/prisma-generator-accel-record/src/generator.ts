@@ -1,5 +1,5 @@
 import { generatorHandler, GeneratorOptions } from "@prisma/generator-helper";
-import { logger } from "@prisma/sdk";
+// import { logger } from "@prisma/sdk";
 import * as fs from "fs";
 import path from "path";
 import { GENERATOR_NAME } from "./constants";
@@ -28,7 +28,7 @@ generatorHandler({
       const filePath = path.join(options.generator.output?.value!, fileName);
       if (fs.existsSync(filePath)) continue;
       await writeFileSafely(filePath, generateModel(model));
-      logger.info(`added: ${fileName}`);
+      // logger.info(`added: ${fileName}`);
     }
   },
 });

@@ -3,7 +3,7 @@ import { generateTypes } from "./type";
 
 export const generateIndex = (options: GeneratorOptions) => {
   return [
-    generateExportAllModels(options.dmmf.datamodel.models),
+    generateExportAllModels(options.dmmf.datamodel.models as DMMF.Model[]),
     generateTypes(options),
   ].join("\n");
 };
