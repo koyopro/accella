@@ -4,6 +4,8 @@ import { Fields } from "./fields";
 import { Relation } from "./relation.js";
 import { classIncludes } from "./utils";
 
+export { Relation } from "./relation.js";
+
 const Models: Record<string, typeof Model> = {};
 
 export const registerModel = (model: any) => {

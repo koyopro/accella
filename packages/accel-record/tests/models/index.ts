@@ -1,7 +1,6 @@
 export { User } from './user.js'
 export { Post } from './post.js'
-import { Model } from "@/lib/models";
-import { Relation } from "@/lib/relation";
+import { Model, Relation } from "accel-record-core";
 import { Prisma } from "@prisma/client";
 
 declare module "./user" {

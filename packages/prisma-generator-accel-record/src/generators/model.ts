@@ -8,7 +8,7 @@ function toSnakeCase(str: string): string {
 
 export const getModel = (model: DMMF.Model) => {
   const table = model.dbName ?? toSnakeCase(model.name)
-  return `import { Model, registerModel } from "accel-record";
+  return `import { Model, registerModel } from "accel-record-core";
 
 export class ${model.name} extends Model {
   static table = "${table}" as const;

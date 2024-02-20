@@ -49,8 +49,7 @@ const hasAutoGnerateDefault = (field: DMMF.Field) => {
 };
 
 export const generateTypes = (options: GeneratorOptions) => {
-  let data = `import { Model } from "@/lib/models";
-import { Relation } from "@/lib/relation";
+  let data = `import { Model, Relation } from "accel-record-core";
 import { Prisma } from "@prisma/client";
 `;
   for (const model of options.dmmf.datamodel.models) {
