@@ -3,7 +3,6 @@
 const path = require('path');
 const spawn = require('child_process').spawn;
 const spawnSync = require('child_process').spawnSync;
-const JSON = require('./json-buffer');
 const v8 = require('node:v8');
 
 const host = '127.0.0.1';
@@ -12,9 +11,7 @@ function nodeNetCatSrc(port, input) {
     "var c=require('net').connect(" +
     port +
     ",'127.0.0.1',()=>{c.pipe(process.stdout);c.end(" +
-    JSON.stringify(input)
-      .replace(/\u2028/g, '\\u2028')
-      .replace(/\u2029/g, '\\u2029') +
+    JSON.stringify(input) +
     ')})'
   );
 }
