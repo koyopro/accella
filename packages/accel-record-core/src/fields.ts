@@ -141,8 +141,16 @@ export abstract class Fields {
       }, {});
   }
 
+  get fields(): Readonly<Field[]> {
+    return (this.constructor as any).fields;
+  }
+
   get columns(): string[] {
     return (this.constructor as any).columns;
+  }
+
+  get columns2(): Readonly<Field[]> {
+    return (this.constructor as any).columns2;
   }
 
   get columnsForPersist(): string[] {

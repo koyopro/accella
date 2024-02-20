@@ -13,6 +13,13 @@ describe("Persistence", () => {
     expect(Post.all().get()).toHaveLength(2);
   });
 
+  test("#update()", () => {
+    const u = $user.create({ name: "hoge" });
+    expect(u.update({ name: "fuga" })).toBe(true);
+    expect(u.name).toBe('fuga');
+    expect(User.all().get()[0].name).toBe("fuga");
+  });
+
   test("#delete()", () => {
     const u = $user.create();
     expect(User.count()).toBe(1);

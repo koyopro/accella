@@ -1,3 +1,4 @@
+import { AttributeAssignment } from "./attributeAssignment";
 import { Connection } from "./connection";
 import { rpcClient } from "./database.js";
 import { Fields } from "./fields";
@@ -13,9 +14,15 @@ export const registerModel = (model: any) => {
   Models[model.name] = model;
 };
 
-export class Model extends classIncludes(Connection, Fields, Persistence) {
+export class Model extends classIncludes(
+  AttributeAssignment,
+  Connection,
+  Fields,
+  Persistence
+) {
   static build(input: any) {
     const instance: any = new this();
+    instance.isNewRecord = true;
     for (const column of this.columns2) {
       if (column.columnDefault !== undefined) {
         instance[column.name] = column.columnDefault;
