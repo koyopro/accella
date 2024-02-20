@@ -24,4 +24,14 @@ export class Persistence {
     }
     return true;
   }
+
+  delete<T extends Fields & Connection>(this: T): boolean {
+    const where = {} as Record<keyof T, any>;
+    for (const key of this.primaryKeys as (keyof T)[]) {
+      where[key] = this[key];
+    }
+    const query = this.client.where(where).delete().toSQL();
+    rpcClient(query);
+    return true;
+  }
 }

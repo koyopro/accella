@@ -83,12 +83,14 @@ export const loadDmmf = async () => {
 export abstract class Fields {
   static table: string;
 
+  private static get model() {
+    return dmmf.datamodel.models.find(
+      (model) => model.name.toLowerCase() === this.table
+    );
+  }
+
   static get fields(): Readonly<Field[]> {
-    return (
-      dmmf.datamodel.models.find(
-        (model) => model.name.toLowerCase() === this.table
-      )?.fields ?? []
-    ).map((field) => new Field(field));
+    return (this.model?.fields ?? []).map((field) => new Field(field));
   }
 
   static get columns() {
@@ -99,6 +101,10 @@ export abstract class Fields {
 
   static get columns2(): Readonly<Field[]> {
     return this.fields.filter((f) => f.relationName == undefined);
+  }
+
+  static get primaryKeys() {
+    return this.model?.primaryKey?.fields ?? [];
   }
 
   static get columnsForPersist() {
@@ -145,5 +151,9 @@ export abstract class Fields {
 
   get assosiations(): Record<string, Association> {
     return (this.constructor as any).assosiations;
+  }
+
+  get primaryKeys(): string[] {
+    return (this.constructor as any).primaryKeys;
   }
 }
