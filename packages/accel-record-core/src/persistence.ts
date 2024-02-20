@@ -21,13 +21,7 @@ export class Persistence {
   }
 
   delete<T extends Fields & Connection>(this: T): boolean {
-    const where = {} as Record<keyof T, any>;
-    for (const key of this.primaryKeys as (keyof T)[]) {
-      where[key] = this[key];
-    }
-    const query = this.client.where(where).delete().toSQL();
-    rpcClient(query);
-    return true;
+    return deleteRecord(this);
   }
 }
 
@@ -43,20 +37,17 @@ const createOrUpdate = <T extends Fields & Connection & Persistence>(
   return obj.isNewRecord ? createRecord(obj) : updateRecord(obj);
 };
 
-const updateRecord = <T extends Fields & Connection & Persistence>(
-  obj: T
-): boolean => {
-  const where = {} as Record<keyof T, any>;
-  for (const key of obj.primaryKeys as (keyof T)[]) {
-    where[key] = obj[key];
-  }
+const updateRecord = <T extends Fields & Connection>(obj: T): boolean => {
   const data: any = {};
   for (const column of obj.columns as (keyof T)[]) {
     if (obj[column] !== undefined) {
       data[column as string] = obj[column];
     }
   }
-  const query = obj.client.where(where).update(data).toSQL();
+  const query = obj.client
+    .where(primaryKeysCondition(obj))
+    .update(data)
+    .toSQL();
   const id = rpcClient(query);
   (obj as any).id = id;
   for (const [key, { foreignKey }] of Object.entries(obj.assosiations)) {
@@ -91,4 +82,18 @@ const createRecord = <T extends Fields & Connection>(obj: T): boolean => {
     }
   }
   return true;
+};
+
+const deleteRecord = <T extends Fields & Connection>(obj: T): boolean => {
+  const query = obj.client.where(primaryKeysCondition(obj)).delete().toSQL();
+  rpcClient(query);
+  return true;
+};
+
+const primaryKeysCondition = <T extends Fields>(obj: T) => {
+  const where = {} as Record<keyof T, any>;
+  for (const key of obj.primaryKeys as (keyof T)[]) {
+    where[key] = obj[key];
+  }
+  return where;
 };
