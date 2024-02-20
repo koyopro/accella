@@ -20,7 +20,8 @@
   "workspaces": [
     "packages/accel-record-core",
     "packages/accel-record",
-    "packages/accel-record-factory"
+    "packages/accel-record-factory",
+    "packages/prisma-generator-accel-record"
   ],
   "devDependencies": {
     "@types/node": "^20.11.19",

@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "test:migrate": "DATABASE_URL=file:./test.db npx prisma migrate dev --schema=tests/prisma/schema.prisma"
   },
   "author": "koyopro <koyopro2.0@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
     "accel-record-core": "^0.0.1",
-    "accel-record-factory": "^0.0.1"
+    "accel-record-factory": "^0.0.1",
+    "prisma-generator-accel-record": "^0.0.1"
   }
 }
