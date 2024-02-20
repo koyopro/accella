@@ -1,8 +1,9 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 generator custom_generator {
-  provider = "npx prisma-generator-accel-record"
+  provider = "node node_modules/prisma-generator-accel-record"
   output   = "../models"
 }
 
