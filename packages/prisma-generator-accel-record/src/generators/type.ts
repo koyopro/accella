@@ -97,6 +97,7 @@ declare module "./${model.name.toLowerCase()}" {
 ${columnDefines}
 
     isPersisted<T extends Model>(this: T): this is Persisted${model.name};
+    update(input: Partial<${model.name}CreateInput>): boolean;
   }
   type ${model.name}CreateInput = {
 ${columns}

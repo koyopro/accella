@@ -23,6 +23,7 @@ declare module "./user" {
     posts: Post[];
 
     isPersisted<T extends Model>(this: T): this is PersistedUser;
+    update(input: Partial<UserCreateInput>): boolean;
   }
   type UserCreateInput = {
     id?: number;
@@ -63,6 +64,7 @@ declare module "./post" {
     authorId: number;
 
     isPersisted<T extends Model>(this: T): this is PersistedPost;
+    update(input: Partial<PostCreateInput>): boolean;
   }
   type PostCreateInput = {
     id?: number;

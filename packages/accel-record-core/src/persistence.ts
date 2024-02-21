@@ -10,7 +10,7 @@ export class Persistence {
     return ret;
   }
 
-  update<T extends Model>(this: T, data: Partial<T>): boolean {
+  update<T extends Model>(this: T, data: object): boolean {
     this.assignAttributes(data);
     return this.save();
   }
