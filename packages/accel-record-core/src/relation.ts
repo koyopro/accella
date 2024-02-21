@@ -26,12 +26,10 @@ export class Relation<T extends typeof Model> {
     return Number(Object.values(res[0])[0]);
   }
   offset(offset: number): Relation<T> {
-    this.options.offset = offset;
-    return this;
+    return new Relation(this.model, { ...this.options, offset });
   }
   limit(limit: number): Relation<T> {
-    this.options.limit = limit;
-    return this;
+    return new Relation(this.model, { ...this.options, limit });
   }
   get(): T[] {
     let q = this.client.where(this.options.where ?? {});
