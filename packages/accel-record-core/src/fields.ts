@@ -80,7 +80,7 @@ export const loadDmmf = async () => {
   dmmf = Prisma.dmmf;
 };
 
-export abstract class Fields {
+export class Fields {
   static table: string;
 
   private static get model() {

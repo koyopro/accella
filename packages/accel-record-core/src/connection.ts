@@ -1,6 +1,6 @@
 import { knex } from "./database.js";
 
-export abstract class Connection {
+export class Connection {
   static table: string;
 
   static get client() {
