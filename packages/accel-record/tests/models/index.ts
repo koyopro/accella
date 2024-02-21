@@ -1,6 +1,9 @@
+import { User } from './user.js'
 export { User } from './user.js'
+import { Post } from './post.js'
 export { Post } from './post.js'
 import { Model, Relation } from "accel-record-core";
+import type { CollectionProxy } from "accel-record-core";
 import { Prisma } from "@prisma/client";
 
 declare module "./user" {
@@ -20,7 +23,7 @@ declare module "./user" {
     id: number | undefined;
     email: string;
     name: string | undefined;
-    posts: Post[];
+    posts: CollectionProxy<Post, User>;
 
     isPersisted<T extends Model>(this: T): this is PersistedUser;
     update(input: Partial<UserCreateInput>): boolean;

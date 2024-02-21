@@ -10,9 +10,11 @@ export const generateIndex = (options: GeneratorOptions) => {
 
 export const generateExportAllModels = (models: DMMF.Model[]) => {
   return models
-    .map(
-      (model) =>
-        `export { ${model.name} } from './${toCamelCase(model.name)}.js'`
+    .map((model) =>
+      [
+        `import { ${model.name} } from './${toCamelCase(model.name)}.js'`,
+        `export { ${model.name} } from './${toCamelCase(model.name)}.js'`,
+      ].join("\n")
     )
     .join("\n");
 };

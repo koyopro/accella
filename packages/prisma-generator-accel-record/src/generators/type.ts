@@ -50,6 +50,7 @@ const hasAutoGnerateDefault = (field: DMMF.Field) => {
 
 export const generateTypes = (options: GeneratorOptions) => {
   let data = `import { Model, Relation } from "accel-record-core";
+import type { CollectionProxy } from "accel-record-core";
 import { Prisma } from "@prisma/client";
 `;
   for (const model of options.dmmf.datamodel.models) {
@@ -70,6 +71,9 @@ import { Prisma } from "@prisma/client";
       .map((field) => {
         const optional = hasAutoGnerateDefault(field) || !field.isRequired;
         const type = getPropertyType(field);
+        if (field.relationName && field.isList) {
+          return `    ${field.name}: CollectionProxy<${field.type}, ${model.name}>;`;
+        }
         return `    ${field.name}: ${type}${field.isList ? "[]" : ""}${
           optional ? " | undefined" : ""
         };`;

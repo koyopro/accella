@@ -5,7 +5,9 @@ import { Fields } from "./fields";
 import { Persistence } from "./persistence";
 import { Relation } from "./relation.js";
 import { classIncludes } from "./utils";
+import { CollectionProxy } from "./associations/collectionProxy.js";
 
+export { CollectionProxy } from "./associations/collectionProxy.js";
 export { Relation } from "./relation.js";
 
 const Models: Record<string, typeof Model> = {};
@@ -33,10 +35,11 @@ export class Model extends classIncludes(
     }
     for (const [key, { klass, field }] of Object.entries(this.assosiations)) {
       if (field.isList) {
-        instance[key] = [];
+        instance[key] = new CollectionProxy(this as any, Models[klass] as any);
       }
       if (key in input) {
-        instance[key] = input[key].map((row: any) => Models[klass].build(row));
+        const target = input[key].map((row: any) => Models[klass].build(row));
+        instance[key] = new CollectionProxy(this as any, Models[klass] as any, target);
       }
     }
     return instance;
