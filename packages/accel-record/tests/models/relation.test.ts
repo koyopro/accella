@@ -7,6 +7,12 @@ describe("Relation", () => {
     expect(User.all().toArray()).toHaveLength(2);
   });
 
+  test("#first()", () => {
+    $user.create({ name: "hoge" });
+    $user.create({ name: "fuga" });
+    expect(User.all().first()?.name).toBe("hoge");
+  });
+
   test("#count()", () => {
     $user.createList(2)
     expect(User.all().count()).toBe(2);

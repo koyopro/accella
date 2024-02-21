@@ -16,6 +16,10 @@ export class Relation<T extends typeof Model> {
   toArray(): T[] {
     return (this.cache ||= this.get());
   }
+  first(): T | undefined {
+    if (this.cache) return this.cache[0];
+    return new Relation(this.model, { ...this.options, limit: 1 }).get()[0];
+  }
   count(): number {
     const query = this.client.where(this.options.where ?? {}).count("id").toSQL();
     const res = rpcClient({ type: "query", ...query });
