@@ -18,6 +18,18 @@ describe("Relation", () => {
     expect(User.all().count()).toBe(2);
   });
 
+  test("#exists()", () => {
+    expect(User.all().exists()).toBe(false);
+    $user.create();
+    expect(User.all().exists()).toBe(true);
+  });
+
+  test("#isEmpty()", () => {
+    expect(User.all().isEmpty()).toBe(true);
+    $user.create();
+    expect(User.all().isEmpty()).toBe(false);
+  });
+
   test("#limit()", () => {
     $user.create({ name: "hoge" });
     $user.create({ name: "fuga" });

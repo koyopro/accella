@@ -25,6 +25,12 @@ export class Relation<T extends typeof Model> {
     const res = rpcClient({ type: "query", ...query });
     return Number(Object.values(res[0])[0]);
   }
+  exists(): boolean {
+    return this.first() !== undefined;
+  }
+  isEmpty(): boolean {
+    return !this.exists();
+  }
   offset(offset: number): Relation<T> {
     return new Relation(this.model, { ...this.options, offset });
   }
