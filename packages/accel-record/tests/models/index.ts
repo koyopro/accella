@@ -34,7 +34,7 @@ declare module "./user" {
   type Reset<S, T> = Omit<S, T[number]> & {
     [K in T[number]]: User[K];
   };
-  type PersistedUser = Omit<User, "id"> & {
+  type PersistedUser = User & {
     id: NonNullable<User["id"]>;
   };
   type AssociationKey = "posts";
@@ -76,7 +76,7 @@ declare module "./post" {
   type Reset<S, T> = Omit<S, T[number]> & {
     [K in T[number]]: Post[K];
   };
-  type PersistedPost = Omit<Post, "id"> & {
+  type PersistedPost = Post & {
     id: NonNullable<Post["id"]>;
   };
   type AssociationKey = "posts";

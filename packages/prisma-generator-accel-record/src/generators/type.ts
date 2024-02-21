@@ -105,7 +105,7 @@ ${columns}
   type Reset<S, T> = Omit<S, T[number]> & {
     [K in T[number]]: ${model.name}[K];
   };
-  type Persisted${model.name} = Omit<${model.name}, "id"> & {
+  type Persisted${model.name} = ${model.name} & {
     id: NonNullable<${model.name}["id"]>;
   };
   type AssociationKey = "posts";
