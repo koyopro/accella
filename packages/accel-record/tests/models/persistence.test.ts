@@ -1,3 +1,4 @@
+import { $post } from "../factories/post";
 import { $user } from "../factories/user";
 import { Post } from "./post";
 import { User } from "./user";
@@ -34,5 +35,21 @@ describe("Persistence", () => {
     expect(u.isReadonly).toBe(true);
     expect(u.isDestroyed).toBe(true);
     expect(User.count()).toBe(0);
+  });
+
+  test("#destroy()", () => {
+    const p = $post.build();
+    const u = $user.create({ posts: [p] });
+    expect(u.isReadonly).toBe(false);
+    expect(u.isDestroyed).toBe(false);
+    expect(User.count()).toBe(1);
+    expect(Post.count()).toBe(1);
+
+    expect(u.destroy()).toBe(true);
+
+    expect(u.isReadonly).toBe(true);
+    expect(u.isDestroyed).toBe(true);
+    expect(User.count()).toBe(0);
+    expect(Post.count()).toBe(0);
   });
 });

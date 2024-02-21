@@ -24,6 +24,24 @@ export class Persistence {
     return ret;
   }
 
+  destroy<T extends Model>(this: T): boolean {
+    if (this.isReadonly) throw new Error("Readonly record");
+    for (const [key] of Object.entries(this.assosiations)) {
+      const value = this[key as keyof T] as any;
+      if (Array.isArray(value)) {
+        for (const instance of value) {
+          instance.destroy();
+        }
+      } else {
+        value?.destroy();
+      }
+    }
+    this.deleteRecord();
+    this.isDestroyed = true;
+    this.isReadonly = true;
+    return true;
+  }
+
   protected createOrUpdate<T extends Model>(this: T): boolean {
     if (this.isReadonly) {
       throw new Error("Readonly record");
