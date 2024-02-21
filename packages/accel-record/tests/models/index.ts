@@ -6,6 +6,8 @@ import { Model, Relation } from "accel-record-core";
 import type { CollectionProxy } from "accel-record-core";
 import { Prisma } from "@prisma/client";
 
+type SortOrder = "asc" | "desc";
+
 declare module "./user" {
   namespace User {
     function create(input: UserCreateInput): PersistedUser;
@@ -34,6 +36,13 @@ declare module "./user" {
     name?: string;
     posts?: Post[];
   };
+  type UserMeta = {
+    OrderInput: {
+      id?: SortOrder;
+      email?: SortOrder;
+      name?: SortOrder;
+    }
+  }
   type Reset<S, T> = Omit<S, T[number]> & {
     [K in T[number]]: User[K];
   };
@@ -73,6 +82,15 @@ declare module "./post" {
     published?: boolean;
     authorId: number;
   };
+  type PostMeta = {
+    OrderInput: {
+      id?: SortOrder;
+      title?: SortOrder;
+      content?: SortOrder;
+      published?: SortOrder;
+      authorId?: SortOrder;
+    }
+  }
   type Reset<S, T> = Omit<S, T[number]> & {
     [K in T[number]]: Post[K];
   };

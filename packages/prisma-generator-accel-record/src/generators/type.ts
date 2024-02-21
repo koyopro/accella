@@ -52,6 +52,8 @@ export const generateTypes = (options: GeneratorOptions) => {
   let data = `import { Model, Relation } from "accel-record-core";
 import type { CollectionProxy } from "accel-record-core";
 import { Prisma } from "@prisma/client";
+
+type SortOrder = "asc" | "desc";
 `;
   for (const model of options.dmmf.datamodel.models) {
     const reject = (f: DMMF.Field) => f.relationFromFields?.[0] == undefined;
@@ -79,6 +81,12 @@ import { Prisma } from "@prisma/client";
         };`;
       })
       .join("\n");
+    const orderInputs =
+      model.fields
+        .filter(reject)
+        .filter((field) => field.relationName == undefined)
+        .map((field) => `\n      ${field.name}?: SortOrder;`)
+        .join('') + "\n    ";
     data += `
 declare module "./${model.name.toLowerCase()}" {
   namespace ${model.name} {
@@ -106,6 +114,9 @@ ${columnDefines}
   type ${model.name}CreateInput = {
 ${columns}
   };
+  type ${model.name}Meta = {
+    OrderInput: {${orderInputs}}
+  }
   type Reset<S, T> = Omit<S, T[number]> & {
     [K in T[number]]: ${model.name}[K];
   };
