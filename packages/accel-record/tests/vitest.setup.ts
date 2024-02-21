@@ -3,6 +3,10 @@ import { execSync } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// TODO: indexからimportしたい(テストが通らなくなる)
+import './models/user.js'
+import './models/post.js'
+
 beforeAll(() => {
   process.env.DATABASE_URL = `file:./test${process.env.VITEST_POOL_ID}.db`;
   const __dirname = path.dirname(fileURLToPath(import.meta.url));

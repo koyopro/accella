@@ -1,18 +1,39 @@
 import { knex, rpcClient } from "./database.js";
-import { Model } from "./index.js";
+import type { Model } from "./index.js";
 
 export class Relation<T extends typeof Model> {
   private counter = 0;
   private cache: any[] | undefined = undefined;
   private client: any;
-  constructor(private model: T, private options: any = {}) {
+  constructor(
+    private model: T,
+    private options: any = {}
+  ) {
     this.model = model;
     this.client = model.client;
     this.options = options;
   }
+  toArray(): T[] {
+    return (this.cache ||= this.get());
+  }
+  count(): number {
+    const query = this.client.where(this.options.where ?? {}).count("id").toSQL();
+    const res = rpcClient({ type: "query", ...query });
+    return Number(Object.values(res[0])[0]);
+  }
+  offset(offset: number): Relation<T> {
+    this.options.offset = offset;
+    return this;
+  }
+  limit(limit: number): Relation<T> {
+    this.options.limit = limit;
+    return this;
+  }
   get(): T[] {
-    const query = this.client.where(this.options.where ?? {}).toSQL();
-    const rows = rpcClient({ type: "query", ...query });
+    let q = this.client.where(this.options.where ?? {});
+    if (this.options.limit) q = q.limit(this.options.limit);
+    if (this.options.offset) q = q.offset(this.options.offset);
+    const rows = rpcClient({ type: "query", ...q.toSQL() });
     for (const { name, table, primaryKey, foreignKey } of this.options
       .includes ?? []) {
       const primaryKeys = rows.map((row: any) => row[primaryKey]);
