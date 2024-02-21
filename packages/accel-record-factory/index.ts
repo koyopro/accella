@@ -22,7 +22,7 @@ export const defineFactory = <
     build(params: BuildParams<T> = {}): ReturnType<T["build"]> {
       return model.build({ ...devalueValues(), ...params });
     },
-    create_list(count: number, params: BuildParams<T> = {}) {
+    createList(count: number, params: BuildParams<T> = {}) {
       return Array.from({ length: count }, () =>
         this.create({ ...defaults, ...params })
       );

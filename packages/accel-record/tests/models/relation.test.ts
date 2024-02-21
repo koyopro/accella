@@ -3,14 +3,12 @@ import { User } from "./user";
 
 describe("Relation", () => {
   test("#toArray()", () => {
-    $user.create({ name: "hoge" });
-    $user.create({ name: "fuga" });
+    $user.createList(2)
     expect(User.all().toArray()).toHaveLength(2);
   });
 
   test("#count()", () => {
-    $user.create({ name: "hoge" });
-    $user.create({ name: "fuga" });
+    $user.createList(2)
     expect(User.all().count()).toBe(2);
   });
 
