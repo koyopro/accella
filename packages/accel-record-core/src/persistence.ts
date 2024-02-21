@@ -1,33 +1,26 @@
-import { AttributeAssignment } from "./attributeAssignment";
-import { Connection } from "./connection";
 import { rpcClient } from "./database";
-import { Fields } from "./fields";
+import type { Model } from "./index.js";
 
 export class Persistence {
   isNewRecord: boolean = true;
 
-  save<T extends Fields & Connection & Persistence>(this: T): boolean {
+  save<T extends Model>(this: T): boolean {
     const ret = createOrUpdate(this);
     this.isNewRecord = false;
     return ret;
   }
 
-  update<T extends Fields & Connection & Persistence & AttributeAssignment>(
-    this: T,
-    data: Partial<T>
-  ): boolean {
+  update<T extends Model>(this: T, data: Partial<T>): boolean {
     this.assignAttributes(data);
     return this.save();
   }
 
-  delete<T extends Fields & Connection>(this: T): boolean {
+  delete<T extends Model>(this: T): boolean {
     return deleteRecord(this);
   }
 }
 
-const createOrUpdate = <T extends Fields & Connection & Persistence>(
-  obj: T
-): boolean => {
+const createOrUpdate = <T extends Model>(obj: T): boolean => {
   // if (this.readonly) {
   //   throw new Error("Readonly record");
   // }
@@ -37,7 +30,7 @@ const createOrUpdate = <T extends Fields & Connection & Persistence>(
   return obj.isNewRecord ? createRecord(obj) : updateRecord(obj);
 };
 
-const updateRecord = <T extends Fields & Connection>(obj: T): boolean => {
+const updateRecord = <T extends Model>(obj: T): boolean => {
   const data: any = {};
   for (const column of obj.columns as (keyof T)[]) {
     if (obj[column] !== undefined) {
@@ -62,7 +55,7 @@ const updateRecord = <T extends Fields & Connection>(obj: T): boolean => {
   return true;
 };
 
-const createRecord = <T extends Fields & Connection>(obj: T): boolean => {
+const createRecord = <T extends Model>(obj: T): boolean => {
   const data: any = {};
   for (const column of obj.columns as (keyof T)[]) {
     if (obj[column] !== undefined) {
@@ -84,13 +77,13 @@ const createRecord = <T extends Fields & Connection>(obj: T): boolean => {
   return true;
 };
 
-const deleteRecord = <T extends Fields & Connection>(obj: T): boolean => {
+const deleteRecord = <T extends Model>(obj: T): boolean => {
   const query = obj.client.where(primaryKeysCondition(obj)).delete().toSQL();
   rpcClient(query);
   return true;
 };
 
-const primaryKeysCondition = <T extends Fields>(obj: T) => {
+const primaryKeysCondition = <T extends Model>(obj: T) => {
   const where = {} as Record<keyof T, any>;
   for (const key of obj.primaryKeys as (keyof T)[]) {
     where[key] = obj[key];
