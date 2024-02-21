@@ -3,6 +3,8 @@ import type { Model } from "./index.js";
 
 export class Persistence {
   isNewRecord: boolean = true;
+  isReadonly: boolean = false;
+  isDestroyed: boolean = false;
 
   save<T extends Model>(this: T): boolean {
     const ret = this.createOrUpdate();
@@ -16,13 +18,16 @@ export class Persistence {
   }
 
   delete<T extends Model>(this: T): boolean {
-    return this.deleteRecord();
+    const ret = this.deleteRecord();
+    this.isDestroyed = true;
+    this.isReadonly = true;
+    return ret;
   }
 
   protected createOrUpdate<T extends Model>(this: T): boolean {
-    // if (this.readonly) {
-    //   throw new Error("Readonly record");
-    // }
+    if (this.isReadonly) {
+      throw new Error("Readonly record");
+    }
     // if (this.destroyed) {
     //   return false;
     // }
