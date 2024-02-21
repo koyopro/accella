@@ -13,12 +13,12 @@ declare module "./user" {
     function create(input: UserCreateInput): PersistedUser;
     function find(id: number): PersistedUser;
     function findBy(input: Prisma.UserWhereInput): PersistedUser | undefined;
-    function all(): Relation<PersistedUser>;
-    function where(input: Prisma.UserWhereInput): Relation<PersistedUser>;
+    function all(): Relation<PersistedUser, UserMeta>;
+    function where(input: Prisma.UserWhereInput): Relation<PersistedUser, UserMeta>;
     function build(input: Partial<UserCreateInput>): User;
     function includes<T extends readonly AssociationKey[]>(
       input: T
-    ): Relation<Reset<PersistedUser, T>>;
+    ): Relation<Reset<PersistedUser, T>, UserMeta>;
   }
   interface User {
     /* columns */
@@ -57,12 +57,12 @@ declare module "./post" {
     function create(input: PostCreateInput): PersistedPost;
     function find(id: number): PersistedPost;
     function findBy(input: Prisma.PostWhereInput): PersistedPost | undefined;
-    function all(): Relation<PersistedPost>;
-    function where(input: Prisma.PostWhereInput): Relation<PersistedPost>;
+    function all(): Relation<PersistedPost, PostMeta>;
+    function where(input: Prisma.PostWhereInput): Relation<PersistedPost, PostMeta>;
     function build(input: Partial<PostCreateInput>): Post;
     function includes<T extends readonly AssociationKey[]>(
       input: T
-    ): Relation<Reset<PersistedPost, T>>;
+    ): Relation<Reset<PersistedPost, T>, PostMeta>;
   }
   interface Post {
     /* columns */

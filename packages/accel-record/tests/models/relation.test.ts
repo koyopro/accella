@@ -45,4 +45,11 @@ describe("Relation", () => {
     expect(users).toHaveLength(1);
     expect(users[0].name).toBe("fuga");
   });
+
+  test("#order()", () => {
+    $user.create({ name: "fuga" });
+    $user.create({ name: "hoge" });
+    expect(User.all().order("name").first()?.name).toBe("fuga");
+    expect(User.all().order("name", "desc").first()?.name).toBe("hoge");
+  });
 });

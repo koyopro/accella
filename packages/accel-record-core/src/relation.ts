@@ -1,7 +1,7 @@
 import { knex, rpcClient } from "./database.js";
-import type { Model } from "./index.js";
+import type { Model, Meta } from "./index.js";
 
-export class Relation<T extends typeof Model> {
+export class Relation<T extends typeof Model, M extends Meta> {
   private counter = 0;
   private cache: any[] | undefined = undefined;
   private client: any;
@@ -31,16 +31,24 @@ export class Relation<T extends typeof Model> {
   isEmpty(): boolean {
     return !this.exists();
   }
-  offset(offset: number): Relation<T> {
+  offset(offset: number): Relation<T, M> {
     return new Relation(this.model, { ...this.options, offset });
   }
-  limit(limit: number): Relation<T> {
+  limit(limit: number): Relation<T, M> {
     return new Relation(this.model, { ...this.options, limit });
+  }
+  order(column: keyof M['OrderInput'], direction: "asc" | "desc" = "asc"): Relation<T, M> {
+    const newOptions = JSON.parse(JSON.stringify(this.options));
+    (newOptions['orders'] ||= []).push([column, direction]);
+    return new Relation(this.model, newOptions);
   }
   get(): T[] {
     let q = this.client.where(this.options.where ?? {});
     if (this.options.limit) q = q.limit(this.options.limit);
     if (this.options.offset) q = q.offset(this.options.offset);
+    for (const [column, direction] of this.options.orders ?? []) {
+      q = q.orderBy(column, direction);
+    }
     const rows = rpcClient({ type: "query", ...q.toSQL() });
     for (const { name, table, primaryKey, foreignKey } of this.options
       .includes ?? []) {

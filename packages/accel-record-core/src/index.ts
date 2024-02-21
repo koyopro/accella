@@ -10,6 +10,11 @@ import { CollectionProxy } from "./associations/collectionProxy.js";
 export { CollectionProxy } from "./associations/collectionProxy.js";
 export { Relation } from "./relation.js";
 
+type SortOrder = "asc" | "desc";
+export type Meta = {
+  OrderInput: Record<string, SortOrder>;
+}
+
 const Models: Record<string, typeof Model> = {};
 
 export const registerModel = (model: any) => {
@@ -71,7 +76,7 @@ export class Model extends classIncludes(
     return this.build(instance);
   }
 
-  static all<T extends typeof Model>(this: T): Relation<any> {
+  static all<T extends typeof Model>(this: T): Relation<any, any> {
     return new Relation(this);
   }
 
@@ -81,11 +86,11 @@ export class Model extends classIncludes(
     return Number(Object.values(res[0])[0]);
   }
 
-  static where<T extends typeof Model>(this: T, input: any): Relation<any> {
+  static where<T extends typeof Model>(this: T, input: any): Relation<any, any> {
     return new Relation(this, { where: input });
   }
 
-  static includes<T extends readonly any[]>(input: T): Relation<any> {
+  static includes<T extends readonly any[]>(input: T): Relation<any, any> {
     const includes = input.map((key) => {
       return { name: key, ...this.assosiations[key] };
     });

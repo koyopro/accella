@@ -95,14 +95,14 @@ declare module "./${model.name.toLowerCase()}" {
     function findBy(input: Prisma.${model.name}WhereInput): Persisted${
       model.name
     } | undefined;
-    function all(): Relation<Persisted${model.name}>;
+    function all(): Relation<Persisted${model.name}, ${model.name}Meta>;
     function where(input: Prisma.${model.name}WhereInput): Relation<Persisted${
       model.name
-    }>;
+    }, ${model.name}Meta>;
     function build(input: Partial<${model.name}CreateInput>): ${model.name};
     function includes<T extends readonly AssociationKey[]>(
       input: T
-    ): Relation<Reset<Persisted${model.name}, T>>;
+    ): Relation<Reset<Persisted${model.name}, T>, ${model.name}Meta>;
   }
   interface ${model.name} {
     /* columns */
