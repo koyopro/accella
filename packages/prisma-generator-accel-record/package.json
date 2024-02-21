@@ -5,7 +5,7 @@
   "main": "dist/generator.js",
   "license": "Apache-2.0",
   "bin": {
-    "prisma-generator-ar": "dist/bin.js"
+    "prisma-generator-accel-record": "dist/bin.js"
   },
   "engines": {
     "node": ">=16.0"
