@@ -9,14 +9,14 @@ import { Prisma } from "@prisma/client";
 declare module "./user" {
   namespace User {
     function create(input: UserCreateInput): PersistedUser;
-    function find(id: number): NoRelationUser;
-    function findBy(input: Prisma.UserWhereInput): NoRelationUser | undefined;
-    function all(): Relation<NoRelationUser>;
-    function where(input: Prisma.UserWhereInput): Relation<NoRelationUser>;
+    function find(id: number): PersistedUser;
+    function findBy(input: Prisma.UserWhereInput): PersistedUser | undefined;
+    function all(): Relation<PersistedUser>;
+    function where(input: Prisma.UserWhereInput): Relation<PersistedUser>;
     function build(input: Partial<UserCreateInput>): User;
     function includes<T extends readonly AssociationKey[]>(
       input: T
-    ): Relation<Reset<NoRelationUser, T>>;
+    ): Relation<Reset<PersistedUser, T>>;
   }
   interface User {
     /* columns */
@@ -41,22 +41,19 @@ declare module "./user" {
     id: NonNullable<User["id"]>;
   };
   type AssociationKey = "posts";
-  type NoRelationUser = Omit<PersistedUser, AssociationKey> & {
-    [K in AssociationKey]: unknown;
-  };
 }
 
 declare module "./post" {
   namespace Post {
     function create(input: PostCreateInput): PersistedPost;
-    function find(id: number): NoRelationPost;
-    function findBy(input: Prisma.PostWhereInput): NoRelationPost | undefined;
-    function all(): Relation<NoRelationPost>;
-    function where(input: Prisma.PostWhereInput): Relation<NoRelationPost>;
+    function find(id: number): PersistedPost;
+    function findBy(input: Prisma.PostWhereInput): PersistedPost | undefined;
+    function all(): Relation<PersistedPost>;
+    function where(input: Prisma.PostWhereInput): Relation<PersistedPost>;
     function build(input: Partial<PostCreateInput>): Post;
     function includes<T extends readonly AssociationKey[]>(
       input: T
-    ): Relation<Reset<NoRelationPost, T>>;
+    ): Relation<Reset<PersistedPost, T>>;
   }
   interface Post {
     /* columns */
@@ -83,7 +80,4 @@ declare module "./post" {
     id: NonNullable<Post["id"]>;
   };
   type AssociationKey = "posts";
-  type NoRelationPost = Omit<PersistedPost, AssociationKey> & {
-    [K in AssociationKey]: unknown;
-  };
 }

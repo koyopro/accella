@@ -83,18 +83,18 @@ import { Prisma } from "@prisma/client";
 declare module "./${model.name.toLowerCase()}" {
   namespace ${model.name} {
     function create(input: ${model.name}CreateInput): Persisted${model.name};
-    function find(id: number): NoRelation${model.name};
-    function findBy(input: Prisma.${model.name}WhereInput): NoRelation${
+    function find(id: number): Persisted${model.name};
+    function findBy(input: Prisma.${model.name}WhereInput): Persisted${
       model.name
     } | undefined;
-    function all(): Relation<NoRelation${model.name}>;
-    function where(input: Prisma.${model.name}WhereInput): Relation<NoRelation${
+    function all(): Relation<Persisted${model.name}>;
+    function where(input: Prisma.${model.name}WhereInput): Relation<Persisted${
       model.name
     }>;
     function build(input: Partial<${model.name}CreateInput>): ${model.name};
     function includes<T extends readonly AssociationKey[]>(
       input: T
-    ): Relation<Reset<NoRelation${model.name}, T>>;
+    ): Relation<Reset<Persisted${model.name}, T>>;
   }
   interface ${model.name} {
     /* columns */
@@ -113,11 +113,6 @@ ${columns}
     id: NonNullable<${model.name}["id"]>;
   };
   type AssociationKey = "posts";
-  type NoRelation${model.name} = Omit<Persisted${
-      model.name
-    }, AssociationKey> & {
-    [K in AssociationKey]: unknown;
-  };
 }
 `;
   }

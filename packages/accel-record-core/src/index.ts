@@ -33,13 +33,14 @@ export class Model extends classIncludes(
         instance[column.name] = input[column.name];
       }
     }
-    for (const [key, { klass, field }] of Object.entries(this.assosiations)) {
+    for (const [key, assosiation] of Object.entries(this.assosiations)) {
+      const { klass, field } = assosiation;
       if (field.isList) {
-        instance[key] = new CollectionProxy(this as any, Models[klass] as any);
+        instance[key] = new CollectionProxy(instance, Models[klass], assosiation);
       }
       if (key in input) {
         const target = input[key].map((row: any) => Models[klass].build(row));
-        instance[key] = new CollectionProxy(this as any, Models[klass] as any, target);
+        instance[key] = new CollectionProxy(instance, Models[klass], assosiation, target);
       }
     }
     return instance;

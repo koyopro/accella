@@ -107,18 +107,12 @@ describe("User#tojson()", () => {
     const u = $user.create();
     Post.create({ title: "post1", authorId: u.id });
     Post.create({ title: "post2", authorId: u.id });
-    {
-      const author = User.includes([]).get()[0];
-      // author.posts.length // => posts should be unknown
-      expect(author.posts).toEqual([]);
-    }
-    {
-      const author = User.includes(["posts"]).get()[0];
-      expect(author.posts).toHaveLength(2);
-      expect(author.posts[0]).toBeInstanceOf(Post);
-      expect(author.posts[0].title).toBe("post1");
-      expect(author.posts[1].title).toBe("post2");
-    }
+    // TODO: improve this test
+    const author = User.includes(["posts"]).get()[0];
+    expect(author.posts.toArray()).toHaveLength(2);
+    expect(author.posts.toArray()[0]).toBeInstanceOf(Post);
+    expect(author.posts.toArray()[0].title).toBe("post1");
+    expect(author.posts.toArray()[1].title).toBe("post2");
   });
 
   test("columns", () => {

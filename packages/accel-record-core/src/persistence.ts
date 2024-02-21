@@ -1,5 +1,5 @@
 import { rpcClient } from "./database";
-import type { Model } from "./index.js";
+import { CollectionProxy, type Model } from "./index.js";
 
 export class Persistence {
   isNewRecord: boolean = true;
@@ -28,8 +28,8 @@ export class Persistence {
     if (this.isReadonly) throw new Error("Readonly record");
     for (const [key] of Object.entries(this.assosiations)) {
       const value = this[key as keyof T] as any;
-      if (Array.isArray(value)) {
-        for (const instance of value) {
+      if (value instanceof CollectionProxy) {
+        for (const instance of value.toArray()) {
           instance.destroy();
         }
       } else {
@@ -67,8 +67,8 @@ export class Persistence {
     (this as any).id = id;
     for (const [key, { foreignKey }] of Object.entries(this.assosiations)) {
       const value = this[key as keyof T];
-      if (Array.isArray(value)) {
-        for (const instance of value) {
+      if (value instanceof CollectionProxy) {
+        for (const instance of value.toArray()) {
           instance[foreignKey] = id;
           instance.save();
         }
@@ -89,8 +89,8 @@ export class Persistence {
     (this as any).id = id;
     for (const [key, { foreignKey }] of Object.entries(this.assosiations)) {
       const value = this[key as keyof T];
-      if (Array.isArray(value)) {
-        for (const instance of value) {
+      if (value instanceof CollectionProxy) {
+        for (const instance of value.toArray()) {
           instance[foreignKey] = id;
           instance.save();
         }
