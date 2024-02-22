@@ -8,6 +8,21 @@ import { Prisma } from "@prisma/client";
 
 type SortOrder = "asc" | "desc";
 
+type Compare<T> = {
+  equals?: T;
+  not?: T;
+  in?: T[];
+  notIn?: T[];
+  '<'?: T;
+  '>'?: T;
+  '<='?: T;
+  '>='?: T;
+  lt?: T;
+  gt?: T;
+  lte?: T;
+  gte?: T;
+};
+
 declare module "./user" {
   namespace User {
     function create(input: UserCreateInput): PersistedUser;
@@ -40,10 +55,10 @@ declare module "./user" {
   };
   type UserMeta = {
     WhereInput: {
-      id?: number;
-      email?: string;
-      name?: string;
-      age?: number;
+      id?: number | Compare<number>;
+      email?: string | Compare<string>;
+      name?: string | Compare<string>;
+      age?: number | Compare<number>;
     };
     OrderInput: {
       id?: SortOrder;
@@ -93,11 +108,11 @@ declare module "./post" {
   };
   type PostMeta = {
     WhereInput: {
-      id?: number;
-      title?: string;
-      content?: string;
-      published?: boolean;
-      authorId?: number;
+      id?: number | Compare<number>;
+      title?: string | Compare<string>;
+      content?: string | Compare<string>;
+      published?: boolean | Compare<boolean>;
+      authorId?: number | Compare<number>;
     };
     OrderInput: {
       id?: SortOrder;

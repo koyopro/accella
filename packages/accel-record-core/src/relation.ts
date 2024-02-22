@@ -7,11 +7,19 @@ export class Relation<T extends typeof Model, M extends Meta> {
   private client: any;
   constructor(
     private model: T,
-    private options: any = {}
+    private options: any
   ) {
     this.model = model;
     this.client = model.client;
-    this.options = options;
+    this.options = Object.assign(
+      {
+        wheres: [],
+        orders: [],
+        offset: undefined,
+        limit: undefined,
+      },
+      options
+    );
   }
   toArray(): T[] {
     return (this.cache ||= this.get());
@@ -50,11 +58,14 @@ export class Relation<T extends typeof Model, M extends Meta> {
   }
   where(input: M["WhereInput"]): Relation<T, M> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
-    newOptions["where"] = { ...this.options.where, ...input };
+    newOptions["wheres"].push(input);
     return new Relation(this.model, newOptions);
   }
   get(): T[] {
-    let q = this.client.where(this.options.where ?? {});
+    let q = this.client;
+    for (const where of this.options.wheres) {
+      q = q.where(where);
+    }
     if (this.options.limit) q = q.limit(this.options.limit);
     if (this.options.offset) q = q.offset(this.options.offset);
     for (const [column, direction] of this.options.orders ?? []) {
