@@ -47,7 +47,7 @@ export class Model extends classIncludes(
         const assosiation = klass.assosiations[prop as any];
         if (assosiation && assosiation.foreignKey && assosiation.primaryKey && !assosiation.field.isList) {
           if (target[prop]) return target[prop];
-          return Models[assosiation.klass].findBy({
+          return target[prop] ||= Models[assosiation.klass].findBy({
             [assosiation.foreignKey]: target[assosiation.primaryKey],
           });
         }
@@ -63,7 +63,6 @@ export class Model extends classIncludes(
         ) {
           value[assosiation.foreignKey] = target[assosiation.primaryKey];
           value.save();
-          return true;
         }
         target[prop] = value;
         return true;
