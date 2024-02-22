@@ -19,4 +19,10 @@ describe("Setting", () => {
     expect(Setting.count()).toBe(1);
     expect(Setting.findBy({ userId: user.id })?.threshold).toBeCloseTo(0.5);
   });
+
+  test("hasOne", () => {
+    const user = $user.create();
+    const setting = $setting.create({ userId: user.id });
+    expect(user.setting?.id).toEqual(setting.id);
+  })
 });

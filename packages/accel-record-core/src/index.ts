@@ -1,12 +1,11 @@
+import { CollectionProxy } from "./associations/collectionProxy.js";
 import { AttributeAssignment } from "./attributeAssignment";
 import { Connection } from "./connection";
-import { rpcClient } from "./database.js";
 import { Fields } from "./fields";
 import { Persistence } from "./persistence";
+import { Query } from "./query";
 import { Relation } from "./relation.js";
 import { classIncludes } from "./utils";
-import { CollectionProxy } from "./associations/collectionProxy.js";
-import { Query } from "./query";
 
 export { CollectionProxy } from "./associations/collectionProxy.js";
 export { Relation } from "./relation.js";
@@ -52,7 +51,19 @@ export class Model extends classIncludes(
         );
       }
     }
-    return instance;
+    // Proxy
+    const klass = this;
+    return new Proxy(instance, {
+      get(target, prop, receiver) {
+        const assosiation = klass.assosiations[prop as any];
+        if (assosiation && assosiation.foreignKey && assosiation.primaryKey) {
+          return Models[assosiation.klass].findBy({
+            [assosiation.foreignKey]: target[assosiation.primaryKey],
+          });
+        }
+        return Reflect.get(...arguments);
+      },
+    });
   }
 
   static create(input: any) {
