@@ -14,6 +14,7 @@ export class Relation<T extends typeof Model, M extends Meta> {
     this.options = Object.assign(
       {
         wheres: [],
+        whereNots: [],
         orders: [],
         offset: undefined,
         limit: undefined,
@@ -74,6 +75,23 @@ export class Relation<T extends typeof Model, M extends Meta> {
     }
     return new Relation(this.model, newOptions);
   }
+  whereNot(input: M["WhereInput"]): Relation<T, M> {
+    const newOptions = JSON.parse(JSON.stringify(this.options));
+    for (const key in input) {
+      if (input[key] != null && typeof input[key] === "object") {
+        for (const operator in input[key]) {
+          if (operator === "in") {
+            newOptions["wheres"].push([key, 'not in', input[key][operator]]);
+          } else {
+            newOptions["whereNots"].push([key, operator, input[key][operator]]);
+          }
+        }
+      } else {
+        newOptions["whereNots"].push({ [key]: input[key] });
+      }
+    }
+    return new Relation(this.model, newOptions);
+  }
   get(): T[] {
     let q = this.client;
     for (const where of this.options.wheres) {
@@ -81,6 +99,13 @@ export class Relation<T extends typeof Model, M extends Meta> {
         q = q.where(...where);
       } else {
         q = q.where(where);
+      }
+    }
+    for (const where of this.options.whereNots) {
+      if (Array.isArray(where)) {
+        q = q.whereNot(...where);
+      } else {
+        q = q.whereNot(where);
       }
     }
     if (this.options.limit) q = q.limit(this.options.limit);

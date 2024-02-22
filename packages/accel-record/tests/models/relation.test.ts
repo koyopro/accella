@@ -77,4 +77,13 @@ describe("Relation", () => {
     $user.create({ name: "piyo", age: 40 });
     expect(User.all().where({ "age": { in: [20, 30] } }).toArray()).toHaveLength(2);
   });
+
+  test('#whereNot()', () => {
+    $user.create({ name: "hoge", age: 20 });
+    $user.create({ name: "fuga", age: 30 });
+    expect(User.all().whereNot({ "age": 20 }).first()?.name).toBe("fuga");
+    expect(User.all().whereNot({ "age": { '>': 20 } }).first()?.name).toBe("hoge");
+    expect(User.all().whereNot({ "age": { in: [20] } }).first()?.name).toBe('fuga');
+    expect(User.all().whereNot({ "age": null }).first()?.name).toBe("hoge");
+  });
 });
