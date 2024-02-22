@@ -31,15 +31,7 @@ export class Relation<T extends typeof Model, M extends Meta> {
     return new Relation(this.model, { ...this.options, limit: 1 }).get()[0];
   }
   count(): number {
-    let q = this.client;
-    for (const where of this.options.wheres) {
-      if (Array.isArray(where)) {
-        q = q.where(...where);
-      } else {
-        q = q.where(where);
-      }
-    }
-    const query = q.count("id").toSQL();
+    const query = this.query().count("id").toSQL();
     const res = rpcClient({ type: "query", ...query });
     return Number(Object.values(res[0])[0]);
   }
@@ -98,7 +90,7 @@ export class Relation<T extends typeof Model, M extends Meta> {
     newOptions["whereRaws"].push([query, bindings]);
     return new Relation(this.model, newOptions);
   }
-  get(): T[] {
+  query() {
     let q = this.client;
     for (const where of this.options.wheres) {
       if (Array.isArray(where)) {
@@ -122,7 +114,10 @@ export class Relation<T extends typeof Model, M extends Meta> {
     for (const [column, direction] of this.options.orders ?? []) {
       q = q.orderBy(column, direction);
     }
-    const rows = rpcClient({ type: "query", ...q.toSQL() });
+    return q;
+  }
+  get(): T[] {
+    const rows = rpcClient({ type: "query", ...this.query().toSQL() });
     for (const { name, table, primaryKey, foreignKey } of this.options
       .includes ?? []) {
       const primaryKeys = rows.map((row: any) => row[primaryKey]);
