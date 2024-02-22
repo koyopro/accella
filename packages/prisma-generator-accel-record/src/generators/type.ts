@@ -54,6 +54,21 @@ import type { CollectionProxy } from "accel-record-core";
 import { Prisma } from "@prisma/client";
 
 type SortOrder = "asc" | "desc";
+
+type Compare<T> = {
+  equals?: T;
+  not?: T;
+  in?: T[];
+  notIn?: T[];
+  '<'?: T;
+  '>'?: T;
+  '<='?: T;
+  '>='?: T;
+  lt?: T;
+  gt?: T;
+  lte?: T;
+  gte?: T;
+};
 `;
   for (const model of options.dmmf.datamodel.models) {
     const reject = (f: DMMF.Field) => f.relationFromFields?.[0] == undefined;
@@ -85,7 +100,7 @@ type SortOrder = "asc" | "desc";
       model.fields
         .filter(reject)
         .filter((field) => field.relationName == undefined)
-        .map((field) => `\n      ${field.name}?: ${getPropertyType(field)};`)
+        .map((field) => `\n      ${field.name}?: ${getPropertyType(field)} | Compare<${getPropertyType(field)}>;`)
         .join("") + "\n    ";
     const orderInputs =
       model.fields

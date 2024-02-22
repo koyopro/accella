@@ -61,4 +61,11 @@ describe("Relation", () => {
     expect(User.all().where({ "name": "fuga" }).where({ age: 20 }).first()).toBeUndefined();
     expect(User.all().where({ "name": "fuga" }).where({ name: 'hoge' }).first()).toBeUndefined();
   })
+
+  test("#where() with compare", () => {
+    $user.create({ name: "hoge", age: 20 });
+    $user.create({ name: "fuga", age: 30 });
+    expect(User.all().where({ "age": 20 }).first()?.name).toBe("hoge");
+    expect(User.all().where({ "age": { '>': 20 } }).first()?.name).toBe("fuga");
+  })
 });

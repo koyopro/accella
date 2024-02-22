@@ -31,7 +31,11 @@ export class Relation<T extends typeof Model, M extends Meta> {
   count(): number {
     let q = this.client;
     for (const where of this.options.wheres) {
-      q = q.where(where);
+      if (Array.isArray(where)) {
+        q = q.where(...where);
+      } else {
+        q = q.where(where);
+      }
     }
     const query = q.count("id").toSQL();
     const res = rpcClient({ type: "query", ...query });
@@ -59,13 +63,25 @@ export class Relation<T extends typeof Model, M extends Meta> {
   }
   where(input: M["WhereInput"]): Relation<T, M> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
-    newOptions["wheres"].push(input);
+    for (const key in input) {
+      if (typeof input[key] === "object") {
+        for (const operator in input[key]) {
+          newOptions["wheres"].push([key, operator, input[key][operator]]);
+        }
+      } else {
+        newOptions["wheres"].push({ [key]: input[key] });
+      }
+    }
     return new Relation(this.model, newOptions);
   }
   get(): T[] {
     let q = this.client;
     for (const where of this.options.wheres) {
-      q = q.where(where);
+      if (Array.isArray(where)) {
+        q = q.where(...where);
+      } else {
+        q = q.where(where);
+      }
     }
     if (this.options.limit) q = q.limit(this.options.limit);
     if (this.options.offset) q = q.offset(this.options.offset);
