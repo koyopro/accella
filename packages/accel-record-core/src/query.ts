@@ -20,4 +20,8 @@ export class Query {
   ) {
     return this.all().order(column, direction);
   }
+
+  static offset<T extends typeof Model>(this: T, offset: number) {
+    return this.all().offset(offset);
+  }
 }

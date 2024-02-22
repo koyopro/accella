@@ -26,4 +26,10 @@ describe('Query', () => {
     expect(User.order('age').first()?.age).toBe(10);
     expect(User.order('age', 'desc').first()?.age).toBe(20);
   });
+
+  test('.offset()', () => {
+    $user.create({ name: 'hoge' });
+    $user.create({ name: 'fuga' });
+    expect(User.offset(1).first()?.name).toBe('fuga');
+  });
 });

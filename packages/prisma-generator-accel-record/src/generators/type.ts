@@ -111,6 +111,7 @@ declare module "./${model.name.toLowerCase()}" {
     } | undefined;
     function all(): Relation<Persisted${model.name}, ${model.name}Meta>;
     function order(column: keyof ${model.name}Meta["OrderInput"], direction?: "asc" | "desc"): Relation<Persisted${model.name}, ${model.name}Meta>;
+    function offset(offset: number): Relation<Persisted${model.name}, ${model.name}Meta>;
     function where(input: Prisma.${model.name}WhereInput): Relation<Persisted${
       model.name
     }, ${model.name}Meta>;
