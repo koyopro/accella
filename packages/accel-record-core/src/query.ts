@@ -9,6 +9,10 @@ export class Query {
     return this.all().exists();
   }
 
+  static isEmpty<T extends typeof Model>(this: T): boolean {
+    return this.all().isEmpty();
+  }
+
   static count<T extends typeof Model>(this: T): number {
     return this.all().count();
   }

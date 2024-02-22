@@ -14,6 +14,12 @@ describe('Query', () => {
     expect(User.exists()).toBe(true);
   });
 
+  test('.isEmpty()', () => {
+    expect(User.isEmpty()).toBe(true);
+    $user.create();
+    expect(User.isEmpty()).toBe(false);
+  });
+
   test('.count()', () => {
     expect(User.count()).toBe(0);
     $user.create();
