@@ -25,6 +25,7 @@ declare module "./user" {
     id: number | undefined;
     email: string;
     name: string | undefined;
+    age: number | undefined;
     posts: CollectionProxy<Post, User>;
 
     isPersisted<T extends Model>(this: T): this is PersistedUser;
@@ -34,6 +35,7 @@ declare module "./user" {
     id?: number;
     email: string;
     name?: string;
+    age?: number;
     posts?: Post[];
   };
   type UserMeta = {
@@ -41,6 +43,7 @@ declare module "./user" {
       id?: SortOrder;
       email?: SortOrder;
       name?: SortOrder;
+      age?: SortOrder;
     }
   }
   type Reset<S, T> = Omit<S, T[number]> & {
