@@ -15,6 +15,7 @@ export class Relation<T extends typeof Model, M extends Meta> {
       {
         wheres: [],
         whereNots: [],
+        whereRaws: [],
         orders: [],
         offset: undefined,
         limit: undefined,
@@ -92,6 +93,11 @@ export class Relation<T extends typeof Model, M extends Meta> {
     }
     return new Relation(this.model, newOptions);
   }
+  whereRaw(query: string, bindings: any[] = []): Relation<T, M> {
+    const newOptions = JSON.parse(JSON.stringify(this.options));
+    newOptions["whereRaws"].push([query, bindings]);
+    return new Relation(this.model, newOptions);
+  }
   get(): T[] {
     let q = this.client;
     for (const where of this.options.wheres) {
@@ -107,6 +113,9 @@ export class Relation<T extends typeof Model, M extends Meta> {
       } else {
         q = q.whereNot(where);
       }
+    }
+    for (const [query, bindings] of this.options.whereRaws) {
+      q = q.whereRaw(query, bindings);
     }
     if (this.options.limit) q = q.limit(this.options.limit);
     if (this.options.offset) q = q.offset(this.options.offset);

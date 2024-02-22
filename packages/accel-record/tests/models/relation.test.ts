@@ -86,4 +86,11 @@ describe("Relation", () => {
     expect(User.all().whereNot({ "age": { in: [20] } }).first()?.name).toBe('fuga');
     expect(User.all().whereNot({ "age": null }).first()?.name).toBe("hoge");
   });
+
+  test('#whereRaw()', () => {
+    $user.create({ name: "hoge", age: 20 });
+    $user.create({ name: "fuga", age: 30 });
+    expect(User.all().whereRaw('age = ?', [30]).first()?.name).toBe("fuga");
+    expect(User.all().whereRaw('age IS NOT NULL').first()?.name).toBe("hoge");
+  });
 });
