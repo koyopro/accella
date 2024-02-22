@@ -36,4 +36,16 @@ export class Query {
   static where<T extends typeof Model>(this: T, input: object) {
     return this.all().where(input);
   }
+
+  static find<T extends typeof Model>(this: T, id: number) {
+    const instance = this.all().where({ id }).first();
+    if (!instance) {
+      throw new Error("Record Not found");
+    }
+    return instance;
+  }
+
+  static findBy<T extends typeof Model>(this: T, input: object) {
+    return this.all().where(input).first();
+  }
 }

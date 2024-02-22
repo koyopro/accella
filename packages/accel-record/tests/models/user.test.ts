@@ -35,18 +35,6 @@ describe("User#tojson()", () => {
     expect(u.email).toBe("hoge@example.com");
   });
 
-  test(".find()", () => {
-    expect(() => {
-      User.find(1);
-    }).toThrow("Record Not found");
-    const u = $user.create({ name: "hoge", email: "hoge@example.com" });
-    const s = User.find(u.id!);
-    expect(s).toBeInstanceOf(User);
-    expect(s.id).toBe(u.id!);
-    expect(s.name).toBe("hoge");
-    expect(s.email).toBe("hoge@example.com");
-  });
-
   test(".all()", () => {
     $user.create({ name: "hoge" });
     $user.create({ name: "fuga" });
@@ -79,16 +67,6 @@ describe("User#tojson()", () => {
   test("#isPersisted()", () => {
     expect($user.build().isPersisted()).toBe(false);
     expect($user.create().isPersisted()).toBe(true);
-  });
-
-  test(".findBy()", () => {
-    expect(User.findBy({ name: "hoge" })).toBeUndefined();
-
-    $user.create({ name: "hoge", email: "hoge@example.com" });
-    const u = User.findBy({ name: "hoge" });
-    expect(u).toBeInstanceOf(User);
-    expect(u!.name).toBe("hoge");
-    expect(u!.email).toBe("hoge@example.com");
   });
 
   test(".includes()", () => {

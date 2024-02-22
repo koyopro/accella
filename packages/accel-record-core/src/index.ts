@@ -47,6 +47,7 @@ export class Model extends classIncludes(
         instance[key] = new CollectionProxy(instance, Models[klass], assosiation);
       }
       if (key in input) {
+        console.log(key, input);
         const target = input[key].map((row: any) => Models[klass].build(row));
         instance[key] = new CollectionProxy(instance, Models[klass], assosiation, target);
       }
@@ -58,25 +59,6 @@ export class Model extends classIncludes(
     const instance = this.build(input);
     instance.save();
     return instance;
-  }
-
-  static find(id: number) {
-    const query = this.client.where({ id }).toSQL();
-    const [instance] = rpcClient({ type: "query", ...query });
-
-    if (!instance) {
-      throw new Error("Record Not found");
-    }
-    return this.build(instance);
-  }
-
-  static findBy(input: any) {
-    const query = this.client.where(input).toSQL();
-    const [instance] = rpcClient({ type: "query", ...query });
-    if (!instance) {
-      return undefined;
-    }
-    return this.build(instance);
   }
 
   static all<T extends typeof Model>(this: T): Relation<any, any> {
