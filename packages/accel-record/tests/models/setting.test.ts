@@ -34,4 +34,11 @@ describe("Setting", () => {
     expect(Setting.count()).toBe(1);
     expect(User.find(user.id).setting?.threshold).toBeCloseTo(0.5);
   });
+
+  test.only("set in build", () => {
+    expect(Setting.count()).toBe(0);
+    const user = $user.create({ setting: $setting.build({ threshold: 0.5 }) });
+    expect(Setting.count()).toBe(1);
+    expect(user.setting?.threshold).toBeCloseTo(0.5);
+  });
 });

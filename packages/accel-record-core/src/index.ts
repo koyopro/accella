@@ -40,23 +40,13 @@ export class Model extends classIncludes(
         instance[column.name] = input[column.name];
       }
     }
-    for (const [key, assosiation] of Object.entries(this.assosiations)) {
-      const { klass, foreignKey, primaryKey, field } = assosiation;
-      if (field.isList || key in input) {
-        const option = { wheres: [{ [foreignKey]: instance[primaryKey] }] };
-        instance[key] = new CollectionProxy(
-          Models[klass],
-          option,
-          input[key] ?? (instance.isPersisted() ? undefined : [])
-        );
-      }
-    }
     // Proxy
     const klass = this;
-    return new Proxy(instance, {
+    const proxy = new Proxy(instance, {
       get(target, prop, receiver) {
         const assosiation = klass.assosiations[prop as any];
-        if (assosiation && assosiation.foreignKey && assosiation.primaryKey) {
+        if (assosiation && assosiation.foreignKey && assosiation.primaryKey && !assosiation.field.isList) {
+          if (target[prop]) return target[prop];
           return Models[assosiation.klass].findBy({
             [assosiation.foreignKey]: target[assosiation.primaryKey],
           });
@@ -65,7 +55,12 @@ export class Model extends classIncludes(
       },
       set(target, prop, value, receiver) {
         const assosiation = klass.assosiations[prop as any];
-        if (assosiation && assosiation.foreignKey && assosiation.primaryKey) {
+        if (
+          assosiation && !assosiation.field.isList &&
+          assosiation.foreignKey &&
+          assosiation.primaryKey &&
+          target[assosiation.primaryKey]
+        ) {
           value[assosiation.foreignKey] = target[assosiation.primaryKey];
           value.save();
           return true;
@@ -74,6 +69,20 @@ export class Model extends classIncludes(
         return true;
       },
     });
+    for (const [key, assosiation] of Object.entries(this.assosiations)) {
+      const { klass, foreignKey, primaryKey, field } = assosiation;
+      if (!field.isList && key in input) {
+        proxy[key] = input[key];
+      } else if (field.isList || key in input) {
+        const option = { wheres: [{ [foreignKey]: instance[primaryKey] }] };
+        instance[key] = new CollectionProxy(
+          Models[klass],
+          option,
+          input[key] ?? (instance.isPersisted() ? undefined : [])
+        );
+      }
+    }
+    return proxy;
   }
 
   static create(input: any) {

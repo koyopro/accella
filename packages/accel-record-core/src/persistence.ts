@@ -1,5 +1,5 @@
 import { rpcClient } from "./database";
-import { CollectionProxy, Models, type Model } from "./index.js";
+import { CollectionProxy, Models, Model } from "./index.js";
 
 export class Persistence {
   isNewRecord: boolean = true;
@@ -104,6 +104,9 @@ export class Persistence {
           option,
           (cache.length > 0 ? cache : undefined)
         );
+      } else if (value instanceof Model) {
+        value[foreignKey] = this[primaryKey as keyof T];
+        value.save();
       }
     }
     return true;
