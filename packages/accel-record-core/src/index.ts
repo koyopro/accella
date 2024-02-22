@@ -63,6 +63,16 @@ export class Model extends classIncludes(
         }
         return Reflect.get(...arguments);
       },
+      set(target, prop, value, receiver) {
+        const assosiation = klass.assosiations[prop as any];
+        if (assosiation && assosiation.foreignKey && assosiation.primaryKey) {
+          value[assosiation.foreignKey] = target[assosiation.primaryKey];
+          value.save();
+          return true;
+        }
+        target[prop] = value;
+        return true;
+      },
     });
   }
 
