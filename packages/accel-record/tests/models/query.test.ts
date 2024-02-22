@@ -7,4 +7,10 @@ describe('Query', () => {
     $user.create();
     expect(User.first()).not.toBeUndefined();
   });
+
+  test('.exists()', () => {
+    expect(User.exists()).toBe(false);
+    $user.create();
+    expect(User.exists()).toBe(true);
+  });
 });
