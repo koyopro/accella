@@ -9,18 +9,11 @@ import { Prisma } from "@prisma/client";
 type SortOrder = "asc" | "desc";
 
 type Compare<T> = {
-  equals?: T;
-  not?: T;
   in?: T[];
-  notIn?: T[];
   '<'?: T;
   '>'?: T;
   '<='?: T;
   '>='?: T;
-  lt?: T;
-  gt?: T;
-  lte?: T;
-  gte?: T;
 };
 
 declare module "./user" {
