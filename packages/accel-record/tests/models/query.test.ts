@@ -32,4 +32,10 @@ describe('Query', () => {
     $user.create({ name: 'fuga' });
     expect(User.offset(1).first()?.name).toBe('fuga');
   });
+
+  test('.limit()', () => {
+    $user.create({ name: 'hoge' });
+    $user.create({ name: 'fuga' });
+    expect(User.limit(1).toArray()).toHaveLength(1);
+  });
 });

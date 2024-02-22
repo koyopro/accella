@@ -24,4 +24,8 @@ export class Query {
   static offset<T extends typeof Model>(this: T, offset: number) {
     return this.all().offset(offset);
   }
+
+  static limit<T extends typeof Model>(this: T, limit: number) {
+    return this.all().limit(limit);
+  }
 }

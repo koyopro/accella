@@ -24,6 +24,7 @@ declare module "./user" {
     function all(): Relation<PersistedUser, UserMeta>;
     function order(column: keyof UserMeta["OrderInput"], direction?: "asc" | "desc"): Relation<PersistedUser, UserMeta>;
     function offset(offset: number): Relation<PersistedUser, UserMeta>;
+    function limit(limit: number): Relation<PersistedUser, UserMeta>;
     function where(input: Prisma.UserWhereInput): Relation<PersistedUser, UserMeta>;
     function build(input: Partial<UserCreateInput>): User;
     function includes<T extends readonly AssociationKey[]>(
@@ -79,6 +80,7 @@ declare module "./post" {
     function all(): Relation<PersistedPost, PostMeta>;
     function order(column: keyof PostMeta["OrderInput"], direction?: "asc" | "desc"): Relation<PersistedPost, PostMeta>;
     function offset(offset: number): Relation<PersistedPost, PostMeta>;
+    function limit(limit: number): Relation<PersistedPost, PostMeta>;
     function where(input: Prisma.PostWhereInput): Relation<PersistedPost, PostMeta>;
     function build(input: Partial<PostCreateInput>): Post;
     function includes<T extends readonly AssociationKey[]>(
