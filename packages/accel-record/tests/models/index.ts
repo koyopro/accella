@@ -55,10 +55,10 @@ declare module "./user" {
   };
   type UserMeta = {
     WhereInput: {
-      id?: number | Compare<number>;
-      email?: string | Compare<string>;
-      name?: string | Compare<string>;
-      age?: number | Compare<number>;
+      id?: number | Compare<number> | null;
+      email?: string | Compare<string> | null;
+      name?: string | Compare<string> | null;
+      age?: number | Compare<number> | null;
     };
     OrderInput: {
       id?: SortOrder;
@@ -108,11 +108,11 @@ declare module "./post" {
   };
   type PostMeta = {
     WhereInput: {
-      id?: number | Compare<number>;
-      title?: string | Compare<string>;
-      content?: string | Compare<string>;
-      published?: boolean | Compare<boolean>;
-      authorId?: number | Compare<number>;
+      id?: number | Compare<number> | null;
+      title?: string | Compare<string> | null;
+      content?: string | Compare<string> | null;
+      published?: boolean | Compare<boolean> | null;
+      authorId?: number | Compare<number> | null;
     };
     OrderInput: {
       id?: SortOrder;

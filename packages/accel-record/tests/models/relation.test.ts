@@ -56,10 +56,12 @@ describe("Relation", () => {
   test("#where()", () => {
     $user.create({ name: "hoge", age: 20 });
     $user.create({ name: "fuga", age: 30 });
+    $user.create({ name: "piyo", age: undefined });
     expect(User.all().where({ "name": "fuga" }).first()?.name).toBe("fuga");
     expect(User.all().where({ "name": "hoge", age: 20 }).first()?.name).toBe("hoge");
     expect(User.all().where({ "name": "fuga" }).where({ age: 20 }).first()).toBeUndefined();
     expect(User.all().where({ "name": "fuga" }).where({ name: 'hoge' }).first()).toBeUndefined();
+    expect(User.all().where({ age: null }).first()?.name).toBe("piyo");
   })
 
   test("#where() with compare", () => {

@@ -100,7 +100,7 @@ type Compare<T> = {
       model.fields
         .filter(reject)
         .filter((field) => field.relationName == undefined)
-        .map((field) => `\n      ${field.name}?: ${getPropertyType(field)} | Compare<${getPropertyType(field)}>;`)
+        .map((field) => `\n      ${field.name}?: ${getPropertyType(field)} | Compare<${getPropertyType(field)}> | null;`)
         .join("") + "\n    ";
     const orderInputs =
       model.fields
