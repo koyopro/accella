@@ -7,7 +7,7 @@ export class Relation<T extends typeof Model, M extends Meta> {
   private client: any;
   constructor(
     private model: T,
-    private options: any
+    private options: any = {}
   ) {
     this.model = model;
     this.client = model.client;

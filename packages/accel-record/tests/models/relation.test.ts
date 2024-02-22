@@ -68,4 +68,11 @@ describe("Relation", () => {
     expect(User.all().where({ "age": 20 }).first()?.name).toBe("hoge");
     expect(User.all().where({ "age": { '>': 20 } }).first()?.name).toBe("fuga");
   })
+
+  test("#where() in", () => {
+    $user.create({ name: "hoge", age: 20 });
+    $user.create({ name: "fuga", age: 30 });
+    $user.create({ name: "piyo", age: 40 });
+    expect(User.all().where({ "age": { in: [20, 30] } }).toArray()).toHaveLength(2);
+  });
 });
