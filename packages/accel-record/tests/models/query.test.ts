@@ -19,4 +19,11 @@ describe('Query', () => {
     $user.create();
     expect(User.count()).toBe(1);
   });
+
+  test('.order()', () => {
+    $user.create({ age: 20 });
+    $user.create({ age: 10 });
+    expect(User.order('age').first()?.age).toBe(10);
+    expect(User.order('age', 'desc').first()?.age).toBe(20);
+  });
 });
