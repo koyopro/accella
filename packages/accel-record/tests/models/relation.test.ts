@@ -52,4 +52,10 @@ describe("Relation", () => {
     expect(User.all().order("name").first()?.name).toBe("fuga");
     expect(User.all().order("name", "desc").first()?.name).toBe("hoge");
   });
+
+  test("#where()", () => {
+    $user.create({ name: "hoge" });
+    $user.create({ name: "fuga" });
+    expect(User.all().where({ "name": "fuga" }).first()?.name).toBe("fuga");
+  })
 });
