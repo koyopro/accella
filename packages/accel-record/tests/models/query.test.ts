@@ -57,6 +57,18 @@ describe("Query", () => {
     expect(u!.email).toBe("hoge@example.com");
   });
 
+  test(".whereNot()", () => {
+    $user.create({ name: "hoge", age: 20 });
+    $user.create({ name: "fuga", age: 30 });
+    expect(User.whereNot({ name: "hoge" }).first()?.name).toBe("fuga");
+  });
+
+  test(".whereRaw()", () => {
+    $user.create({ name: "hoge", age: 20 });
+    $user.create({ name: "fuga", age: 30 });
+    expect(User.whereRaw('age = ?', [30]).first()?.name).toBe("fuga");
+  });
+
   test(".find()", () => {
     expect(() => {
       User.find(1);

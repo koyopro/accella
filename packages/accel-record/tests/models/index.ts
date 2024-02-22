@@ -26,6 +26,8 @@ declare module "./user" {
     function offset(offset: number): Relation<PersistedUser, UserMeta>;
     function limit(limit: number): Relation<PersistedUser, UserMeta>;
     function where(input: Prisma.UserWhereInput): Relation<PersistedUser, UserMeta>;
+    function whereNot(input: Prisma.UserWhereInput): Relation<PersistedUser, UserMeta>;
+    function whereRaw(query: string, bindings: any[] = []): Relation<PersistedUser, UserMeta>;
     function build(input: Partial<UserCreateInput>): User;
     function includes<T extends readonly AssociationKey[]>(
       input: T
@@ -82,6 +84,8 @@ declare module "./post" {
     function offset(offset: number): Relation<PersistedPost, PostMeta>;
     function limit(limit: number): Relation<PersistedPost, PostMeta>;
     function where(input: Prisma.PostWhereInput): Relation<PersistedPost, PostMeta>;
+    function whereNot(input: Prisma.PostWhereInput): Relation<PersistedPost, PostMeta>;
+    function whereRaw(query: string, bindings: any[] = []): Relation<PersistedPost, PostMeta>;
     function build(input: Partial<PostCreateInput>): Post;
     function includes<T extends readonly AssociationKey[]>(
       input: T

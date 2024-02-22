@@ -37,6 +37,14 @@ export class Query {
     return this.all().where(input);
   }
 
+  static whereNot<T extends typeof Model>(this: T, input: object) {
+    return this.all().whereNot(input);
+  }
+
+  static whereRaw<T extends typeof Model>(this: T, query: string, bindings: any[] = []) {
+    return this.all().whereRaw(query, bindings);
+  }
+
   static find<T extends typeof Model>(this: T, id: number) {
     const instance = this.all().where({ id }).first();
     if (!instance) {
