@@ -1,12 +1,28 @@
 import { knex, rpcClient } from "./database.js";
 import { type Model, type Meta, Models } from "./index.js";
 
+type Options = {
+  wheres: any[];
+  whereNots: any[];
+  whereRaws: [string, any[]][];
+  orders: [string, "asc" | "desc"][];
+  offset: number | undefined;
+  limit: number | undefined;
+  includes: {
+    klass: string;
+    name: string;
+    primaryKey: string;
+    foreignKey: string;
+  }[];
+};
+
 export class Relation<T extends typeof Model, M extends Meta> {
   private counter = 0;
   private client: any;
+  private options: Options;
   constructor(
     private model: T,
-    private options: any = {},
+    options: Partial<Options> = {},
     private cache: any[] | undefined = undefined
   ) {
     this.model = model;
@@ -21,7 +37,7 @@ export class Relation<T extends typeof Model, M extends Meta> {
         limit: undefined,
       },
       options
-    );
+    ) as Options;
   }
   toArray(): T[] {
     return (this.cache ||= this.get());

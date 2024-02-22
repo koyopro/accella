@@ -19,12 +19,12 @@ describe("#CollectionProxy()", () => {
 
   test("#count()", () => {
     const u1 = $user.create({});
-    // const u2 = $user.create({});
+    const u2 = $user.create({});
     $post.create({ title: "post1", authorId: u1.id });
     $post.create({ title: "post2", authorId: u1.id });
-    $post.create({ title: "post3", authorId: u1.id });
+    $post.create({ title: "post3", authorId: u2.id });
     expect(Post.count()).toBe(3);
-    expect(u1.posts.count()).toBe(3);
-    // expect(u2.posts.count()).toBe(2);
+    expect(u1.posts.count()).toBe(2);
+    expect(u2.posts.count()).toBe(1);
   });
 });

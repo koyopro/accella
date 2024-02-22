@@ -1,5 +1,5 @@
 import { rpcClient } from "./database";
-import { CollectionProxy, type Model } from "./index.js";
+import { CollectionProxy, Models, type Model } from "./index.js";
 
 export class Persistence {
   isNewRecord: boolean = true;
@@ -85,15 +85,25 @@ export class Persistence {
       }
     }
     const query = this.client.insert(data).toSQL();
-    const id = rpcClient(query);
-    (this as any).id = id;
-    for (const [key, { foreignKey }] of Object.entries(this.assosiations)) {
+    rpcClient(query);
+    const q = this.client.orderBy("id", "desc").limit(1).toSQL();
+    const [record] = rpcClient({ ...q, type: "query" });
+    Object.assign(this, record);
+    for (const [key, { klass, foreignKey, primaryKey }] of Object.entries(this.assosiations)) {
       const value = this[key as keyof T];
       if (value instanceof CollectionProxy) {
-        for (const instance of value.toArray()) {
-          instance[foreignKey] = id;
+        for (const instance of value) {
+          instance[foreignKey] = this[primaryKey as keyof T];
           instance.save();
         }
+        // recreate collection proxy
+        const cache = value.toArray();
+        const option = { wheres: [{ [foreignKey]: this[primaryKey as keyof T] }] };
+        (this as any)[key] = new CollectionProxy(
+          Models[klass],
+          option,
+          (cache.length > 0 ? cache : undefined)
+        );
       }
     }
     return true;

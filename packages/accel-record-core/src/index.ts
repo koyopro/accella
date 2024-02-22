@@ -44,11 +44,11 @@ export class Model extends classIncludes(
     for (const [key, assosiation] of Object.entries(this.assosiations)) {
       const { klass, foreignKey, primaryKey, field } = assosiation;
       if (field.isList || key in input) {
-        const option = { [foreignKey]: instance[primaryKey] };
+        const option = { wheres: [{ [foreignKey]: instance[primaryKey] }] };
         instance[key] = new CollectionProxy(
           Models[klass],
           option,
-          input[key] ?? undefined
+          input[key] ?? (instance.isPersisted() ? undefined : [])
         );
       }
     }
