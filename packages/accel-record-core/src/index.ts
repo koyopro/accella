@@ -83,12 +83,6 @@ export class Model extends classIncludes(
     return new Relation(this);
   }
 
-  static count(): number {
-    const query = this.client.count("id").toSQL();
-    const res = rpcClient({ type: "query", ...query });
-    return Number(Object.values(res[0])[0]);
-  }
-
   static where<T extends typeof Model>(this: T, input: any): Relation<any, any> {
     return new Relation(this, { where: input });
   }

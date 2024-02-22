@@ -13,4 +13,10 @@ describe('Query', () => {
     $user.create();
     expect(User.exists()).toBe(true);
   });
+
+  test('.count()', () => {
+    expect(User.count()).toBe(0);
+    $user.create();
+    expect(User.count()).toBe(1);
+  });
 });
