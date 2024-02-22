@@ -6,6 +6,7 @@ import { Persistence } from "./persistence";
 import { Relation } from "./relation.js";
 import { classIncludes } from "./utils";
 import { CollectionProxy } from "./associations/collectionProxy.js";
+import { Query } from "./query";
 
 export { CollectionProxy } from "./associations/collectionProxy.js";
 export { Relation } from "./relation.js";
@@ -26,7 +27,8 @@ export class Model extends classIncludes(
   AttributeAssignment,
   Connection,
   Fields,
-  Persistence
+  Persistence,
+  Query
 ) {
   static build(input: any) {
     const instance: any = new this();
