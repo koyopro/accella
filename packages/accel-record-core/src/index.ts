@@ -45,22 +45,16 @@ export class Model extends classIncludes(
     const proxy = new Proxy(instance, {
       get(target, prop, receiver) {
         const assosiation = klass.assosiations[prop as any];
-        if (assosiation && assosiation.foreignKey && assosiation.primaryKey && !assosiation.field.isList) {
-          if (target[prop]) return target[prop];
-          return target[prop] ||= Models[assosiation.klass].findBy({
+        if (assosiation?.isHasOne) {
+          return (target[prop] ||= Models[assosiation.klass].findBy({
             [assosiation.foreignKey]: target[assosiation.primaryKey],
-          });
+          }));
         }
         return Reflect.get(...arguments);
       },
       set(target, prop, value, receiver) {
         const assosiation = klass.assosiations[prop as any];
-        if (
-          assosiation && !assosiation.field.isList &&
-          assosiation.foreignKey &&
-          assosiation.primaryKey &&
-          target[assosiation.primaryKey]
-        ) {
+        if (assosiation?.isHasOne && target[assosiation.primaryKey]) {
           value[assosiation.foreignKey] = target[assosiation.primaryKey];
           value.save();
         }

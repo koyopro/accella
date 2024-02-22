@@ -1,12 +1,24 @@
 import { BaseDMMF, DMMF } from "prisma/prisma-client/runtime/library.js";
 
-export type Association = {
+export class Association {
   klass: string;
   foreignKey: string;
   primaryKey: string;
   table: string;
   field: Field;
-};
+
+  constructor(relation: DMMF.Field, association: Field) {
+    this.klass = association.type;
+    this.foreignKey = relation.relationFromFields?.[0] ?? "";
+    this.primaryKey = relation.relationToFields?.[0] ?? "";
+    this.table = association.type.toLowerCase();
+    this.field = association;
+  }
+
+  get isHasOne() {
+    return this.foreignKey && this.primaryKey && !this.field.isList;
+  }
+}
 
 export class Field {
   name: string;
@@ -130,13 +142,7 @@ export class Fields {
           return acc;
         return {
           ...acc,
-          [field.name]: {
-            klass: field.type,
-            foreignKey: r.relationFromFields[0] ?? "",
-            primaryKey: r.relationToFields[0] ?? "",
-            table: field.type.toLowerCase(),
-            field: field,
-          },
+          [field.name]: new Association(r, field),
         };
       }, {});
   }
