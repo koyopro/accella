@@ -81,12 +81,18 @@ type SortOrder = "asc" | "desc";
         };`;
       })
       .join("\n");
+    const whereInputs =
+      model.fields
+        .filter(reject)
+        .filter((field) => field.relationName == undefined)
+        .map((field) => `\n      ${field.name}?: ${getPropertyType(field)};`)
+        .join("") + "\n    ";
     const orderInputs =
       model.fields
         .filter(reject)
         .filter((field) => field.relationName == undefined)
         .map((field) => `\n      ${field.name}?: SortOrder;`)
-        .join('') + "\n    ";
+        .join("") + "\n    ";
     data += `
 declare module "./${model.name.toLowerCase()}" {
   namespace ${model.name} {
@@ -115,7 +121,8 @@ ${columnDefines}
 ${columns}
   };
   type ${model.name}Meta = {
-    OrderInput: {${orderInputs}}
+    WhereInput: {${whereInputs}};
+    OrderInput: {${orderInputs}};
   }
   type Reset<S, T> = Omit<S, T[number]> & {
     [K in T[number]]: ${model.name}[K];

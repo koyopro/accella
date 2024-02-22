@@ -39,12 +39,18 @@ declare module "./user" {
     posts?: Post[];
   };
   type UserMeta = {
+    WhereInput: {
+      id?: number;
+      email?: string;
+      name?: string;
+      age?: number;
+    };
     OrderInput: {
       id?: SortOrder;
       email?: SortOrder;
       name?: SortOrder;
       age?: SortOrder;
-    }
+    };
   }
   type Reset<S, T> = Omit<S, T[number]> & {
     [K in T[number]]: User[K];
@@ -86,13 +92,20 @@ declare module "./post" {
     authorId: number;
   };
   type PostMeta = {
+    WhereInput: {
+      id?: number;
+      title?: string;
+      content?: string;
+      published?: boolean;
+      authorId?: number;
+    };
     OrderInput: {
       id?: SortOrder;
       title?: SortOrder;
       content?: SortOrder;
       published?: SortOrder;
       authorId?: SortOrder;
-    }
+    };
   }
   type Reset<S, T> = Omit<S, T[number]> & {
     [K in T[number]]: Post[K];
