@@ -32,4 +32,8 @@ export class Query {
   static limit<T extends typeof Model>(this: T, limit: number) {
     return this.all().limit(limit);
   }
+
+  static where<T extends typeof Model>(this: T, input: object) {
+    return this.all().where(input);
+  }
 }

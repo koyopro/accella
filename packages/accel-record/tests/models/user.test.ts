@@ -91,18 +91,6 @@ describe("User#tojson()", () => {
     expect(u!.email).toBe("hoge@example.com");
   });
 
-  test(".where", () => {
-    expect(User.where({ name: "hoge" }).get()).toEqual([]);
-
-    $user.create({ name: "hoge", email: "hoge@example.com" });
-    const users = User.where({ name: "hoge" }).get();
-    expect(users).toHaveLength(1);
-    const u = users[0];
-    expect(u).toBeInstanceOf(User);
-    expect(u!.name).toBe("hoge");
-    expect(u!.email).toBe("hoge@example.com");
-  });
-
   test(".includes()", () => {
     const u = $user.create();
     Post.create({ title: "post1", authorId: u.id });

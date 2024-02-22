@@ -83,10 +83,6 @@ export class Model extends classIncludes(
     return new Relation(this);
   }
 
-  static where<T extends typeof Model>(this: T, input: any): Relation<any, any> {
-    return new Relation(this, { where: input });
-  }
-
   static includes<T extends readonly any[]>(input: T): Relation<any, any> {
     const includes = input.map((key) => {
       return { name: key, ...this.assosiations[key] };
