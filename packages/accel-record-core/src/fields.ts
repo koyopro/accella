@@ -5,7 +5,7 @@ export type Association = {
   foreignKey: string;
   primaryKey: string;
   table: string;
-  field: DMMF.Field;
+  field: Field;
 };
 
 export class Field {

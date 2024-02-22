@@ -1,13 +1,13 @@
 import { knex, rpcClient } from "./database.js";
-import type { Model, Meta } from "./index.js";
+import { type Model, type Meta, Models } from "./index.js";
 
 export class Relation<T extends typeof Model, M extends Meta> {
   private counter = 0;
-  private cache: any[] | undefined = undefined;
   private client: any;
   constructor(
     private model: T,
-    private options: any = {}
+    private options: any = {},
+    private cache: any[] | undefined = undefined
   ) {
     this.model = model;
     this.client = model.client;
@@ -74,7 +74,7 @@ export class Relation<T extends typeof Model, M extends Meta> {
       if (input[key] != null && typeof input[key] === "object") {
         for (const operator in input[key]) {
           if (operator === "in") {
-            newOptions["wheres"].push([key, 'not in', input[key][operator]]);
+            newOptions["wheres"].push([key, "not in", input[key][operator]]);
           } else {
             newOptions["whereNots"].push([key, operator, input[key][operator]]);
           }
@@ -118,17 +118,15 @@ export class Relation<T extends typeof Model, M extends Meta> {
   }
   get(): T[] {
     const rows = rpcClient({ type: "query", ...this.query().toSQL() });
-    for (const { name, table, primaryKey, foreignKey } of this.options
+    for (const { klass, name, primaryKey, foreignKey } of this.options
       .includes ?? []) {
       const primaryKeys = rows.map((row: any) => row[primaryKey]);
-      const query = knex.from(table).whereIn(foreignKey, primaryKeys).toSQL();
-      const includeRows = rpcClient({ type: "query", ...query });
+      const included = Models[klass].where({
+        [foreignKey]: { in: primaryKeys },
+      });
       const mapping: any = {};
-      for (const row of includeRows) {
-        if (!mapping[row[foreignKey]]) {
-          mapping[row[foreignKey]] = [];
-        }
-        mapping[row[foreignKey]].push(row);
+      for (const row of included) {
+        (mapping[row[foreignKey]] ||= []).push(row);
       }
       for (const row of rows) {
         row[name] = mapping[row[primaryKey]] ?? [];

@@ -15,9 +15,9 @@ type SortOrder = "asc" | "desc";
 export type Meta = {
   WhereInput: Record<string, SortOrder>;
   OrderInput: Record<string, SortOrder>;
-}
+};
 
-const Models: Record<string, typeof Model> = {};
+export const Models: Record<string, typeof Model> = {};
 
 export const registerModel = (model: any) => {
   Models[model.name] = model;
@@ -42,14 +42,14 @@ export class Model extends classIncludes(
       }
     }
     for (const [key, assosiation] of Object.entries(this.assosiations)) {
-      const { klass, field } = assosiation;
-      if (field.isList) {
-        instance[key] = new CollectionProxy(instance, Models[klass], assosiation);
-      }
-      if (key in input) {
-        console.log(key, input);
-        const target = input[key].map((row: any) => Models[klass].build(row));
-        instance[key] = new CollectionProxy(instance, Models[klass], assosiation, target);
+      const { klass, foreignKey, primaryKey, field } = assosiation;
+      if (field.isList || key in input) {
+        const option = { [foreignKey]: instance[primaryKey] };
+        instance[key] = new CollectionProxy(
+          Models[klass],
+          option,
+          input[key] ?? undefined
+        );
       }
     }
     return instance;
