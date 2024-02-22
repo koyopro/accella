@@ -116,8 +116,8 @@ describe("User#tojson()", () => {
   });
 
   test("columns", () => {
-    expect(User.columns).toEqual(["id", "email", "name"]);
-    expect(new User().columns).toEqual(["id", "email", "name"]);
+    expect(User.columns).toEqual(["id", "email", "name", "age"]);
+    expect(new User().columns).toEqual(["id", "email", "name", 'age']);
   });
 
   test("columnsForPersist", () => {

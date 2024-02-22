@@ -29,10 +29,11 @@ export class Relation<T extends typeof Model, M extends Meta> {
     return new Relation(this.model, { ...this.options, limit: 1 }).get()[0];
   }
   count(): number {
-    const query = this.client
-      .where(this.options.where ?? {})
-      .count("id")
-      .toSQL();
+    let q = this.client;
+    for (const where of this.options.wheres) {
+      q = q.where(where);
+    }
+    const query = q.count("id").toSQL();
     const res = rpcClient({ type: "query", ...query });
     return Number(Object.values(res[0])[0]);
   }
@@ -53,7 +54,7 @@ export class Relation<T extends typeof Model, M extends Meta> {
     direction: "asc" | "desc" = "asc"
   ): Relation<T, M> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
-    (newOptions["orders"] ||= []).push([column, direction]);
+    newOptions["orders"].push([column, direction]);
     return new Relation(this.model, newOptions);
   }
   where(input: M["WhereInput"]): Relation<T, M> {
