@@ -105,6 +105,7 @@ type Compare<T> = {
 declare module "./${model.name.toLowerCase()}" {
   namespace ${model.name} {
     function create(input: ${model.name}CreateInput): Persisted${model.name};
+    function first(): Persisted${model.name};
     function find(id: number): Persisted${model.name};
     function findBy(input: Prisma.${model.name}WhereInput): Persisted${
       model.name

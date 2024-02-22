@@ -19,6 +19,7 @@ type Compare<T> = {
 declare module "./user" {
   namespace User {
     function create(input: UserCreateInput): PersistedUser;
+    function first(): PersistedUser;
     function find(id: number): PersistedUser;
     function findBy(input: Prisma.UserWhereInput): PersistedUser | undefined;
     function all(): Relation<PersistedUser, UserMeta>;
@@ -77,6 +78,7 @@ declare module "./user" {
 declare module "./post" {
   namespace Post {
     function create(input: PostCreateInput): PersistedPost;
+    function first(): PersistedPost;
     function find(id: number): PersistedPost;
     function findBy(input: Prisma.PostWhereInput): PersistedPost | undefined;
     function all(): Relation<PersistedPost, PostMeta>;

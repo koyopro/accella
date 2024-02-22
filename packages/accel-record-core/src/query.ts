@@ -1,7 +1,7 @@
 import type { Model } from "./index.js";
 
 export class Query {
-  static first<T extends typeof Model>(this: T): T | undefined {
+  static first<T extends typeof Model>(this: T) {
     return this.all().first();
   }
 
