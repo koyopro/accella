@@ -1,12 +1,11 @@
+import { AssociationsBuilder } from "./associations/associationsBuilder";
 import { AttributeAssignment } from "./attributeAssignment";
 import { Connection } from "./connection";
-import { rpcClient } from "./database.js";
 import { Fields } from "./fields";
 import { Persistence } from "./persistence";
+import { Query } from "./query";
 import { Relation } from "./relation.js";
 import { classIncludes } from "./utils";
-import { CollectionProxy } from "./associations/collectionProxy.js";
-import { Query } from "./query";
 
 export { CollectionProxy } from "./associations/collectionProxy.js";
 export { Relation } from "./relation.js";
@@ -41,18 +40,7 @@ export class Model extends classIncludes(
         instance[column.name] = input[column.name];
       }
     }
-    for (const [key, assosiation] of Object.entries(this.assosiations)) {
-      const { klass, foreignKey, primaryKey, field } = assosiation;
-      if (field.isList || key in input) {
-        const option = { wheres: [{ [foreignKey]: instance[primaryKey] }] };
-        instance[key] = new CollectionProxy(
-          Models[klass],
-          option,
-          input[key] ?? (instance.isPersisted() ? undefined : [])
-        );
-      }
-    }
-    return instance;
+    return AssociationsBuilder.build(this as any, instance, input);
   }
 
   static create(input: any) {
@@ -67,7 +55,7 @@ export class Model extends classIncludes(
 
   static includes<T extends readonly any[]>(input: T): Relation<any, any> {
     const includes = input.map((key) => {
-      return { name: key, ...this.assosiations[key] };
+      return { name: key, ...this.associations[key] };
     });
 
     return new Relation(this, { includes });

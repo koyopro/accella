@@ -83,22 +83,20 @@ describe("User#tojson()", () => {
 
   test("columns", () => {
     expect(User.columns).toEqual(["id", "email", "name", "age"]);
-    expect(new User().columns).toEqual(["id", "email", "name", 'age']);
+    expect(new User().columns).toEqual(["id", "email", "name", "age"]);
   });
 
   test("columnsForPersist", () => {
     expect(User.columnsForPersist).toEqual(["id"]);
   });
 
-  test("assosiations", () => {
-    expect(User.assosiations).toEqual({
-      posts: {
-        klass: "Post",
-        table: "post",
-        primaryKey: "id",
-        foreignKey: "authorId",
-        field: expect.anything(),
-      },
+  test("associations", () => {
+    expect(User.associations.posts).toEqual({
+      klass: "Post",
+      table: "post",
+      primaryKey: "id",
+      foreignKey: "authorId",
+      field: expect.anything(),
     });
   });
 });

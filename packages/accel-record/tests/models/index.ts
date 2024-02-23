@@ -2,6 +2,8 @@ import { User } from './user.js'
 export { User } from './user.js'
 import { Post } from './post.js'
 export { Post } from './post.js'
+import { Setting } from './setting.js'
+export { Setting } from './setting.js'
 import { Model, Relation } from "accel-record-core";
 import type { CollectionProxy } from "accel-record-core";
 import { Prisma } from "@prisma/client";
@@ -41,6 +43,7 @@ declare module "./user" {
     name: string | undefined;
     age: number | undefined;
     posts: CollectionProxy<Post, User>;
+    setting: Setting | undefined;
 
     isPersisted<T extends Model>(this: T): this is PersistedUser;
     update(input: Partial<UserCreateInput>): boolean;
@@ -51,6 +54,7 @@ declare module "./user" {
     name?: string;
     age?: number;
     posts?: Post[];
+    setting?: Setting;
   };
   type UserMeta = {
     WhereInput: {
@@ -132,6 +136,63 @@ declare module "./post" {
   };
   type PersistedPost = Post & {
     id: NonNullable<Post["id"]>;
+  };
+  type AssociationKey = "posts";
+}
+
+declare module "./setting" {
+  namespace Setting {
+    function create(input: SettingCreateInput): PersistedSetting;
+    function first(): PersistedSetting;
+    function find(id: number): PersistedSetting;
+    function findBy(input: Prisma.SettingWhereInput): PersistedSetting | undefined;
+    function all(): Relation<PersistedSetting, SettingMeta>;
+    function order(column: keyof SettingMeta["OrderInput"], direction?: "asc" | "desc"): Relation<PersistedSetting, SettingMeta>;
+    function offset(offset: number): Relation<PersistedSetting, SettingMeta>;
+    function limit(limit: number): Relation<PersistedSetting, SettingMeta>;
+    function where(input: Prisma.SettingWhereInput): Relation<PersistedSetting, SettingMeta>;
+    function whereNot(input: Prisma.SettingWhereInput): Relation<PersistedSetting, SettingMeta>;
+    function whereRaw(query: string, bindings: any[] = []): Relation<PersistedSetting, SettingMeta>;
+    function build(input: Partial<SettingCreateInput>): Setting;
+    function includes<T extends readonly AssociationKey[]>(
+      input: T
+    ): Relation<Reset<PersistedSetting, T>, SettingMeta>;
+  }
+  interface Setting {
+    /* columns */
+    id: number | undefined;
+    userId: number;
+    threshold: number | undefined;
+    createdAt: Date;
+
+    isPersisted<T extends Model>(this: T): this is PersistedSetting;
+    update(input: Partial<SettingCreateInput>): boolean;
+  }
+  type SettingCreateInput = {
+    id?: number;
+    userId: number;
+    threshold?: number;
+    createdAt?: Date;
+  };
+  type SettingMeta = {
+    WhereInput: {
+      id?: number | Compare<number> | null;
+      userId?: number | Compare<number> | null;
+      threshold?: number | Compare<number> | null;
+      createdAt?: Date | Compare<Date> | null;
+    };
+    OrderInput: {
+      id?: SortOrder;
+      userId?: SortOrder;
+      threshold?: SortOrder;
+      createdAt?: SortOrder;
+    };
+  }
+  type Reset<S, T> = Omit<S, T[number]> & {
+    [K in T[number]]: Setting[K];
+  };
+  type PersistedSetting = Setting & {
+    id: NonNullable<Setting["id"]>;
   };
   type AssociationKey = "posts";
 }
