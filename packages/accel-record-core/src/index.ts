@@ -1,4 +1,4 @@
-import { CollectionProxy } from "./associations/collectionProxy.js";
+import { AssociationsBuilder } from "./associations/associationsBuilder";
 import { AttributeAssignment } from "./attributeAssignment";
 import { Connection } from "./connection";
 import { Fields } from "./fields";
@@ -40,46 +40,7 @@ export class Model extends classIncludes(
         instance[column.name] = input[column.name];
       }
     }
-    // Proxy
-    const klass = this;
-    const proxy = new Proxy(instance, {
-      get(target, prop, receiver) {
-        const association = klass.associations[prop as any];
-        if (association?.isHasOne) {
-          return (target[prop] ||= Models[association.klass].findBy({
-            [association.foreignKey]: target[association.primaryKey],
-          }));
-        }
-        return Reflect.get(...arguments);
-      },
-      set(target, prop, value, receiver) {
-        const association = klass.associations[prop as any];
-        if (association?.isHasOne && target[association.primaryKey]) {
-          if (value == undefined) {
-            target[prop]?.destroy();
-          } else {
-            value[association.foreignKey] = target[association.primaryKey];
-            value.save();
-          }
-        }
-        target[prop] = value;
-        return true;
-      },
-    });
-    for (const [key, association] of Object.entries(this.associations)) {
-      const { klass, foreignKey, primaryKey, field } = association;
-      if (!field.isList && key in input) {
-        proxy[key] = input[key];
-      } else if (field.isList || key in input) {
-        const option = { wheres: [{ [foreignKey]: instance[primaryKey] }] };
-        instance[key] = new CollectionProxy(
-          Models[klass],
-          option,
-          input[key] ?? (instance.isPersisted() ? undefined : [])
-        );
-      }
-    }
-    return proxy;
+    return AssociationsBuilder.build(this as any, instance, input);
   }
 
   static create(input: any) {
