@@ -77,7 +77,9 @@ export class Relation<T, M extends Meta> {
   where(input: M["WhereInput"]): Relation<T, M> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key in input) {
-      if (input[key] != null && typeof input[key] === "object") {
+      if (Array.isArray(input[key])) {
+        newOptions["wheres"].push([key, 'in', input[key]]);
+      } else if (input[key] != null && typeof input[key] === "object") {
         for (const operator in input[key]) {
           newOptions["wheres"].push([key, operator, input[key][operator]]);
         }

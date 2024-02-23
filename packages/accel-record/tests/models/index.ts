@@ -56,10 +56,10 @@ declare module "./user" {
   };
   type UserMeta = {
     WhereInput: {
-      id?: number | Compare<number> | null;
-      email?: string | Compare<string> | null;
-      name?: string | Compare<string> | null;
-      age?: number | Compare<number> | null;
+      id?: number | number[] | Compare<number> | null;
+      email?: string | string[] | Compare<string> | null;
+      name?: string | string[] | Compare<string> | null;
+      age?: number | number[] | Compare<number> | null;
     };
     OrderInput: {
       id?: SortOrder;
@@ -110,11 +110,11 @@ declare module "./post" {
   };
   type PostMeta = {
     WhereInput: {
-      id?: number | Compare<number> | null;
-      title?: string | Compare<string> | null;
-      content?: string | Compare<string> | null;
-      published?: boolean | Compare<boolean> | null;
-      authorId?: number | Compare<number> | null;
+      id?: number | number[] | Compare<number> | null;
+      title?: string | string[] | Compare<string> | null;
+      content?: string | string[] | Compare<string> | null;
+      published?: boolean | boolean[] | Compare<boolean> | null;
+      authorId?: number | number[] | Compare<number> | null;
     };
     OrderInput: {
       id?: SortOrder;
@@ -164,10 +164,10 @@ declare module "./setting" {
   };
   type SettingMeta = {
     WhereInput: {
-      id?: number | Compare<number> | null;
-      userId?: number | Compare<number> | null;
-      threshold?: number | Compare<number> | null;
-      createdAt?: Date | Compare<Date> | null;
+      id?: number | number[] | Compare<number> | null;
+      userId?: number | number[] | Compare<number> | null;
+      threshold?: number | number[] | Compare<number> | null;
+      createdAt?: Date | Date[] | Compare<Date> | null;
     };
     OrderInput: {
       id?: SortOrder;
