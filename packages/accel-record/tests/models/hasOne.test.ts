@@ -35,10 +35,17 @@ describe("Setting", () => {
     expect(User.find(user.id).setting?.threshold).toBeCloseTo(0.5);
   });
 
-  test.only("set in build", () => {
+  test("set in build", () => {
     expect(Setting.count()).toBe(0);
     const user = $user.create({ setting: $setting.build({ threshold: 0.5 }) });
     expect(Setting.count()).toBe(1);
     expect(user.setting?.threshold).toBeCloseTo(0.5);
+  });
+
+  test('set to null', () => {
+    const user = $user.create({ setting: $setting.build({ threshold: 0.5 }) });
+    expect(Setting.count()).toBe(1);
+    user.setting = undefined;
+    expect(Setting.count()).toBe(0);
   });
 });

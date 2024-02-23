@@ -55,8 +55,12 @@ export class Model extends classIncludes(
       set(target, prop, value, receiver) {
         const assosiation = klass.assosiations[prop as any];
         if (assosiation?.isHasOne && target[assosiation.primaryKey]) {
-          value[assosiation.foreignKey] = target[assosiation.primaryKey];
-          value.save();
+          if (value == undefined) {
+            target[prop]?.destroy();
+          } else {
+            value[assosiation.foreignKey] = target[assosiation.primaryKey];
+            value.save();
+          }
         }
         target[prop] = value;
         return true;
