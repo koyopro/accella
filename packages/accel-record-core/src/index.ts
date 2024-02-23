@@ -12,7 +12,7 @@ export { Relation } from "./relation.js";
 
 type SortOrder = "asc" | "desc";
 export type Meta = {
-  WhereInput: Record<string, SortOrder>;
+  WhereInput: Record<string, any>;
   OrderInput: Record<string, SortOrder>;
 };
 
