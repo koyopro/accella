@@ -32,9 +32,7 @@ declare module "./user" {
     function whereNot(input: Prisma.UserWhereInput): Relation<PersistedUser, UserMeta>;
     function whereRaw(query: string, bindings: any[] = []): Relation<PersistedUser, UserMeta>;
     function build(input: Partial<UserCreateInput>): User;
-    function includes<T extends readonly AssociationKey[]>(
-      input: T
-    ): Relation<Reset<PersistedUser, T>, UserMeta>;
+    function includes<T extends readonly AssociationKey[]>(input: T): Relation<PersistedUser, UserMeta>;
   }
   interface User {
     /* columns */
@@ -70,9 +68,6 @@ declare module "./user" {
       age?: SortOrder;
     };
   }
-  type Reset<S, T> = Omit<S, T[number]> & {
-    [K in T[number]]: User[K];
-  };
   type PersistedUser = User & {
     id: NonNullable<User["id"]>;
   };
@@ -93,9 +88,7 @@ declare module "./post" {
     function whereNot(input: Prisma.PostWhereInput): Relation<PersistedPost, PostMeta>;
     function whereRaw(query: string, bindings: any[] = []): Relation<PersistedPost, PostMeta>;
     function build(input: Partial<PostCreateInput>): Post;
-    function includes<T extends readonly AssociationKey[]>(
-      input: T
-    ): Relation<Reset<PersistedPost, T>, PostMeta>;
+    function includes<T extends readonly AssociationKey[]>(input: T): Relation<PersistedPost, PostMeta>;
   }
   interface Post {
     /* columns */
@@ -131,9 +124,6 @@ declare module "./post" {
       authorId?: SortOrder;
     };
   }
-  type Reset<S, T> = Omit<S, T[number]> & {
-    [K in T[number]]: Post[K];
-  };
   type PersistedPost = Post & {
     id: NonNullable<Post["id"]>;
   };
@@ -154,9 +144,7 @@ declare module "./setting" {
     function whereNot(input: Prisma.SettingWhereInput): Relation<PersistedSetting, SettingMeta>;
     function whereRaw(query: string, bindings: any[] = []): Relation<PersistedSetting, SettingMeta>;
     function build(input: Partial<SettingCreateInput>): Setting;
-    function includes<T extends readonly AssociationKey[]>(
-      input: T
-    ): Relation<Reset<PersistedSetting, T>, SettingMeta>;
+    function includes<T extends readonly AssociationKey[]>(input: T): Relation<PersistedSetting, SettingMeta>;
   }
   interface Setting {
     /* columns */
@@ -188,9 +176,6 @@ declare module "./setting" {
       createdAt?: SortOrder;
     };
   }
-  type Reset<S, T> = Omit<S, T[number]> & {
-    [K in T[number]]: Setting[K];
-  };
   type PersistedSetting = Setting & {
     id: NonNullable<Setting["id"]>;
   };

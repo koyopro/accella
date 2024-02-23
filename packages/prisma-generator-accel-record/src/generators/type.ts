@@ -118,9 +118,7 @@ declare module "./${model.name.toLowerCase()}" {
     function whereNot(input: Prisma.${model.name}WhereInput): Relation<Persisted${model.name}, ${model.name}Meta>;
     function whereRaw(query: string, bindings: any[] = []): Relation<Persisted${model.name}, ${model.name}Meta>;
     function build(input: Partial<${model.name}CreateInput>): ${model.name};
-    function includes<T extends readonly AssociationKey[]>(
-      input: T
-    ): Relation<Reset<Persisted${model.name}, T>, ${model.name}Meta>;
+    function includes<T extends readonly AssociationKey[]>(input: T): Relation<Persisted${model.name}, ${model.name}Meta>;
   }
   interface ${model.name} {
     /* columns */
@@ -136,9 +134,6 @@ ${columns}
     WhereInput: {${whereInputs}};
     OrderInput: {${orderInputs}};
   }
-  type Reset<S, T> = Omit<S, T[number]> & {
-    [K in T[number]]: ${model.name}[K];
-  };
   type Persisted${model.name} = ${model.name} & {
     id: NonNullable<${model.name}["id"]>;
   };
