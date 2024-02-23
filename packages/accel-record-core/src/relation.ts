@@ -86,7 +86,9 @@ export class Relation<T, M extends Meta> {
         newOptions["wheres"].push([key, "in", input[key]]);
       } else if (input[key] != null && typeof input[key] === "object") {
         for (const operator in input[key]) {
-          newOptions["wheres"].push([key, operator, input[key][operator]]);
+          newOptions["wheres"].push(
+            makeWhere(key, operator, input[key][operator])
+          );
         }
       } else {
         newOptions["wheres"].push({ [key]: input[key] });
@@ -102,7 +104,9 @@ export class Relation<T, M extends Meta> {
           if (operator === "in") {
             newOptions["wheres"].push([key, "not in", input[key][operator]]);
           } else {
-            newOptions["whereNots"].push([key, operator, input[key][operator]]);
+            newOptions["whereNots"].push(
+              makeWhere(key, operator, input[key][operator])
+            );
           }
         }
       } else {
@@ -177,3 +181,16 @@ export class Relation<T, M extends Meta> {
     };
   }
 }
+
+const makeWhere = (key: string, operator: string, value: string) => {
+  switch (operator) {
+    case "startsWith":
+      return [key, "like", `${value}%`];
+    case "endsWith":
+      return [key, "like", `%${value}`];
+    case "contains":
+      return [key, "like", `%${value}%`];
+    default:
+      return [key, operator, value];
+  }
+};

@@ -42,6 +42,18 @@ const getPropertyType = (field: DMMF.Field) => {
   }
 };
 
+const getFilterType = (type: string) => {
+  switch (type) {
+    case 'string':
+      return 'StringFilter';
+    case 'number':
+    case 'Date':
+      return 'Filter<number>';
+    default:
+      return 'undefined';
+  }
+}
+
 const hasAutoGnerateDefault = (field: DMMF.Field) => {
   if (field.default == undefined) return false;
   if (typeof field.default !== "object") return false;
@@ -51,16 +63,21 @@ const hasAutoGnerateDefault = (field: DMMF.Field) => {
 export const generateTypes = (options: GeneratorOptions) => {
   let data = `import { Model, Relation } from "accel-record-core";
 import type { CollectionProxy } from "accel-record-core";
-import { Prisma } from "@prisma/client";
 
 type SortOrder = "asc" | "desc";
 
-type Compare<T> = {
+type Filter<T> = {
   in?: T[];
   '<'?: T;
   '>'?: T;
   '<='?: T;
   '>='?: T;
+};
+
+type StringFilter = Filter<string> & {
+  contains?: string;
+  startsWith?: string;
+  endsWith?: string;
 };
 `;
   for (const model of options.dmmf.datamodel.models) {
@@ -95,7 +112,8 @@ type Compare<T> = {
         .filter((field) => field.relationName == undefined)
         .map((field) => {
           const type = getPropertyType(field);
-          return `\n      ${field.name}?: ${type} | ${type}[] | Compare<${type}> | null;`
+          const filter = getFilterType(type);
+          return `\n      ${field.name}?: ${type} | ${type}[] | ${filter} | null;`
         })
         .join("") + "\n    ";
     const orderInputs =
@@ -110,15 +128,15 @@ declare module "./${model.name.toLowerCase()}" {
     function create(input: ${model.name}CreateInput): Persisted${model.name};
     function first(): Persisted${model.name};
     function find(id: number): Persisted${model.name};
-    function findBy(input: Prisma.${model.name}WhereInput): Persisted${
+    function findBy(input: ${model.name}Meta['WhereInput']): Persisted${
       model.name
     } | undefined;
     function all(): Relation<Persisted${model.name}, ${model.name}Meta>;
     function order(column: keyof ${model.name}Meta["OrderInput"], direction?: "asc" | "desc"): Relation<Persisted${model.name}, ${model.name}Meta>;
     function offset(offset: number): Relation<Persisted${model.name}, ${model.name}Meta>;
     function limit(limit: number): Relation<Persisted${model.name}, ${model.name}Meta>;
-    function where(input: Prisma.${model.name}WhereInput): Relation<Persisted${model.name}, ${model.name}Meta>;
-    function whereNot(input: Prisma.${model.name}WhereInput): Relation<Persisted${model.name}, ${model.name}Meta>;
+    function where(input: ${model.name}Meta['WhereInput']): Relation<Persisted${model.name}, ${model.name}Meta>;
+    function whereNot(input: ${model.name}Meta['WhereInput']): Relation<Persisted${model.name}, ${model.name}Meta>;
     function whereRaw(query: string, bindings?: any[]): Relation<Persisted${model.name}, ${model.name}Meta>;
     function build(input: Partial<${model.name}CreateInput>): ${model.name};
     function includes<T extends readonly AssociationKey[]>(input: T): Relation<Persisted${model.name}, ${model.name}Meta>;

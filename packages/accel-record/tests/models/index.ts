@@ -6,11 +6,10 @@ import { Setting } from './setting.js'
 export { Setting } from './setting.js'
 import { Model, Relation } from "accel-record-core";
 import type { CollectionProxy } from "accel-record-core";
-import { Prisma } from "@prisma/client";
 
 type SortOrder = "asc" | "desc";
 
-type Compare<T> = {
+type Filter<T> = {
   in?: T[];
   '<'?: T;
   '>'?: T;
@@ -18,18 +17,24 @@ type Compare<T> = {
   '>='?: T;
 };
 
+type StringFilter = Filter<string> & {
+  contains?: string;
+  startsWith?: string;
+  endsWith?: string;
+};
+
 declare module "./user" {
   namespace User {
     function create(input: UserCreateInput): PersistedUser;
     function first(): PersistedUser;
     function find(id: number): PersistedUser;
-    function findBy(input: Prisma.UserWhereInput): PersistedUser | undefined;
+    function findBy(input: UserMeta['WhereInput']): PersistedUser | undefined;
     function all(): Relation<PersistedUser, UserMeta>;
     function order(column: keyof UserMeta["OrderInput"], direction?: "asc" | "desc"): Relation<PersistedUser, UserMeta>;
     function offset(offset: number): Relation<PersistedUser, UserMeta>;
     function limit(limit: number): Relation<PersistedUser, UserMeta>;
-    function where(input: Prisma.UserWhereInput): Relation<PersistedUser, UserMeta>;
-    function whereNot(input: Prisma.UserWhereInput): Relation<PersistedUser, UserMeta>;
+    function where(input: UserMeta['WhereInput']): Relation<PersistedUser, UserMeta>;
+    function whereNot(input: UserMeta['WhereInput']): Relation<PersistedUser, UserMeta>;
     function whereRaw(query: string, bindings?: any[]): Relation<PersistedUser, UserMeta>;
     function build(input: Partial<UserCreateInput>): User;
     function includes<T extends readonly AssociationKey[]>(input: T): Relation<PersistedUser, UserMeta>;
@@ -56,10 +61,10 @@ declare module "./user" {
   };
   type UserMeta = {
     WhereInput: {
-      id?: number | number[] | Compare<number> | null;
-      email?: string | string[] | Compare<string> | null;
-      name?: string | string[] | Compare<string> | null;
-      age?: number | number[] | Compare<number> | null;
+      id?: number | number[] | Filter<number> | null;
+      email?: string | string[] | StringFilter | null;
+      name?: string | string[] | StringFilter | null;
+      age?: number | number[] | Filter<number> | null;
     };
     OrderInput: {
       id?: SortOrder;
@@ -79,13 +84,13 @@ declare module "./post" {
     function create(input: PostCreateInput): PersistedPost;
     function first(): PersistedPost;
     function find(id: number): PersistedPost;
-    function findBy(input: Prisma.PostWhereInput): PersistedPost | undefined;
+    function findBy(input: PostMeta['WhereInput']): PersistedPost | undefined;
     function all(): Relation<PersistedPost, PostMeta>;
     function order(column: keyof PostMeta["OrderInput"], direction?: "asc" | "desc"): Relation<PersistedPost, PostMeta>;
     function offset(offset: number): Relation<PersistedPost, PostMeta>;
     function limit(limit: number): Relation<PersistedPost, PostMeta>;
-    function where(input: Prisma.PostWhereInput): Relation<PersistedPost, PostMeta>;
-    function whereNot(input: Prisma.PostWhereInput): Relation<PersistedPost, PostMeta>;
+    function where(input: PostMeta['WhereInput']): Relation<PersistedPost, PostMeta>;
+    function whereNot(input: PostMeta['WhereInput']): Relation<PersistedPost, PostMeta>;
     function whereRaw(query: string, bindings?: any[]): Relation<PersistedPost, PostMeta>;
     function build(input: Partial<PostCreateInput>): Post;
     function includes<T extends readonly AssociationKey[]>(input: T): Relation<PersistedPost, PostMeta>;
@@ -110,11 +115,11 @@ declare module "./post" {
   };
   type PostMeta = {
     WhereInput: {
-      id?: number | number[] | Compare<number> | null;
-      title?: string | string[] | Compare<string> | null;
-      content?: string | string[] | Compare<string> | null;
-      published?: boolean | boolean[] | Compare<boolean> | null;
-      authorId?: number | number[] | Compare<number> | null;
+      id?: number | number[] | Filter<number> | null;
+      title?: string | string[] | StringFilter | null;
+      content?: string | string[] | StringFilter | null;
+      published?: boolean | boolean[] | undefined | null;
+      authorId?: number | number[] | Filter<number> | null;
     };
     OrderInput: {
       id?: SortOrder;
@@ -135,13 +140,13 @@ declare module "./setting" {
     function create(input: SettingCreateInput): PersistedSetting;
     function first(): PersistedSetting;
     function find(id: number): PersistedSetting;
-    function findBy(input: Prisma.SettingWhereInput): PersistedSetting | undefined;
+    function findBy(input: SettingMeta['WhereInput']): PersistedSetting | undefined;
     function all(): Relation<PersistedSetting, SettingMeta>;
     function order(column: keyof SettingMeta["OrderInput"], direction?: "asc" | "desc"): Relation<PersistedSetting, SettingMeta>;
     function offset(offset: number): Relation<PersistedSetting, SettingMeta>;
     function limit(limit: number): Relation<PersistedSetting, SettingMeta>;
-    function where(input: Prisma.SettingWhereInput): Relation<PersistedSetting, SettingMeta>;
-    function whereNot(input: Prisma.SettingWhereInput): Relation<PersistedSetting, SettingMeta>;
+    function where(input: SettingMeta['WhereInput']): Relation<PersistedSetting, SettingMeta>;
+    function whereNot(input: SettingMeta['WhereInput']): Relation<PersistedSetting, SettingMeta>;
     function whereRaw(query: string, bindings?: any[]): Relation<PersistedSetting, SettingMeta>;
     function build(input: Partial<SettingCreateInput>): Setting;
     function includes<T extends readonly AssociationKey[]>(input: T): Relation<PersistedSetting, SettingMeta>;
@@ -164,10 +169,10 @@ declare module "./setting" {
   };
   type SettingMeta = {
     WhereInput: {
-      id?: number | number[] | Compare<number> | null;
-      userId?: number | number[] | Compare<number> | null;
-      threshold?: number | number[] | Compare<number> | null;
-      createdAt?: Date | Date[] | Compare<Date> | null;
+      id?: number | number[] | Filter<number> | null;
+      userId?: number | number[] | Filter<number> | null;
+      threshold?: number | number[] | Filter<number> | null;
+      createdAt?: Date | Date[] | Filter<number> | null;
     };
     OrderInput: {
       id?: SortOrder;
