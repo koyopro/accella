@@ -26,7 +26,7 @@ export class Persistence {
 
   destroy<T extends Model>(this: T): boolean {
     if (this.isReadonly) throw new Error("Readonly record");
-    for (const [key] of Object.entries(this.assosiations)) {
+    for (const [key] of Object.entries(this.associations)) {
       const value = this[key as keyof T] as any;
       if (value instanceof CollectionProxy) {
         for (const instance of value.toArray()) {
@@ -65,7 +65,7 @@ export class Persistence {
       .toSQL();
     const id = rpcClient(query);
     (this as any).id = id;
-    for (const [key, { foreignKey }] of Object.entries(this.assosiations)) {
+    for (const [key, { foreignKey }] of Object.entries(this.associations)) {
       const value = this[key as keyof T];
       if (value instanceof CollectionProxy) {
         for (const instance of value.toArray()) {
@@ -89,7 +89,7 @@ export class Persistence {
     const q = this.client.orderBy("id", "desc").limit(1).toSQL();
     const [record] = rpcClient({ ...q, type: "query" });
     Object.assign(this, record);
-    for (const [key, { klass, foreignKey, primaryKey }] of Object.entries(this.assosiations)) {
+    for (const [key, { klass, foreignKey, primaryKey }] of Object.entries(this.associations)) {
       const value = this[key as keyof T];
       if (value instanceof CollectionProxy) {
         for (const instance of value) {

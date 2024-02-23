@@ -90,8 +90,8 @@ describe("User#tojson()", () => {
     expect(User.columnsForPersist).toEqual(["id"]);
   });
 
-  test("assosiations", () => {
-    expect(User.assosiations.posts).toEqual({
+  test("associations", () => {
+    expect(User.associations.posts).toEqual({
       klass: "Post",
       table: "post",
       primaryKey: "id",

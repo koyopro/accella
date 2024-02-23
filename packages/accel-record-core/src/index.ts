@@ -44,21 +44,21 @@ export class Model extends classIncludes(
     const klass = this;
     const proxy = new Proxy(instance, {
       get(target, prop, receiver) {
-        const assosiation = klass.assosiations[prop as any];
-        if (assosiation?.isHasOne) {
-          return (target[prop] ||= Models[assosiation.klass].findBy({
-            [assosiation.foreignKey]: target[assosiation.primaryKey],
+        const association = klass.associations[prop as any];
+        if (association?.isHasOne) {
+          return (target[prop] ||= Models[association.klass].findBy({
+            [association.foreignKey]: target[association.primaryKey],
           }));
         }
         return Reflect.get(...arguments);
       },
       set(target, prop, value, receiver) {
-        const assosiation = klass.assosiations[prop as any];
-        if (assosiation?.isHasOne && target[assosiation.primaryKey]) {
+        const association = klass.associations[prop as any];
+        if (association?.isHasOne && target[association.primaryKey]) {
           if (value == undefined) {
             target[prop]?.destroy();
           } else {
-            value[assosiation.foreignKey] = target[assosiation.primaryKey];
+            value[association.foreignKey] = target[association.primaryKey];
             value.save();
           }
         }
@@ -66,8 +66,8 @@ export class Model extends classIncludes(
         return true;
       },
     });
-    for (const [key, assosiation] of Object.entries(this.assosiations)) {
-      const { klass, foreignKey, primaryKey, field } = assosiation;
+    for (const [key, association] of Object.entries(this.associations)) {
+      const { klass, foreignKey, primaryKey, field } = association;
       if (!field.isList && key in input) {
         proxy[key] = input[key];
       } else if (field.isList || key in input) {
@@ -94,7 +94,7 @@ export class Model extends classIncludes(
 
   static includes<T extends readonly any[]>(input: T): Relation<any, any> {
     const includes = input.map((key) => {
-      return { name: key, ...this.assosiations[key] };
+      return { name: key, ...this.associations[key] };
     });
 
     return new Relation(this, { includes });

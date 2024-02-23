@@ -5,7 +5,7 @@ import { User } from "./user";
 
 describe("Setting", () => {
   test(".associations()", () => {
-    expect(Setting.assosiations.user).toEqual({
+    expect(Setting.associations.user).toEqual({
       klass: "User",
       foreignKey: "",
       primaryKey: "",

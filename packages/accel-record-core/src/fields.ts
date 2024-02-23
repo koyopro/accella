@@ -128,7 +128,7 @@ export class Fields {
       .map((field) => field.name);
   }
 
-  static get assosiations(): Record<string, Association> {
+  static get associations(): Record<string, Association> {
     return this.fields
       .filter((f) => f.relationName != undefined)
       .reduce((acc, field) => {
@@ -163,8 +163,8 @@ export class Fields {
     return (this.constructor as any).columnsForPersist;
   }
 
-  get assosiations(): Record<string, Association> {
-    return (this.constructor as any).assosiations;
+  get associations(): Record<string, Association> {
+    return (this.constructor as any).associations;
   }
 
   get primaryKeys(): string[] {
