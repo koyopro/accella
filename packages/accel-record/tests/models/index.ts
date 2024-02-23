@@ -30,7 +30,7 @@ declare module "./user" {
     function limit(limit: number): Relation<PersistedUser, UserMeta>;
     function where(input: Prisma.UserWhereInput): Relation<PersistedUser, UserMeta>;
     function whereNot(input: Prisma.UserWhereInput): Relation<PersistedUser, UserMeta>;
-    function whereRaw(query: string, bindings: any[] = []): Relation<PersistedUser, UserMeta>;
+    function whereRaw(query: string, bindings?: any[]): Relation<PersistedUser, UserMeta>;
     function build(input: Partial<UserCreateInput>): User;
     function includes<T extends readonly AssociationKey[]>(input: T): Relation<PersistedUser, UserMeta>;
   }
@@ -40,7 +40,7 @@ declare module "./user" {
     email: string;
     name: string | undefined;
     age: number | undefined;
-    posts: CollectionProxy<Post, User>;
+    posts: CollectionProxy<Post, UserMeta>;
     setting: Setting | undefined;
 
     isPersisted<T extends Model>(this: T): this is PersistedUser;
@@ -86,7 +86,7 @@ declare module "./post" {
     function limit(limit: number): Relation<PersistedPost, PostMeta>;
     function where(input: Prisma.PostWhereInput): Relation<PersistedPost, PostMeta>;
     function whereNot(input: Prisma.PostWhereInput): Relation<PersistedPost, PostMeta>;
-    function whereRaw(query: string, bindings: any[] = []): Relation<PersistedPost, PostMeta>;
+    function whereRaw(query: string, bindings?: any[]): Relation<PersistedPost, PostMeta>;
     function build(input: Partial<PostCreateInput>): Post;
     function includes<T extends readonly AssociationKey[]>(input: T): Relation<PersistedPost, PostMeta>;
   }
@@ -142,7 +142,7 @@ declare module "./setting" {
     function limit(limit: number): Relation<PersistedSetting, SettingMeta>;
     function where(input: Prisma.SettingWhereInput): Relation<PersistedSetting, SettingMeta>;
     function whereNot(input: Prisma.SettingWhereInput): Relation<PersistedSetting, SettingMeta>;
-    function whereRaw(query: string, bindings: any[] = []): Relation<PersistedSetting, SettingMeta>;
+    function whereRaw(query: string, bindings?: any[]): Relation<PersistedSetting, SettingMeta>;
     function build(input: Partial<SettingCreateInput>): Setting;
     function includes<T extends readonly AssociationKey[]>(input: T): Relation<PersistedSetting, SettingMeta>;
   }

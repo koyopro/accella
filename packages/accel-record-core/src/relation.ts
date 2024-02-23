@@ -1,5 +1,5 @@
-import { knex, rpcClient } from "./database.js";
-import { type Model, type Meta, Models } from "./index.js";
+import { rpcClient } from "./database.js";
+import { Models, type Meta, type Model } from "./index.js";
 
 type Options = {
   wheres: any[];
@@ -16,12 +16,12 @@ type Options = {
   }[];
 };
 
-export class Relation<T extends typeof Model, M extends Meta> {
+export class Relation<T, M extends Meta> {
   private counter = 0;
   private client: any;
   private options: Options;
   constructor(
-    private model: T,
+    private model: typeof Model,
     options: Partial<Options> = {},
     private cache: any[] | undefined = undefined
   ) {
@@ -44,7 +44,10 @@ export class Relation<T extends typeof Model, M extends Meta> {
   }
   first(): T | undefined {
     if (this.cache) return this.cache[0];
-    return new Relation(this.model, { ...this.options, limit: 1 }).get()[0];
+    return new Relation<T, M>(this.model, {
+      ...this.options,
+      limit: 1,
+    }).get()[0];
   }
   count(): number {
     const query = this.query().count("id").toSQL();

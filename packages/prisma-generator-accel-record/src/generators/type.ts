@@ -82,7 +82,7 @@ type Compare<T> = {
         const optional = hasAutoGnerateDefault(field) || !field.isRequired;
         const type = getPropertyType(field);
         if (field.relationName && field.isList) {
-          return `    ${field.name}: CollectionProxy<${field.type}, ${model.name}>;`;
+          return `    ${field.name}: CollectionProxy<${field.type}, ${model.name}Meta>;`;
         }
         return `    ${field.name}: ${type}${field.isList ? "[]" : ""}${
           optional ? " | undefined" : ""
@@ -116,7 +116,7 @@ declare module "./${model.name.toLowerCase()}" {
     function limit(limit: number): Relation<Persisted${model.name}, ${model.name}Meta>;
     function where(input: Prisma.${model.name}WhereInput): Relation<Persisted${model.name}, ${model.name}Meta>;
     function whereNot(input: Prisma.${model.name}WhereInput): Relation<Persisted${model.name}, ${model.name}Meta>;
-    function whereRaw(query: string, bindings: any[] = []): Relation<Persisted${model.name}, ${model.name}Meta>;
+    function whereRaw(query: string, bindings?: any[]): Relation<Persisted${model.name}, ${model.name}Meta>;
     function build(input: Partial<${model.name}CreateInput>): ${model.name};
     function includes<T extends readonly AssociationKey[]>(input: T): Relation<Persisted${model.name}, ${model.name}Meta>;
   }
