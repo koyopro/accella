@@ -42,6 +42,11 @@ export class Relation<T, M extends Meta> {
   toArray(): T[] {
     return (this.cache ||= this.get());
   }
+  map<F extends (value: T, index: number, array: T[]) => any>(
+    func: F
+  ): ReturnType<F>[] {
+    return this.toArray().map((row, i, array) => func(row, i, array));
+  }
   first(): T | undefined {
     if (this.cache) return this.cache[0];
     return new Relation<T, M>(this.model, {
@@ -78,7 +83,7 @@ export class Relation<T, M extends Meta> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key in input) {
       if (Array.isArray(input[key])) {
-        newOptions["wheres"].push([key, 'in', input[key]]);
+        newOptions["wheres"].push([key, "in", input[key]]);
       } else if (input[key] != null && typeof input[key] === "object") {
         for (const operator in input[key]) {
           newOptions["wheres"].push([key, operator, input[key][operator]]);

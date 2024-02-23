@@ -7,6 +7,13 @@ describe("Relation", () => {
     expect(User.all().toArray()).toHaveLength(2);
   });
 
+  test("#map()", () => {
+    $user.create({ name: "hoge" });
+    $user.create({ name: "fuga" });
+    const names = User.all().map((user) => user.name);
+    expect(names).toEqual(["hoge", "fuga"]);
+  })
+
   test("#first()", () => {
     $user.create({ name: "hoge" });
     $user.create({ name: "fuga" });
