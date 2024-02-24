@@ -35,4 +35,30 @@ export class CollectionProxy<T extends Model, S extends Meta> extends Relation<
     this.reset();
     return ret;
   }
+
+  delete(...records: T[]) {
+    const ret: T[] = []
+    const array = this.toArray();
+    for (const record of records) {
+      if (array.find((r) => r.equals(record))) {
+        record.delete();
+        ret.push(record);
+      }
+    }
+    this.reset();
+    return ret;
+  }
+
+  destroy(...records: T[]) {
+    const ret: T[] = []
+    const array = this.toArray();
+    for (const record of records) {
+      if (array.find((r) => r.equals(record))) {
+        record.destroy();
+        ret.push(record);
+      }
+    }
+    this.reset();
+    return ret;
+  }
 }

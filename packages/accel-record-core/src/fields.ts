@@ -116,7 +116,11 @@ export class Fields {
   }
 
   static get primaryKeys() {
-    return this.model?.primaryKey?.fields ?? [];
+    return (
+      this.model?.primaryKey?.fields ??
+      this.model?.fields.filter((f) => f.isId).map((f) => f.name) ??
+      []
+    );
   }
 
   static get columnsForPersist() {
