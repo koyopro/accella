@@ -27,3 +27,7 @@ export const getPrismaClientConfig = () => {
 export const rpcClient = SyncRpc(configPath, {
   prismaClientConfig: getPrismaClientConfig(),
 });
+
+export const stopRpcClient = () => {
+  SyncRpc.stop();
+};

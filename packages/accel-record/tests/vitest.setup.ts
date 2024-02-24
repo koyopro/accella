@@ -1,7 +1,7 @@
+import { Model, getPrismaClientConfig, stopRpcClient } from "accel-record-core";
 import { execSync } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
-import { Model, getPrismaClientConfig } from "accel-record-core";
 
 // TODO: indexからimportしたい(テストが通らなくなる)
 import "./models/post.js";
@@ -23,4 +23,8 @@ beforeEach(async () => {
 
 afterEach(async () => {
   Model.rollbackTransaction();
+});
+
+afterAll(async () => {
+  stopRpcClient();
 });
