@@ -5,10 +5,12 @@ import { Fields } from "./fields";
 import { Persistence } from "./persistence";
 import { Query } from "./query";
 import { Relation } from "./relation.js";
+import { Transaction } from "./transaction";
 import { classIncludes } from "./utils";
 
 export { CollectionProxy } from "./associations/collectionProxy.js";
 export { Relation } from "./relation.js";
+export { Rollback } from "./transaction";
 
 type SortOrder = "asc" | "desc";
 export type Meta = {
@@ -27,7 +29,8 @@ export class Model extends classIncludes(
   Connection,
   Fields,
   Persistence,
-  Query
+  Query,
+  Transaction
 ) {
   static build(input: any) {
     const instance: any = new this();

@@ -1,12 +1,12 @@
-import { rpcClient } from "accel-record-core/src/database";
 import { execSync } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
+import { Model } from "accel-record-core";
 
 // TODO: indexからimportしたい(テストが通らなくなる)
-import './models/user.js'
-import './models/post.js'
-import './models/setting.js'
+import "./models/post.js";
+import "./models/setting.js";
+import "./models/user.js";
 
 beforeAll(() => {
   process.env.DATABASE_URL = `file:./test${process.env.VITEST_POOL_ID}.db`;
@@ -18,9 +18,9 @@ beforeAll(() => {
 });
 
 beforeEach(async () => {
-  rpcClient({ sql: "BEGIN TRANSACTION test_transaction", bindings: [] });
+  Model.startTransaction();
 });
 
 afterEach(async () => {
-  rpcClient({ sql: "ROLLBACK TRANSACTION test_transaction", bindings: [] });
+  Model.rollbackTransaction();
 });
