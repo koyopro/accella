@@ -19,7 +19,7 @@ type Options = {
 export class Relation<T, M extends Meta> {
   private counter = 0;
   private client: any;
-  private options: Options;
+  protected options: Options;
   constructor(
     private model: typeof Model,
     options: Partial<Options> = {},
@@ -163,6 +163,11 @@ export class Relation<T, M extends Meta> {
       }
     }
     return rows.map((row: any) => this.model.build(row));
+  }
+  reset() {
+    this.cache = undefined;
+    this.counter = 0;
+    return this;
   }
   [Symbol.iterator]() {
     const that = this;

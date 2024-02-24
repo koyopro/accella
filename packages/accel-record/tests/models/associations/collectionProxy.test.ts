@@ -27,4 +27,22 @@ describe("#CollectionProxy()", () => {
     expect(u1.posts.count()).toBe(2);
     expect(u2.posts.count()).toBe(1);
   });
+
+  test("push()", () => {
+    const u = $user.create({});
+    expect(u.posts.toArray()).toHaveLength(0);
+    const p = $post.build({ authorId: undefined });
+    const posts = u.posts.push(p);
+    expect(posts.toArray()).toHaveLength(1);
+  });
+
+  test("concat()", () => {
+    const u = $user.create({
+      posts: [$post.build({ title: "post1", authorId: undefined })],
+    });
+    expect(u.posts.toArray()).toHaveLength(1);
+    u.posts.concat([$post.build({ title: "post2", authorId: undefined })]);
+    expect(u.posts.toArray()).toHaveLength(2);
+    expect(u.posts.map((p) => p.title)).toEqual(["post1", "post2"]);
+  });
 });
