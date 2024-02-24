@@ -61,6 +61,17 @@ export class Model extends classIncludes(
     return new Relation(this, { includes });
   }
 
+  equals<T extends Model>(this: T, other: T): boolean {
+    if (this.constructor.name !== other.constructor.name) {
+      return false;
+    }
+    for (const key of this.primaryKeys as (keyof T)[]) {
+      if (this[key] == undefined || other[key] == undefined) return false;
+      if (this[key] !== other[key]) return false;
+    }
+    return true;
+  }
+
   serialize(): Record<string, unknown> {
     const ret: Record<string, unknown> = {
       _className: this.constructor.name,

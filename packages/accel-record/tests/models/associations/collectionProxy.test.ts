@@ -27,4 +27,74 @@ describe("#CollectionProxy()", () => {
     expect(u1.posts.count()).toBe(2);
     expect(u2.posts.count()).toBe(1);
   });
+
+  test("push()", () => {
+    const u = $user.create({});
+    expect(u.posts.toArray()).toHaveLength(0);
+    const p = $post.build({ authorId: undefined });
+    const posts = u.posts.push(p);
+    expect(posts.toArray()).toHaveLength(1);
+  });
+
+  test("concat()", () => {
+    const u = $user.create({
+      posts: [$post.build({ title: "post1", authorId: undefined })],
+    });
+    expect(u.posts.toArray()).toHaveLength(1);
+    u.posts.concat([$post.build({ title: "post2", authorId: undefined })]);
+    expect(u.posts.toArray()).toHaveLength(2);
+    expect(u.posts.map((p) => p.title)).toEqual(["post1", "post2"]);
+  });
+
+  test("#deleteAll()", () => {
+    const u = $user.create({
+      posts: [
+        $post.build({ title: "post1", authorId: undefined }),
+        $post.build({ title: "post2", authorId: undefined }),
+      ],
+    });
+    expect(u.posts.toArray()).toHaveLength(2);
+    expect(u.posts.deleteAll()).toHaveLength(2);
+    expect(u.posts.toArray()).toHaveLength(0);
+  });
+
+  test("#destroyAll()", () => {
+    const u = $user.create({
+      posts: [
+        $post.build({ title: "post1", authorId: undefined }),
+        $post.build({ title: "post2", authorId: undefined }),
+      ],
+    });
+    expect(u.posts.toArray()).toHaveLength(2);
+    expect(u.posts.destroyAll()).toHaveLength(2);
+    expect(u.posts.toArray()).toHaveLength(0);
+  });
+
+  test("#delete()", () => {
+    const u = $user.create({});
+    const p1 = $post.create({ title: "post1", authorId: u.id });
+    const p2 = $post.create({ title: "post2", authorId: u.id });
+    expect(u.posts.toArray()).toHaveLength(2);
+    expect(u.posts.delete(p1)).toHaveLength(1);
+    expect(u.posts.toArray()).toHaveLength(1);
+  });
+
+  test("#destroy()", () => {
+    const u = $user.create({});
+    const p1 = $post.create({ title: "post1", authorId: u.id });
+    const p2 = $post.create({ title: "post2", authorId: u.id });
+    expect(u.posts.toArray()).toHaveLength(2);
+    expect(u.posts.destroy(p1)).toHaveLength(1);
+    expect(u.posts.toArray()).toHaveLength(1);
+  });
+
+  test("#replace()", () => {
+    const u = $user.create({});
+    const p1 = $post.create({ title: "post1", authorId: u.id });
+    const p2 = $post.create({ title: "post2", authorId: u.id });
+    expect(u.posts.toArray()).toHaveLength(2);
+    const p3 = $post.build({ title: "post3", authorId: undefined });
+    u.posts.replace([p2, p3]);
+    expect(u.posts.map((p) => p.title)).toEqual(["post2", "post3"]);
+  });
 });
