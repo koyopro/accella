@@ -11,10 +11,10 @@ export class CollectionProxy<T extends Model, S extends Meta> extends Relation<
 
   concat(records: T | T[]) {
     const _records = Array.isArray(records) ? records : [records];
-    _records.forEach((record) => {
+    for (const record of _records) {
       Object.assign(record, this.options.wheres[0]);
       record.save();
-    });
+    }
     return this.reset();
   }
 
@@ -37,7 +37,7 @@ export class CollectionProxy<T extends Model, S extends Meta> extends Relation<
   }
 
   delete(...records: T[]) {
-    const ret: T[] = []
+    const ret: T[] = [];
     const array = this.toArray();
     for (const record of records) {
       if (array.find((r) => r.equals(record))) {
@@ -50,7 +50,7 @@ export class CollectionProxy<T extends Model, S extends Meta> extends Relation<
   }
 
   destroy(...records: T[]) {
-    const ret: T[] = []
+    const ret: T[] = [];
     const array = this.toArray();
     for (const record of records) {
       if (array.find((r) => r.equals(record))) {

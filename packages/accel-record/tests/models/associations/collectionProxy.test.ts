@@ -95,6 +95,6 @@ describe("#CollectionProxy()", () => {
     expect(u.posts.toArray()).toHaveLength(2);
     const p3 = $post.build({ title: "post3", authorId: undefined });
     u.posts.replace([p2, p3]);
-    expect(u.posts.map(p => p.title)).toEqual(["post2", "post3"]);
+    expect(u.posts.map((p) => p.title)).toEqual(["post2", "post3"]);
   });
 });
