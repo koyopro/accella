@@ -9,8 +9,9 @@ import { Transaction } from "./transaction";
 import { classIncludes } from "./utils";
 
 export { CollectionProxy } from "./associations/collectionProxy.js";
+export { getPrismaClientConfig } from "./database.js";
 export { Relation } from "./relation.js";
-export { Rollback } from "./transaction";
+export { Rollback } from "./transaction.js";
 
 type SortOrder = "asc" | "desc";
 export type Meta = {

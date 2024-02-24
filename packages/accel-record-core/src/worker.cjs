@@ -1,9 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
 
-process.env.DATABASE_URL = `file:./test${process.env.VITEST_POOL_ID}.db`;
-
-const prisma = new PrismaClient();
-
 const DEBUG = false;
 
 const output = (...args) => {
@@ -17,6 +13,7 @@ const logger = {
 };
 
 function init(connection) {
+  const prisma = new PrismaClient(connection.prismaClientConfig ?? {});
   return function (query) {
     const { type, sql, bindings } = query;
     if (type == "query") {
