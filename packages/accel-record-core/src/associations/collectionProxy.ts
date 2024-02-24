@@ -17,4 +17,22 @@ export class CollectionProxy<T extends Model, S extends Meta> extends Relation<
     });
     return this.reset();
   }
+
+  deleteAll() {
+    const ret = this.toArray();
+    for (const record of ret) {
+      record.delete();
+    }
+    this.reset();
+    return ret;
+  }
+
+  destroyAll() {
+    const ret = this.toArray();
+    for (const record of ret) {
+      record.destroy();
+    }
+    this.reset();
+    return ret;
+  }
 }

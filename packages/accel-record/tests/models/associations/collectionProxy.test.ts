@@ -45,4 +45,28 @@ describe("#CollectionProxy()", () => {
     expect(u.posts.toArray()).toHaveLength(2);
     expect(u.posts.map((p) => p.title)).toEqual(["post1", "post2"]);
   });
+
+  test("#deleteAll()", () => {
+    const u = $user.create({
+      posts: [
+        $post.build({ title: "post1", authorId: undefined }),
+        $post.build({ title: "post2", authorId: undefined }),
+      ],
+    });
+    expect(u.posts.toArray()).toHaveLength(2);
+    expect(u.posts.deleteAll()).toHaveLength(2);
+    expect(u.posts.toArray()).toHaveLength(0);
+  });
+
+  test("#destroyAll()", () => {
+    const u = $user.create({
+      posts: [
+        $post.build({ title: "post1", authorId: undefined }),
+        $post.build({ title: "post2", authorId: undefined }),
+      ],
+    });
+    expect(u.posts.toArray()).toHaveLength(2);
+    expect(u.posts.destroyAll()).toHaveLength(2);
+    expect(u.posts.toArray()).toHaveLength(0);
+  });
 });
