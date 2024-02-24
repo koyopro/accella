@@ -78,6 +78,7 @@ type StringFilter = Filter<string> & {
   contains?: string;
   startsWith?: string;
   endsWith?: string;
+  like?: string;
 };
 `;
   for (const model of options.dmmf.datamodel.models) {

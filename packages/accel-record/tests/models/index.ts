@@ -21,6 +21,7 @@ type StringFilter = Filter<string> & {
   contains?: string;
   startsWith?: string;
   endsWith?: string;
+  like?: string;
 };
 
 declare module "./user" {

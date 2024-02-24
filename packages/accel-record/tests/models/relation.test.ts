@@ -97,6 +97,7 @@ describe("Relation", () => {
     expect(subject({ name: { startsWith: "ho" } })).toStrictEqual(["hoge"]);
     expect(subject({ name: { endsWith: "ga" } })).toStrictEqual(["fuga"]);
     expect(subject({ name: { contains: "og" } })).toStrictEqual(["hoge"]);
+    expect(subject({ name: { like: "%ug%" } })).toStrictEqual(["fuga"]);
   });
 
   test("#where() in", () => {
