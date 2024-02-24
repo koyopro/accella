@@ -1,6 +1,7 @@
-import { Model, registerModel } from "accel-record-core";
+import { registerModel } from "accel-record-core";
+import { ApplicationRecord } from "./applicationRecord";
 
-export class User extends Model {
+export class User extends ApplicationRecord {
   static table = "user" as const;
 }
 
