@@ -87,4 +87,14 @@ describe("#CollectionProxy()", () => {
     expect(u.posts.destroy(p1)).toHaveLength(1);
     expect(u.posts.toArray()).toHaveLength(1);
   });
+
+  test("#replace()", () => {
+    const u = $user.create({});
+    const p1 = $post.create({ title: "post1", authorId: u.id });
+    const p2 = $post.create({ title: "post2", authorId: u.id });
+    expect(u.posts.toArray()).toHaveLength(2);
+    const p3 = $post.build({ title: "post3", authorId: undefined });
+    u.posts.replace([p2, p3]);
+    expect(u.posts.map(p => p.title)).toEqual(["post2", "post3"]);
+  });
 });
