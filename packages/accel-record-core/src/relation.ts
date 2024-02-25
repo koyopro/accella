@@ -23,7 +23,7 @@ export class Relation<T, M extends Meta> {
   constructor(
     private model: typeof Model,
     options: Partial<Options> = {},
-    private cache: any[] | undefined = undefined
+    private cache: T[] | undefined = undefined
   ) {
     this.model = model;
     this.client = model.client;
@@ -174,14 +174,13 @@ export class Relation<T, M extends Meta> {
     return this;
   }
   [Symbol.iterator]() {
-    const that = this;
+    const _this = this;
     return {
       next(): { value: T; done: boolean } {
-        if (!that.cache) {
-          that.cache = that.get();
-        }
-        const done = that.counter === that.cache!.length;
-        const value = done ? undefined : that.cache![that.counter++];
+        const done = _this.counter === _this.toArray().length;
+        const value = (
+          done ? undefined : _this.toArray()![_this.counter++]
+        ) as T;
         return { value, done };
       },
       return() {
