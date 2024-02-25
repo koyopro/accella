@@ -7,8 +7,8 @@ describe("Setting", () => {
   test(".associations()", () => {
     expect(Setting.associations.user).toEqual({
       klass: "User",
-      foreignKey: "",
-      primaryKey: "",
+      foreignKey: "userId",
+      primaryKey: "id",
       table: "user",
       field: expect.anything(),
     });
@@ -50,7 +50,7 @@ describe("Setting", () => {
     expect(user.setting?.threshold).toBeCloseTo(0.5);
   });
 
-  test('set to null', () => {
+  test("set to null", () => {
     const user = $user.create({ setting: $setting.build({ threshold: 0.5 }) });
     expect(Setting.count()).toBe(1);
     user.setting = undefined;
