@@ -44,15 +44,15 @@ const getPropertyType = (field: DMMF.Field) => {
 
 const getFilterType = (type: string) => {
   switch (type) {
-    case 'string':
-      return 'StringFilter';
-    case 'number':
-    case 'Date':
-      return 'Filter<number>';
+    case "string":
+      return "StringFilter";
+    case "number":
+    case "Date":
+      return "Filter<number>";
     default:
-      return 'undefined';
+      return "undefined";
   }
-}
+};
 
 const hasAutoGnerateDefault = (field: DMMF.Field) => {
   if (field.default == undefined) return false;
@@ -83,8 +83,12 @@ type StringFilter = Filter<string> & {
 `;
   for (const model of options.dmmf.datamodel.models) {
     const reject = (f: DMMF.Field) => f.relationFromFields?.[0] == undefined;
+    const relationFromFields = model.fields
+      .flatMap((f) => f.relationFromFields)
+      .filter((f) => f != undefined);
     const columns = model.fields
       .filter(reject)
+      .filter((f) => !relationFromFields.includes(f.name))
       .map((field) => {
         const optional =
           field.hasDefaultValue || !field.isRequired || field.isList;
@@ -94,6 +98,16 @@ type StringFilter = Filter<string> & {
         };`;
       })
       .join("\n");
+    const associationColumns = model.fields
+      .filter((f) => f.relationName && (f.relationFromFields?.length ?? 0) > 0)
+      .map((f) => {
+        const foreignKeys = model.fields
+          .filter((g) => f.relationFromFields?.includes(g.name))
+          .map((g) => `${g.name}: ${getPropertyType(g)}`)
+          .join(", ");
+        return ` & ({ ${f.name}: ${f.type} } | { ${foreignKeys} })`;
+      })
+      .join("");
     const columnDefines = model.fields
       .map((field) => {
         const optional = hasAutoGnerateDefault(field) || !field.isRequired;
@@ -113,7 +127,7 @@ type StringFilter = Filter<string> & {
         .map((field) => {
           const type = getPropertyType(field);
           const filter = getFilterType(type);
-          return `\n      ${field.name}?: ${type} | ${type}[] | ${filter} | null;`
+          return `\n      ${field.name}?: ${type} | ${type}[] | ${filter} | null;`;
         })
         .join("") + "\n    ";
     const orderInputs =
@@ -150,7 +164,7 @@ ${columnDefines}
   }
   type ${model.name}CreateInput = {
 ${columns}
-  };
+  }${associationColumns};
   type ${model.name}Meta = {
     WhereInput: {${whereInputs}};
     OrderInput: {${orderInputs}};

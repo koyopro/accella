@@ -113,8 +113,7 @@ declare module "./post" {
     title: string;
     content?: string;
     published?: boolean;
-    authorId: number;
-  };
+  } & ({ author: User } | { authorId: number });
   type PostMeta = {
     WhereInput: {
       id?: number | number[] | Filter<number> | null;
@@ -166,10 +165,9 @@ declare module "./setting" {
   }
   type SettingCreateInput = {
     id?: number;
-    userId: number;
     threshold?: number;
     createdAt?: Date;
-  };
+  } & ({ user: User } | { userId: number });
   type SettingMeta = {
     WhereInput: {
       id?: number | number[] | Filter<number> | null;

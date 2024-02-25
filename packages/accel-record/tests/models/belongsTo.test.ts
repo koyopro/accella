@@ -10,4 +10,17 @@ describe("BelongsTo", () => {
     const post = $post.create({ authorId: user.id });
     expect(post.author.equals(user)).toBe(true);
   });
+
+  test("set", () => {
+    const user = $user.create({ name: "hoge" });
+
+    const setting = $setting.build({ userId: undefined });
+    setting.user = user;
+    setting.save();
+    expect(setting.userId).toBe(user.id);
+
+    const post = $post.build({ authorId: undefined });
+    post.update({ author: user });
+    expect(post.authorId).toBe(user.id);
+  });
 });

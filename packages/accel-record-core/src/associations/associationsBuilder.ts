@@ -34,6 +34,9 @@ export class AssociationsBuilder {
             value.save();
           }
         }
+        if (association?.isBelongsTo) {
+          target[association.foreignKey] = value[association.primaryKey];
+        }
         target[prop] = value;
         return true;
       },
