@@ -95,7 +95,6 @@ type StringFilter = Filter<string> & {
       })
       .join("\n");
     const columnDefines = model.fields
-      .filter(reject)
       .map((field) => {
         const optional = hasAutoGnerateDefault(field) || !field.isRequired;
         const type = getPropertyType(field);

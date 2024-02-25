@@ -89,7 +89,8 @@ export class Persistence {
     const q = this.client.orderBy("id", "desc").limit(1).toSQL();
     const [record] = rpcClient({ ...q, type: "query" });
     Object.assign(this, record);
-    for (const [key, { klass, foreignKey, primaryKey }] of Object.entries(this.associations)) {
+    for (const [key, association] of Object.entries(this.associations)) {
+      const { klass, foreignKey, primaryKey } = association;
       const value = this[key as keyof T];
       if (value instanceof CollectionProxy) {
         for (const instance of value) {
@@ -98,13 +99,15 @@ export class Persistence {
         }
         // recreate collection proxy
         const cache = value.toArray();
-        const option = { wheres: [{ [foreignKey]: this[primaryKey as keyof T] }] };
+        const option = {
+          wheres: [{ [foreignKey]: this[primaryKey as keyof T] }],
+        };
         (this as any)[key] = new CollectionProxy(
           Models[klass],
           option,
-          (cache.length > 0 ? cache : undefined)
+          cache.length > 0 ? cache : undefined
         );
-      } else if (value instanceof Model) {
+      } else if (association.isHasOne && value instanceof Model) {
         value[foreignKey] = this[primaryKey as keyof T];
         value.save();
       }

@@ -102,6 +102,7 @@ declare module "./post" {
     title: string;
     content: string | undefined;
     published: boolean;
+    author: User;
     authorId: number;
 
     isPersisted<T extends Model>(this: T): this is PersistedPost;
@@ -155,6 +156,7 @@ declare module "./setting" {
   interface Setting {
     /* columns */
     id: number | undefined;
+    user: User;
     userId: number;
     threshold: number | undefined;
     createdAt: Date;

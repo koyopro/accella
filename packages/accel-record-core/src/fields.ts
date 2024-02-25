@@ -9,14 +9,20 @@ export class Association {
 
   constructor(relation: DMMF.Field, association: Field) {
     this.klass = association.type;
-    this.foreignKey = relation.relationFromFields?.[0] ?? "";
-    this.primaryKey = relation.relationToFields?.[0] ?? "";
+    this.foreignKey =
+      relation.relationFromFields?.[0] ?? association.foreignKeys?.[0] ?? "";
+    this.primaryKey =
+      relation.relationToFields?.[0] ?? association.primaryKeys?.[0] ?? "";
     this.table = association.type.toLowerCase();
     this.field = association;
   }
 
   get isHasOne() {
-    return this.foreignKey && this.primaryKey && !this.field.isList;
+    return !this.field.isList && !this.isBelongsTo;
+  }
+
+  get isBelongsTo() {
+    return this.field.relationName?.endsWith(this.klass) ?? false;
   }
 }
 
@@ -29,6 +35,8 @@ export class Field {
   kind: "scalar" | "object" | "enum" | "unsupported";
   isUpdatedAt: boolean;
   default: any;
+  foreignKeys: string[];
+  primaryKeys: string[];
 
   constructor(field: DMMF.Field) {
     this.name = field.name;
@@ -43,6 +51,8 @@ export class Field {
       | "unsupported";
     this.isUpdatedAt = !!field.isUpdatedAt;
     this.default = field.default?.valueOf() ?? undefined;
+    this.foreignKeys = field.relationFromFields?.map((f) => f) ?? [];
+    this.primaryKeys = field.relationToFields?.map((f) => f) ?? [];
   }
 
   get columnDefault() {

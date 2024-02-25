@@ -17,6 +17,11 @@ export class AssociationsBuilder {
             [association.foreignKey]: target[association.primaryKey],
           }));
         }
+        if (association?.isBelongsTo) {
+          return (target[prop] ||= Models[association.klass].findBy({
+            [association.primaryKey]: target[association.foreignKey],
+          }));
+        }
         return Reflect.get(...arguments);
       },
       set(target, prop, value, receiver) {
