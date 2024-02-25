@@ -103,12 +103,17 @@ export const loadDmmf = async () => {
 };
 
 export class Fields {
-  static table: string;
+  static modelName: string | undefined = undefined;
 
   private static get model() {
-    return dmmf.datamodel.models.find(
-      (model) => model.name.toLowerCase() === this.table
-    );
+    const modelName = this.modelName ?? this.name;
+    const model = dmmf.datamodel.models.find((m) => m.name == modelName);
+    if (!model) throw new Error(`Model ${modelName} not found`);
+    return model;
+  }
+
+  static get table(): string {
+    return this.model.dbName ?? toSnakeCase(this.model.name);
   }
 
   static get fields(): Readonly<Field[]> {
@@ -184,4 +189,10 @@ export class Fields {
   get primaryKeys(): string[] {
     return (this.constructor as any).primaryKeys;
   }
+}
+
+function toSnakeCase(str: string): string {
+  return str
+    .replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
+    .replace(/^_/, "");
 }

@@ -1,13 +1,11 @@
 import { knex } from "./database.js";
 
 export class Connection {
-  static table: string;
-
   static get client() {
-    return knex(this.table);
+    return knex((this as any).table);
   }
 
   get client() {
-    return knex((this.constructor as any).table);
+    return (this.constructor as typeof Connection).client;
   }
 }
