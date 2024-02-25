@@ -26,13 +26,13 @@ export class Persistence {
 
   destroy<T extends Model>(this: T): boolean {
     if (this.isReadonly) throw new Error("Readonly record");
-    for (const [key] of Object.entries(this.associations)) {
+    for (const [key, association] of Object.entries(this.associations)) {
       const value = this[key as keyof T] as any;
       if (value instanceof CollectionProxy) {
         for (const instance of value.toArray()) {
           instance.destroy();
         }
-      } else {
+      } else if (association.isHasOne) {
         value?.destroy();
       }
     }
