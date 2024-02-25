@@ -5,7 +5,10 @@ import { User } from "./user";
 describe("Relation", () => {
   test("#toArray()", () => {
     $user.createList(2);
-    expect(User.all().toArray()).toHaveLength(2);
+    const users = User.all().toArray();
+    expect(users).toHaveLength(2);
+    expect(users[0]).toBeInstanceOf(User);
+    expect(users[0].isNewRecord).toBe(false);
   });
 
   test("#map()", () => {

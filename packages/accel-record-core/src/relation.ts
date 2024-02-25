@@ -162,7 +162,11 @@ export class Relation<T, M extends Meta> {
         row[name] = mapping[row[primaryKey]] ?? [];
       }
     }
-    return rows.map((row: any) => this.model.build(row));
+    return rows.map((row: object) => {
+      const obj = this.model.build(row);
+      obj.isNewRecord = false;
+      return obj;
+    });
   }
   reset() {
     this.cache = undefined;
