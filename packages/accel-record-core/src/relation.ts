@@ -1,5 +1,5 @@
 import { rpcClient } from "./database.js";
-import { Models, type Meta, type Model } from "./index.js";
+import { Models, type ModelMeta, type Model } from "./index.js";
 
 type Options = {
   wheres: any[];
@@ -16,7 +16,7 @@ type Options = {
   }[];
 };
 
-export class Relation<T, M extends Meta> {
+export class Relation<T, M extends ModelMeta> {
   private counter = 0;
   private client: any;
   protected options: Options;

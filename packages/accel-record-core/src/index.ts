@@ -12,7 +12,7 @@ export { Relation } from "./relation.js";
 export { Rollback } from "./transaction.js";
 
 type SortOrder = "asc" | "desc";
-export type Meta = {
+export type ModelMeta = {
   WhereInput: Record<string, any>;
   OrderInput: Record<string, SortOrder>;
 };

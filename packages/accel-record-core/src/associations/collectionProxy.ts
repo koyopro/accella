@@ -1,10 +1,10 @@
-import { Meta, type Model } from "../index.js";
+import { ModelMeta, type Model } from "../index.js";
 import { Relation } from "../relation.js";
 
-export class CollectionProxy<T extends Model, S extends Meta> extends Relation<
-  T,
-  S
-> {
+export class CollectionProxy<
+  T extends Model,
+  S extends ModelMeta,
+> extends Relation<T, S> {
   push(record: T | T[]) {
     return this.concat(record);
   }
