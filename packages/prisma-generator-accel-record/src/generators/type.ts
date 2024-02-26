@@ -61,8 +61,8 @@ const hasAutoGnerateDefault = (field: DMMF.Field) => {
 };
 
 export const generateTypes = (options: GeneratorOptions) => {
-  let data = `import { Model, Relation } from "accel-record-core";
-import type { CollectionProxy } from "accel-record-core";
+  let data = `import type { CollectionProxy } from "accel-record-core"
+import { Relation } from "accel-record-core"
 
 type SortOrder = "asc" | "desc";
 
@@ -80,7 +80,37 @@ type StringFilter = Filter<string> & {
   endsWith?: string;
   like?: string;
 };
+
+declare module "accel-record-core" {
+  namespace Model {
+    function create<T>(this: T, input: Meta<T>["CreateInput"]): Persisted<T>;
+    function first<T>(this: T, ): Persisted<T>;
+    function find<T>(this: T, id: number): Persisted<T>;
+    function findBy<T>(this: T, input: Meta<T>['WhereInput']): Persisted<T> | undefined;
+    function all<T>(this: T): Relation<Persisted<T>, Meta<T>>;
+    function order<T>(this: T, column: keyof Meta<T>["OrderInput"], direction?: "asc" | "desc"): Relation<Persisted<T>, Meta<T>>;
+    function offset<T>(this: T, offset: number): Relation<Persisted<T>, Meta<T>>;
+    function limit<T>(this: T, limit: number): Relation<Persisted<T>, Meta<T>>;
+    function where<T>(this: T, input: Meta<T>['WhereInput']): Relation<Persisted<T>, Meta<T>>;
+    function whereNot<T>(this: T, input: Meta<T>['WhereInput']): Relation<Persisted<T>, Meta<T>>;
+    function whereRaw<T>(this: T, query: string, bindings?: any[]): Relation<Persisted<T>, Meta<T>>;
+    function build<T extends abstract new (...args: any) => any>(this: T, input: Partial<Meta<T>["CreateInput"]>): InstanceType<T>;
+    function includes<T>(this: T, input: Meta<T>['AssociationKey'][]): Relation<Persisted<T>, Meta<T>>;
+  }
+  interface Model {
+    isPersisted<T>(this: T): this is IPersisted<T>;
+    update<T>(this: T, input: Partial<IMeta<T>['CreateInput']>): boolean;
+  }
+}
+
+type Persisted<T> = Meta<T>["Persisted"];
+type IPersisted<T> = IMeta<T>["Persisted"];
+
 `;
+  const meta = options.dmmf.datamodel.models.map((model) => `T extends typeof ${model.name} ? ${model.name}Meta :`).join('\n               ')
+  data += `type Meta<T> = ${meta}\n               any\n`;
+  const imeta = options.dmmf.datamodel.models.map((model) => `T extends ${model.name} ? ${model.name}Meta :`).join('\n                ')
+  data += `type IMeta<T> = ${imeta}\n                any\n`;
   for (const model of options.dmmf.datamodel.models) {
     const reject = (f: DMMF.Field) => f.relationFromFields?.[0] == undefined;
     const relationFromFields = model.fields
@@ -127,53 +157,33 @@ type StringFilter = Filter<string> & {
         .map((field) => {
           const type = getPropertyType(field);
           const filter = getFilterType(type);
-          return `\n      ${field.name}?: ${type} | ${type}[] | ${filter} | null;`;
+          return `\n    ${field.name}?: ${type} | ${type}[] | ${filter} | null;`;
         })
-        .join("") + "\n    ";
+        .join("") + "\n  ";
     const orderInputs =
       model.fields
         .filter(reject)
         .filter((field) => field.relationName == undefined)
-        .map((field) => `\n      ${field.name}?: SortOrder;`)
-        .join("") + "\n    ";
+        .map((field) => `\n    ${field.name}?: SortOrder;`)
+        .join("") + "\n  ";
     data += `
 declare module "./${model.name.toLowerCase()}" {
-  namespace ${model.name} {
-    function create(input: ${model.name}CreateInput): Persisted${model.name};
-    function first(): Persisted${model.name};
-    function find(id: number): Persisted${model.name};
-    function findBy(input: ${model.name}Meta['WhereInput']): Persisted${
-      model.name
-    } | undefined;
-    function all(): Relation<Persisted${model.name}, ${model.name}Meta>;
-    function order(column: keyof ${model.name}Meta["OrderInput"], direction?: "asc" | "desc"): Relation<Persisted${model.name}, ${model.name}Meta>;
-    function offset(offset: number): Relation<Persisted${model.name}, ${model.name}Meta>;
-    function limit(limit: number): Relation<Persisted${model.name}, ${model.name}Meta>;
-    function where(input: ${model.name}Meta['WhereInput']): Relation<Persisted${model.name}, ${model.name}Meta>;
-    function whereNot(input: ${model.name}Meta['WhereInput']): Relation<Persisted${model.name}, ${model.name}Meta>;
-    function whereRaw(query: string, bindings?: any[]): Relation<Persisted${model.name}, ${model.name}Meta>;
-    function build(input: Partial<${model.name}CreateInput>): ${model.name};
-    function includes<T extends readonly AssociationKey[]>(input: T): Relation<Persisted${model.name}, ${model.name}Meta>;
-  }
   interface ${model.name} {
-    /* columns */
 ${columnDefines}
-
-    isPersisted<T extends Model>(this: T): this is Persisted${model.name};
-    update(input: Partial<${model.name}CreateInput>): boolean;
   }
-  type ${model.name}CreateInput = {
+}
+type Persisted${model.name} = ${model.name} & {
+  id: NonNullable<${model.name}["id"]>;
+};
+type ${model.name}Meta = {
+  Persisted: Persisted${model.name};
+  AssociationKey: 'posts';
+  CreateInput: {
 ${columns}
   }${associationColumns};
-  type ${model.name}Meta = {
-    WhereInput: {${whereInputs}};
-    OrderInput: {${orderInputs}};
-  }
-  type Persisted${model.name} = ${model.name} & {
-    id: NonNullable<${model.name}["id"]>;
-  };
-  type AssociationKey = "posts";
-}
+  WhereInput: {${whereInputs}};
+  OrderInput: {${orderInputs}};
+};
 `;
   }
   return data;
