@@ -2,6 +2,7 @@ import { rpcClient } from "./database.js";
 import { Models, type ModelMeta, type Model } from "./index.js";
 
 type Options = {
+  joins: any[];
   wheres: any[];
   whereNots: any[];
   whereRaws: [string, any[]][];
@@ -29,6 +30,7 @@ export class Relation<T, M extends ModelMeta> {
     this.client = model.client;
     this.options = Object.assign(
       {
+        joins: [],
         wheres: [],
         whereNots: [],
         whereRaws: [],
@@ -121,7 +123,10 @@ export class Relation<T, M extends ModelMeta> {
     return new Relation(this.model, newOptions);
   }
   query() {
-    let q = this.client;
+    let q = this.client.select(`${this.model.table}.*`);
+    for (const join of this.options.joins) {
+      q = q.join(...join);
+    }
     for (const where of this.options.wheres) {
       if (Array.isArray(where)) {
         q = q.where(...where);

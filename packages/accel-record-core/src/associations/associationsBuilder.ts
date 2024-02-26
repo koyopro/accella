@@ -54,7 +54,27 @@ export class AssociationsBuilder {
       if (!field.isList && key in input) {
         proxy[key] = input[key];
       } else if (field.isList || key in input) {
-        const option = { wheres: [{ [foreignKey]: instance[primaryKey] }] };
+        let option: any;
+        if (association.through) {
+          option = {
+            joins: [
+              [
+                association.through,
+                `${field.type}.${association.primaryKey}`,
+                "=",
+                `${association.through}.${association.foreignKey}`,
+              ],
+            ],
+            wheres: [
+              {
+                [`${association.through}.${association.foreignKey}`]:
+                  instance[association.primaryKey],
+              },
+            ],
+          };
+        } else {
+          option = { wheres: [{ [foreignKey]: instance[primaryKey] }] };
+        }
         instance[key] = new CollectionProxy(
           Models[klass],
           option,

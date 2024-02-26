@@ -1,12 +1,24 @@
 import { BaseDMMF, DMMF } from "prisma/prisma-client/runtime/library.js";
 
+const makeAssociations = (relation: DMMF.Field, association: Field) => {
+  const newLocal = new Association(relation, association);
+  const ret = {
+    [association.name]: newLocal,
+  };
+  // if (newLocal.isBelongsTo && newLocal.primaryKey == "") {
+  //   // 中間テーブルの作成
+  //   ret["_"] = new Association(relation, association);
+  // }
+  return ret;
+};
+
 export class Association {
   klass: string;
   foreignKey: string;
   primaryKey: string;
-  table: string;
   field: Field;
   isBelongsTo: boolean;
+  through: string | undefined;
 
   constructor(relation: DMMF.Field, association: Field) {
     this.klass = association.type;
@@ -14,9 +26,16 @@ export class Association {
       relation.relationFromFields?.[0] ?? association.foreignKeys?.[0] ?? "";
     this.primaryKey =
       relation.relationToFields?.[0] ?? association.primaryKeys?.[0] ?? "";
-    this.table = association.type.toLowerCase();
     this.field = association;
-    this.isBelongsTo = (relation.relationToFields?.length ?? 0) == 0;
+    if (this.foreignKey == "" && this.primaryKey == "") {
+      // Implicit many-to-many relations
+      this.isBelongsTo = false;
+      this.foreignKey = relation.type < association.type ? "A" : "B";
+      this.primaryKey = "id"; // FIXME:
+      this.through = `_${association.relationName}`;
+    } else {
+      this.isBelongsTo = (relation.relationToFields?.length ?? 0) == 0;
+    }
   }
 
   get isHasOne() {
@@ -159,7 +178,7 @@ export class Fields {
           return acc;
         return {
           ...acc,
-          [field.name]: new Association(r, field),
+          ...makeAssociations(r, field),
         };
       }, {});
   }
