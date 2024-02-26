@@ -2,6 +2,8 @@ import { User } from './user.js'
 export { User } from './user.js'
 import { Post } from './post.js'
 export { Post } from './post.js'
+import { PostTag } from './postTag.js'
+export { PostTag } from './postTag.js'
 import { Setting } from './setting.js'
 export { Setting } from './setting.js'
 import type {
@@ -39,6 +41,7 @@ type Persisted<T> = Meta<T>["Persisted"];
 
 type Meta<T> = T extends typeof User | User ? UserMeta :
                T extends typeof Post | Post ? PostMeta :
+               T extends typeof PostTag | PostTag ? PostTagMeta :
                T extends typeof Setting | Setting ? SettingMeta :
                any;
 
@@ -88,6 +91,7 @@ declare module "./post" {
     published: boolean;
     author: User;
     authorId: number;
+    tags: CollectionProxy<PostTag, PostMeta>;
   }
 }
 type PersistedPost = Post & {
@@ -101,6 +105,7 @@ type PostMeta = {
     title: string;
     content?: string;
     published?: boolean;
+    tags?: PostTag[];
   } & ({ author: User } | { authorId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -115,6 +120,34 @@ type PostMeta = {
     content?: SortOrder;
     published?: SortOrder;
     authorId?: SortOrder;
+  };
+};
+
+declare module "./posttag" {
+  interface PostTag {
+    id: number | undefined;
+    name: string;
+    posts: CollectionProxy<Post, PostTagMeta>;
+  }
+}
+type PersistedPostTag = PostTag & {
+  id: NonNullable<PostTag["id"]>;
+};
+type PostTagMeta = {
+  Persisted: PersistedPostTag;
+  AssociationKey: 'posts';
+  CreateInput: {
+    id?: number;
+    name: string;
+    posts?: Post[];
+  };
+  WhereInput: {
+    id?: number | number[] | Filter<number> | null;
+    name?: string | string[] | StringFilter | null;
+  };
+  OrderInput: {
+    id?: SortOrder;
+    name?: SortOrder;
   };
 };
 

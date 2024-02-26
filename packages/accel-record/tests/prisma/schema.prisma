@@ -22,12 +22,19 @@ model User {
 }
 
 model Post {
-  id        Int     @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   title     String
   content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
+  published Boolean   @default(false)
+  author    User      @relation(fields: [authorId], references: [id])
   authorId  Int
+  tags      PostTag[]
+}
+
+model PostTag {
+  id    Int    @id @default(autoincrement())
+  name  String
+  posts Post[]
 }
 
 model Setting {
