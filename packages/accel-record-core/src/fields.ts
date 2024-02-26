@@ -113,7 +113,7 @@ export class Fields {
   }
 
   static get table(): string {
-    return this.model.dbName ?? toSnakeCase(this.model.name);
+    return this.model.dbName ?? this.model.name;
   }
 
   static get fields(): Readonly<Field[]> {
@@ -189,10 +189,4 @@ export class Fields {
   get primaryKeys(): string[] {
     return (this.constructor as any).primaryKeys;
   }
-}
-
-function toSnakeCase(str: string): string {
-  return str
-    .replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
-    .replace(/^_/, "");
 }
