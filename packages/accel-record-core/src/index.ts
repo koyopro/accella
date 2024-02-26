@@ -11,7 +11,23 @@ export { getPrismaClientConfig, stopRpcClient } from "./database.js";
 export { Relation } from "./relation.js";
 export { Rollback } from "./transaction.js";
 
-type SortOrder = "asc" | "desc";
+export type SortOrder = "asc" | "desc";
+
+export type Filter<T> = {
+  in?: T[];
+  "<"?: T;
+  ">"?: T;
+  "<="?: T;
+  ">="?: T;
+};
+
+export type StringFilter = Filter<string> & {
+  contains?: string;
+  startsWith?: string;
+  endsWith?: string;
+  like?: string;
+};
+
 export type ModelMeta = {
   WhereInput: Record<string, any>;
   OrderInput: Record<string, SortOrder>;

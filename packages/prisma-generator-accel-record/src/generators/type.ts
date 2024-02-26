@@ -61,30 +61,18 @@ const hasAutoGnerateDefault = (field: DMMF.Field) => {
 };
 
 export const generateTypes = (options: GeneratorOptions) => {
-  let data = `import type { CollectionProxy } from "accel-record-core"
-import { Relation } from "accel-record-core"
-
-type SortOrder = "asc" | "desc";
-
-type Filter<T> = {
-  in?: T[];
-  '<'?: T;
-  '>'?: T;
-  '<='?: T;
-  '>='?: T;
-};
-
-type StringFilter = Filter<string> & {
-  contains?: string;
-  startsWith?: string;
-  endsWith?: string;
-  like?: string;
-};
+  let data = `import type {
+  CollectionProxy,
+  Filter,
+  Relation,
+  SortOrder,
+  StringFilter,
+} from "accel-record-core";
 
 declare module "accel-record-core" {
   namespace Model {
     function create<T>(this: T, input: Meta<T>["CreateInput"]): Persisted<T>;
-    function first<T>(this: T, ): Persisted<T>;
+    function first<T>(this: T): Persisted<T>;
     function find<T>(this: T, id: number): Persisted<T>;
     function findBy<T>(this: T, input: Meta<T>['WhereInput']): Persisted<T> | undefined;
     function all<T>(this: T): Relation<Persisted<T>, Meta<T>>;
@@ -108,9 +96,9 @@ type IPersisted<T> = IMeta<T>["Persisted"];
 
 `;
   const meta = options.dmmf.datamodel.models.map((model) => `T extends typeof ${model.name} ? ${model.name}Meta :`).join('\n               ')
-  data += `type Meta<T> = ${meta}\n               any\n`;
+  data += `type Meta<T> = ${meta}\n               any;\n`;
   const imeta = options.dmmf.datamodel.models.map((model) => `T extends ${model.name} ? ${model.name}Meta :`).join('\n                ')
-  data += `type IMeta<T> = ${imeta}\n                any\n`;
+  data += `type IMeta<T> = ${imeta}\n                any;\n`;
   for (const model of options.dmmf.datamodel.models) {
     const reject = (f: DMMF.Field) => f.relationFromFields?.[0] == undefined;
     const relationFromFields = model.fields

@@ -4,30 +4,18 @@ import { Post } from './post.js'
 export { Post } from './post.js'
 import { Setting } from './setting.js'
 export { Setting } from './setting.js'
-import type { CollectionProxy } from "accel-record-core"
-import { Relation } from "accel-record-core"
-
-type SortOrder = "asc" | "desc";
-
-type Filter<T> = {
-  in?: T[];
-  '<'?: T;
-  '>'?: T;
-  '<='?: T;
-  '>='?: T;
-};
-
-type StringFilter = Filter<string> & {
-  contains?: string;
-  startsWith?: string;
-  endsWith?: string;
-  like?: string;
-};
+import type {
+  CollectionProxy,
+  Filter,
+  Relation,
+  SortOrder,
+  StringFilter,
+} from "accel-record-core";
 
 declare module "accel-record-core" {
   namespace Model {
     function create<T>(this: T, input: Meta<T>["CreateInput"]): Persisted<T>;
-    function first<T>(this: T, ): Persisted<T>;
+    function first<T>(this: T): Persisted<T>;
     function find<T>(this: T, id: number): Persisted<T>;
     function findBy<T>(this: T, input: Meta<T>['WhereInput']): Persisted<T> | undefined;
     function all<T>(this: T): Relation<Persisted<T>, Meta<T>>;
@@ -52,11 +40,11 @@ type IPersisted<T> = IMeta<T>["Persisted"];
 type Meta<T> = T extends typeof User ? UserMeta :
                T extends typeof Post ? PostMeta :
                T extends typeof Setting ? SettingMeta :
-               any
+               any;
 type IMeta<T> = T extends User ? UserMeta :
                 T extends Post ? PostMeta :
                 T extends Setting ? SettingMeta :
-                any
+                any;
 
 declare module "./user" {
   interface User {
