@@ -4,55 +4,65 @@ import { Post } from './post.js'
 export { Post } from './post.js'
 import { Setting } from './setting.js'
 export { Setting } from './setting.js'
-import { Model, Relation } from "accel-record-core";
-import type { CollectionProxy } from "accel-record-core";
+import type {
+  CollectionProxy,
+  Filter,
+  Relation,
+  SortOrder,
+  StringFilter,
+} from "accel-record-core";
 
-type SortOrder = "asc" | "desc";
+declare module "accel-record-core" {
+  namespace Model {
+    function create<T>(this: T, input: Meta<T>["CreateInput"]): Persisted<T>;
+    function first<T>(this: T): Persisted<T>;
+    function find<T>(this: T, id: number): Persisted<T>;
+    function findBy<T>(this: T, input: Meta<T>['WhereInput']): Persisted<T> | undefined;
+    function all<T>(this: T): Relation<Persisted<T>, Meta<T>>;
+    function order<T>(this: T, column: keyof Meta<T>["OrderInput"], direction?: "asc" | "desc"): Relation<Persisted<T>, Meta<T>>;
+    function offset<T>(this: T, offset: number): Relation<Persisted<T>, Meta<T>>;
+    function limit<T>(this: T, limit: number): Relation<Persisted<T>, Meta<T>>;
+    function where<T>(this: T, input: Meta<T>['WhereInput']): Relation<Persisted<T>, Meta<T>>;
+    function whereNot<T>(this: T, input: Meta<T>['WhereInput']): Relation<Persisted<T>, Meta<T>>;
+    function whereRaw<T>(this: T, query: string, bindings?: any[]): Relation<Persisted<T>, Meta<T>>;
+    function build<T extends abstract new (...args: any) => any>(this: T, input: Partial<Meta<T>["CreateInput"]>): InstanceType<T>;
+    function includes<T>(this: T, input: Meta<T>['AssociationKey'][]): Relation<Persisted<T>, Meta<T>>;
+  }
+  interface Model {
+    isPersisted<T>(this: T): this is IPersisted<T>;
+    update<T>(this: T, input: Partial<IMeta<T>['CreateInput']>): boolean;
+  }
+}
 
-type Filter<T> = {
-  in?: T[];
-  '<'?: T;
-  '>'?: T;
-  '<='?: T;
-  '>='?: T;
-};
+type Persisted<T> = Meta<T>["Persisted"];
+type IPersisted<T> = IMeta<T>["Persisted"];
 
-type StringFilter = Filter<string> & {
-  contains?: string;
-  startsWith?: string;
-  endsWith?: string;
-  like?: string;
-};
+type Meta<T> = T extends typeof User ? UserMeta :
+               T extends typeof Post ? PostMeta :
+               T extends typeof Setting ? SettingMeta :
+               any;
+type IMeta<T> = T extends User ? UserMeta :
+                T extends Post ? PostMeta :
+                T extends Setting ? SettingMeta :
+                any;
 
 declare module "./user" {
-  namespace User {
-    function create(input: UserCreateInput): PersistedUser;
-    function first(): PersistedUser;
-    function find(id: number): PersistedUser;
-    function findBy(input: UserMeta['WhereInput']): PersistedUser | undefined;
-    function all(): Relation<PersistedUser, UserMeta>;
-    function order(column: keyof UserMeta["OrderInput"], direction?: "asc" | "desc"): Relation<PersistedUser, UserMeta>;
-    function offset(offset: number): Relation<PersistedUser, UserMeta>;
-    function limit(limit: number): Relation<PersistedUser, UserMeta>;
-    function where(input: UserMeta['WhereInput']): Relation<PersistedUser, UserMeta>;
-    function whereNot(input: UserMeta['WhereInput']): Relation<PersistedUser, UserMeta>;
-    function whereRaw(query: string, bindings?: any[]): Relation<PersistedUser, UserMeta>;
-    function build(input: Partial<UserCreateInput>): User;
-    function includes<T extends readonly AssociationKey[]>(input: T): Relation<PersistedUser, UserMeta>;
-  }
   interface User {
-    /* columns */
     id: number | undefined;
     email: string;
     name: string | undefined;
     age: number | undefined;
     posts: CollectionProxy<Post, UserMeta>;
     setting: Setting | undefined;
-
-    isPersisted<T extends Model>(this: T): this is PersistedUser;
-    update(input: Partial<UserCreateInput>): boolean;
   }
-  type UserCreateInput = {
+}
+type PersistedUser = User & {
+  id: NonNullable<User["id"]>;
+};
+type UserMeta = {
+  Persisted: PersistedUser;
+  AssociationKey: 'posts';
+  CreateInput: {
     id?: number;
     email: string;
     name?: string;
@@ -60,130 +70,88 @@ declare module "./user" {
     posts?: Post[];
     setting?: Setting;
   };
-  type UserMeta = {
-    WhereInput: {
-      id?: number | number[] | Filter<number> | null;
-      email?: string | string[] | StringFilter | null;
-      name?: string | string[] | StringFilter | null;
-      age?: number | number[] | Filter<number> | null;
-    };
-    OrderInput: {
-      id?: SortOrder;
-      email?: SortOrder;
-      name?: SortOrder;
-      age?: SortOrder;
-    };
-  }
-  type PersistedUser = User & {
-    id: NonNullable<User["id"]>;
+  WhereInput: {
+    id?: number | number[] | Filter<number> | null;
+    email?: string | string[] | StringFilter | null;
+    name?: string | string[] | StringFilter | null;
+    age?: number | number[] | Filter<number> | null;
   };
-  type AssociationKey = "posts";
-}
+  OrderInput: {
+    id?: SortOrder;
+    email?: SortOrder;
+    name?: SortOrder;
+    age?: SortOrder;
+  };
+};
 
 declare module "./post" {
-  namespace Post {
-    function create(input: PostCreateInput): PersistedPost;
-    function first(): PersistedPost;
-    function find(id: number): PersistedPost;
-    function findBy(input: PostMeta['WhereInput']): PersistedPost | undefined;
-    function all(): Relation<PersistedPost, PostMeta>;
-    function order(column: keyof PostMeta["OrderInput"], direction?: "asc" | "desc"): Relation<PersistedPost, PostMeta>;
-    function offset(offset: number): Relation<PersistedPost, PostMeta>;
-    function limit(limit: number): Relation<PersistedPost, PostMeta>;
-    function where(input: PostMeta['WhereInput']): Relation<PersistedPost, PostMeta>;
-    function whereNot(input: PostMeta['WhereInput']): Relation<PersistedPost, PostMeta>;
-    function whereRaw(query: string, bindings?: any[]): Relation<PersistedPost, PostMeta>;
-    function build(input: Partial<PostCreateInput>): Post;
-    function includes<T extends readonly AssociationKey[]>(input: T): Relation<PersistedPost, PostMeta>;
-  }
   interface Post {
-    /* columns */
     id: number | undefined;
     title: string;
     content: string | undefined;
     published: boolean;
     author: User;
     authorId: number;
-
-    isPersisted<T extends Model>(this: T): this is PersistedPost;
-    update(input: Partial<PostCreateInput>): boolean;
   }
-  type PostCreateInput = {
+}
+type PersistedPost = Post & {
+  id: NonNullable<Post["id"]>;
+};
+type PostMeta = {
+  Persisted: PersistedPost;
+  AssociationKey: 'posts';
+  CreateInput: {
     id?: number;
     title: string;
     content?: string;
     published?: boolean;
   } & ({ author: User } | { authorId: number });
-  type PostMeta = {
-    WhereInput: {
-      id?: number | number[] | Filter<number> | null;
-      title?: string | string[] | StringFilter | null;
-      content?: string | string[] | StringFilter | null;
-      published?: boolean | boolean[] | undefined | null;
-      authorId?: number | number[] | Filter<number> | null;
-    };
-    OrderInput: {
-      id?: SortOrder;
-      title?: SortOrder;
-      content?: SortOrder;
-      published?: SortOrder;
-      authorId?: SortOrder;
-    };
-  }
-  type PersistedPost = Post & {
-    id: NonNullable<Post["id"]>;
+  WhereInput: {
+    id?: number | number[] | Filter<number> | null;
+    title?: string | string[] | StringFilter | null;
+    content?: string | string[] | StringFilter | null;
+    published?: boolean | boolean[] | undefined | null;
+    authorId?: number | number[] | Filter<number> | null;
   };
-  type AssociationKey = "posts";
-}
+  OrderInput: {
+    id?: SortOrder;
+    title?: SortOrder;
+    content?: SortOrder;
+    published?: SortOrder;
+    authorId?: SortOrder;
+  };
+};
 
 declare module "./setting" {
-  namespace Setting {
-    function create(input: SettingCreateInput): PersistedSetting;
-    function first(): PersistedSetting;
-    function find(id: number): PersistedSetting;
-    function findBy(input: SettingMeta['WhereInput']): PersistedSetting | undefined;
-    function all(): Relation<PersistedSetting, SettingMeta>;
-    function order(column: keyof SettingMeta["OrderInput"], direction?: "asc" | "desc"): Relation<PersistedSetting, SettingMeta>;
-    function offset(offset: number): Relation<PersistedSetting, SettingMeta>;
-    function limit(limit: number): Relation<PersistedSetting, SettingMeta>;
-    function where(input: SettingMeta['WhereInput']): Relation<PersistedSetting, SettingMeta>;
-    function whereNot(input: SettingMeta['WhereInput']): Relation<PersistedSetting, SettingMeta>;
-    function whereRaw(query: string, bindings?: any[]): Relation<PersistedSetting, SettingMeta>;
-    function build(input: Partial<SettingCreateInput>): Setting;
-    function includes<T extends readonly AssociationKey[]>(input: T): Relation<PersistedSetting, SettingMeta>;
-  }
   interface Setting {
-    /* columns */
     id: number | undefined;
     user: User;
     userId: number;
     threshold: number | undefined;
     createdAt: Date;
-
-    isPersisted<T extends Model>(this: T): this is PersistedSetting;
-    update(input: Partial<SettingCreateInput>): boolean;
   }
-  type SettingCreateInput = {
+}
+type PersistedSetting = Setting & {
+  id: NonNullable<Setting["id"]>;
+};
+type SettingMeta = {
+  Persisted: PersistedSetting;
+  AssociationKey: 'posts';
+  CreateInput: {
     id?: number;
     threshold?: number;
     createdAt?: Date;
   } & ({ user: User } | { userId: number });
-  type SettingMeta = {
-    WhereInput: {
-      id?: number | number[] | Filter<number> | null;
-      userId?: number | number[] | Filter<number> | null;
-      threshold?: number | number[] | Filter<number> | null;
-      createdAt?: Date | Date[] | Filter<number> | null;
-    };
-    OrderInput: {
-      id?: SortOrder;
-      userId?: SortOrder;
-      threshold?: SortOrder;
-      createdAt?: SortOrder;
-    };
-  }
-  type PersistedSetting = Setting & {
-    id: NonNullable<Setting["id"]>;
+  WhereInput: {
+    id?: number | number[] | Filter<number> | null;
+    userId?: number | number[] | Filter<number> | null;
+    threshold?: number | number[] | Filter<number> | null;
+    createdAt?: Date | Date[] | Filter<number> | null;
   };
-  type AssociationKey = "posts";
-}
+  OrderInput: {
+    id?: SortOrder;
+    userId?: SortOrder;
+    threshold?: SortOrder;
+    createdAt?: SortOrder;
+  };
+};

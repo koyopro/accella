@@ -1,6 +1,22 @@
 import type { Model } from "./index.js";
+import { Relation } from "./relation.js";
 
 export class Query {
+  static all<T extends typeof Model>(this: T): Relation<any, any> {
+    return new Relation(this);
+  }
+
+  static includes<T extends typeof Model, R extends readonly any[]>(
+    this: T,
+    input: R
+  ): Relation<any, any> {
+    const includes = input.map((key) => {
+      return { name: key, ...this.associations[key] };
+    });
+
+    return new Relation(this, { includes });
+  }
+
   static first<T extends typeof Model>(this: T) {
     return this.all().first();
   }
@@ -41,7 +57,11 @@ export class Query {
     return this.all().whereNot(input);
   }
 
-  static whereRaw<T extends typeof Model>(this: T, query: string, bindings: any[] = []) {
+  static whereRaw<T extends typeof Model>(
+    this: T,
+    query: string,
+    bindings: any[] = []
+  ) {
     return this.all().whereRaw(query, bindings);
   }
 

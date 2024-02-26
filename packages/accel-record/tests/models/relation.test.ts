@@ -1,5 +1,4 @@
 import { $user } from "../factories/user";
-import { UserMeta } from "./user";
 import { User } from "./user";
 
 describe("Relation", () => {
@@ -95,7 +94,7 @@ describe("Relation", () => {
   test("#where() with string filter", () => {
     $user.create({ name: "hoge" });
     $user.create({ name: "fuga" });
-    const subject = (where: UserMeta["WhereInput"]) =>
+    const subject = (where: Parameters<typeof User.where>[0]) =>
       User.where(where).map((u) => u.name);
     expect(subject({ name: { startsWith: "ho" } })).toStrictEqual(["hoge"]);
     expect(subject({ name: { endsWith: "ga" } })).toStrictEqual(["fuga"]);
