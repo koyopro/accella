@@ -113,9 +113,12 @@ export class Persistence {
     }
     const query = this.client.insert(data).toSQL();
     rpcClient(query);
-    const q = this.client.orderBy("id", "desc").limit(1).toSQL();
-    const [record] = rpcClient({ ...q, type: "query" });
-    Object.assign(this, record);
+    // FIXME: auto increment
+    if (this.columns.includes("id")) {
+      const q = this.client.orderBy("id", "desc").limit(1).toSQL();
+      const [record] = rpcClient({ ...q, type: "query" });
+      Object.assign(this, record);
+    }
     for (const [key, association] of Object.entries(this.associations)) {
       const { klass, foreignKey, primaryKey } = association;
       const value = this[key as keyof T];

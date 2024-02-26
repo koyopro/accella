@@ -6,6 +6,7 @@ export class Association {
   primaryKey: string;
   table: string;
   field: Field;
+  isBelongsTo: boolean;
 
   constructor(relation: DMMF.Field, association: Field) {
     this.klass = association.type;
@@ -15,14 +16,11 @@ export class Association {
       relation.relationToFields?.[0] ?? association.primaryKeys?.[0] ?? "";
     this.table = association.type.toLowerCase();
     this.field = association;
+    this.isBelongsTo = (relation.relationToFields?.length ?? 0) == 0;
   }
 
   get isHasOne() {
     return !this.field.isList && !this.isBelongsTo;
-  }
-
-  get isBelongsTo() {
-    return this.field.relationName?.endsWith(this.klass) ?? false;
   }
 }
 
