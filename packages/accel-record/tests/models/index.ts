@@ -30,7 +30,8 @@ declare module "accel-record-core" {
   }
   interface Model {
     isPersisted<T>(this: T): this is IPersisted<T>;
-    update<T>(this: T, input: Partial<IMeta<T>['CreateInput']>): boolean;
+    update<T>(this: T, input: Partial<IMeta<T>["CreateInput"]>): this is IPersisted<T>;
+    save<T>(this: T): this is IPersisted<T>;
   }
 }
 

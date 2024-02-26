@@ -10,7 +10,11 @@ describe("Persistence", () => {
       Post.build({ title: "post2" }),
     ];
     const u = $user.build({ posts });
-    expect(u.save()).toBe(true);
+    if (!u.save()) {
+      throw new Error("Failed to save");
+    }
+    // u should be a PersistedUser
+    expect(u.id).not.toBeUndefined();
     expect(Post.all().get()).toHaveLength(2);
 
     u.isReadonly = true;
@@ -18,8 +22,12 @@ describe("Persistence", () => {
   });
 
   test("#update()", () => {
-    const u = $user.create({ name: "hoge" });
-    expect(u.update({ name: "fuga" })).toBe(true);
+    const u = $user.build({ name: "hoge" });
+    if (!u.update({ name: "fuga" })) {
+      throw new Error("Failed to update");
+    }
+    // u should be a PersistedUser
+    expect(u.id).not.toBeUndefined();
     expect(u.name).toBe("fuga");
     expect(User.all().get()[0].name).toBe("fuga");
   });
