@@ -1,10 +1,37 @@
+import { AssociationsBuilder } from "./associations/associationsBuilder";
 import { rpcClient } from "./database";
-import { CollectionProxy, Models, Model } from "./index.js";
+import { CollectionProxy, Model, Models } from "./index.js";
 
 export class Persistence {
   isNewRecord: boolean = true;
   isReadonly: boolean = false;
   isDestroyed: boolean = false;
+
+  static build<T extends typeof Model>(this: T, input: any) {
+    const instance: any = new this();
+    instance.isNewRecord = true;
+    for (const column of this.columns2) {
+      if (column.columnDefault !== undefined) {
+        instance[column.name] = column.columnDefault;
+      }
+      if (column.name in input) {
+        instance[column.name] = input[column.name];
+      }
+    }
+    return AssociationsBuilder.build(this as any, instance, input);
+  }
+
+  static create<T extends typeof Model>(this: T, input: any) {
+    const instance = this.build(input);
+    instance.save();
+    return instance;
+  }
+
+  isPersisted<T extends Model>(this: T): any {
+    return (this.columnsForPersist as (keyof T)[]).every(
+      (column: keyof T) => this[column] !== undefined
+    );
+  }
 
   save<T extends Model>(this: T): boolean {
     const ret = this.createOrUpdate();
