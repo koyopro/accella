@@ -86,20 +86,19 @@ declare module "accel-record-core" {
     function includes<T>(this: T, input: Meta<T>['AssociationKey'][]): Relation<Persisted<T>, Meta<T>>;
   }
   interface Model {
-    isPersisted<T>(this: T): this is IPersisted<T>;
-    update<T>(this: T, input: Partial<IMeta<T>["CreateInput"]>): this is IPersisted<T>;
-    save<T>(this: T): this is IPersisted<T>;
+    isPersisted<T>(this: T): this is Persisted<T>;
+    update<T>(this: T, input: Partial<Meta<T>["CreateInput"]>): this is Persisted<T>;
+    save<T>(this: T): this is Persisted<T>;
   }
 }
 
 type Persisted<T> = Meta<T>["Persisted"];
-type IPersisted<T> = IMeta<T>["Persisted"];
 
 `;
-  const meta = options.dmmf.datamodel.models.map((model) => `T extends typeof ${model.name} ? ${model.name}Meta :`).join('\n               ')
+  const meta = options.dmmf.datamodel.models.map(
+    (model) => `T extends typeof ${model.name} | ${model.name} ? ${model.name}Meta :`
+  ).join('\n               ')
   data += `type Meta<T> = ${meta}\n               any;\n`;
-  const imeta = options.dmmf.datamodel.models.map((model) => `T extends ${model.name} ? ${model.name}Meta :`).join('\n                ')
-  data += `type IMeta<T> = ${imeta}\n                any;\n`;
   for (const model of options.dmmf.datamodel.models) {
     const reject = (f: DMMF.Field) => f.relationFromFields?.[0] == undefined;
     const relationFromFields = model.fields

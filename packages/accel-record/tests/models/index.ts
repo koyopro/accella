@@ -29,23 +29,18 @@ declare module "accel-record-core" {
     function includes<T>(this: T, input: Meta<T>['AssociationKey'][]): Relation<Persisted<T>, Meta<T>>;
   }
   interface Model {
-    isPersisted<T>(this: T): this is IPersisted<T>;
-    update<T>(this: T, input: Partial<IMeta<T>["CreateInput"]>): this is IPersisted<T>;
-    save<T>(this: T): this is IPersisted<T>;
+    isPersisted<T>(this: T): this is Persisted<T>;
+    update<T>(this: T, input: Partial<Meta<T>["CreateInput"]>): this is Persisted<T>;
+    save<T>(this: T): this is Persisted<T>;
   }
 }
 
 type Persisted<T> = Meta<T>["Persisted"];
-type IPersisted<T> = IMeta<T>["Persisted"];
 
-type Meta<T> = T extends typeof User ? UserMeta :
-               T extends typeof Post ? PostMeta :
-               T extends typeof Setting ? SettingMeta :
+type Meta<T> = T extends typeof User | User ? UserMeta :
+               T extends typeof Post | Post ? PostMeta :
+               T extends typeof Setting | Setting ? SettingMeta :
                any;
-type IMeta<T> = T extends User ? UserMeta :
-                T extends Post ? PostMeta :
-                T extends Setting ? SettingMeta :
-                any;
 
 declare module "./user" {
   interface User {
