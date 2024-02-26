@@ -1,5 +1,9 @@
 import { User } from './user.js'
 export { User } from './user.js'
+import { Team } from './team.js'
+export { Team } from './team.js'
+import { UserTeam } from './userTeam.js'
+export { UserTeam } from './userTeam.js'
 import { Post } from './post.js'
 export { Post } from './post.js'
 import { PostTag } from './postTag.js'
@@ -40,6 +44,8 @@ declare module "accel-record-core" {
 type Persisted<T> = Meta<T>["Persisted"];
 
 type Meta<T> = T extends typeof User | User ? UserMeta :
+               T extends typeof Team | Team ? TeamMeta :
+               T extends typeof UserTeam | UserTeam ? UserTeamMeta :
                T extends typeof Post | Post ? PostMeta :
                T extends typeof PostTag | PostTag ? PostTagMeta :
                T extends typeof Setting | Setting ? SettingMeta :
@@ -53,6 +59,7 @@ declare module "./user" {
     age: number | undefined;
     posts: CollectionProxy<Post, UserMeta>;
     setting: Setting | undefined;
+    teams: CollectionProxy<UserTeam, UserMeta>;
   }
 }
 type PersistedUser = User & {
@@ -68,6 +75,7 @@ type UserMeta = {
     age?: number;
     posts?: Post[];
     setting?: Setting;
+    teams?: UserTeam[];
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -80,6 +88,68 @@ type UserMeta = {
     email?: SortOrder;
     name?: SortOrder;
     age?: SortOrder;
+  };
+};
+
+declare module "./team" {
+  interface Team {
+    id: number | undefined;
+    name: string;
+    users: CollectionProxy<UserTeam, TeamMeta>;
+  }
+}
+type PersistedTeam = Team & {
+  id: NonNullable<Team["id"]>;
+};
+type TeamMeta = {
+  Persisted: PersistedTeam;
+  AssociationKey: 'posts';
+  CreateInput: {
+    id?: number;
+    name: string;
+    users?: UserTeam[];
+  };
+  WhereInput: {
+    id?: number | number[] | Filter<number> | null;
+    name?: string | string[] | StringFilter | null;
+  };
+  OrderInput: {
+    id?: SortOrder;
+    name?: SortOrder;
+  };
+};
+
+declare module "./userteam" {
+  interface UserTeam {
+    user: User;
+    userId: number;
+    team: Team;
+    teamId: number;
+    assignedAt: Date;
+    assignedBy: string;
+  }
+}
+type PersistedUserTeam = UserTeam & {
+  id: NonNullable<UserTeam["id"]>;
+};
+type UserTeamMeta = {
+  Persisted: PersistedUserTeam;
+  AssociationKey: 'posts';
+  CreateInput: {
+    assignedAt?: Date;
+    assignedBy: string;
+  } & ({ user: User } | { userId: number }) & ({ team: Team } | { teamId: number });
+  WhereInput: {
+    userId?: number | number[] | Filter<number> | null;
+    teamId?: number | number[] | Filter<number> | null;
+    assignedAt?: Date | Date[] | Filter<number> | null;
+    assignedBy?: string | string[] | StringFilter | null;
+  };
+  OrderInput: {
+    userId?: SortOrder;
+    teamId?: SortOrder;
+    assignedAt?: SortOrder;
+    assignedBy?: SortOrder;
   };
 };
 
