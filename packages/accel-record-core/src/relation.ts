@@ -123,7 +123,7 @@ export class Relation<T, M extends ModelMeta> {
     return new Relation(this.model, newOptions);
   }
   query() {
-    let q = this.client.select(`${this.model.table}.*`);
+    let q = this.client;
     for (const join of this.options.joins) {
       q = q.join(...join);
     }
@@ -152,7 +152,8 @@ export class Relation<T, M extends ModelMeta> {
     return q;
   }
   get(): T[] {
-    const rows = rpcClient({ type: "query", ...this.query().toSQL() });
+    const query = this.query().select(`${this.model.table}.*`).toSQL();
+    const rows = rpcClient({ type: "query", ...query });
     for (const { klass, name, primaryKey, foreignKey } of this.options
       .includes ?? []) {
       const primaryKeys = rows.map((row: any) => row[primaryKey]);
