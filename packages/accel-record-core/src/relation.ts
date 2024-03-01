@@ -179,6 +179,9 @@ export class Relation<T, M extends ModelMeta> {
     this.counter = 0;
     return this;
   }
+  setOption(key: keyof Options, value: any) {
+    this.options[key] = value;
+  }
   [Symbol.iterator]() {
     const _this = this;
     return {

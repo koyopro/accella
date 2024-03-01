@@ -135,16 +135,10 @@ export class Persistence {
           instance[foreignKey] = this[primaryKey as keyof T];
           instance.save();
         }
-        // recreate collection proxy
-        const cache = value.toArray();
-        const option = {
-          wheres: [{ [foreignKey]: this[primaryKey as keyof T] }],
-        };
-        (this as any)[key] = new CollectionProxy(
-          Models[klass],
-          option,
-          cache.length > 0 ? cache : undefined
-        );
+        value.setOption("wheres", [
+          { [foreignKey]: this[primaryKey as keyof T] },
+        ]);
+        value.reset();
       } else if (association.isHasOne && value instanceof Model) {
         value[foreignKey] = this[primaryKey as keyof T];
         value.save();

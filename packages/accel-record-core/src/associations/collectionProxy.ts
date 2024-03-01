@@ -1,31 +1,27 @@
-import { knex, rpcClient } from "../database";
 import { ModelMeta, type Model } from "../index.js";
 import { Relation } from "../relation.js";
+import { HasManyAssociation } from "./hasManyAssociation";
 
-export class CollectionProxy<
-  T extends Model,
-  S extends ModelMeta,
-> extends Relation<T, S> {
+export class CollectionProxy<T extends Model, S extends ModelMeta> extends Relation<
+  T,
+  S
+> {
+  constructor(
+    model: typeof Model,
+    private association: HasManyAssociation<T>,
+    options: any,
+    cache: T[] | undefined = undefined
+  ) {
+    super(model, options, cache);
+  }
+
   push(record: T | T[]) {
     return this.concat(record);
   }
 
   concat(records: T | T[]) {
-    const _records = Array.isArray(records) ? records : [records];
-    for (const record of _records) {
-      Object.assign(record, this.options.wheres[0]);
-      record.save();
-      // TODO: 中間テーブルの作成
-      if (this.model.name == "PostTag") {
-        const query = knex("_PostToPostTag")
-          .insert({
-            ...this.options.wheres[0],
-            B: record.id,
-          })
-          .toSQL();
-        rpcClient(query);
-      }
-    }
+    console.log("concat", this.association);
+    this.association.concat(records);
     return this.reset();
   }
 
