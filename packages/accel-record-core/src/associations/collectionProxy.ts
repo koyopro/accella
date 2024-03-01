@@ -15,6 +15,14 @@ export class CollectionProxy<T extends Model, S extends ModelMeta> extends Relat
     super(model, options, cache);
   }
 
+  resetOptions() {
+    for (const [key, value] of Object.entries(
+      this.association.whereAttributes()
+    )) {
+      this.setOption(key as any, value);
+    }
+  }
+
   push(record: T | T[]) {
     return this.concat(record);
   }

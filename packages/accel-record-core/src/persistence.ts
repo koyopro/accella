@@ -135,9 +135,7 @@ export class Persistence {
           instance[foreignKey] = this[primaryKey as keyof T];
           instance.save();
         }
-        value.setOption("wheres", [
-          { [foreignKey]: this[primaryKey as keyof T] },
-        ]);
+        value.resetOptions();
         value.reset();
       } else if (association.isHasOne && value instanceof Model) {
         value[foreignKey] = this[primaryKey as keyof T];

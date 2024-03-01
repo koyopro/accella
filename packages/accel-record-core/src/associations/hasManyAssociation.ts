@@ -10,10 +10,4 @@ export class HasManyAssociation<T extends Model> extends Association<T> {
       record.save();
     }
   }
-
-  scopeAttributes() {
-    return {
-      [this.info.foreignKey]: this.owner[this.info.primaryKey as keyof T],
-    };
-  }
 }

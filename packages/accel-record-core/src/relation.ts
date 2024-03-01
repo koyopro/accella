@@ -152,7 +152,9 @@ export class Relation<T, M extends ModelMeta> {
     return q;
   }
   get(): T[] {
+    console.log(this.options);
     const query = this.query().select(`${this.model.table}.*`).toSQL();
+    console.log(query);
     const rows = rpcClient({ type: "query", ...query });
     for (const { klass, name, primaryKey, foreignKey } of this.options
       .includes ?? []) {

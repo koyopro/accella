@@ -1,4 +1,3 @@
-import { PostTag } from ".";
 import { $post } from "../factories/post";
 import { $postTag } from "../factories/postTag";
 import { $team } from "../factories/team";
@@ -16,14 +15,29 @@ describe("ManyToMany", () => {
     expect(team.users.first()?.user.equals(user)).toBeTruthy();
   });
 
-  test.only("create Implicit", () => {
-    const post = $post.create({ author: $user.create() });
+  test("create Implicit", () => {
+    const p = $post.create({ author: $user.create() });
     const postTag = $postTag.create();
-    const p = Post.first();
-    expect(p?.tags.toArray()).toEqual([]);
-    // console.log(Post.associations);
-    // console.log(PostTag.associations);
-    post.tags.push(postTag);
-    expect(Post.first()?.tags.toArray().length).toEqual(1);
+    expect(Post.find(p.id).tags.toArray()).toEqual([]);
+    p.tags.push(postTag);
+    expect(Post.find(p.id).tags.map((t) => t.id)).toEqual([postTag.id]);
+  });
+
+  test("deleteAll()", () => {
+    const user = $user.create();
+    const team = $team.create();
+    UserTeam.create({ user, team, assignedBy: "" });
+
+    expect(user.teams.deleteAll().length).toEqual(1);
+    expect(user.teams.toArray()).toEqual([]);
+  });
+
+  test.only("deleteAll() Implicit", () => {
+    const p = $post.create({ author: $user.create() });
+    const postTag = $postTag.create();
+    p.tags.push(postTag);
+
+    expect(p.tags.deleteAll().length).toEqual(1);
+    expect(Post.find(p.id).tags.toArray()).toEqual([]);
   });
 });
