@@ -96,8 +96,12 @@ export class Persistence {
       .toSQL();
     const id = rpcClient(query);
     (this as any).id = id;
-    for (const [key, { foreignKey }] of Object.entries(this.associations)) {
+    for (const [key, association] of Object.entries(this.associations)) {
+      const { foreignKey } = association;
       const value = this[key as keyof T];
+      if (association.through) {
+        continue;
+      }
       if (value instanceof CollectionProxy) {
         for (const instance of value.toArray()) {
           instance[foreignKey] = id;

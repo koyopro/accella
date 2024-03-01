@@ -23,6 +23,7 @@ describe("ManyToMany", () => {
     expect(p?.tags.toArray()).toEqual([]);
     // console.log(Post.associations);
     // console.log(PostTag.associations);
-    // post.tags.push(postTag);
+    post.tags.push(postTag);
+    expect(Post.first()?.tags.toArray().length).toEqual(1);
   });
 });

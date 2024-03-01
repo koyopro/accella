@@ -1,3 +1,4 @@
+import { knex, rpcClient } from "../database";
 import { ModelMeta, type Model } from "../index.js";
 import { Relation } from "../relation.js";
 
@@ -14,6 +15,16 @@ export class CollectionProxy<
     for (const record of _records) {
       Object.assign(record, this.options.wheres[0]);
       record.save();
+      // TODO: 中間テーブルの作成
+      if (this.model.name == "PostTag") {
+        const query = knex("_PostToPostTag")
+          .insert({
+            ...this.options.wheres[0],
+            B: record.id,
+          })
+          .toSQL();
+        rpcClient(query);
+      }
     }
     return this.reset();
   }
