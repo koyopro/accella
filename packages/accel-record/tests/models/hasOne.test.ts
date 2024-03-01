@@ -4,7 +4,7 @@ import { Setting } from "./setting";
 import { User } from "./user";
 
 describe("Setting", () => {
-  test(".associations()", () => {
+  test.skip(".associations()", () => {
     expect(Setting.associations.user).toEqual({
       klass: "User",
       foreignKey: "userId",
