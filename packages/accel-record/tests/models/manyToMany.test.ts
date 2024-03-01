@@ -32,12 +32,25 @@ describe("ManyToMany", () => {
     expect(user.teams.toArray()).toEqual([]);
   });
 
-  test.only("deleteAll() Implicit", () => {
+  test("deleteAll() Implicit", () => {
     const p = $post.create({ author: $user.create() });
     const postTag = $postTag.create();
     p.tags.push(postTag);
 
     expect(p.tags.deleteAll().length).toEqual(1);
     expect(Post.find(p.id).tags.toArray()).toEqual([]);
+  });
+
+  test.only("replace() Implicit", () => {
+    const p = $post.create({ author: $user.create() });
+    const t1 = $postTag.create();
+    const t2 = $postTag.create();
+    const t3 = $postTag.create();
+    p.tags.push([t1, t2]);
+    expect(p.tags.count()).toEqual(2);
+    console.log(p.tags.count());
+    p.tags.replace([t2, t3]);
+    expect(p.tags.map((p) => p.name)).toEqual(["tag2", "tag3"]);
+    expect(Post.find(p.id).tags.map((p) => p.name)).toEqual(["tag2", "tag3"]);
   });
 });

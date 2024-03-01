@@ -56,34 +56,15 @@ export class AssociationsBuilder {
       if (!field.isList && key in input) {
         proxy[key] = input[key];
       } else if (field.isList || key in input) {
-        let option: any;
         let _association: HasManyAssociation<T> | HasManyThroughAssociation<T>;
         if (association.through) {
-          option = {
-            joins: [
-              [
-                association.through,
-                `${field.type}.${association.primaryKey}`,
-                "=",
-                `${association.through}.${association.foreignKey}`,
-              ],
-            ],
-            wheres: [
-              {
-                [`${association.through}.${association.foreignKey}`]:
-                  instance[association.primaryKey],
-              },
-            ],
-          };
           _association = new HasManyThroughAssociation(instance, association);
         } else {
-          option = { wheres: [{ [foreignKey]: instance[primaryKey] }] };
           _association = new HasManyAssociation(instance, association);
         }
         instance[key] = new CollectionProxy(
           Models[klass],
           _association,
-          option,
           input[key] ?? (instance.isPersisted() ? undefined : [])
         );
       }

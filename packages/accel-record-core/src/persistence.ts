@@ -94,8 +94,7 @@ export class Persistence {
       .where(this.primaryKeysCondition())
       .update(data)
       .toSQL();
-    const id = rpcClient(query);
-    (this as any).id = id;
+    rpcClient(query);
     for (const [key, association] of Object.entries(this.associations)) {
       const { foreignKey } = association;
       const value = this[key as keyof T];

@@ -2,17 +2,16 @@ import { ModelMeta, type Model } from "../index.js";
 import { Options, Relation } from "../relation.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
 
-export class CollectionProxy<
-  T extends Model,
-  S extends ModelMeta,
-> extends Relation<T, S> {
+export class CollectionProxy<T extends Model, S extends ModelMeta> extends Relation<
+  T,
+  S
+> {
   constructor(
     model: typeof Model,
     private association: HasManyAssociation<T>,
-    options: any,
     cache: T[] | undefined = undefined
   ) {
-    super(model, options, cache);
+    super(model, association.whereAttributes(), cache);
   }
 
   resetOptions() {
@@ -81,6 +80,9 @@ export class CollectionProxy<
     const array = this.toArray();
     const added = records.filter((r) => !array.find((a) => a.equals(r)));
     const deleted = array.filter((a) => !records.find((r) => r.equals(a)));
+    console.log("array", array);
+    console.log("added", added);
+    console.log("deleted", deleted);
     this.destroy(...deleted);
     this.concat(added);
     return this.reset();
