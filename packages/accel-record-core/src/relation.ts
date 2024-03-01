@@ -1,7 +1,7 @@
 import { rpcClient } from "./database.js";
 import { Models, type ModelMeta, type Model } from "./index.js";
 
-type Options = {
+export type Options = {
   joins: any[];
   wheres: any[];
   whereNots: any[];

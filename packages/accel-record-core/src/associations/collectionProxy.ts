@@ -1,11 +1,11 @@
 import { ModelMeta, type Model } from "../index.js";
-import { Relation } from "../relation.js";
-import { HasManyAssociation } from "./hasManyAssociation";
+import { Options, Relation } from "../relation.js";
+import { HasManyAssociation } from "./hasManyAssociation.js";
 
-export class CollectionProxy<T extends Model, S extends ModelMeta> extends Relation<
-  T,
-  S
-> {
+export class CollectionProxy<
+  T extends Model,
+  S extends ModelMeta,
+> extends Relation<T, S> {
   constructor(
     model: typeof Model,
     private association: HasManyAssociation<T>,
@@ -19,7 +19,7 @@ export class CollectionProxy<T extends Model, S extends ModelMeta> extends Relat
     for (const [key, value] of Object.entries(
       this.association.whereAttributes()
     )) {
-      this.setOption(key as any, value);
+      this.setOption(key as keyof Options, value);
     }
   }
 

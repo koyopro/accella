@@ -1,6 +1,6 @@
 import { AssociationsBuilder } from "./associations/associationsBuilder";
 import { rpcClient } from "./database";
-import { CollectionProxy, Model, Models } from "./index.js";
+import { CollectionProxy, Model } from "./index.js";
 
 export class Persistence {
   isNewRecord: boolean = true;
@@ -128,7 +128,7 @@ export class Persistence {
       Object.assign(this, record);
     }
     for (const [key, association] of Object.entries(this.associations)) {
-      const { klass, foreignKey, primaryKey } = association;
+      const { foreignKey, primaryKey } = association;
       const value = this[key as keyof T];
       if (value instanceof CollectionProxy) {
         for (const instance of value) {
