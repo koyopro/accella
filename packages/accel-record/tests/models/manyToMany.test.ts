@@ -41,14 +41,13 @@ describe("ManyToMany", () => {
     expect(Post.find(p.id).tags.toArray()).toEqual([]);
   });
 
-  test.only("replace() Implicit", () => {
+  test("replace() Implicit", () => {
     const p = $post.create({ author: $user.create() });
-    const t1 = $postTag.create();
-    const t2 = $postTag.create();
-    const t3 = $postTag.create();
+    const t1 = $postTag.create({ name: "tag1" });
+    const t2 = $postTag.create({ name: "tag2" });
+    const t3 = $postTag.create({ name: "tag3" });
     p.tags.push([t1, t2]);
     expect(p.tags.count()).toEqual(2);
-    console.log(p.tags.count());
     p.tags.replace([t2, t3]);
     expect(p.tags.map((p) => p.name)).toEqual(["tag2", "tag3"]);
     expect(Post.find(p.id).tags.map((p) => p.name)).toEqual(["tag2", "tag3"]);
