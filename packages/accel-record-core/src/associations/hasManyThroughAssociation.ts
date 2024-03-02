@@ -1,9 +1,11 @@
-import { knex, rpcClient } from "../database";
+import { knex, execSQL } from "../database";
 import { Model } from "../index.js";
 import { HasManyAssociation } from "./hasManyAssociation";
 
 // cf. https://github.com/rails/rails/blob/main/activerecord/lib/active_record/associations/has_many_through_association.rb
-export class HasManyThroughAssociation<T extends Model> extends HasManyAssociation<T> {
+export class HasManyThroughAssociation<
+  T extends Model,
+> extends HasManyAssociation<T> {
   override concat(records: T | T[]) {
     const _records = Array.isArray(records) ? records : [records];
     for (const record of _records) {
@@ -14,7 +16,7 @@ export class HasManyThroughAssociation<T extends Model> extends HasManyAssociati
           [this.joinKey]: record.pkValues[0],
         })
         .toSQL();
-      rpcClient(query);
+      execSQL(query);
     }
   }
 
@@ -23,7 +25,7 @@ export class HasManyThroughAssociation<T extends Model> extends HasManyAssociati
       .where(this.info.foreignKey, this.owner[this.info.primaryKey as keyof T])
       .delete()
       .toSQL();
-    rpcClient(query);
+    execSQL(query);
   }
 
   destroyAll(): void {
@@ -41,7 +43,7 @@ export class HasManyThroughAssociation<T extends Model> extends HasManyAssociati
         .where(this.joinKey, record.pkValues[0])
         .delete()
         .toSQL();
-      if (rpcClient(query)) {
+      if (execSQL(query)) {
         ret.push(record);
       }
     }

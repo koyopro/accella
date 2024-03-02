@@ -1,5 +1,5 @@
 import { AssociationsBuilder } from "./associations/associationsBuilder";
-import { rpcClient } from "./database";
+import { execSQL } from "./database";
 import { CollectionProxy, Model } from "./index.js";
 
 export class Persistence {
@@ -88,7 +88,7 @@ export class Persistence {
       .where(this.primaryKeysCondition())
       .update(data)
       .toSQL();
-    rpcClient(query);
+    execSQL(query);
     for (const [key, association] of Object.entries(this.associations)) {
       const value = this[key as keyof T];
       if (association.through) {
@@ -111,11 +111,11 @@ export class Persistence {
       }
     }
     const query = this.client.insert(data).toSQL();
-    rpcClient(query);
+    execSQL(query);
     // FIXME: auto increment
     if (this.columns.includes("id")) {
       const q = this.client.orderBy("id", "desc").limit(1).toSQL();
-      const [record] = rpcClient({ ...q, type: "query" });
+      const [record] = execSQL({ ...q, type: "query" });
       Object.assign(this, record);
     }
     for (const [key, association] of Object.entries(this.associations)) {
@@ -141,7 +141,7 @@ export class Persistence {
       .where(this.primaryKeysCondition())
       .delete()
       .toSQL();
-    rpcClient(query);
+    execSQL(query);
     return true;
   }
 

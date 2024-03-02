@@ -1,4 +1,4 @@
-import { rpcClient } from "./database";
+import { execSQL } from "./database";
 
 export class Rollback extends Error {
   constructor() {
@@ -8,15 +8,15 @@ export class Rollback extends Error {
 
 export class Transaction {
   static startTransaction() {
-    rpcClient({ sql: "BEGIN;", bindings: [] });
+    execSQL({ sql: "BEGIN;", bindings: [] });
   }
 
   static commitTransaction() {
-    rpcClient({ sql: "COMMIT;", bindings: [] });
+    execSQL({ sql: "COMMIT;", bindings: [] });
   }
 
   static rollbackTransaction() {
-    rpcClient({ sql: "ROLLBACK;", bindings: [] });
+    execSQL({ sql: "ROLLBACK;", bindings: [] });
   }
 
   static transaction(callback: () => void) {

@@ -1,4 +1,4 @@
-import { rpcClient } from "./database.js";
+import { execSQL } from "./database.js";
 import { Models, type ModelMeta, Model } from "./index.js";
 
 export type Options = {
@@ -58,7 +58,7 @@ export class Relation<T, M extends ModelMeta> {
   }
   count(): number {
     const query = this.query().count("id").toSQL();
-    const res = rpcClient({ type: "query", ...query });
+    const res = execSQL({ type: "query", ...query });
     return Number(Object.values(res[0])[0]);
   }
   exists(): boolean {
@@ -124,7 +124,7 @@ export class Relation<T, M extends ModelMeta> {
   }
   deleteAll() {
     const query = this.query().del().toSQL();
-    rpcClient(query);
+    execSQL(query);
   }
   destroyAll() {
     for (const record of this.toArray()) {
@@ -162,7 +162,7 @@ export class Relation<T, M extends ModelMeta> {
   }
   get(): T[] {
     const query = this.query().select(`${this.model.table}.*`).toSQL();
-    const rows = rpcClient({ type: "query", ...query });
+    const rows = execSQL({ type: "query", ...query });
     for (const { klass, name, primaryKey, foreignKey } of this.options
       .includes ?? []) {
       const primaryKeys = rows.map((row: any) => row[primaryKey]);
