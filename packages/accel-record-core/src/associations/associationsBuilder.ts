@@ -1,5 +1,7 @@
-import { Models, type Model } from "../index.js";
 import { CollectionProxy } from "../associations/collectionProxy.js";
+import { Models, type Model } from "../index.js";
+import { HasManyAssociation } from "./hasManyAssociation";
+import { HasManyThroughAssociation } from "./hasManyThroughAssociation";
 
 export class AssociationsBuilder {
   static build<T extends Model>(klass: T, instance: any, input: any): T {
@@ -54,10 +56,15 @@ export class AssociationsBuilder {
       if (!field.isList && key in input) {
         proxy[key] = input[key];
       } else if (field.isList || key in input) {
-        const option = { wheres: [{ [foreignKey]: instance[primaryKey] }] };
+        let _association: HasManyAssociation<T> | HasManyThroughAssociation<T>;
+        if (association.through) {
+          _association = new HasManyThroughAssociation(instance, association);
+        } else {
+          _association = new HasManyAssociation(instance, association);
+        }
         instance[key] = new CollectionProxy(
           Models[klass],
-          option,
+          _association,
           input[key] ?? (instance.isPersisted() ? undefined : [])
         );
       }

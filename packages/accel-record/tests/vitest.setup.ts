@@ -3,10 +3,7 @@ import { execSync } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// TODO: indexからimportしたい(テストが通らなくなる)
-import "./models/post.js";
-import "./models/setting.js";
-import "./models/user.js";
+import "./models/index.js";
 
 beforeAll(() => {
   process.env.DATABASE_URL = getPrismaClientConfig().datasourceUrl;

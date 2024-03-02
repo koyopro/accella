@@ -4,25 +4,34 @@ export class Association {
   klass: string;
   foreignKey: string;
   primaryKey: string;
-  table: string;
   field: Field;
+  isBelongsTo: boolean;
+  through: string | undefined;
 
-  constructor(relation: DMMF.Field, association: Field) {
+  constructor(
+    relation: DMMF.Field,
+    association: Field,
+    primaryKeys: readonly string[]
+  ) {
     this.klass = association.type;
     this.foreignKey =
       relation.relationFromFields?.[0] ?? association.foreignKeys?.[0] ?? "";
     this.primaryKey =
       relation.relationToFields?.[0] ?? association.primaryKeys?.[0] ?? "";
-    this.table = association.type.toLowerCase();
     this.field = association;
+    if (this.foreignKey == "" && this.primaryKey == "") {
+      // Implicit many-to-many relations
+      this.isBelongsTo = false;
+      this.foreignKey = relation.type < association.type ? "A" : "B";
+      this.primaryKey = primaryKeys[0];
+      this.through = `_${association.relationName}`;
+    } else {
+      this.isBelongsTo = (relation.relationToFields?.length ?? 0) == 0;
+    }
   }
 
   get isHasOne() {
     return !this.field.isList && !this.isBelongsTo;
-  }
-
-  get isBelongsTo() {
-    return this.field.relationName?.endsWith(this.klass) ?? false;
   }
 }
 
@@ -113,7 +122,7 @@ export class Fields {
   }
 
   static get table(): string {
-    return this.model.dbName ?? toSnakeCase(this.model.name);
+    return this.model.dbName ?? this.model.name;
   }
 
   static get fields(): Readonly<Field[]> {
@@ -161,7 +170,9 @@ export class Fields {
           return acc;
         return {
           ...acc,
-          [field.name]: new Association(r, field),
+          ...{
+            [field.name]: new Association(r, field, this.primaryKeys),
+          },
         };
       }, {});
   }
@@ -189,10 +200,8 @@ export class Fields {
   get primaryKeys(): string[] {
     return (this.constructor as any).primaryKeys;
   }
-}
 
-function toSnakeCase(str: string): string {
-  return str
-    .replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
-    .replace(/^_/, "");
+  get pkValues(): any[] {
+    return (this.primaryKeys as (keyof this)[]).map((key) => this[key]);
+  }
 }
