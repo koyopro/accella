@@ -54,15 +54,9 @@ export class Persistence {
   destroy<T extends Model>(this: T): boolean {
     if (this.isReadonly) throw new Error("Readonly record");
     for (const [key, association] of Object.entries(this.associations)) {
-      if (association.through) {
-        // FIXME: 中間テーブルのレコードを削除
-        continue;
-      }
       const value = this[key as keyof T] as any;
       if (value instanceof CollectionProxy) {
-        for (const instance of value.toArray()) {
-          instance.destroy();
-        }
+        value.destroyAll();
       } else if (association.isHasOne) {
         value?.destroy();
       }
@@ -147,7 +141,6 @@ export class Persistence {
       .where(this.primaryKeysCondition())
       .delete()
       .toSQL();
-    console.log(query);
     rpcClient(query);
     return true;
   }

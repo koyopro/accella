@@ -86,4 +86,13 @@ describe("ManyToMany", () => {
     expect(p.tags.map((p) => p.name)).toEqual(["tag2", "tag3"]);
     expect(Post.find(p.id).tags.map((p) => p.name)).toEqual(["tag2", "tag3"]);
   });
+
+  test("destroy() owner", () => {
+    const p = $post.create({ author: $user.create() });
+    const t1 = $postTag.create({ name: "tag1" });
+    p.tags.push([t1]);
+    expect(p.tags.count()).toEqual(1);
+    t1.destroy();
+    expect(p.tags.count()).toEqual(0);
+  });
 });
