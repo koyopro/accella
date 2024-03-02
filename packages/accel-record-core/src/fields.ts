@@ -1,17 +1,5 @@
 import { BaseDMMF, DMMF } from "prisma/prisma-client/runtime/library.js";
 
-const makeAssociations = (relation: DMMF.Field, association: Field) => {
-  const newLocal = new Association(relation, association);
-  const ret = {
-    [association.name]: newLocal,
-  };
-  // if (newLocal.isBelongsTo && newLocal.primaryKey == "") {
-  //   // 中間テーブルの作成
-  //   ret["_"] = new Association(relation, association);
-  // }
-  return ret;
-};
-
 export class Association {
   klass: string;
   foreignKey: string;
@@ -20,7 +8,11 @@ export class Association {
   isBelongsTo: boolean;
   through: string | undefined;
 
-  constructor(relation: DMMF.Field, association: Field) {
+  constructor(
+    relation: DMMF.Field,
+    association: Field,
+    primaryKeys: readonly string[]
+  ) {
     this.klass = association.type;
     this.foreignKey =
       relation.relationFromFields?.[0] ?? association.foreignKeys?.[0] ?? "";
@@ -31,7 +23,7 @@ export class Association {
       // Implicit many-to-many relations
       this.isBelongsTo = false;
       this.foreignKey = relation.type < association.type ? "A" : "B";
-      this.primaryKey = "id"; // FIXME:
+      this.primaryKey = primaryKeys[0];
       this.through = `_${association.relationName}`;
     } else {
       this.isBelongsTo = (relation.relationToFields?.length ?? 0) == 0;
@@ -178,7 +170,9 @@ export class Fields {
           return acc;
         return {
           ...acc,
-          ...makeAssociations(r, field),
+          ...{
+            [field.name]: new Association(r, field, this.primaryKeys),
+          },
         };
       }, {});
   }
