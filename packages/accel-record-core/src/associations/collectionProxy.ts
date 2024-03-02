@@ -34,9 +34,7 @@ export class CollectionProxy<T extends Model, S extends ModelMeta> extends Relat
 
   deleteAll() {
     const ret = this.toArray();
-    for (const record of ret) {
-      record.delete();
-    }
+    this.association.deleteAll();
     this.reset();
     return ret;
   }

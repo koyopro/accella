@@ -1,4 +1,4 @@
-import { Model } from "../index.js";
+import { Model, Models } from "../index.js";
 import { Association } from "./association";
 
 // cf. https://github.com/rails/rails/blob/main/activerecord/lib/active_record/associations/has_many_association.rb#L11
@@ -9,6 +9,10 @@ export class HasManyAssociation<T extends Model> extends Association<T> {
       Object.assign(record, this.scopeAttributes());
       record.save();
     }
+  }
+
+  deleteAll() {
+    Models[this.info.klass].where(this.scopeAttributes()).deleteAll();
   }
 
   delete(...records: T[]) {

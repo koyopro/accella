@@ -39,7 +39,8 @@ describe("ManyToMany", () => {
     p.tags.push(postTag);
 
     expect(p.tags.deleteAll().length).toEqual(1);
-    expect(Post.find(p.id).tags.toArray()).toEqual([]);
+    expect(p.tags.toArray()).toEqual([]);
+    expect(PostTag.count()).toEqual(1);
   });
 
   test("delete() Implicit", () => {
