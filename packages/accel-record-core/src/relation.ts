@@ -123,7 +123,11 @@ export class Relation<T, M extends ModelMeta> {
     newOptions["whereRaws"].push([query, bindings]);
     return new Relation(this.model, newOptions);
   }
-  query() {
+  deleteAll() {
+    const query = this.query().del().toSQL();
+    rpcClient(query);
+  }
+  private query() {
     let q = this.client.clone();
     for (const join of this.options.joins) {
       q = q.join(...join);
