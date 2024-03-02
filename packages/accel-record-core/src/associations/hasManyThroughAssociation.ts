@@ -3,22 +3,20 @@ import { Model } from "../index.js";
 import { HasManyAssociation } from "./hasManyAssociation";
 
 // cf. https://github.com/rails/rails/blob/main/activerecord/lib/active_record/associations/has_many_through_association.rb
-export class HasManyThroughAssociation<T extends Model> extends HasManyAssociation<T> {
+export class HasManyThroughAssociation<
+  T extends Model,
+> extends HasManyAssociation<T> {
   override concat(records: T | T[]) {
     const _records = Array.isArray(records) ? records : [records];
     for (const record of _records) {
-      Object.assign(record, this.scopeAttributes());
       record.save();
-      // TODO: 中間テーブルの作成
-      if (this.info.through) {
-        const query = knex(this.info.through)
-          .insert({
-            ...this.scopeAttributes(),
-            [this.joinKey]: record.id,
-          })
-          .toSQL();
-        rpcClient(query);
-      }
+      const query = knex(this.info.through)
+        .insert({
+          ...this.scopeAttributes(),
+          [this.joinKey]: record.pkValues[0],
+        })
+        .toSQL();
+      rpcClient(query);
     }
   }
 
@@ -33,13 +31,12 @@ export class HasManyThroughAssociation<T extends Model> extends HasManyAssociati
   delete(...records: T[]) {
     const ret: T[] = [];
     for (const record of records) {
-      // 中間テーブルのレコードを削除
       const query = knex(this.info.through)
         .where(
           this.info.foreignKey,
           this.owner[this.info.primaryKey as keyof T]
         )
-        .where(this.joinKey, record.id)
+        .where(this.joinKey, record.pkValues[0])
         .delete()
         .toSQL();
       if (rpcClient(query)) {

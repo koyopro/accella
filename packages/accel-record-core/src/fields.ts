@@ -206,4 +206,8 @@ export class Fields {
   get primaryKeys(): string[] {
     return (this.constructor as any).primaryKeys;
   }
+
+  get pkValues(): any[] {
+    return (this.primaryKeys as (keyof this)[]).map((key) => this[key]);
+  }
 }
