@@ -27,7 +27,6 @@ export class CollectionProxy<T extends Model, S extends ModelMeta> extends Relat
   }
 
   concat(records: T | T[]) {
-    console.log("concat", this.association);
     this.association.concat(records);
     return this.reset();
   }
@@ -62,9 +61,6 @@ export class CollectionProxy<T extends Model, S extends ModelMeta> extends Relat
     const array = this.toArray();
     const added = records.filter((r) => !array.find((a) => a.equals(r)));
     const deleted = array.filter((a) => !records.find((r) => r.equals(a)));
-    console.log("array", array);
-    console.log("added", added);
-    console.log("deleted", deleted);
     this.destroy(...deleted);
     this.concat(added);
     return this.reset();
