@@ -15,6 +15,10 @@ export class HasManyAssociation<T extends Model> extends Association<T> {
     Models[this.info.klass].where(this.scopeAttributes()).deleteAll();
   }
 
+  destroyAll() {
+    Models[this.info.klass].where(this.scopeAttributes()).destroyAll();
+  }
+
   delete(...records: T[]) {
     const ret: T[] = [];
     for (const record of records) {

@@ -3,9 +3,7 @@ import { Model } from "../index.js";
 import { HasManyAssociation } from "./hasManyAssociation";
 
 // cf. https://github.com/rails/rails/blob/main/activerecord/lib/active_record/associations/has_many_through_association.rb
-export class HasManyThroughAssociation<
-  T extends Model,
-> extends HasManyAssociation<T> {
+export class HasManyThroughAssociation<T extends Model> extends HasManyAssociation<T> {
   override concat(records: T | T[]) {
     const _records = Array.isArray(records) ? records : [records];
     for (const record of _records) {
@@ -26,6 +24,10 @@ export class HasManyThroughAssociation<
       .delete()
       .toSQL();
     rpcClient(query);
+  }
+
+  destroyAll(): void {
+    this.deleteAll();
   }
 
   delete(...records: T[]) {

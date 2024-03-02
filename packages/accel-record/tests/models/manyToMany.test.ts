@@ -33,6 +33,16 @@ describe("ManyToMany", () => {
     expect(user.teams.toArray()).toEqual([]);
   });
 
+  test("destroyAll() Implicit", () => {
+    const p = $post.create({ author: $user.create() });
+    const postTag = $postTag.create();
+    p.tags.push(postTag);
+
+    expect(p.tags.destroyAll().length).toEqual(1);
+    expect(p.tags.toArray()).toEqual([]);
+    expect(PostTag.count()).toEqual(1);
+  });
+
   test("deleteAll() Implicit", () => {
     const p = $post.create({ author: $user.create() });
     const postTag = $postTag.create();
