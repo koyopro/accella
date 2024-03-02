@@ -149,4 +149,12 @@ describe("Relation", () => {
     User.where({ age: 30 }).deleteAll();
     expect(User.all().count()).toBe(2);
   });
+
+  test("#destroyAll()", () => {
+    $user.createList(2, { age: 20 });
+    $user.createList(2, { age: 30 });
+    expect(User.all().count()).toBe(4);
+    User.where({ age: 30 }).destroyAll();
+    expect(User.all().count()).toBe(2);
+  });
 });

@@ -1,5 +1,5 @@
 import { rpcClient } from "./database.js";
-import { Models, type ModelMeta, type Model } from "./index.js";
+import { Models, type ModelMeta, Model } from "./index.js";
 
 type Options = {
   wheres: any[];
@@ -123,6 +123,11 @@ export class Relation<T, M extends ModelMeta> {
   deleteAll() {
     const query = this.query().del().toSQL();
     rpcClient(query);
+  }
+  destroyAll() {
+    for (const record of this.toArray()) {
+      if (record instanceof Model) record.destroy();
+    }
   }
   query() {
     let q = this.client;
