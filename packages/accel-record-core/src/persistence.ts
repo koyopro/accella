@@ -149,6 +149,7 @@ export class Persistence {
       .where(this.primaryKeysCondition())
       .delete()
       .toSQL();
+    console.log(query);
     rpcClient(query);
     return true;
   }

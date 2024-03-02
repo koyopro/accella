@@ -22,6 +22,25 @@ export class HasManyThroughAssociation<T extends Model> extends HasManyAssociati
     }
   }
 
+  delete(...records: T[]) {
+    const ret: T[] = [];
+    for (const record of records) {
+      // 中間テーブルのレコードを削除
+      const query = knex(this.info.through)
+        .where(
+          this.info.foreignKey,
+          this.owner[this.info.primaryKey as keyof T]
+        )
+        .where(this.joinKey, record.id)
+        .delete()
+        .toSQL();
+      if (rpcClient(query)) {
+        ret.push(record);
+      }
+    }
+    return ret;
+  }
+
   whereAttributes() {
     return {
       joins: [

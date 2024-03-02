@@ -3,6 +3,7 @@ import { $postTag } from "../factories/postTag";
 import { $team } from "../factories/team";
 import { $user } from "../factories/user";
 import { Post } from "./post";
+import { PostTag } from "./postTag";
 import { UserTeam } from "./userTeam";
 
 describe("ManyToMany", () => {
@@ -39,6 +40,17 @@ describe("ManyToMany", () => {
 
     expect(p.tags.deleteAll().length).toEqual(1);
     expect(Post.find(p.id).tags.toArray()).toEqual([]);
+  });
+
+  test("delete() Implicit", () => {
+    const p = $post.create({ author: $user.create() });
+    const postTag = $postTag.create();
+    p.tags.push(postTag);
+    expect(p.tags.count()).toEqual(1);
+
+    expect(p.tags.delete(postTag)).toBeTruthy();
+    expect(p.tags.count()).toEqual(0);
+    expect(PostTag.count()).toEqual(1);
   });
 
   test("replace() Implicit", () => {

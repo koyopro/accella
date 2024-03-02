@@ -51,14 +51,7 @@ export class CollectionProxy<T extends Model, S extends ModelMeta> extends Relat
   }
 
   delete(...records: T[]) {
-    const ret: T[] = [];
-    const array = this.toArray();
-    for (const record of records) {
-      if (array.find((r) => r.equals(record))) {
-        record.delete();
-        ret.push(record);
-      }
-    }
+    const ret = this.association.delete(...records);
     this.reset();
     return ret;
   }

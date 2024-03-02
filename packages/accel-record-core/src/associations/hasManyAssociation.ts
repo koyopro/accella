@@ -10,4 +10,14 @@ export class HasManyAssociation<T extends Model> extends Association<T> {
       record.save();
     }
   }
+
+  delete(...records: T[]) {
+    const ret: T[] = [];
+    for (const record of records) {
+      if (record.delete()) {
+        ret.push(record);
+      }
+    }
+    return ret;
+  }
 }
