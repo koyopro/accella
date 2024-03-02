@@ -58,7 +58,6 @@ export class Relation<T, M extends ModelMeta> {
   }
   count(): number {
     const query = this.query().count("id").toSQL();
-    console.log(query);
     const res = rpcClient({ type: "query", ...query });
     return Number(Object.values(res[0])[0]);
   }
@@ -162,11 +161,8 @@ export class Relation<T, M extends ModelMeta> {
     return q;
   }
   get(): T[] {
-    console.log(this.options);
     const query = this.query().select(`${this.model.table}.*`).toSQL();
-    console.log(query);
     const rows = rpcClient({ type: "query", ...query });
-    console.log({ rows });
     for (const { klass, name, primaryKey, foreignKey } of this.options
       .includes ?? []) {
       const primaryKeys = rows.map((row: any) => row[primaryKey]);
@@ -182,7 +178,6 @@ export class Relation<T, M extends ModelMeta> {
       }
     }
     return rows.map((row: object) => {
-      console.log(row);
       const obj = this.model.build(row);
       obj.isNewRecord = false;
       return obj;
