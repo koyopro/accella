@@ -48,6 +48,10 @@ export class HasManyThroughAssociation<T extends Model> extends HasManyAssociati
     return ret;
   }
 
+  destroy(...records: T[]): T[] {
+    return this.delete(...records);
+  }
+
   whereAttributes() {
     return {
       joins: [

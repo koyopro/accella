@@ -28,4 +28,14 @@ export class HasManyAssociation<T extends Model> extends Association<T> {
     }
     return ret;
   }
+
+  destroy(...records: T[]) {
+    const ret: T[] = [];
+    for (const record of records) {
+      if (record.destroy()) {
+        ret.push(record);
+      }
+    }
+    return ret;
+  }
 }
