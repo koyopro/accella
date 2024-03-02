@@ -1,7 +1,8 @@
 import { rpcClient } from "./database.js";
-import { Models, type ModelMeta, type Model } from "./index.js";
+import { Models, type ModelMeta, Model } from "./index.js";
 
-type Options = {
+export type Options = {
+  joins: any[];
   wheres: any[];
   whereNots: any[];
   whereRaws: [string, any[]][];
@@ -21,7 +22,7 @@ export class Relation<T, M extends ModelMeta> {
   private client: any;
   protected options: Options;
   constructor(
-    private model: typeof Model,
+    protected model: typeof Model,
     options: Partial<Options> = {},
     private cache: T[] | undefined = undefined
   ) {
@@ -29,6 +30,7 @@ export class Relation<T, M extends ModelMeta> {
     this.client = model.client;
     this.options = Object.assign(
       {
+        joins: [],
         wheres: [],
         whereNots: [],
         whereRaws: [],
@@ -120,8 +122,20 @@ export class Relation<T, M extends ModelMeta> {
     newOptions["whereRaws"].push([query, bindings]);
     return new Relation(this.model, newOptions);
   }
-  query() {
-    let q = this.client;
+  deleteAll() {
+    const query = this.query().del().toSQL();
+    rpcClient(query);
+  }
+  destroyAll() {
+    for (const record of this.toArray()) {
+      if (record instanceof Model) record.destroy();
+    }
+  }
+  private query() {
+    let q = this.client.clone();
+    for (const join of this.options.joins) {
+      q = q.join(...join);
+    }
     for (const where of this.options.wheres) {
       if (Array.isArray(where)) {
         q = q.where(...where);
@@ -147,7 +161,8 @@ export class Relation<T, M extends ModelMeta> {
     return q;
   }
   get(): T[] {
-    const rows = rpcClient({ type: "query", ...this.query().toSQL() });
+    const query = this.query().select(`${this.model.table}.*`).toSQL();
+    const rows = rpcClient({ type: "query", ...query });
     for (const { klass, name, primaryKey, foreignKey } of this.options
       .includes ?? []) {
       const primaryKeys = rows.map((row: any) => row[primaryKey]);
@@ -172,6 +187,9 @@ export class Relation<T, M extends ModelMeta> {
     this.cache = undefined;
     this.counter = 0;
     return this;
+  }
+  setOption(key: keyof Options, value: any) {
+    this.options[key] = value;
   }
   [Symbol.iterator]() {
     const _this = this;

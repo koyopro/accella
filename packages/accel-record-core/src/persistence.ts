@@ -1,6 +1,6 @@
 import { AssociationsBuilder } from "./associations/associationsBuilder";
 import { rpcClient } from "./database";
-import { CollectionProxy, Model, Models } from "./index.js";
+import { CollectionProxy, Model } from "./index.js";
 
 export class Persistence {
   isNewRecord: boolean = true;
@@ -56,9 +56,7 @@ export class Persistence {
     for (const [key, association] of Object.entries(this.associations)) {
       const value = this[key as keyof T] as any;
       if (value instanceof CollectionProxy) {
-        for (const instance of value.toArray()) {
-          instance.destroy();
-        }
+        value.destroyAll();
       } else if (association.isHasOne) {
         value?.destroy();
       }
@@ -90,13 +88,14 @@ export class Persistence {
       .where(this.primaryKeysCondition())
       .update(data)
       .toSQL();
-    const id = rpcClient(query);
-    (this as any).id = id;
-    for (const [key, { foreignKey }] of Object.entries(this.associations)) {
+    rpcClient(query);
+    for (const [key, association] of Object.entries(this.associations)) {
       const value = this[key as keyof T];
+      if (association.through) {
+        continue;
+      }
       if (value instanceof CollectionProxy) {
         for (const instance of value.toArray()) {
-          instance[foreignKey] = id;
           instance.save();
         }
       }
@@ -113,27 +112,22 @@ export class Persistence {
     }
     const query = this.client.insert(data).toSQL();
     rpcClient(query);
-    const q = this.client.orderBy("id", "desc").limit(1).toSQL();
-    const [record] = rpcClient({ ...q, type: "query" });
-    Object.assign(this, record);
+    // FIXME: auto increment
+    if (this.columns.includes("id")) {
+      const q = this.client.orderBy("id", "desc").limit(1).toSQL();
+      const [record] = rpcClient({ ...q, type: "query" });
+      Object.assign(this, record);
+    }
     for (const [key, association] of Object.entries(this.associations)) {
-      const { klass, foreignKey, primaryKey } = association;
+      const { foreignKey, primaryKey } = association;
       const value = this[key as keyof T];
       if (value instanceof CollectionProxy) {
         for (const instance of value) {
           instance[foreignKey] = this[primaryKey as keyof T];
           instance.save();
         }
-        // recreate collection proxy
-        const cache = value.toArray();
-        const option = {
-          wheres: [{ [foreignKey]: this[primaryKey as keyof T] }],
-        };
-        (this as any)[key] = new CollectionProxy(
-          Models[klass],
-          option,
-          cache.length > 0 ? cache : undefined
-        );
+        value.resetOptions();
+        value.reset();
       } else if (association.isHasOne && value instanceof Model) {
         value[foreignKey] = this[primaryKey as keyof T];
         value.save();
