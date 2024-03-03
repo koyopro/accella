@@ -60,6 +60,8 @@ declare module "./user" {
     posts: CollectionProxy<Post, UserMeta>;
     setting: Setting | undefined;
     teams: CollectionProxy<UserTeam, UserMeta>;
+    createdAt: Date;
+    updatedAt: Date;
   }
 }
 type PersistedUser = User & {
@@ -76,18 +78,24 @@ type UserMeta = {
     posts?: Post[];
     setting?: Setting;
     teams?: UserTeam[];
+    createdAt?: Date;
+    updatedAt: Date;
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     email?: string | string[] | StringFilter | null;
     name?: string | string[] | StringFilter | null;
     age?: number | number[] | Filter<number> | null;
+    createdAt?: Date | Date[] | Filter<number> | null;
+    updatedAt?: Date | Date[] | Filter<number> | null;
   };
   OrderInput: {
     id?: SortOrder;
     email?: SortOrder;
     name?: SortOrder;
     age?: SortOrder;
+    createdAt?: SortOrder;
+    updatedAt?: SortOrder;
   };
 };
 
