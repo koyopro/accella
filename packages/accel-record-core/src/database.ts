@@ -46,13 +46,16 @@ export const execSQL = (params: {
   bindings: readonly any[];
 }): any => {
   const { sql, bindings } = params;
+  const startTime = Date.now();
+  const ret = rpcClient(params);
+  const time = Date.now() - startTime;
   if (params.type == "query") {
-    logger.info(`  \x1b[36mSQL  \x1b[34m${sql}\x1b[39m`, bindings);
+    logger.info(`  \x1b[36mSQL(${time}ms)  \x1b[34m${sql}\x1b[39m`, bindings);
   } else {
     const color = /begin|commit|rollback/i.test(sql) ? "\x1b[36m" : "\x1b[32m";
-    logger.info(`  \x1b[36mSQL  ${color}${sql}\x1b[39m`, bindings);
+    logger.info(`  \x1b[36mSQL(${time}ms)  ${color}${sql}\x1b[39m`, bindings);
   }
-  return rpcClient(params);
+  return ret;
 };
 
 export const stopRpcClient = () => {
