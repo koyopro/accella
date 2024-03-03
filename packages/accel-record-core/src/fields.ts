@@ -102,6 +102,10 @@ export class Field {
         return undefined;
     }
   }
+
+  get defaultIsNow() {
+    return this.default != undefined && this.default.name === "now";
+  }
 }
 
 let dmmf: BaseDMMF;

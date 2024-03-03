@@ -78,22 +78,13 @@ export class Persistence {
   }
 
   protected updateRecord<T extends Model>(this: T): boolean {
-    const data: any = {};
-    const now = new Date();
-    for (const column of this.columns as (keyof T)[]) {
-      if (this[column] !== undefined) {
-        data[column as string] = this[column];
-      }
-      if (this.findField(column as string)?.isUpdatedAt) {
-        data[column as string] = now;
-        this[column] = now as any;
-      }
-    }
+    const data = this.makeUpdateParams();
     const query = this.client
       .where(this.primaryKeysCondition())
       .update(data)
       .toSQL();
     execSQL(query);
+    this.retriveUpdatedAt(data);
     for (const [key, association] of Object.entries(this.associations)) {
       const value = this[key as keyof T];
       if (association.through) {
@@ -108,29 +99,36 @@ export class Persistence {
     return true;
   }
 
-  protected createRecord<T extends Model>(this: T): boolean {
+  protected makeUpdateParams<T extends Model>(this: T) {
     const data: any = {};
     const now = new Date();
     for (const column of this.columns as (keyof T)[]) {
       if (this[column] !== undefined) {
         data[column as string] = this[column];
       }
-      const field = this.findField(column as string);
-      if (field?.isUpdatedAt && data[column] == undefined) {
-        data[column as string] = now;
-      }
-      if (field?.default && field.default.name == "now") {
+      if (this.findField(column as string)?.isUpdatedAt) {
         data[column as string] = now;
       }
     }
+    return data;
+  }
+
+  protected retriveUpdatedAt<T extends Model>(
+    this: T,
+    data: Record<string, any>
+  ) {
+    for (const column of this.columns as (keyof T)[]) {
+      if (this.findField(column as string)?.isUpdatedAt) {
+        this[column as keyof T] = data[column as string];
+      }
+    }
+  }
+
+  protected createRecord<T extends Model>(this: T): boolean {
+    const data = this.makeInsertParams();
     const query = this.client.insert(data).toSQL();
     execSQL(query);
-    // FIXME: auto increment
-    if (this.columns.includes("id")) {
-      const q = this.client.orderBy("id", "desc").limit(1).toSQL();
-      const [record] = execSQL({ ...q, type: "query" });
-      Object.assign(this, record);
-    }
+    this.retriveInsertedAttributes();
     for (const [key, association] of Object.entries(this.associations)) {
       const { foreignKey, primaryKey } = association;
       const value = this[key as keyof T];
@@ -147,6 +145,33 @@ export class Persistence {
       }
     }
     return true;
+  }
+
+  protected retriveInsertedAttributes<T extends Model>(this: T) {
+    // FIXME:
+    if (this.columns.includes("id")) {
+      const q = this.client.orderBy("id", "desc").limit(1).toSQL();
+      const [record] = execSQL({ ...q, type: "query" });
+      Object.assign(this, record);
+    }
+  }
+
+  protected makeInsertParams<T extends Model>(this: T) {
+    const data: any = {};
+    const now = new Date();
+    for (const column of this.columns as (keyof T)[]) {
+      if (this[column] !== undefined) {
+        data[column as string] = this[column];
+      }
+      const field = this.findField(column as string);
+      if (field?.isUpdatedAt && data[column] == undefined) {
+        data[column as string] = now;
+      }
+      if (field?.defaultIsNow && data[column] == undefined) {
+        data[column as string] = now;
+      }
+    }
+    return data;
   }
 
   protected deleteRecord<T extends Model>(this: T): boolean {
