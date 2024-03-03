@@ -233,7 +233,7 @@ type PostTagMeta = {
 
 declare module "./setting" {
   interface Setting {
-    id: number | undefined;
+    settingId: number | undefined;
     user: User;
     userId: number;
     threshold: number | undefined;
@@ -241,25 +241,25 @@ declare module "./setting" {
   }
 }
 type PersistedSetting = Setting & {
-  id: NonNullable<Setting["id"]>;
+  settingId: NonNullable<Setting["settingId"]>;
   createdAt: NonNullable<Setting["createdAt"]>;
 };
 type SettingMeta = {
   Persisted: PersistedSetting;
   AssociationKey: 'posts';
   CreateInput: {
-    id?: number;
+    settingId?: number;
     threshold?: number;
     createdAt?: Date;
   } & ({ user: User } | { userId: number });
   WhereInput: {
-    id?: number | number[] | Filter<number> | null;
+    settingId?: number | number[] | Filter<number> | null;
     userId?: number | number[] | Filter<number> | null;
     threshold?: number | number[] | Filter<number> | null;
     createdAt?: Date | Date[] | Filter<number> | null;
   };
   OrderInput: {
-    id?: SortOrder;
+    settingId?: SortOrder;
     userId?: SortOrder;
     threshold?: SortOrder;
     createdAt?: SortOrder;
