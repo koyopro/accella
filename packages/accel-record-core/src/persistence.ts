@@ -83,12 +83,23 @@ export class Persistence {
       if (this[column] !== undefined) {
         data[column as string] = this[column];
       }
+      // handle updatedAt
+      const field = this.fields.find((f) => f.name === column);
+      if (field?.isUpdatedAt) {
+        data[column as string] = new Date();
+      }
     }
     const query = this.client
       .where(this.primaryKeysCondition())
       .update(data)
       .toSQL();
     execSQL(query);
+    // FIXME:
+    if (this.columns.includes("id")) {
+      const q = this.client.orderBy("id", "desc").limit(1).toSQL();
+      const [record] = execSQL({ ...q, type: "query" });
+      Object.assign(this, record);
+    }
     for (const [key, association] of Object.entries(this.associations)) {
       const value = this[key as keyof T];
       if (association.through) {
@@ -108,6 +119,11 @@ export class Persistence {
     for (const column of this.columns as (keyof T)[]) {
       if (this[column] !== undefined) {
         data[column as string] = this[column];
+      }
+      // handle updatedAt
+      const field = this.fields.find((f) => f.name === column);
+      if (field?.isUpdatedAt && data[column] == undefined) {
+        data[column as string] = new Date();
       }
     }
     const query = this.client.insert(data).toSQL();
