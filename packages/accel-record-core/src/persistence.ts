@@ -126,9 +126,12 @@ export class Persistence {
 
   protected createRecord<T extends Model>(this: T): boolean {
     const data = this.makeInsertParams();
-    const query = this.client.insert(data).toSQL();
-    execSQL(query);
-    this.retriveInsertedAttributes();
+    const query = this.client.returning(this.primaryKeys).insert(data).toSQL();
+    const returning = execSQL({ ...query, type: "query" }) as Record<
+      keyof T,
+      any
+    >[];
+    this.retriveInsertedAttributes(returning[0]);
     for (const [key, association] of Object.entries(this.associations)) {
       const { foreignKey, primaryKey } = association;
       const value = this[key as keyof T];
@@ -147,13 +150,26 @@ export class Persistence {
     return true;
   }
 
-  protected retriveInsertedAttributes<T extends Model>(this: T) {
-    // FIXME:
-    if (this.columns.includes("id")) {
-      const q = this.client.orderBy("id", "desc").limit(1).toSQL();
-      const [record] = execSQL({ ...q, type: "query" });
-      Object.assign(this, record);
+  protected retriveInsertedAttributes<T extends Model>(
+    this: T,
+    returning: Record<keyof T, any>
+  ) {
+    const data: Partial<T> = {};
+    for (const key of this.primaryKeys as (keyof T)[]) {
+      data[key] = this[key] || returning[key] || this.getLastInsertId();
     }
+    const query = this.client.where(data).limit(1).toSQL();
+    const [record] = execSQL({ ...query, type: "query" });
+    Object.assign(this, record);
+  }
+
+  // for MySQL (The 'returning' clause is not available.)
+  protected getLastInsertId<T extends Model>(this: T) {
+    return execSQL({
+      sql: "select last_insert_id() as id;",
+      bindings: [],
+      type: "query",
+    })[0]["id"];
   }
 
   protected makeInsertParams<T extends Model>(this: T) {

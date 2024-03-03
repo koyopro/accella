@@ -58,7 +58,7 @@ model PostTag {
 }
 
 model Setting {
-  id        Int      @id @default(autoincrement())
+  settingId Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
   userId    Int      @unique
   threshold Float?
