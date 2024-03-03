@@ -129,7 +129,7 @@ type TeamMeta = {
   };
 };
 
-declare module "./userteam" {
+declare module "./userTeam" {
   interface UserTeam {
     user: User;
     userId: number;
@@ -203,7 +203,7 @@ type PostMeta = {
   };
 };
 
-declare module "./posttag" {
+declare module "./postTag" {
   interface PostTag {
     id: number | undefined;
     name: string;

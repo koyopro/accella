@@ -1,4 +1,5 @@
 import { DMMF, GeneratorOptions } from "@prisma/generator-helper";
+import { toCamelCase } from "./index.js";
 
 export const getScalarDefault = (field: DMMF.Field) => {
   switch (field.type) {
@@ -171,7 +172,7 @@ type Persisted<T> = Meta<T>["Persisted"];
         .map((field) => `\n    ${field.name}?: SortOrder;`)
         .join("") + "\n  ";
     data += `
-declare module "./${model.name.toLowerCase()}" {
+declare module "./${toCamelCase(model.name)}" {
   interface ${model.name} {
 ${columnDefines}
   }
