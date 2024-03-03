@@ -181,6 +181,10 @@ export class Fields {
     return (this.constructor as any).fields;
   }
 
+  findField(name: string): Field | undefined {
+    return this.fields.find((f) => f.name === name);
+  }
+
   get columns(): string[] {
     return (this.constructor as any).columns;
   }

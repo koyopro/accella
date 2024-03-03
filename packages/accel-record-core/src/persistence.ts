@@ -84,8 +84,7 @@ export class Persistence {
       if (this[column] !== undefined) {
         data[column as string] = this[column];
       }
-      const field = this.fields.find((f) => f.name === column);
-      if (field?.isUpdatedAt) {
+      if (this.findField(column as string)?.isUpdatedAt) {
         data[column as string] = now;
         this[column] = now as any;
       }
@@ -116,7 +115,7 @@ export class Persistence {
       if (this[column] !== undefined) {
         data[column as string] = this[column];
       }
-      const field = this.fields.find((f) => f.name === column);
+      const field = this.findField(column as string);
       if (field?.isUpdatedAt && data[column] == undefined) {
         data[column as string] = now;
       }
