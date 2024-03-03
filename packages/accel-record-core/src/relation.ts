@@ -57,7 +57,7 @@ export class Relation<T, M extends ModelMeta> {
     }).get()[0];
   }
   count(): number {
-    const query = this.query().count("id").toSQL();
+    const query = this.query().count(this.model.primaryKeys[0]).toSQL();
     const res = execSQL({ type: "query", ...query });
     return Number(Object.values(res[0])[0]);
   }
