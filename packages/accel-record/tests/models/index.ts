@@ -60,8 +60,8 @@ declare module "./user" {
     posts: CollectionProxy<Post, UserMeta>;
     setting: Setting | undefined;
     teams: CollectionProxy<UserTeam, UserMeta>;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Date | undefined;
+    updatedAt: Date | undefined;
   }
 }
 type PersistedUser = User & {
@@ -79,7 +79,7 @@ type UserMeta = {
     setting?: Setting;
     teams?: UserTeam[];
     createdAt?: Date;
-    updatedAt: Date;
+    updatedAt?: Date;
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -133,7 +133,7 @@ declare module "./userteam" {
     userId: number;
     team: Team;
     teamId: number;
-    assignedAt: Date;
+    assignedAt: Date | undefined;
     assignedBy: string;
   }
 }
@@ -235,7 +235,7 @@ declare module "./setting" {
     user: User;
     userId: number;
     threshold: number | undefined;
-    createdAt: Date;
+    createdAt: Date | undefined;
   }
 }
 type PersistedSetting = Setting & {
