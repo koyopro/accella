@@ -7,14 +7,12 @@ describe("Columns", () => {
     if (!u.save()) {
       throw new Error("Failed to save");
     }
-    // 数秒のズレは許容する
-    expect(u.createdAt.getTime() / 10000).toBeCloseTo(Date.now() / 10000, 0);
+    expect(u.createdAt.getTime()).toBeCloseTo(Date.now(), -4);
   });
 
   test("updatedAt", () => {
     const u = User.create({ email: "aaa@example.com" });
-    // 数秒のズレは許容する
-    expect(u.updatedAt.getTime() / 10000).toBeCloseTo(Date.now() / 10000, 0);
+    expect(u.updatedAt.getTime()).toBeCloseTo(Date.now(), -4);
 
     const oldTime = new Date(2020, 1, 1);
     const u2 = User.create({
@@ -22,11 +20,8 @@ describe("Columns", () => {
       email: "hoge@example.com",
       updatedAt: oldTime,
     });
-    expect(u2.updatedAt.getTime() / 10000).toBeCloseTo(
-      oldTime.getTime() / 10000,
-      0
-    );
+    expect(u2.updatedAt.getTime()).toBeCloseTo(oldTime.getTime(), -4);
     u2.update({ name: "fuga" });
-    expect(u2.updatedAt.getTime() / 10000).toBeCloseTo(Date.now() / 10000, 0);
+    expect(u2.updatedAt.getTime()).toBeCloseTo(Date.now(), -4);
   });
 });
