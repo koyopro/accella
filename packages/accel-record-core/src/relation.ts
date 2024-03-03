@@ -161,7 +161,7 @@ export class Relation<T, M extends ModelMeta> {
     return q;
   }
   get(): T[] {
-    const query = this.query().select(`${this.model.table}.*`).toSQL();
+    const query = this.query().select(`${this.model.tableName}.*`).toSQL();
     const rows = execSQL({ type: "query", ...query });
     for (const { klass, name, primaryKey, foreignKey } of this.options
       .includes ?? []) {

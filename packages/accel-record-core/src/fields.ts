@@ -116,17 +116,19 @@ export const loadDmmf = async () => {
 };
 
 export class Fields {
-  static modelName: string | undefined = undefined;
+  static table: string | undefined = undefined;
 
-  private static get model() {
-    const modelName = this.modelName ?? this.name;
-    const model = dmmf.datamodel.models.find((m) => m.name == modelName);
-    if (!model) throw new Error(`Model ${modelName} not found`);
-    return model;
+  static get tableName(): string {
+    return this.table ?? this.name;
   }
 
-  static get table(): string {
-    return this.model.dbName ?? this.model.name;
+  private static get model() {
+    const tableName = this.tableName;
+    const model = dmmf.datamodel.models.find((m) =>
+      [m.name, m.dbName].includes(tableName)
+    );
+    if (!model) throw new Error(`Model for table '${tableName}' not found`);
+    return model;
   }
 
   static get fields(): Readonly<Field[]> {
