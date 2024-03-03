@@ -60,10 +60,14 @@ declare module "./user" {
     posts: CollectionProxy<Post, UserMeta>;
     setting: Setting | undefined;
     teams: CollectionProxy<UserTeam, UserMeta>;
+    createdAt: Date | undefined;
+    updatedAt: Date | undefined;
   }
 }
 type PersistedUser = User & {
   id: NonNullable<User["id"]>;
+  createdAt: NonNullable<User["createdAt"]>;
+  updatedAt: NonNullable<User["updatedAt"]>;
 };
 type UserMeta = {
   Persisted: PersistedUser;
@@ -76,18 +80,24 @@ type UserMeta = {
     posts?: Post[];
     setting?: Setting;
     teams?: UserTeam[];
+    createdAt?: Date;
+    updatedAt?: Date;
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     email?: string | string[] | StringFilter | null;
     name?: string | string[] | StringFilter | null;
     age?: number | number[] | Filter<number> | null;
+    createdAt?: Date | Date[] | Filter<number> | null;
+    updatedAt?: Date | Date[] | Filter<number> | null;
   };
   OrderInput: {
     id?: SortOrder;
     email?: SortOrder;
     name?: SortOrder;
     age?: SortOrder;
+    createdAt?: SortOrder;
+    updatedAt?: SortOrder;
   };
 };
 
@@ -119,18 +129,18 @@ type TeamMeta = {
   };
 };
 
-declare module "./userteam" {
+declare module "./userTeam" {
   interface UserTeam {
     user: User;
     userId: number;
     team: Team;
     teamId: number;
-    assignedAt: Date;
+    assignedAt: Date | undefined;
     assignedBy: string;
   }
 }
 type PersistedUserTeam = UserTeam & {
-  id: NonNullable<UserTeam["id"]>;
+  assignedAt: NonNullable<UserTeam["assignedAt"]>;
 };
 type UserTeamMeta = {
   Persisted: PersistedUserTeam;
@@ -193,7 +203,7 @@ type PostMeta = {
   };
 };
 
-declare module "./posttag" {
+declare module "./postTag" {
   interface PostTag {
     id: number | undefined;
     name: string;
@@ -227,11 +237,12 @@ declare module "./setting" {
     user: User;
     userId: number;
     threshold: number | undefined;
-    createdAt: Date;
+    createdAt: Date | undefined;
   }
 }
 type PersistedSetting = Setting & {
   id: NonNullable<Setting["id"]>;
+  createdAt: NonNullable<Setting["createdAt"]>;
 };
 type SettingMeta = {
   Persisted: PersistedSetting;

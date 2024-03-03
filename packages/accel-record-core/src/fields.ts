@@ -102,6 +102,10 @@ export class Field {
         return undefined;
     }
   }
+
+  get defaultIsNow() {
+    return this.default != undefined && this.default.name === "now";
+  }
 }
 
 let dmmf: BaseDMMF;
@@ -179,6 +183,10 @@ export class Fields {
 
   get fields(): Readonly<Field[]> {
     return (this.constructor as any).fields;
+  }
+
+  findField(name: string): Field | undefined {
+    return this.fields.find((f) => f.name === name);
   }
 
   get columns(): string[] {

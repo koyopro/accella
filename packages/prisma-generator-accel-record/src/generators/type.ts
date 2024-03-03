@@ -1,4 +1,5 @@
 import { DMMF, GeneratorOptions } from "@prisma/generator-helper";
+import { toCamelCase } from "./index.js";
 
 export const getScalarDefault = (field: DMMF.Field) => {
   switch (field.type) {
@@ -57,7 +58,9 @@ const getFilterType = (type: string) => {
 const hasAutoGnerateDefault = (field: DMMF.Field) => {
   if (field.default == undefined) return false;
   if (typeof field.default !== "object") return false;
-  return (field.default as DMMF.FieldDefault)?.name == "autoincrement";
+  return ["autoincrement", "now"].includes(
+    (field.default as DMMF.FieldDefault)?.name
+  );
 };
 
 export const generateTypes = (options: GeneratorOptions) => {
@@ -95,9 +98,12 @@ declare module "accel-record-core" {
 type Persisted<T> = Meta<T>["Persisted"];
 
 `;
-  const meta = options.dmmf.datamodel.models.map(
-    (model) => `T extends typeof ${model.name} | ${model.name} ? ${model.name}Meta :`
-  ).join('\n               ')
+  const meta = options.dmmf.datamodel.models
+    .map(
+      (model) =>
+        `T extends typeof ${model.name} | ${model.name} ? ${model.name}Meta :`
+    )
+    .join("\n               ");
   data += `type Meta<T> = ${meta}\n               any;\n`;
   for (const model of options.dmmf.datamodel.models) {
     const reject = (f: DMMF.Field) => f.relationFromFields?.[0] == undefined;
@@ -109,7 +115,10 @@ type Persisted<T> = Meta<T>["Persisted"];
       .filter((f) => !relationFromFields.includes(f.name))
       .map((field) => {
         const optional =
-          field.hasDefaultValue || !field.isRequired || field.isList;
+          field.hasDefaultValue ||
+          !field.isRequired ||
+          field.isList ||
+          field.isUpdatedAt;
         const type = getPropertyType(field);
         return `    ${field.name}${optional ? "?" : ""}: ${type}${
           field.isList ? "[]" : ""
@@ -128,7 +137,10 @@ type Persisted<T> = Meta<T>["Persisted"];
       .join("");
     const columnDefines = model.fields
       .map((field) => {
-        const optional = hasAutoGnerateDefault(field) || !field.isRequired;
+        const optional =
+          hasAutoGnerateDefault(field) ||
+          !field.isRequired ||
+          field.isUpdatedAt;
         const type = getPropertyType(field);
         if (field.relationName && field.isList) {
           return `    ${field.name}: CollectionProxy<${field.type}, ${model.name}Meta>;`;
@@ -138,6 +150,11 @@ type Persisted<T> = Meta<T>["Persisted"];
         };`;
       })
       .join("\n");
+    const columnForPersist =
+      model.fields
+        .filter((f) => hasAutoGnerateDefault(f) || f.isUpdatedAt)
+        .map((f) => `\n  ${f.name}: NonNullable<${model.name}["${f.name}"]>;`)
+        .join("") + "\n";
     const whereInputs =
       model.fields
         .filter(reject)
@@ -155,14 +172,12 @@ type Persisted<T> = Meta<T>["Persisted"];
         .map((field) => `\n    ${field.name}?: SortOrder;`)
         .join("") + "\n  ";
     data += `
-declare module "./${model.name.toLowerCase()}" {
+declare module "./${toCamelCase(model.name)}" {
   interface ${model.name} {
 ${columnDefines}
   }
 }
-type Persisted${model.name} = ${model.name} & {
-  id: NonNullable<${model.name}["id"]>;
-};
+type Persisted${model.name} = ${model.name} & {${columnForPersist}};
 type ${model.name}Meta = {
   Persisted: Persisted${model.name};
   AssociationKey: 'posts';
