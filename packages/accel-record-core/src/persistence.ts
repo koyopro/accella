@@ -79,14 +79,15 @@ export class Persistence {
 
   protected updateRecord<T extends Model>(this: T): boolean {
     const data: any = {};
+    const now = new Date();
     for (const column of this.columns as (keyof T)[]) {
       if (this[column] !== undefined) {
         data[column as string] = this[column];
       }
-      // handle updatedAt
       const field = this.fields.find((f) => f.name === column);
       if (field?.isUpdatedAt) {
-        data[column as string] = new Date();
+        data[column as string] = now;
+        this[column] = now as any;
       }
     }
     const query = this.client
@@ -94,12 +95,6 @@ export class Persistence {
       .update(data)
       .toSQL();
     execSQL(query);
-    // FIXME:
-    if (this.columns.includes("id")) {
-      const q = this.client.orderBy("id", "desc").limit(1).toSQL();
-      const [record] = execSQL({ ...q, type: "query" });
-      Object.assign(this, record);
-    }
     for (const [key, association] of Object.entries(this.associations)) {
       const value = this[key as keyof T];
       if (association.through) {
@@ -116,14 +111,17 @@ export class Persistence {
 
   protected createRecord<T extends Model>(this: T): boolean {
     const data: any = {};
+    const now = new Date();
     for (const column of this.columns as (keyof T)[]) {
       if (this[column] !== undefined) {
         data[column as string] = this[column];
       }
-      // handle updatedAt
       const field = this.fields.find((f) => f.name === column);
       if (field?.isUpdatedAt && data[column] == undefined) {
-        data[column as string] = new Date();
+        data[column as string] = now;
+      }
+      if (field?.default && field.default.name == "now") {
+        data[column as string] = now;
       }
     }
     const query = this.client.insert(data).toSQL();

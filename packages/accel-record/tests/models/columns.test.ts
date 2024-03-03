@@ -8,6 +8,7 @@ describe("Columns", () => {
       throw new Error("Failed to save");
     }
     expect(u.createdAt.getTime()).toBeCloseTo(Date.now(), -4);
+    expect(u.createdAt).toEqual(u.updatedAt);
   });
 
   test("updatedAt", () => {
