@@ -1,3 +1,5 @@
+import { $setting } from "../factories/setting";
+import { $user } from "../factories/user";
 import { User } from "./user";
 
 describe("Columns", () => {
@@ -24,5 +26,10 @@ describe("Columns", () => {
     expect(u2.updatedAt.getTime()).toBeCloseTo(oldTime.getTime(), -4);
     u2.update({ name: "fuga" });
     expect(u2.updatedAt.getTime()).toBeCloseTo(Date.now(), -4);
+  });
+
+  test("retrive auto increment column", () => {
+    const s = $setting.create({ user: $user.create() });
+    expect(s.settingId).not.toBeUndefined();
   });
 });
