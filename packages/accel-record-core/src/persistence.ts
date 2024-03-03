@@ -156,11 +156,20 @@ export class Persistence {
   ) {
     const data: Partial<T> = {};
     for (const key of this.primaryKeys as (keyof T)[]) {
-      data[key] = this[key] || returning[key];
+      data[key] = this[key] || returning[key] || this.getLastInsertId();
     }
     const query = this.client.where(data).limit(1).toSQL();
     const [record] = execSQL({ ...query, type: "query" });
     Object.assign(this, record);
+  }
+
+  // for MySQL (The 'returning' clause is not available.)
+  protected getLastInsertId<T extends Model>(this: T) {
+    return execSQL({
+      sql: "select last_insert_id() as id;",
+      bindings: [],
+      type: "query",
+    })[0]["id"];
   }
 
   protected makeInsertParams<T extends Model>(this: T) {
