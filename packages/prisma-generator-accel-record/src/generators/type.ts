@@ -149,6 +149,11 @@ type Persisted<T> = Meta<T>["Persisted"];
         };`;
       })
       .join("\n");
+    const columnForPersist =
+      model.fields
+        .filter((f) => hasAutoGnerateDefault(f) || f.isUpdatedAt)
+        .map((f) => `\n  ${f.name}: NonNullable<${model.name}["${f.name}"]>;`)
+        .join("") + "\n";
     const whereInputs =
       model.fields
         .filter(reject)
@@ -171,9 +176,7 @@ declare module "./${model.name.toLowerCase()}" {
 ${columnDefines}
   }
 }
-type Persisted${model.name} = ${model.name} & {
-  id: NonNullable<${model.name}["id"]>;
-};
+type Persisted${model.name} = ${model.name} & {${columnForPersist}};
 type ${model.name}Meta = {
   Persisted: Persisted${model.name};
   AssociationKey: 'posts';

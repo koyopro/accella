@@ -2,7 +2,11 @@ import { User } from "./user";
 
 describe("Columns", () => {
   test("createdAt", () => {
-    const u = User.create({ email: "hoge@example.com" });
+    const u = User.build({ email: "hoge@example.com" });
+    expect(u.createdAt).toBeUndefined();
+    if (!u.save()) {
+      throw new Error("Failed to save");
+    }
     // 数秒のズレは許容する
     expect(u.createdAt.getTime() / 10000).toBeCloseTo(Date.now() / 10000, 0);
   });

@@ -66,6 +66,8 @@ declare module "./user" {
 }
 type PersistedUser = User & {
   id: NonNullable<User["id"]>;
+  createdAt: NonNullable<User["createdAt"]>;
+  updatedAt: NonNullable<User["updatedAt"]>;
 };
 type UserMeta = {
   Persisted: PersistedUser;
@@ -138,7 +140,7 @@ declare module "./userteam" {
   }
 }
 type PersistedUserTeam = UserTeam & {
-  id: NonNullable<UserTeam["id"]>;
+  assignedAt: NonNullable<UserTeam["assignedAt"]>;
 };
 type UserTeamMeta = {
   Persisted: PersistedUserTeam;
@@ -240,6 +242,7 @@ declare module "./setting" {
 }
 type PersistedSetting = Setting & {
   id: NonNullable<Setting["id"]>;
+  createdAt: NonNullable<Setting["createdAt"]>;
 };
 type SettingMeta = {
   Persisted: PersistedSetting;
