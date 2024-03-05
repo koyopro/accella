@@ -3,10 +3,27 @@
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "vitest",
     "test:migrate": "DATABASE_URL=file:./test.db npx prisma migrate dev --schema=tests/prisma/schema.prisma"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koyopro/accella"
+  },
+  "bugs": {
+    "url": "https://github.com/koyopro/accella/issues"
+  },
+  "homepage": "https://github.com/koyopro/accella",
+  "keywords": [
+    "accella",
+    "accel-record"
+  ],
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
   "author": "koyopro <koyopro2.0@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
