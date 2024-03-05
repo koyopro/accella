@@ -1,11 +1,13 @@
-import { CollectionProxy } from "../associations/collectionProxy.js";
+import { CollectionProxy } from "./collectionProxy.js";
 import { Models, type Model } from "../index.js";
-import { HasManyAssociation } from "./hasManyAssociation";
-import { HasManyThroughAssociation } from "./hasManyThroughAssociation";
+import { HasManyAssociation } from "./hasManyAssociation.js";
+import { HasManyThroughAssociation } from "./hasManyThroughAssociation.js";
 
-export class AssociationsBuilder {
-  static build<T extends typeof Model>(klass: T, instance: any, input: any): T {
-    const proxy = AssociationsBuilder.createProxy<T>(instance, klass);
+export class ModelInstanceBuilder {
+  static build<T extends typeof Model>(klass: T, input: any): InstanceType<T> {
+    const instance = new klass();
+    instance.isNewRecord = true;
+    const proxy = ModelInstanceBuilder.createProxy<T>(instance, klass);
     for (const column of klass.columns2) {
       if (column.columnDefault !== undefined) {
         proxy[column.name] = column.columnDefault;

@@ -1,4 +1,4 @@
-import { AssociationsBuilder } from "./associations/associationsBuilder";
+import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder";
 import { execSQL } from "./database";
 import { CollectionProxy, Model } from "./index.js";
 
@@ -8,9 +8,7 @@ export class Persistence {
   isDestroyed: boolean = false;
 
   static build<T extends typeof Model>(this: T, input: any) {
-    const instance: any = new this();
-    instance.isNewRecord = true;
-    return AssociationsBuilder.build(this as any, instance, input);
+    return ModelInstanceBuilder.build(this as T, input);
   }
 
   static create<T extends typeof Model>(this: T, input: any) {
