@@ -22,6 +22,7 @@ model User {
   teams     UserTeam[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  Profile   Profile?
 }
 
 model Team {
@@ -63,4 +64,15 @@ model Setting {
   userId    Int      @unique
   threshold Float?
   createdAt DateTime @default(now())
+}
+
+model Profile {
+  id      Int     @id @default(autoincrement())
+  user    User    @relation(fields: [userId], references: [id])
+  userId  Int     @unique @map("user_id")
+  bio     String? @default("I'm a Prisma user!") @map("description")
+  point   Int     @default(100)
+  enabled Boolean @default(true)
+
+  @@map("profiles")
 }

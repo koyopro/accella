@@ -10,6 +10,8 @@ import { PostTag } from './postTag.js'
 export { PostTag } from './postTag.js'
 import { Setting } from './setting.js'
 export { Setting } from './setting.js'
+import { Profile } from './profile.js'
+export { Profile } from './profile.js'
 import type {
   CollectionProxy,
   Filter,
@@ -49,6 +51,7 @@ type Meta<T> = T extends typeof User | User ? UserMeta :
                T extends typeof Post | Post ? PostMeta :
                T extends typeof PostTag | PostTag ? PostTagMeta :
                T extends typeof Setting | Setting ? SettingMeta :
+               T extends typeof Profile | Profile ? ProfileMeta :
                any;
 
 declare module "./user" {
@@ -62,6 +65,7 @@ declare module "./user" {
     teams: CollectionProxy<UserTeam, UserMeta>;
     createdAt: Date | undefined;
     updatedAt: Date | undefined;
+    Profile: Profile | undefined;
   }
 }
 type PersistedUser = User & {
@@ -82,6 +86,7 @@ type UserMeta = {
     teams?: UserTeam[];
     createdAt?: Date;
     updatedAt?: Date;
+    Profile?: Profile;
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -263,5 +268,43 @@ type SettingMeta = {
     userId?: SortOrder;
     threshold?: SortOrder;
     createdAt?: SortOrder;
+  };
+};
+
+declare module "./profile" {
+  interface Profile {
+    id: number | undefined;
+    user: User;
+    userId: number;
+    bio: string | undefined;
+    point: number;
+    enabled: boolean;
+  }
+}
+type PersistedProfile = Profile & {
+  id: NonNullable<Profile["id"]>;
+};
+type ProfileMeta = {
+  Persisted: PersistedProfile;
+  AssociationKey: 'posts';
+  CreateInput: {
+    id?: number;
+    bio?: string;
+    point?: number;
+    enabled?: boolean;
+  } & ({ user: User } | { userId: number });
+  WhereInput: {
+    id?: number | number[] | Filter<number> | null;
+    userId?: number | number[] | Filter<number> | null;
+    bio?: string | string[] | StringFilter | null;
+    point?: number | number[] | Filter<number> | null;
+    enabled?: boolean | boolean[] | undefined | null;
+  };
+  OrderInput: {
+    id?: SortOrder;
+    userId?: SortOrder;
+    bio?: SortOrder;
+    point?: SortOrder;
+    enabled?: SortOrder;
   };
 };

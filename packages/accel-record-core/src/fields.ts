@@ -11,13 +11,13 @@ export class Association {
   constructor(
     relation: DMMF.Field,
     association: Field,
-    primaryKeys: readonly string[]
+    primaryKeys: readonly string[],
+    foreignKeyColumns: string[],
+    primaryKeyColumns: string[]
   ) {
     this.klass = association.type;
-    this.foreignKey =
-      relation.relationFromFields?.[0] ?? association.foreignKeys?.[0] ?? "";
-    this.primaryKey =
-      relation.relationToFields?.[0] ?? association.primaryKeys?.[0] ?? "";
+    this.foreignKey = foreignKeyColumns[0] ?? "";
+    this.primaryKey = primaryKeyColumns[0] ?? "";
     this.field = association;
     if (this.foreignKey == "" && this.primaryKey == "") {
       // Implicit many-to-many relations
@@ -37,6 +37,7 @@ export class Association {
 
 export class Field {
   name: string;
+  dbName: string;
   type: string;
   relationName: string | null;
   isList: boolean;
@@ -49,6 +50,7 @@ export class Field {
 
   constructor(field: DMMF.Field) {
     this.name = field.name;
+    this.dbName = field.dbName ?? field.name;
     this.type = field.type;
     this.relationName = field.relationName?.toString() ?? null;
     this.isList = !!field.isList;
@@ -108,6 +110,39 @@ export class Field {
   }
 }
 
+const buildAssociation = (
+  model: DMMF.Model,
+  field: Field,
+  primaryKeys: readonly string[]
+) => {
+  const rModel = dmmf.datamodel.models.find((m) => m.name === field.type)!;
+  const r = rModel?.fields.find((f) => f.relationName === field.relationName);
+  if (r?.relationFromFields == undefined || r?.relationToFields == undefined)
+    return undefined;
+
+  const foreignKeys1 = r.relationFromFields.map(
+    (name) => rModel.fields.find((f) => f.name === name)?.dbName ?? name
+  );
+  const foreignKeys2 = field.foreignKeys.map(
+    (name) => model.fields.find((f) => f.name === name)?.dbName ?? name
+  );
+
+  const primaryKeys1 = r.relationToFields.map(
+    (name) => model.fields.find((f) => f.name === name)?.dbName ?? name
+  );
+  const primaryKeys2 = field.primaryKeys.map(
+    (name) => rModel.fields.find((f) => f.name === name)?.dbName ?? name
+  );
+
+  return new Association(
+    r,
+    field,
+    primaryKeys,
+    foreignKeys1.concat(foreignKeys2),
+    primaryKeys1.concat(primaryKeys2)
+  );
+};
+
 let dmmf: BaseDMMF;
 
 export const loadDmmf = async () => {
@@ -138,7 +173,7 @@ export class Fields {
   static get columns() {
     return this.fields
       .filter((f) => f.relationName == undefined)
-      .map((field) => field.name);
+      .map((field) => field.dbName);
   }
 
   static get columns2(): Readonly<Field[]> {
@@ -163,22 +198,16 @@ export class Fields {
   }
 
   static get associations(): Record<string, Association> {
+    const myModel = this.model;
     return this.fields
       .filter((f) => f.relationName != undefined)
       .reduce((acc, field) => {
-        const r = dmmf.datamodel.models
-          .find((m) => m.name === field.type)
-          ?.fields.find((f) => f.relationName === field.relationName);
-        if (
-          r?.relationFromFields == undefined ||
-          r?.relationToFields == undefined
-        )
-          return acc;
+        const a = buildAssociation(myModel, field, this.primaryKeys);
+        if (!a) return acc;
+
         return {
           ...acc,
-          ...{
-            [field.name]: new Association(r, field, this.primaryKeys),
-          },
+          ...{ [field.name]: a },
         };
       }, {});
   }
