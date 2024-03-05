@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "test:migrate": "DATABASE_URL=file:./test.db npx prisma migrate dev --schema=tests/prisma/schema.prisma"
   },
   "repository": {
     "type": "git",
