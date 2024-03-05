@@ -4,7 +4,7 @@ import { HasManyAssociation } from "./hasManyAssociation";
 import { HasManyThroughAssociation } from "./hasManyThroughAssociation";
 
 export class AssociationsBuilder {
-  static build<T extends Model>(klass: T, instance: any, input: any): T {
+  static build<T extends typeof Model>(klass: T, instance: any, input: any): T {
     const proxy = AssociationsBuilder.createProxy<T>(instance, klass);
     for (const column of klass.columns2) {
       if (column.columnDefault !== undefined) {
@@ -18,10 +18,10 @@ export class AssociationsBuilder {
     return proxy;
   }
 
-  private static createProxy<T extends Model>(instance: any, klass: T) {
+  private static createProxy<T extends typeof Model>(instance: any, klass: T) {
     return new Proxy(instance, {
       get(target: any, prop, receiver) {
-        const column = klass.columnsMapping[prop as string];
+        const column = klass.attributeToColumn(prop as string);
         if (typeof column === "string") {
           return target[column];
         }
@@ -39,7 +39,7 @@ export class AssociationsBuilder {
         return Reflect.get(...arguments);
       },
       set(target, prop, value, receiver) {
-        const column = klass.columnsMapping[prop as string];
+        const column = klass.attributeToColumn(prop as string);
         if (typeof column === "string") {
           target[column] = value;
           return true;
@@ -62,7 +62,7 @@ export class AssociationsBuilder {
     });
   }
 
-  private static initValues<T extends Model>(
+  private static initValues<T extends typeof Model>(
     klass: T,
     input: any,
     proxy: any,
@@ -73,7 +73,9 @@ export class AssociationsBuilder {
       if (!field.isList && key in input) {
         proxy[key] = input[key];
       } else if (field.isList || key in input) {
-        let _association: HasManyAssociation<T> | HasManyThroughAssociation<T>;
+        let _association:
+          | HasManyAssociation<InstanceType<T>>
+          | HasManyThroughAssociation<InstanceType<T>>;
         if (association.through) {
           _association = new HasManyThroughAssociation(instance, association);
         } else {

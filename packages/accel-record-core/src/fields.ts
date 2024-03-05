@@ -180,22 +180,17 @@ export class Fields {
     return this.fields.filter((f) => f.relationName == undefined);
   }
 
-  /**
-   * mapping of field names to column names
-   */
-  static get columnsMapping() {
-    return this.fields
-      .filter((f) => f.relationName == undefined)
-      .reduce((acc, field) => {
-        return {
-          ...acc,
-          ...{ [field.name]: field.dbName },
-        };
-      }, {});
+  static attributeToColumn(column: string) {
+    for (const field of this.fields) {
+      if (field.relationName != undefined) continue;
+      if (field.name === column) return field.dbName;
+    }
+    return undefined;
   }
 
   static columnToAttribute(column: string) {
     for (const field of this.fields) {
+      if (field.relationName != undefined) continue;
       if (field.dbName === column) return field.name;
     }
     return undefined;
