@@ -1,18 +1,32 @@
-import { CollectionProxy } from "../associations/collectionProxy.js";
+import { CollectionProxy } from "./collectionProxy.js";
 import { Models, type Model } from "../index.js";
-import { HasManyAssociation } from "./hasManyAssociation";
-import { HasManyThroughAssociation } from "./hasManyThroughAssociation";
+import { HasManyAssociation } from "./hasManyAssociation.js";
+import { HasManyThroughAssociation } from "./hasManyThroughAssociation.js";
 
-export class AssociationsBuilder {
-  static build<T extends Model>(klass: T, instance: any, input: any): T {
-    const proxy = AssociationsBuilder.createProxy<T>(instance, klass);
+export class ModelInstanceBuilder {
+  static build<T extends typeof Model>(klass: T, input: any): InstanceType<T> {
+    const instance = new klass();
+    instance.isNewRecord = true;
+    const proxy = ModelInstanceBuilder.createProxy<T>(instance, klass);
+    for (const column of klass.columns2) {
+      if (column.columnDefault !== undefined) {
+        proxy[column.name] = column.columnDefault;
+      }
+      if (column.name in input) {
+        proxy[column.name] = input[column.name];
+      }
+    }
     this.initValues<T>(klass, input, proxy, instance);
     return proxy;
   }
 
-  private static createProxy<T extends Model>(instance: any, klass: T) {
+  private static createProxy<T extends typeof Model>(instance: any, klass: T) {
     return new Proxy(instance, {
       get(target: any, prop, receiver) {
+        const column = klass.attributeToColumn(prop as string);
+        if (typeof column === "string") {
+          return target[column];
+        }
         const association = klass.associations[prop as any];
         if (association?.isHasOne) {
           return (target[prop] ||= Models[association.klass].findBy({
@@ -27,6 +41,11 @@ export class AssociationsBuilder {
         return Reflect.get(...arguments);
       },
       set(target, prop, value, receiver) {
+        const column = klass.attributeToColumn(prop as string);
+        if (typeof column === "string") {
+          target[column] = value;
+          return true;
+        }
         const association = klass.associations[prop as any];
         if (association?.isHasOne && target[association.primaryKey]) {
           if (value == undefined) {
@@ -45,7 +64,7 @@ export class AssociationsBuilder {
     });
   }
 
-  private static initValues<T extends Model>(
+  private static initValues<T extends typeof Model>(
     klass: T,
     input: any,
     proxy: any,
@@ -56,7 +75,9 @@ export class AssociationsBuilder {
       if (!field.isList && key in input) {
         proxy[key] = input[key];
       } else if (field.isList || key in input) {
-        let _association: HasManyAssociation<T> | HasManyThroughAssociation<T>;
+        let _association:
+          | HasManyAssociation<InstanceType<T>>
+          | HasManyThroughAssociation<InstanceType<T>>;
         if (association.through) {
           _association = new HasManyThroughAssociation(instance, association);
         } else {

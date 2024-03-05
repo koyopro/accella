@@ -178,7 +178,12 @@ export class Relation<T, M extends ModelMeta> {
       }
     }
     return rows.map((row: object) => {
-      const obj = this.model.build(row);
+      const attributes = {} as any;
+      for (const [key, value] of Object.entries(row)) {
+        const column = this.model.columnToAttribute(key);
+        attributes[column ?? key] = value;
+      }
+      const obj = this.model.build(attributes);
       obj.isNewRecord = false;
       return obj;
     });

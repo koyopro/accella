@@ -180,6 +180,22 @@ export class Fields {
     return this.fields.filter((f) => f.relationName == undefined);
   }
 
+  static attributeToColumn(column: string) {
+    for (const field of this.fields) {
+      if (field.relationName != undefined) continue;
+      if (field.name === column) return field.dbName;
+    }
+    return undefined;
+  }
+
+  static columnToAttribute(column: string) {
+    for (const field of this.fields) {
+      if (field.relationName != undefined) continue;
+      if (field.dbName === column) return field.name;
+    }
+    return undefined;
+  }
+
   static get primaryKeys() {
     return (
       this.model?.primaryKey?.fields ??
@@ -226,6 +242,10 @@ export class Fields {
 
   get columns2(): Readonly<Field[]> {
     return (this.constructor as any).columns2;
+  }
+
+  get columnsMapping(): Record<string, string> {
+    return (this.constructor as any).columnsMapping;
   }
 
   get columnsForPersist(): string[] {
