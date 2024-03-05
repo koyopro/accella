@@ -110,6 +110,39 @@ export class Field {
   }
 }
 
+const buildAssociation = (
+  model: DMMF.Model,
+  field: Field,
+  primaryKeys: readonly string[]
+) => {
+  const rModel = dmmf.datamodel.models.find((m) => m.name === field.type)!;
+  const r = rModel?.fields.find((f) => f.relationName === field.relationName);
+  if (r?.relationFromFields == undefined || r?.relationToFields == undefined)
+    return undefined;
+
+  const foreignKeys1 = r.relationFromFields.map(
+    (name) => rModel.fields.find((f) => f.name === name)?.dbName ?? name
+  );
+  const foreignKeys2 = field.foreignKeys.map(
+    (name) => model.fields.find((f) => f.name === name)?.dbName ?? name
+  );
+
+  const primaryKeys1 = r.relationToFields.map(
+    (name) => model.fields.find((f) => f.name === name)?.dbName ?? name
+  );
+  const primaryKeys2 = field.primaryKeys.map(
+    (name) => rModel.fields.find((f) => f.name === name)?.dbName ?? name
+  );
+
+  return new Association(
+    r,
+    field,
+    primaryKeys,
+    foreignKeys1.concat(foreignKeys2),
+    primaryKeys1.concat(primaryKeys2)
+  );
+};
+
 let dmmf: BaseDMMF;
 
 export const loadDmmf = async () => {
@@ -169,44 +202,12 @@ export class Fields {
     return this.fields
       .filter((f) => f.relationName != undefined)
       .reduce((acc, field) => {
-        const rModel = dmmf.datamodel.models.find(
-          (m) => m.name === field.type
-        )!;
-        const r = rModel?.fields.find(
-          (f) => f.relationName === field.relationName
-        );
-        if (
-          r?.relationFromFields == undefined ||
-          r?.relationToFields == undefined
-        )
-          return acc;
-        const names1 = r.relationToFields.map(
-          (name) => myModel.fields.find((f) => f.name === name)?.dbName ?? name
-        );
-        const names3 = field.primaryKeys.map(
-          (name) => rModel.fields.find((f) => f.name === name)?.dbName ?? name
-        );
-        const names2 = r.relationFromFields.map(
-          (name) => rModel.fields.find((f) => f.name === name)?.dbName ?? name
-        );
-        const names4 = field.foreignKeys.map(
-          (name) => myModel.fields.find((f) => f.name === name)?.dbName ?? name
-        );
-
-        const foreignKeyColumns = names2.concat(names4);
-        const primaryKeyColumns = names1.concat(names3);
+        const a = buildAssociation(myModel, field, this.primaryKeys);
+        if (!a) return acc;
 
         return {
           ...acc,
-          ...{
-            [field.name]: new Association(
-              r,
-              field,
-              this.primaryKeys,
-              foreignKeyColumns,
-              primaryKeyColumns
-            ),
-          },
+          ...{ [field.name]: a },
         };
       }, {});
   }
