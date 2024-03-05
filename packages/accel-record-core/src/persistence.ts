@@ -177,14 +177,14 @@ export class Persistence {
     const now = new Date();
     for (const column of this.columns as (keyof T)[]) {
       if (this[column] !== undefined) {
-        data[column as string] = this[column];
+        data[column] = this[column];
       }
       const field = this.findField(column as string);
       if (field?.isUpdatedAt && data[column] == undefined) {
-        data[column as string] = now;
+        data[column] = now;
       }
       if (field?.defaultIsNow && data[column] == undefined) {
-        data[column as string] = now;
+        data[column] = now;
       }
     }
     return data;
