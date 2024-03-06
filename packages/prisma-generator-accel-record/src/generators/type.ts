@@ -150,11 +150,6 @@ type Persisted<T> = Meta<T>["Persisted"];
         };`;
       })
       .join("\n");
-    const columnForPersist =
-      model.fields
-        .filter((f) => hasAutoGnerateDefault(f) || f.isUpdatedAt)
-        .map((f) => `\n  ${f.name}: NonNullable<${model.name}["${f.name}"]>;`)
-        .join("") + "\n";
     const whereInputs =
       model.fields
         .filter(reject)
@@ -177,7 +172,8 @@ declare module "./${toCamelCase(model.name)}" {
 ${columnDefines}
   }
 }
-type Persisted${model.name} = ${model.name} & {${columnForPersist}};
+// @ts-ignore
+export interface Persisted${model.name} extends ${model.name} {${columnForPersist(model)}};
 type ${model.name}Meta = {
   Persisted: Persisted${model.name};
   AssociationKey: ${associationKey(model)};
@@ -197,4 +193,24 @@ const associationKey = (model: DMMF.Model) => {
     .filter((f) => f.relationName)
     .map((f) => `'${f.name}'`)
     .join(" | ");
+};
+
+const columnForPersist = (model: DMMF.Model) => {
+  return (
+    model.fields
+      .filter(
+        (f) => hasAutoGnerateDefault(f) || f.isUpdatedAt || f.relationName
+      )
+      .map((f) => {
+        const type = getPropertyType(f);
+        if (f.isList)
+          return `\n  ${f.name}: CollectionProxy<Persisted${f.type}, ${model.name}Meta>;`;
+        if (f.relationName) {
+          const optional = f.relationFromFields?.length == 0;
+          return `\n  ${f.name}: Persisted${type}${optional ? " | undefined" : ""};`;
+        }
+        return `\n  ${f.name}: NonNullable<${model.name}["${f.name}"]>;`;
+      })
+      .join("") + "\n"
+  );
 };
