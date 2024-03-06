@@ -24,7 +24,7 @@ describe("Setting", () => {
   test("hasOne get", () => {
     const user = $user.create();
     const setting = $setting.create({ userId: user.id });
-    expect(user.setting?.id).toEqual(setting.id);
+    expect(user.setting?.settingId).toEqual(setting.settingId);
   });
 
   test("hasOne set", () => {
