@@ -180,7 +180,7 @@ ${columnDefines}
 type Persisted${model.name} = ${model.name} & {${columnForPersist}};
 type ${model.name}Meta = {
   Persisted: Persisted${model.name};
-  AssociationKey: 'posts';
+  AssociationKey: ${associationKey(model)};
   CreateInput: {
 ${columns}
   }${associationColumns};
@@ -190,4 +190,11 @@ ${columns}
 `;
   }
   return data;
+};
+
+const associationKey = (model: DMMF.Model) => {
+  return model.fields
+    .filter((f) => f.relationName)
+    .map((f) => `'${f.name}'`)
+    .join(" | ");
 };
