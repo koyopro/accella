@@ -1,4 +1,5 @@
 import { execSQL } from "./database.js";
+import { Association } from "./fields.js";
 import { Models, type ModelMeta, Model } from "./index.js";
 
 export type Options = {
@@ -9,12 +10,9 @@ export type Options = {
   orders: [string, "asc" | "desc"][];
   offset: number | undefined;
   limit: number | undefined;
-  includes: {
-    klass: string;
+  includes: (Association & {
     name: string;
-    primaryKey: string;
-    foreignKey: string;
-  }[];
+  })[];
 };
 
 export class Relation<T, M extends ModelMeta> {
@@ -175,18 +173,32 @@ export class Relation<T, M extends ModelMeta> {
   get(): T[] {
     const query = this.query().select(`${this.model.tableName}.*`).toSQL();
     const rows = execSQL({ type: "query", ...query });
-    for (const { klass, name, primaryKey, foreignKey } of this.options
-      .includes ?? []) {
-      const primaryKeys = rows.map((row: any) => row[primaryKey]);
-      const included = Models[klass].where({
-        [foreignKey]: { in: primaryKeys },
-      });
-      const mapping: any = {};
-      for (const row of included) {
-        (mapping[row[foreignKey]] ||= []).push(row);
-      }
-      for (const row of rows) {
-        row[name] = mapping[row[primaryKey]] ?? [];
+    for (const association of this.options.includes ?? []) {
+      const { klass, name, primaryKey, foreignKey } = association;
+      if (association.isBelongsTo) {
+        const foreignKeys = rows.map((row: any) => row[foreignKey]);
+        const included = Models[klass].where({
+          [primaryKey]: { in: foreignKeys },
+        });
+        const mapping: any = {};
+        for (const row of included) {
+          mapping[row[primaryKey]] = row;
+        }
+        for (const row of rows) {
+          row[name] = mapping[row[foreignKey]];
+        }
+      } else {
+        const primaryKeys = rows.map((row: any) => row[primaryKey]);
+        const included = Models[klass].where({
+          [foreignKey]: { in: primaryKeys },
+        });
+        const mapping: any = {};
+        for (const row of included) {
+          (mapping[row[foreignKey]] ||= []).push(row);
+        }
+        for (const row of rows) {
+          row[name] = mapping[row[primaryKey]] ?? [];
+        }
       }
     }
     return rows.map((row: object) => {
