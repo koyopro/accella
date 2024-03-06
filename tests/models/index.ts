@@ -18,9 +18,9 @@ import type {
   Relation,
   SortOrder,
   StringFilter,
-} from "accel-record-core";
+} from "accel-record";
 
-declare module "accel-record-core" {
+declare module "accel-record" {
   namespace Model {
     function create<T>(this: T, input: Meta<T>["CreateInput"]): Persisted<T>;
     function first<T>(this: T): Persisted<T>;
