@@ -192,6 +192,11 @@ export class Relation<T, M extends ModelMeta> {
     return rows.map((row: object) => {
       const attributes = {} as any;
       for (const [key, value] of Object.entries(row)) {
+        const association = this.model.associations[key];
+        if (association?.isHasOne) {
+          attributes[key] = value[0];
+          continue;
+        }
         const column = this.model.columnToAttribute(key);
         attributes[column ?? key] = value;
       }

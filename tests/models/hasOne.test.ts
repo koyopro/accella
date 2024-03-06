@@ -3,7 +3,7 @@ import { $user } from "../factories/user";
 import { Setting } from "./setting";
 import { User } from "./user";
 
-describe("Setting", () => {
+describe("hasOne", () => {
   test.skip(".associations()", () => {
     expect(Setting.associations.user).toEqual({
       klass: "User",
@@ -55,5 +55,14 @@ describe("Setting", () => {
     expect(Setting.count()).toBe(1);
     user.setting = undefined;
     expect(Setting.count()).toBe(0);
+  });
+
+  test("includes", () => {
+    $setting.create({ user: $user.create() });
+    $setting.create({ user: $user.create() });
+    // Confirm: that N+1 queries are not occurring
+    const users = User.includes(["setting"]).toArray();
+    expect(users[0]?.setting?.isNewRecord).toBe(false);
+    expect(users[1]?.setting?.isNewRecord).toBe(false);
   });
 });
