@@ -173,25 +173,21 @@ export class Relation<T, M extends ModelMeta> {
   get(): T[] {
     const query = this.query().select(`${this.model.tableName}.*`).toSQL();
     const rows = execSQL({ type: "query", ...query });
+    this.loadIncludes(rows);
+    return rows.map((row: object) => {
+      const obj = this.model.build(this.makeAttributes(row));
+      obj.isNewRecord = false;
+      return obj;
+    });
+  }
+  private loadIncludes(rows: any[]) {
     for (const association of this.options.includes ?? []) {
-      const { klass, name, primaryKey, foreignKey } = association;
       if (association.isBelongsTo) {
-        const foreignKeys = rows.map((row: any) => row[foreignKey]);
-        const included = Models[klass].where({
-          [primaryKey]: { in: foreignKeys },
-        });
-        const mapping: any = {};
-        for (const row of included) {
-          mapping[row[primaryKey]] = row;
-        }
-        for (const row of rows) {
-          row[name] = mapping[row[foreignKey]];
-        }
+        this.loadBelongsToIncludes(rows, association);
       } else {
+        const { klass, name, primaryKey, foreignKey } = association;
         const primaryKeys = rows.map((row: any) => row[primaryKey]);
-        const included = Models[klass].where({
-          [foreignKey]: { in: primaryKeys },
-        });
+        const included = Models[klass].where({ [foreignKey]: primaryKeys });
         const mapping: any = {};
         for (const row of included) {
           (mapping[row[foreignKey]] ||= []).push(row);
@@ -201,21 +197,34 @@ export class Relation<T, M extends ModelMeta> {
         }
       }
     }
-    return rows.map((row: object) => {
-      const attributes = {} as any;
-      for (const [key, value] of Object.entries(row)) {
-        const association = this.model.associations[key];
-        if (association?.isHasOne) {
-          attributes[key] = value[0];
-          continue;
-        }
-        const column = this.model.columnToAttribute(key);
-        attributes[column ?? key] = value;
+  }
+  private loadBelongsToIncludes(
+    rows: any[],
+    association: Options["includes"][0]
+  ) {
+    const { klass, name, primaryKey, foreignKey } = association;
+    const foreignKeys = rows.map((row: any) => row[foreignKey]);
+    const mapping: any = {};
+    const included = Models[klass].where({ [primaryKey]: foreignKeys });
+    for (const row of included) {
+      mapping[row[primaryKey]] = row;
+    }
+    for (const row of rows) {
+      row[name] = mapping[row[foreignKey]];
+    }
+  }
+  private makeAttributes(row: object) {
+    const attributes = {} as any;
+    for (const [key, value] of Object.entries(row)) {
+      const association = this.model.associations[key];
+      if (association?.isHasOne) {
+        attributes[key] = value[0];
+        continue;
       }
-      const obj = this.model.build(attributes);
-      obj.isNewRecord = false;
-      return obj;
-    });
+      const attr = this.model.columnToAttribute(key);
+      attributes[attr ?? key] = value;
+    }
+    return attributes;
   }
   reset() {
     this.cache = undefined;
