@@ -1,4 +1,5 @@
 import { $user } from "../factories/user";
+import { Post } from "./post";
 import { User } from "./user";
 
 describe("Relation", () => {
@@ -156,5 +157,17 @@ describe("Relation", () => {
     expect(User.all().count()).toBe(4);
     User.where({ age: 30 }).destroyAll();
     expect(User.all().count()).toBe(2);
+  });
+
+  test("includes", () => {
+    const u = $user.create();
+    Post.create({ title: "post1", authorId: u.id });
+    Post.create({ title: "post2", authorId: u.id });
+    // TODO: improve this test
+    const author = User.all().includes(["posts"]).get()[0];
+    expect(author.posts.toArray()).toHaveLength(2);
+    expect(author.posts.toArray()[0]).toBeInstanceOf(Post);
+    expect(author.posts.toArray()[0].title).toBe("post1");
+    expect(author.posts.toArray()[1].title).toBe("post2");
   });
 });

@@ -31,6 +31,7 @@ export class Relation<T, M extends ModelMeta> {
     this.options = Object.assign(
       {
         joins: [],
+        includes: [],
         wheres: [],
         whereNots: [],
         whereRaws: [],
@@ -130,6 +131,17 @@ export class Relation<T, M extends ModelMeta> {
     for (const record of this.toArray()) {
       if (record instanceof Model) record.destroy();
     }
+  }
+  includes<R extends readonly any[]>(
+    input: R
+  ): Relation<T, M & { [K in R[number]]: ModelMeta }> {
+    const newOptions = JSON.parse(JSON.stringify(this.options));
+    newOptions["includes"].push(
+      ...input.map((key) => {
+        return { name: key, ...this.model.associations[key] };
+      })
+    );
+    return new Relation(this.model, newOptions);
   }
   private query() {
     let q = this.client.clone();

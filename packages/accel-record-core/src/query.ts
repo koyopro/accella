@@ -10,11 +10,7 @@ export class Query {
     this: T,
     input: R
   ): Relation<any, any> {
-    const includes = input.map((key) => {
-      return { name: key, ...this.associations[key] };
-    });
-
-    return new Relation(this, { includes });
+    return this.all().includes(input);
   }
 
   static first<T extends typeof Model>(this: T) {
