@@ -132,9 +132,9 @@ export class Relation<T, M extends ModelMeta> {
       if (record instanceof Model) record.destroy();
     }
   }
-  includes<R extends readonly any[]>(
-    input: R
-  ): Relation<T, M & { [K in R[number]]: ModelMeta }> {
+  includes(
+    input: M["AssociationKey"][]
+  ): Relation<T, M & { [K in M["AssociationKey"][number]]: ModelMeta }> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     newOptions["includes"].push(
       ...input.map((key) => {

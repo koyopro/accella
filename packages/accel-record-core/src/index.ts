@@ -29,6 +29,7 @@ export type StringFilter = Filter<string> & {
 };
 
 export type ModelMeta = {
+  AssociationKey: string;
   WhereInput: Record<string, any>;
   OrderInput: Record<string, SortOrder>;
 };
