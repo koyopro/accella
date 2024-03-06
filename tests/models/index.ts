@@ -75,7 +75,7 @@ type PersistedUser = User & {
 };
 type UserMeta = {
   Persisted: PersistedUser;
-  AssociationKey: 'posts';
+  AssociationKey: 'posts' | 'setting' | 'teams' | 'Profile';
   CreateInput: {
     id?: number;
     email: string;
@@ -118,7 +118,7 @@ type PersistedTeam = Team & {
 };
 type TeamMeta = {
   Persisted: PersistedTeam;
-  AssociationKey: 'posts';
+  AssociationKey: 'users';
   CreateInput: {
     id?: number;
     name: string;
@@ -149,7 +149,7 @@ type PersistedUserTeam = UserTeam & {
 };
 type UserTeamMeta = {
   Persisted: PersistedUserTeam;
-  AssociationKey: 'posts';
+  AssociationKey: 'user' | 'team';
   CreateInput: {
     assignedAt?: Date;
     assignedBy: string;
@@ -184,7 +184,7 @@ type PersistedPost = Post & {
 };
 type PostMeta = {
   Persisted: PersistedPost;
-  AssociationKey: 'posts';
+  AssociationKey: 'author' | 'tags';
   CreateInput: {
     id?: number;
     title: string;
@@ -251,7 +251,7 @@ type PersistedSetting = Setting & {
 };
 type SettingMeta = {
   Persisted: PersistedSetting;
-  AssociationKey: 'posts';
+  AssociationKey: 'user';
   CreateInput: {
     settingId?: number;
     threshold?: number;
@@ -286,7 +286,7 @@ type PersistedProfile = Profile & {
 };
 type ProfileMeta = {
   Persisted: PersistedProfile;
-  AssociationKey: 'posts';
+  AssociationKey: 'user';
   CreateInput: {
     id?: number;
     bio?: string;

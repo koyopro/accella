@@ -1,4 +1,4 @@
-import type { Model } from "./index.js";
+import type { Model, ModelMeta } from "./index.js";
 import { Relation } from "./relation.js";
 
 export class Query {
@@ -6,15 +6,11 @@ export class Query {
     return new Relation(this);
   }
 
-  static includes<T extends typeof Model, R extends readonly any[]>(
-    this: T,
-    input: R
-  ): Relation<any, any> {
-    const includes = input.map((key) => {
-      return { name: key, ...this.associations[key] };
-    });
-
-    return new Relation(this, { includes });
+  static includes<
+    T extends typeof Model,
+    R extends ModelMeta["AssociationKey"][],
+  >(this: T, input: R): Relation<any, any> {
+    return this.all().includes(input);
   }
 
   static first<T extends typeof Model>(this: T) {
