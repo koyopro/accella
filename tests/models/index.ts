@@ -68,18 +68,17 @@ declare module "./user" {
     Profile: Profile | undefined;
   }
 }
-// @ts-ignore
-export interface PersistedUser extends User {
+export interface User$Persisted extends User {
   id: NonNullable<User["id"]>;
-  posts: CollectionProxy<PersistedPost, UserMeta>;
-  setting: PersistedSetting | undefined;
-  teams: CollectionProxy<PersistedUserTeam, UserMeta>;
+  posts: CollectionProxy<Post$Persisted, UserMeta>;
+  setting: Setting$Persisted | undefined;
+  teams: CollectionProxy<UserTeam$Persisted, UserMeta>;
   createdAt: NonNullable<User["createdAt"]>;
   updatedAt: NonNullable<User["updatedAt"]>;
-  Profile: PersistedProfile | undefined;
+  Profile: Profile$Persisted | undefined;
 };
 type UserMeta = {
-  Persisted: PersistedUser;
+  Persisted: User$Persisted;
   AssociationKey: 'posts' | 'setting' | 'teams' | 'Profile';
   CreateInput: {
     id?: number;
@@ -118,13 +117,12 @@ declare module "./team" {
     users: CollectionProxy<UserTeam, TeamMeta>;
   }
 }
-// @ts-ignore
-export interface PersistedTeam extends Team {
+export interface Team$Persisted extends Team {
   id: NonNullable<Team["id"]>;
-  users: CollectionProxy<PersistedUserTeam, TeamMeta>;
+  users: CollectionProxy<UserTeam$Persisted, TeamMeta>;
 };
 type TeamMeta = {
-  Persisted: PersistedTeam;
+  Persisted: Team$Persisted;
   AssociationKey: 'users';
   CreateInput: {
     id?: number;
@@ -151,14 +149,13 @@ declare module "./userTeam" {
     assignedBy: string;
   }
 }
-// @ts-ignore
-export interface PersistedUserTeam extends UserTeam {
-  user: PersistedUser;
-  team: PersistedTeam;
+export interface UserTeam$Persisted extends UserTeam {
+  user: User$Persisted;
+  team: Team$Persisted;
   assignedAt: NonNullable<UserTeam["assignedAt"]>;
 };
 type UserTeamMeta = {
-  Persisted: PersistedUserTeam;
+  Persisted: UserTeam$Persisted;
   AssociationKey: 'user' | 'team';
   CreateInput: {
     assignedAt?: Date;
@@ -189,14 +186,13 @@ declare module "./post" {
     tags: CollectionProxy<PostTag, PostMeta>;
   }
 }
-// @ts-ignore
-export interface PersistedPost extends Post {
+export interface Post$Persisted extends Post {
   id: NonNullable<Post["id"]>;
-  author: PersistedUser;
-  tags: CollectionProxy<PersistedPostTag, PostMeta>;
+  author: User$Persisted;
+  tags: CollectionProxy<PostTag$Persisted, PostMeta>;
 };
 type PostMeta = {
-  Persisted: PersistedPost;
+  Persisted: Post$Persisted;
   AssociationKey: 'author' | 'tags';
   CreateInput: {
     id?: number;
@@ -228,13 +224,12 @@ declare module "./postTag" {
     posts: CollectionProxy<Post, PostTagMeta>;
   }
 }
-// @ts-ignore
-export interface PersistedPostTag extends PostTag {
+export interface PostTag$Persisted extends PostTag {
   id: NonNullable<PostTag["id"]>;
-  posts: CollectionProxy<PersistedPost, PostTagMeta>;
+  posts: CollectionProxy<Post$Persisted, PostTagMeta>;
 };
 type PostTagMeta = {
-  Persisted: PersistedPostTag;
+  Persisted: PostTag$Persisted;
   AssociationKey: 'posts';
   CreateInput: {
     id?: number;
@@ -260,14 +255,13 @@ declare module "./setting" {
     createdAt: Date | undefined;
   }
 }
-// @ts-ignore
-export interface PersistedSetting extends Setting {
+export interface Setting$Persisted extends Setting {
   settingId: NonNullable<Setting["settingId"]>;
-  user: PersistedUser;
+  user: User$Persisted;
   createdAt: NonNullable<Setting["createdAt"]>;
 };
 type SettingMeta = {
-  Persisted: PersistedSetting;
+  Persisted: Setting$Persisted;
   AssociationKey: 'user';
   CreateInput: {
     settingId?: number;
@@ -298,13 +292,12 @@ declare module "./profile" {
     enabled: boolean;
   }
 }
-// @ts-ignore
-export interface PersistedProfile extends Profile {
+export interface Profile$Persisted extends Profile {
   id: NonNullable<Profile["id"]>;
-  user: PersistedUser;
+  user: User$Persisted;
 };
 type ProfileMeta = {
-  Persisted: PersistedProfile;
+  Persisted: Profile$Persisted;
   AssociationKey: 'user';
   CreateInput: {
     id?: number;

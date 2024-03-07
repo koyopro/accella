@@ -172,10 +172,9 @@ declare module "./${toCamelCase(model.name)}" {
 ${columnDefines}
   }
 }
-// @ts-ignore
-export interface Persisted${model.name} extends ${model.name} {${columnForPersist(model)}};
+export interface ${model.name}$Persisted extends ${model.name} {${columnForPersist(model)}};
 type ${model.name}Meta = {
-  Persisted: Persisted${model.name};
+  Persisted: ${model.name}$Persisted;
   AssociationKey: ${associationKey(model)};
   CreateInput: {
 ${columns}
@@ -204,10 +203,10 @@ const columnForPersist = (model: DMMF.Model) => {
       .map((f) => {
         const type = getPropertyType(f);
         if (f.isList)
-          return `\n  ${f.name}: CollectionProxy<Persisted${f.type}, ${model.name}Meta>;`;
+          return `\n  ${f.name}: CollectionProxy<${f.type}$Persisted, ${model.name}Meta>;`;
         if (f.relationName) {
           const optional = f.relationFromFields?.length == 0;
-          return `\n  ${f.name}: Persisted${type}${optional ? " | undefined" : ""};`;
+          return `\n  ${f.name}: ${type}$Persisted${optional ? " | undefined" : ""};`;
         }
         return `\n  ${f.name}: NonNullable<${model.name}["${f.name}"]>;`;
       })
