@@ -16,4 +16,8 @@ export class Association<T extends Model> {
       [this.info.foreignKey]: this.owner[this.info.primaryKey as keyof T],
     };
   }
+
+  protected get connection() {
+    return (this.owner.constructor as typeof Model).connection;
+  }
 }
