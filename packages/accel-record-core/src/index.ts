@@ -7,7 +7,7 @@ import { Transaction } from "./transaction";
 import { classIncludes } from "./utils";
 
 export { CollectionProxy } from "./associations/collectionProxy.js";
-export { getPrismaClientConfig, stopRpcClient } from "./database.js";
+export { initAccelRecord, stopRpcClient as stopWorker } from "./database.js";
 export { Relation } from "./relation.js";
 export { Rollback } from "./transaction.js";
 

@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import Knex from "knex";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -17,54 +16,46 @@ const logger = {
   error: output,
 };
 
-const setupKnex = () => {
-  if (process.env.DB_ENGINE == "mysql") {
-    return Knex({ client: "mysql2" });
+const getKnexConfig = (config: Config) => {
+  if (config.knexConfig) return config.knexConfig;
+  if (config.datasourceUrl) {
+    const client = config.type == "mysql" ? "mysql2" : "better-sqlite3";
+    return { client, connection: config.datasourceUrl };
   }
-  return Knex({
-    client: "better-sqlite3",
-    connection: ":memory:",
-    useNullAsDefault: true,
+};
+
+const setupKnex = (config: Config) => {
+  const knexConfig = getKnexConfig(config);
+  if (knexConfig) {
+    return Knex(knexConfig);
+  }
+  throw new Error(
+    "No config for knex. Please call initAccelRecord(config) first."
+  );
+};
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export interface Config {
+  type: "mysql" | "sqlite";
+  datasourceUrl?: string;
+  knexConfig?: Parameters<typeof Knex>[0];
+}
+let _config: Config = { type: "sqlite" };
+let _rpcClient: any;
+export const initAccelRecord = (config: Config) => {
+  _config = config;
+
+  stopRpcClient();
+  _rpcClient = SyncRpc(path.resolve(__dirname, "./worker.cjs"), {
+    knexConfig: getKnexConfig(config),
   });
 };
 
-export const knex = setupKnex();
-
-loadDmmf();
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const configPath = path.resolve(__dirname, "./worker.cjs");
-
-export const getPrismaClientConfig = () => {
-  const ret = {} as Prisma.PrismaClientOptions;
-  if (process.env.VITEST_POOL_ID) {
-    ret.datasourceUrl =
-      process.env.DB_ENGINE == "mysql"
-        ? `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`
-        : `file:./test${process.env.VITEST_POOL_ID}.db`;
-  }
-  return ret;
+let _knex: Knex.Knex | undefined;
+export const getKnex = () => {
+  return (_knex ||= setupKnex(_config));
 };
-
-export const rpcClient = SyncRpc(configPath, {
-  // prismaClientConfig: getPrismaClientConfig(),
-  knexConfig:
-    process.env.DB_ENGINE == "mysql"
-      ? {
-          client: "mysql2",
-          connection: `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`,
-        }
-      : {
-          client: "better-sqlite3",
-          useNullAsDefault: true,
-          connection: {
-            filename: path.resolve(
-              __dirname,
-              `../../../tests/prisma/test${process.env.VITEST_POOL_ID}.db`
-            ),
-          },
-        },
-});
 
 export const execSQL = (params: {
   type?: "query" | "execute";
@@ -73,7 +64,10 @@ export const execSQL = (params: {
 }): any => {
   const { sql, bindings } = params;
   const startTime = Date.now();
-  const ret = rpcClient(params);
+  if (!_rpcClient || !_config) {
+    throw new Error("Please call initAccelRecord(config) first.");
+  }
+  const ret = _rpcClient(params);
   const time = Date.now() - startTime;
   if (params.type == "query") {
     logger.info(`  \x1b[36mSQL(${time}ms)  \x1b[34m${sql}\x1b[39m`, bindings);
@@ -81,9 +75,11 @@ export const execSQL = (params: {
     const color = /begin|commit|rollback/i.test(sql) ? "\x1b[36m" : "\x1b[32m";
     logger.info(`  \x1b[36mSQL(${time}ms)  ${color}${sql}\x1b[39m`, bindings);
   }
-  return process.env.DB_ENGINE == "mysql" ? ret[0] : ret;
+  return _config.type == "mysql" ? ret[0] : ret;
 };
 
 export const stopRpcClient = () => {
   SyncRpc.stop();
 };
+
+loadDmmf();

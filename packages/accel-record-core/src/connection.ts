@@ -1,10 +1,10 @@
-import { knex } from "./database.js";
+import { getKnex } from "./database.js";
 import { Model } from "./index.js";
 
 export class Connection {
   static get connection() {
     return {
-      knex,
+      knex: getKnex(),
     };
   }
 
