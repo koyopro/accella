@@ -170,6 +170,10 @@ export class Fields {
     return (this.model?.fields ?? []).map((field) => new Field(field));
   }
 
+  static findField(name: string): Field | undefined {
+    return this.fields.find((f) => f.name === name);
+  }
+
   static get columns() {
     return this.fields
       .filter((f) => f.relationName == undefined)

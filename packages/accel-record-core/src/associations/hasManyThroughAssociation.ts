@@ -1,4 +1,4 @@
-import { knex, execSQL } from "../database";
+import { execSQL } from "../database";
 import { Model } from "../index.js";
 import { HasManyAssociation } from "./hasManyAssociation";
 
@@ -10,7 +10,8 @@ export class HasManyThroughAssociation<
     const _records = Array.isArray(records) ? records : [records];
     for (const record of _records) {
       record.save();
-      const query = knex(this.info.through)
+      const query = this.connection
+        .knex(this.info.through)
         .insert({
           ...this.scopeAttributes(),
           [this.joinKey]: record.pkValues[0],
@@ -21,7 +22,8 @@ export class HasManyThroughAssociation<
   }
 
   deleteAll() {
-    const query = knex(this.info.through)
+    const query = this.connection
+      .knex(this.info.through)
       .where(this.info.foreignKey, this.owner[this.info.primaryKey as keyof T])
       .delete()
       .toSQL();
@@ -35,7 +37,8 @@ export class HasManyThroughAssociation<
   delete(...records: T[]) {
     const ret: T[] = [];
     for (const record of records) {
-      const query = knex(this.info.through)
+      const query = this.connection
+        .knex(this.info.through)
         .where(
           this.info.foreignKey,
           this.owner[this.info.primaryKey as keyof T]

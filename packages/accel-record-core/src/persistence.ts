@@ -116,12 +116,16 @@ export class Persistence {
 
   protected createRecord<T extends Model>(this: T): boolean {
     const data = this.makeInsertParams();
-    const query = this.client.returning(this.primaryKeys).insert(data).toSQL();
+    let q = this.client.clone();
+    if (Model.connection.returningUsable()) {
+      q = q.returning(this.primaryKeys);
+    }
+    const query = q.insert(data).toSQL();
     const returning = execSQL({ ...query, type: "query" }) as Record<
       keyof T,
       any
     >[];
-    this.retriveInsertedAttributes(returning[0]);
+    this.retriveInsertedAttributes(returning[0] ?? {});
     for (const [key, association] of Object.entries(this.associations)) {
       const { foreignKey, primaryKey } = association;
       const value = this[key as keyof T];
@@ -150,7 +154,16 @@ export class Persistence {
     }
     const query = this.client.where(data).limit(1).toSQL();
     const [record] = execSQL({ ...query, type: "query" });
-    Object.assign(this, record);
+    for (const [key, value] of Object.entries(record)) {
+      const type = this.findField(key)?.type;
+      const _val: any =
+        type == "Boolean"
+          ? !!value
+          : type == "DateTime"
+            ? new Date(value as number)
+            : value;
+      this[key as keyof T] = _val;
+    }
   }
 
   // for MySQL (The 'returning' clause is not available.)

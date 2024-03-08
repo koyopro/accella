@@ -222,7 +222,9 @@ export class Relation<T, M extends ModelMeta> {
         continue;
       }
       const attr = this.model.columnToAttribute(key);
-      attributes[attr ?? key] = value;
+      const _val =
+        this.model.findField(key)?.type == "Boolean" ? !!value : value;
+      attributes[attr ?? key] = _val;
     }
     return attributes;
   }
