@@ -155,14 +155,7 @@ export class Persistence {
     const query = this.client.where(data).limit(1).toSQL();
     const [record] = execSQL({ ...query, type: "query" });
     for (const [key, value] of Object.entries(record)) {
-      const type = this.findField(key)?.type;
-      const _val: any =
-        type == "Boolean"
-          ? !!value
-          : type == "DateTime"
-            ? new Date(value as number)
-            : value;
-      this[key as keyof T] = _val;
+      this[key as keyof T] = this.findField(key)?.cast(value) ?? value;
     }
   }
 

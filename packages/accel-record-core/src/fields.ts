@@ -108,6 +108,28 @@ export class Field {
   get defaultIsNow() {
     return this.default != undefined && this.default.name === "now";
   }
+
+  cast(value: any) {
+    if (value == undefined) return value;
+    switch (this.type) {
+      case "BigInt":
+      case "Decimal":
+      case "Float":
+      case "Int":
+        return Number(value);
+      case "Bytes":
+      case "String":
+        return String(value);
+      case "Boolean":
+        return !!value;
+      case "DateTime":
+        return new Date(value);
+      case "JSON":
+        return JSON.parse(value);
+      default:
+        return value;
+    }
+  }
 }
 
 const buildAssociation = (
