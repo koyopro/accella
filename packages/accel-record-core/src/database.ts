@@ -17,11 +17,18 @@ const logger = {
   error: output,
 };
 
-export const knex = Knex({
-  client: "better-sqlite3",
-  connection: ":memory:",
-  useNullAsDefault: true,
-});
+const setupKnex = () => {
+  if (process.env.DB_ENGINE == "mysql") {
+    return Knex({ client: "mysql2" });
+  }
+  return Knex({
+    client: "better-sqlite3",
+    connection: ":memory:",
+    useNullAsDefault: true,
+  });
+};
+
+export const knex = setupKnex();
 
 loadDmmf();
 
@@ -31,13 +38,32 @@ const configPath = path.resolve(__dirname, "./worker.cjs");
 export const getPrismaClientConfig = () => {
   const ret = {} as Prisma.PrismaClientOptions;
   if (process.env.VITEST_POOL_ID) {
-    ret.datasourceUrl = `file:./test${process.env.VITEST_POOL_ID}.db`;
+    ret.datasourceUrl =
+      process.env.DB_ENGINE == "mysql"
+        ? `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`
+        : `file:./test${process.env.VITEST_POOL_ID}.db`;
   }
   return ret;
 };
 
 export const rpcClient = SyncRpc(configPath, {
-  prismaClientConfig: getPrismaClientConfig(),
+  // prismaClientConfig: getPrismaClientConfig(),
+  knexConfig:
+    process.env.DB_ENGINE == "mysql"
+      ? {
+          client: "mysql2",
+          connection: `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`,
+        }
+      : {
+          client: "better-sqlite3",
+          useNullAsDefault: true,
+          connection: {
+            filename: path.resolve(
+              __dirname,
+              `../../../tests/prisma/test${process.env.VITEST_POOL_ID}.db`
+            ),
+          },
+        },
 });
 
 export const execSQL = (params: {
@@ -55,7 +81,7 @@ export const execSQL = (params: {
     const color = /begin|commit|rollback/i.test(sql) ? "\x1b[36m" : "\x1b[32m";
     logger.info(`  \x1b[36mSQL(${time}ms)  ${color}${sql}\x1b[39m`, bindings);
   }
-  return ret;
+  return process.env.DB_ENGINE == "mysql" ? ret[0] : ret;
 };
 
 export const stopRpcClient = () => {

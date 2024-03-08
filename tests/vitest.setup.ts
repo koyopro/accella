@@ -8,7 +8,10 @@ import "./models/index.js";
 beforeAll(() => {
   process.env.DATABASE_URL = getPrismaClientConfig().datasourceUrl;
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const schemaPath = path.resolve(__dirname, "./prisma/schema.prisma");
+  const schemaDir = process.env.DATABASE_URL?.startsWith("mysql")
+    ? "prisma_mysql"
+    : "prisma";
+  const schemaPath = path.resolve(__dirname, `./${schemaDir}/schema.prisma`);
   execSync(`npx prisma migrate dev --schema=${schemaPath} --skip-generate`, {
     stdio: "inherit",
   });
