@@ -57,6 +57,10 @@ export const getKnex = () => {
   return (_knex ||= setupKnex(_config));
 };
 
+export const getConfig = () => {
+  return _config;
+};
+
 export const execSQL = (params: {
   type?: "query" | "execute";
   sql: string;

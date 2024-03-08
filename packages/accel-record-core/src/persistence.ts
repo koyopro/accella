@@ -116,7 +116,11 @@ export class Persistence {
 
   protected createRecord<T extends Model>(this: T): boolean {
     const data = this.makeInsertParams();
-    const query = this.client.returning(this.primaryKeys).insert(data).toSQL();
+    let q = this.client.clone();
+    if (Model.connection.returningUsable()) {
+      q = q.returning(this.primaryKeys);
+    }
+    const query = q.insert(data).toSQL();
     const returning = execSQL({ ...query, type: "query" }) as Record<
       keyof T,
       any
