@@ -43,11 +43,11 @@ export class Migration {
         applyCount++;
       }
     }
-    if (applyCount == 0) {
-      console.log(
-        "Already in sync, no schema change or pending migration was found."
-      );
-    }
+    // if (applyCount == 0) {
+    //   console.log(
+    //     "Already in sync, no schema change or pending migration was found."
+    //   );
+    // }
   }
 
   protected async resetLogsMap() {
