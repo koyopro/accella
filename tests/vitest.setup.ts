@@ -1,13 +1,11 @@
 import { initAccelRecord, Model, stopWorker } from "accel-record";
-import { execSync } from "child_process";
+import crypto from "crypto";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import fs from "fs";
-import crypto from "crypto";
 
-import "./models/index.js";
 import { getKnex } from "accel-record-core/src/database.js";
-import { log } from "console";
+import "./models/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -48,16 +46,31 @@ const execAllPendingMigrations = async (type: "mysql" | "sqlite") => {
   const migrationsPath = path.resolve(__dirname, `./${schemaDir}/migrations`);
   const knex = getKnex();
   const logsTable = "_prisma_migrations";
-  await knex.raw(`CREATE TABLE IF NOT EXISTS "_prisma_migrations" (
-    "id"                    TEXT PRIMARY KEY NOT NULL,
-    "checksum"              TEXT NOT NULL,
-    "finished_at"           DATETIME,
-    "migration_name"        TEXT NOT NULL,
-    "logs"                  TEXT,
-    "rolled_back_at"        DATETIME,
-    "started_at"            DATETIME NOT NULL DEFAULT current_timestamp,
-    "applied_steps_count"   INTEGER UNSIGNED NOT NULL DEFAULT 0
-);`);
+  // await knex.raw(`CREATE DATABASE IF NOT EXISTS ${database};`);
+  if (type == "mysql") {
+    await knex.raw(`CREATE TABLE IF NOT EXISTS \`_prisma_migrations\` (
+  \`id\` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  \`checksum\` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  \`finished_at\` datetime(3) DEFAULT NULL,
+  \`migration_name\` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  \`logs\` text COLLATE utf8mb4_unicode_ci,
+  \`rolled_back_at\` datetime(3) DEFAULT NULL,
+  \`started_at\` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  \`applied_steps_count\` int unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (\`id\`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`);
+  } else {
+    await knex.raw(`CREATE TABLE IF NOT EXISTS "_prisma_migrations" (
+      "id"                    TEXT PRIMARY KEY NOT NULL,
+      "checksum"              TEXT NOT NULL,
+      "finished_at"           DATETIME,
+      "migration_name"        TEXT NOT NULL,
+      "logs"                  TEXT,
+      "rolled_back_at"        DATETIME,
+      "started_at"            DATETIME NOT NULL DEFAULT current_timestamp,
+      "applied_steps_count"   INTEGER UNSIGNED NOT NULL DEFAULT 0
+  );`);
+  }
   const logs = await knex(logsTable).select("*");
   const logsMap = new Map(logs.map((log) => [log.migration_name, log]));
   let applyCount = 0;
@@ -98,12 +111,6 @@ beforeAll(async () => {
   const config = dbConfig(type);
   initAccelRecord(config);
   await execAllPendingMigrations(type);
-  // process.env.DATABASE_URL = config.datasourceUrl;
-  // const schemaDir = type == "mysql" ? "prisma_mysql" : "prisma";
-  // const schemaPath = path.resolve(__dirname, `./${schemaDir}/schema.prisma`);
-  // execSync(`npx prisma migrate dev --schema=${schemaPath} --skip-generate`, {
-  //   stdio: "inherit",
-  // });
 });
 
 beforeEach(async () => {
