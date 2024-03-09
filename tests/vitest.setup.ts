@@ -1,8 +1,7 @@
-import { initAccelRecord, Model, stopWorker } from "accel-record";
+import { Migration, Model, initAccelRecord, stopWorker } from "accel-record";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import { Migration } from "accel-record";
 import "./models/index.js";
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));

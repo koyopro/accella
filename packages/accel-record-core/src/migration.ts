@@ -78,12 +78,16 @@ export class Migration {
       `./migrations/${dir}/migration.sql`
     );
     if (!fs.existsSync(sqlPath)) return false;
-    if (this.logsMap.get(dir)) return false;
+    if (!this.isPending(dir)) return false;
 
     const buffer = fs.readFileSync(sqlPath);
     await this.apply(dir, buffer);
 
     return true;
+  }
+
+  protected isPending(dir: string) {
+    return !this.logsMap.get(dir);
   }
 
   protected async createLogsTableIfNotExists() {
