@@ -40,6 +40,7 @@ export interface Config {
   type: "mysql" | "sqlite";
   datasourceUrl?: string;
   knexConfig?: Parameters<typeof Knex>[0];
+  prismaDir?: string;
 }
 let _config: Config = { type: "sqlite" };
 let _rpcClient: any;

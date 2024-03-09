@@ -1,50 +1,40 @@
-import { initAccelRecord, Model, stopWorker } from "accel-record";
-import { execSync } from "child_process";
+import { Migration, Model, initAccelRecord, stopWorker } from "accel-record";
 import path from "path";
 import { fileURLToPath } from "url";
 
 import "./models/index.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const dbConfig = (type: "mysql" | "sqlite") => {
-  if (type == "mysql") {
-    const connection = `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`;
+const dbConfig = () => {
+  if (process.env.DB_ENGINE == "mysql") {
     return {
       type: "mysql",
-      datasourceUrl: connection,
+      prismaDir: path.resolve(__dirname, "./prisma_mysql"),
       knexConfig: {
         client: "mysql2",
-        connection,
+        connection: `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`,
       },
     } as const;
   } else {
-    const connection = path.resolve(
-      __dirname,
-      `./prisma/test${process.env.VITEST_POOL_ID}.db`
-    );
     return {
       type: "sqlite",
-      datasourceUrl: `file:${connection}`,
+      prismaDir: path.resolve(__dirname, "./prisma"),
       knexConfig: {
         client: "better-sqlite3",
         useNullAsDefault: true,
-        connection,
+        connection: path.resolve(
+          __dirname,
+          `./prisma/test${process.env.VITEST_POOL_ID}.db`
+        ),
       },
     } as const;
   }
 };
 
-beforeAll(() => {
-  const type = process.env.DB_ENGINE == "mysql" ? "mysql" : "sqlite";
-  const config = dbConfig(type);
-  initAccelRecord(config);
-  process.env.DATABASE_URL = config.datasourceUrl;
-  const schemaDir = type == "mysql" ? "prisma_mysql" : "prisma";
-  const schemaPath = path.resolve(__dirname, `./${schemaDir}/schema.prisma`);
-  execSync(`npx prisma migrate dev --schema=${schemaPath} --skip-generate`, {
-    stdio: "inherit",
-  });
+beforeAll(async () => {
+  initAccelRecord(dbConfig());
+  await Migration.migrate();
 });
 
 beforeEach(async () => {
