@@ -35,6 +35,7 @@ describe("Columns", () => {
   });
 
   test("json column", () => {
+    expect(Setting.build({}).data).toEqual({ key1: "hoge" });
     $setting.create({
       user: $user.create(),
       data: { key1: "value1", key2: { key3: 3 } },
