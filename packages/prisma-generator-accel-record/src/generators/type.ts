@@ -120,9 +120,11 @@ type Persisted<T> = Meta<T>["Persisted"];
           field.isList ||
           field.isUpdatedAt;
         const type = getPropertyType(field);
-        return `    ${field.name}${optional ? "?" : ""}: ${type}${
-          field.isList ? "[]" : ""
-        };`;
+        const valType =
+          field.type == "Json"
+            ? `${model.name}["${field.name}"]`
+            : `${type}${field.isList ? "[]" : ""}`;
+        return `    ${field.name}${optional ? "?" : ""}: ${valType};`;
       })
       .join("\n");
     const associationColumns = model.fields
@@ -142,6 +144,9 @@ type Persisted<T> = Meta<T>["Persisted"];
           !field.isRequired ||
           field.isUpdatedAt;
         const type = getPropertyType(field);
+        if (field.type == "Json") {
+          return `    ${field.name}: ${model.name}["${field.name}"]`;
+        }
         if (field.relationName && field.isList) {
           return `    ${field.name}: CollectionProxy<${field.type}, ${model.name}Meta>;`;
         }
