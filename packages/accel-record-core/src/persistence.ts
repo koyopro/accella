@@ -1,5 +1,5 @@
 import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder";
-import { execSQL } from "./database";
+import { exec, execSQL } from "./database";
 import { CollectionProxy, Model } from "./index.js";
 
 export class Persistence {
@@ -69,11 +69,7 @@ export class Persistence {
 
   protected updateRecord<T extends Model>(this: T): boolean {
     const data = this.makeUpdateParams();
-    const query = this.client
-      .where(this.primaryKeysCondition())
-      .update(data)
-      .toSQL();
-    execSQL(query);
+    exec(this.client.where(this.primaryKeysCondition()).update(data));
     this.retriveUpdatedAt(data);
     for (const [key, association] of Object.entries(this.associations)) {
       const value = this[key as keyof T];
@@ -120,11 +116,7 @@ export class Persistence {
     if (Model.connection.returningUsable()) {
       q = q.returning(this.primaryKeys);
     }
-    const query = q.insert(data).toSQL();
-    const returning = execSQL({ ...query, type: "query" }) as Record<
-      keyof T,
-      any
-    >[];
+    const returning = exec(q.insert(data)) as Record<keyof T, any>[];
     this.retriveInsertedAttributes(returning[0] ?? {});
     for (const [key, association] of Object.entries(this.associations)) {
       const { foreignKey, primaryKey } = association;
@@ -152,8 +144,7 @@ export class Persistence {
     for (const key of this.primaryKeys as (keyof T)[]) {
       data[key] = this[key] || returning[key] || this.getLastInsertId();
     }
-    const query = this.client.where(data).limit(1).toSQL();
-    const [record] = execSQL({ ...query, type: "query" });
+    const [record] = exec(this.client.where(data).limit(1));
     for (const [key, value] of Object.entries(record)) {
       this[key as keyof T] = this.findField(key)?.cast(value) ?? value;
     }
@@ -187,11 +178,7 @@ export class Persistence {
   }
 
   protected deleteRecord<T extends Model>(this: T): boolean {
-    const query = this.client
-      .where(this.primaryKeysCondition())
-      .delete()
-      .toSQL();
-    execSQL(query);
+    exec(this.client.where(this.primaryKeysCondition()).delete());
     return true;
   }
 

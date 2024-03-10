@@ -62,6 +62,10 @@ export const getConfig = () => {
   return _config;
 };
 
+export const exec = (queryBuilder: Knex.Knex.QueryBuilder<any, any>) => {
+  return execSQL(queryBuilder.toSQL());
+};
+
 export const execSQL = (params: {
   type?: "query" | "execute";
   sql: string;

@@ -1,6 +1,6 @@
-import { execSQL } from "./database.js";
+import { exec } from "./database.js";
 import { Association } from "./fields.js";
-import { Models, type ModelMeta, Model } from "./index.js";
+import { Model, Models, type ModelMeta } from "./index.js";
 
 export type Options = {
   joins: any[];
@@ -56,8 +56,7 @@ export class Relation<T, M extends ModelMeta> {
     }).get()[0];
   }
   count(): number {
-    const query = this.query().count(this.model.primaryKeys[0]).toSQL();
-    const res = execSQL({ type: "query", ...query });
+    const res = exec(this.query().count(this.model.primaryKeys[0]));
     return Number(Object.values(res[0])[0]);
   }
   exists(): boolean {
@@ -122,8 +121,7 @@ export class Relation<T, M extends ModelMeta> {
     return new Relation(this.model, newOptions);
   }
   deleteAll() {
-    const query = this.query().del().toSQL();
-    execSQL(query);
+    exec(this.query().del());
   }
   destroyAll() {
     for (const record of this.toArray()) {
@@ -171,8 +169,7 @@ export class Relation<T, M extends ModelMeta> {
     return q;
   }
   get(): T[] {
-    const query = this.query().select(`${this.model.tableName}.*`).toSQL();
-    const rows = execSQL({ type: "query", ...query });
+    const rows = exec(this.query().select(`${this.model.tableName}.*`));
     this.loadIncludes(rows);
     return rows.map((row: object) => {
       const obj = this.model.build(this.makeAttributes(row));

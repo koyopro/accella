@@ -1,4 +1,4 @@
-import { execSQL } from "../database";
+import { exec } from "../database";
 import { Model } from "../index.js";
 import { HasManyAssociation } from "./hasManyAssociation";
 
@@ -10,14 +10,11 @@ export class HasManyThroughAssociation<
     const _records = Array.isArray(records) ? records : [records];
     for (const record of _records) {
       record.save();
-      const query = this.connection
-        .knex(this.info.through)
-        .insert({
-          ...this.scopeAttributes(),
-          [this.joinKey]: record.pkValues[0],
-        })
-        .toSQL();
-      execSQL(query);
+      const query = this.connection.knex(this.info.through).insert({
+        ...this.scopeAttributes(),
+        [this.joinKey]: record.pkValues[0],
+      });
+      exec(query);
     }
   }
 
@@ -25,9 +22,8 @@ export class HasManyThroughAssociation<
     const query = this.connection
       .knex(this.info.through)
       .where(this.info.foreignKey, this.owner[this.info.primaryKey as keyof T])
-      .delete()
-      .toSQL();
-    execSQL(query);
+      .delete();
+    exec(query);
   }
 
   destroyAll(): void {
@@ -44,9 +40,8 @@ export class HasManyThroughAssociation<
           this.owner[this.info.primaryKey as keyof T]
         )
         .where(this.joinKey, record.pkValues[0])
-        .delete()
-        .toSQL();
-      if (execSQL(query)) {
+        .delete();
+      if (exec(query)) {
         ret.push(record);
       }
     }
