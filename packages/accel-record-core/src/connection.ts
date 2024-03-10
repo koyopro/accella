@@ -1,4 +1,4 @@
-import { getConfig, getKnex } from "./database.js";
+import { execSQL, getConfig, getKnex } from "./database.js";
 import { Model } from "./index.js";
 
 export class Connection {
@@ -8,6 +8,9 @@ export class Connection {
       knex: getKnex(),
       returningUsable: () => {
         return ["sqlite"].includes(getConfig().type);
+      },
+      execute: (sql: string, bindings: any[]) => {
+        return execSQL({ sql, bindings });
       },
     };
   }
