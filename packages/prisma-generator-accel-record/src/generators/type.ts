@@ -15,8 +15,6 @@ export const getScalarDefault = (field: DMMF.Field) => {
       return false;
     case "DateTime":
       return new Date();
-    case "Json":
-      return {};
     default:
       return undefined;
   }
