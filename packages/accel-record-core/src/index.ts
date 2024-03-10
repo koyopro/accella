@@ -15,6 +15,7 @@ export {
 export { Relation } from "./relation.js";
 export { Rollback } from "./transaction.js";
 export { Migration } from "./migration.js";
+export { DatabaseCleaner } from "./testUtils.js";
 
 export type SortOrder = "asc" | "desc";
 

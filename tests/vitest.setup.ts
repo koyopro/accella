@@ -1,4 +1,9 @@
-import { Migration, Model, initAccelRecord, stopWorker } from "accel-record";
+import {
+  DatabaseCleaner,
+  Migration,
+  initAccelRecord,
+  stopWorker,
+} from "accel-record";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -38,11 +43,11 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  Model.startTransaction();
+  DatabaseCleaner.start();
 });
 
 afterEach(async () => {
-  Model.rollbackTransaction();
+  DatabaseCleaner.clean();
 });
 
 afterAll(async () => {
