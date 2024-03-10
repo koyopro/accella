@@ -15,7 +15,7 @@ export const getScalarDefault = (field: DMMF.Field) => {
       return false;
     case "DateTime":
       return new Date();
-    case "JSON":
+    case "Json":
       return {};
     default:
       return undefined;
@@ -36,8 +36,8 @@ const getPropertyType = (field: DMMF.Field) => {
       return "boolean";
     case "DateTime":
       return "Date";
-    case "JSON":
-      return "object";
+    case "Json":
+      return "any";
     default:
       return field.type;
   }
@@ -153,7 +153,9 @@ type Persisted<T> = Meta<T>["Persisted"];
     const whereInputs =
       model.fields
         .filter(reject)
-        .filter((field) => field.relationName == undefined)
+        .filter(
+          (field) => field.relationName == undefined && field.type != "Json"
+        )
         .map((field) => {
           const type = getPropertyType(field);
           const filter = getFilterType(type);

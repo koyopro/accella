@@ -253,6 +253,7 @@ declare module "./setting" {
     userId: number;
     threshold: number | undefined;
     createdAt: Date | undefined;
+    data: any;
   }
 }
 export interface Persisted$Setting extends Setting {
@@ -267,6 +268,7 @@ type SettingMeta = {
     settingId?: number;
     threshold?: number;
     createdAt?: Date;
+    data?: any;
   } & ({ user: User } | { userId: number });
   WhereInput: {
     settingId?: number | number[] | Filter<number> | null;
@@ -279,6 +281,7 @@ type SettingMeta = {
     userId?: SortOrder;
     threshold?: SortOrder;
     createdAt?: SortOrder;
+    data?: SortOrder;
   };
 };
 
