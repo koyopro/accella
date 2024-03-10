@@ -67,7 +67,6 @@ export const exec = (queryBuilder: Knex.Knex.QueryBuilder<any, any>) => {
 };
 
 export const execSQL = (params: {
-  type?: "query" | "execute";
   sql: string;
   bindings: readonly any[];
 }): any => {
@@ -78,12 +77,8 @@ export const execSQL = (params: {
   }
   const ret = _rpcClient(params);
   const time = Date.now() - startTime;
-  if (params.type == "query") {
-    logger.info(`  \x1b[36mSQL(${time}ms)  \x1b[34m${sql}\x1b[39m`, bindings);
-  } else {
-    const color = /begin|commit|rollback/i.test(sql) ? "\x1b[36m" : "\x1b[32m";
-    logger.info(`  \x1b[36mSQL(${time}ms)  ${color}${sql}\x1b[39m`, bindings);
-  }
+  const color = /begin|commit|rollback/i.test(sql) ? "\x1b[36m" : "\x1b[32m";
+  logger.info(`  \x1b[36mSQL(${time}ms)  ${color}${sql}\x1b[39m`, bindings);
   return _config.type == "mysql" ? ret[0] : ret;
 };
 

@@ -155,7 +155,6 @@ export class Persistence {
     return execSQL({
       sql: "select last_insert_id() as id;",
       bindings: [],
-      type: "query",
     })[0]["id"];
   }
 
