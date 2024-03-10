@@ -18,7 +18,14 @@ const dbConfig = () => {
       prismaDir: path.resolve(__dirname, "./prisma_mysql"),
       knexConfig: {
         client: "mysql2",
-        connection: `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`,
+        // connection: `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`,
+        connection: {
+          host: "localhost",
+          port: 3306,
+          user: "root",
+          password: "",
+          database: `accel_test${process.env.VITEST_POOL_ID}`,
+        },
       },
     } as const;
   } else {

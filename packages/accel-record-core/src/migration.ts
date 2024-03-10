@@ -1,6 +1,6 @@
-import Knex from "knex";
 import crypto from "crypto";
 import fs from "fs";
+import Knex from "knex";
 import path from "path";
 import { getConfig, getKnex } from "./database.js";
 
@@ -10,8 +10,43 @@ export class Migration {
   knex: Knex.Knex<any, unknown[]>;
   logsMap: Map<any, any>;
 
-  static migrate() {
-    return new this().applyAllPendingMigrations();
+  static async migrate() {
+    if (process.env.NODE_ENV == "test") {
+      await this.ensureDatabaseExists();
+    }
+    return await new this().applyAllPendingMigrations();
+  }
+
+  static async ensureDatabaseExists() {
+    const config = getConfig();
+    if (config.type == "mysql") {
+      const parse = () => {
+        if (typeof config.knexConfig?.connection == "string") {
+          const u = new URL(config.knexConfig.connection);
+          const database = u.pathname.replace("/", "");
+          u.pathname = "";
+          const newConfig = { ...config.knexConfig, connection: u.toString() };
+          return [database, newConfig];
+        } else if (config.knexConfig) {
+          // @ts-ignore
+          const { database, ...rest } = config.knexConfig.connection;
+          const newConfig = { ...config.knexConfig, connection: rest };
+          return [database, newConfig];
+        } else {
+          throw new Error("Invalid knexConfig");
+        }
+      };
+      const [database, newConfig] = parse();
+      const knex = Knex(newConfig);
+      const exists = await knex.raw(`SHOW DATABASES LIKE "${database}";`);
+      if (exists[0].length == 0) {
+        console.log(`Creating database \`${database}\``);
+        await knex.raw(`CREATE DATABASE ${database};`);
+      }
+      knex.destroy();
+    } else {
+      // when using sqlite, the database file is created automatically
+    }
   }
 
   constructor() {
@@ -34,7 +69,6 @@ export class Migration {
   }
 
   async applyAllPendingMigrations() {
-    // await knex.raw(`CREATE DATABASE IF NOT EXISTS ${database};`);
     await this.createLogsTableIfNotExists();
     await this.resetLogsMap();
     let applyCount = 0;

@@ -39,7 +39,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export interface Config {
   type: "mysql" | "sqlite";
   datasourceUrl?: string;
-  knexConfig?: Parameters<typeof Knex>[0];
+  knexConfig?: Knex.Knex.Config;
   prismaDir?: string;
 }
 let _config: Config = { type: "sqlite" };
