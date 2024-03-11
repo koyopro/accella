@@ -54,6 +54,17 @@ type Meta<T> = T extends typeof User | User ? UserMeta :
                T extends typeof Profile | Profile ? ProfileMeta :
                any;
 
+export namespace $Enums {
+  export const Role = {
+    MEMBER: "MEMBER",
+    ADMIN: "ADMIN",
+  } as const;
+  export type Role = (typeof Role)[keyof typeof Role];
+}
+
+export type Role = $Enums.Role;
+export const Role = $Enums.Role;
+
 declare module "./user" {
   interface User {
     id: number | undefined;
@@ -288,6 +299,7 @@ declare module "./profile" {
     bio: string | undefined;
     point: number;
     enabled: boolean;
+    role: Role;
   }
 }
 export interface Persisted$Profile extends Profile {
@@ -302,6 +314,7 @@ type ProfileMeta = {
     bio?: string;
     point?: number;
     enabled?: boolean;
+    role?: Role;
   } & ({ user: User } | { userId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -309,6 +322,7 @@ type ProfileMeta = {
     bio?: string | string[] | StringFilter | null;
     point?: number | number[] | Filter<number> | null;
     enabled?: boolean | boolean[] | undefined | null;
+    role?: Role | Role[] | undefined | null;
   };
   OrderInput: {
     id?: SortOrder;
@@ -316,5 +330,6 @@ type ProfileMeta = {
     bio?: SortOrder;
     point?: SortOrder;
     enabled?: SortOrder;
+    role?: SortOrder;
   };
 };
