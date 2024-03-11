@@ -67,6 +67,11 @@ model Setting {
   data      Json     @default("{}")
 }
 
+enum Role {
+  MEMBER
+  ADMIN
+}
+
 model Profile {
   id      Int     @id @default(autoincrement())
   user    User    @relation(fields: [userId], references: [id])
@@ -74,6 +79,7 @@ model Profile {
   bio     String? @default("I'm a Prisma user!") @map("description")
   point   Int     @default(100)
   enabled Boolean @default(true)
+  role    Role    @default(MEMBER)
 
   @@map("profiles")
 }
