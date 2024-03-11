@@ -1,5 +1,6 @@
 import { $setting } from "../factories/setting";
 import { $user } from "../factories/user";
+import { Profile } from "./profile";
 import { Setting } from "./setting";
 import { User } from "./user";
 
@@ -43,5 +44,13 @@ describe("Columns", () => {
     const s = Setting.first();
     expect(s.data.key1).toBe("value1");
     expect(s.data.key2?.key3).toBe(3);
+  });
+
+  test("enum column", () => {
+    const user = $user.create();
+    const p = Profile.create({ user: user });
+    expect(p.role).toBe("MEMBER");
+    p.update({ role: "ADMIN" });
+    expect(Profile.first().role).toBe("ADMIN");
   });
 });
