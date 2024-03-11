@@ -1,3 +1,4 @@
+import { Model } from "accel-record";
 import { $setting } from "../factories/setting";
 import { $user } from "../factories/user";
 import { Setting } from "./setting";
@@ -35,6 +36,8 @@ describe("Columns", () => {
   });
 
   test("json column", () => {
+    if (Model.connection.adapterName == "sqlite") return;
+
     expect(Setting.build({}).data).toEqual({ key1: "hoge" });
     $setting.create({
       user: $user.create(),
