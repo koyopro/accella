@@ -129,7 +129,7 @@ export class Relation<T, M extends ModelMeta> {
     }
   }
   includes(
-    input: M["AssociationKey"][]
+    ...input: M["AssociationKey"][]
   ): Relation<T, M & { [K in M["AssociationKey"][number]]: ModelMeta }> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     newOptions["includes"].push(

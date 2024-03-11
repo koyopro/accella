@@ -29,7 +29,7 @@ describe("BelongsTo", () => {
     $setting.create({ user: $user.create() });
     $setting.create({ user: $user.create() });
     // Confirm: that N+1 queries are not occurring
-    const settings = Setting.includes(["user"]).toArray();
+    const settings = Setting.includes("user").toArray();
     expect(settings[0].user.isNewRecord).toBe(false);
     expect(settings[1].user.isNewRecord).toBe(false);
   });

@@ -9,8 +9,8 @@ export class Query {
   static includes<
     T extends typeof Model,
     R extends ModelMeta["AssociationKey"][],
-  >(this: T, input: R): Relation<any, any> {
-    return this.all().includes(input);
+  >(this: T, ...input: R): Relation<any, any> {
+    return this.all().includes(...input);
   }
 
   static first<T extends typeof Model>(this: T) {

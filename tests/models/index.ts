@@ -34,7 +34,7 @@ declare module "accel-record" {
     function whereNot<T>(this: T, input: Meta<T>['WhereInput']): Relation<Persisted<T>, Meta<T>>;
     function whereRaw<T>(this: T, query: string, bindings?: any[]): Relation<Persisted<T>, Meta<T>>;
     function build<T extends abstract new (...args: any) => any>(this: T, input: Partial<Meta<T>["CreateInput"]>): InstanceType<T>;
-    function includes<T>(this: T, input: Meta<T>['AssociationKey'][]): Relation<Persisted<T>, Meta<T>>;
+    function includes<T>(this: T, ...input: Meta<T>['AssociationKey'][]): Relation<Persisted<T>, Meta<T>>;
   }
   interface Model {
     isPersisted<T>(this: T): this is Persisted<T>;
