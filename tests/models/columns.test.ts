@@ -52,5 +52,12 @@ describe("Columns", () => {
     expect(p.role).toBe("MEMBER");
     p.update({ role: "ADMIN" });
     expect(Profile.first().role).toBe("ADMIN");
+
+    // for type check
+    expect(
+      Profile.where({ role: ["ADMIN", "MEMBER"] })
+        .order("role")
+        .count()
+    ).toBe(1);
   });
 });

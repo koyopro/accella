@@ -103,6 +103,7 @@ type Persisted<T> = Meta<T>["Persisted"];
     )
     .join("\n               ");
   data += `type Meta<T> = ${meta}\n               any;\n`;
+  data += enumData(options);
   for (const model of options.dmmf.datamodel.models) {
     const reject = (f: DMMF.Field) => f.relationFromFields?.[0] == undefined;
     const relationFromFields = model.fields
@@ -190,6 +191,30 @@ ${columns}
 `;
   }
   return data;
+};
+
+const enumData = (options: GeneratorOptions) => {
+  if (options.dmmf.datamodel.enums.length == 0) return "";
+
+  let namespaceData = "";
+  let enumData = "";
+
+  for (const enumType of options.dmmf.datamodel.enums) {
+    namespaceData += `
+  export const ${enumType.name} = {
+    ${enumType.values.map((v) => `${v.name}: "${v.name}",`).join("\n    ")}
+  } as const;
+  export type ${enumType.name} = (typeof ${enumType.name})[keyof typeof ${enumType.name}];`;
+    enumData += `
+export type ${enumType.name} = $Enums.${enumType.name};
+export const ${enumType.name} = $Enums.${enumType.name};`;
+  }
+
+  return `
+export namespace $Enums {${namespaceData}
+}
+${enumData}
+`;
 };
 
 const associationKey = (model: DMMF.Model) => {
