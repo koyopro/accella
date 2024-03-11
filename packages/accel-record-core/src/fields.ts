@@ -98,8 +98,6 @@ export class Field {
         return false;
       case "DateTime":
         return new Date();
-      case "JSON":
-        return {};
       default:
         return undefined;
     }

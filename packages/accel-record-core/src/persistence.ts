@@ -95,6 +95,9 @@ export class Persistence {
       if (this.findField(column as string)?.isUpdatedAt) {
         data[column as string] = now;
       }
+      if (this.findField(column as string)?.type === "Json") {
+        data[column as string] = JSON.stringify(this[column]);
+      }
     }
     return data;
   }
@@ -171,6 +174,9 @@ export class Persistence {
       }
       if (field?.defaultIsNow && data[column] == undefined) {
         data[column] = now;
+      }
+      if (this.findField(column as string)?.type === "Json") {
+        data[column as string] = JSON.stringify(this[column]);
       }
     }
     return data;

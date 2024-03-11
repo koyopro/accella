@@ -9,7 +9,7 @@ generator custom_generator {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = "mysql://root:@localhost:3306/accel_test1"
 }
 
 model User {
@@ -64,6 +64,7 @@ model Setting {
   userId    Int      @unique
   threshold Float?
   createdAt DateTime @default(now())
+  data      Json     @default("{}")
 }
 
 model Profile {

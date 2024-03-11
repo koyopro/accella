@@ -15,8 +15,6 @@ export const getScalarDefault = (field: DMMF.Field) => {
       return false;
     case "DateTime":
       return new Date();
-    case "JSON":
-      return {};
     default:
       return undefined;
   }
@@ -36,8 +34,8 @@ const getPropertyType = (field: DMMF.Field) => {
       return "boolean";
     case "DateTime":
       return "Date";
-    case "JSON":
-      return "object";
+    case "Json":
+      return "any";
     default:
       return field.type;
   }
@@ -120,9 +118,11 @@ type Persisted<T> = Meta<T>["Persisted"];
           field.isList ||
           field.isUpdatedAt;
         const type = getPropertyType(field);
-        return `    ${field.name}${optional ? "?" : ""}: ${type}${
-          field.isList ? "[]" : ""
-        };`;
+        const valType =
+          field.type == "Json"
+            ? `${model.name}["${field.name}"]`
+            : `${type}${field.isList ? "[]" : ""}`;
+        return `    ${field.name}${optional ? "?" : ""}: ${valType};`;
       })
       .join("\n");
     const associationColumns = model.fields
@@ -142,6 +142,9 @@ type Persisted<T> = Meta<T>["Persisted"];
           !field.isRequired ||
           field.isUpdatedAt;
         const type = getPropertyType(field);
+        if (field.type == "Json") {
+          return `    ${field.name}: ${model.name}["${field.name}"]`;
+        }
         if (field.relationName && field.isList) {
           return `    ${field.name}: CollectionProxy<${field.type}, ${model.name}Meta>;`;
         }
@@ -153,7 +156,9 @@ type Persisted<T> = Meta<T>["Persisted"];
     const whereInputs =
       model.fields
         .filter(reject)
-        .filter((field) => field.relationName == undefined)
+        .filter(
+          (field) => field.relationName == undefined && field.type != "Json"
+        )
         .map((field) => {
           const type = getPropertyType(field);
           const filter = getFilterType(type);

@@ -1,5 +1,6 @@
 import { $setting } from "../factories/setting";
 import { $user } from "../factories/user";
+import { Setting } from "./setting";
 import { User } from "./user";
 
 describe("Columns", () => {
@@ -31,5 +32,16 @@ describe("Columns", () => {
   test("retrive auto increment column", () => {
     const s = $setting.create({ user: $user.create() });
     expect(s.settingId).not.toBeUndefined();
+  });
+
+  test("json column", () => {
+    expect(Setting.build({}).data).toEqual({ key1: "hoge" });
+    $setting.create({
+      user: $user.create(),
+      data: { key1: "value1", key2: { key3: 3 } },
+    });
+    const s = Setting.first();
+    expect(s.data.key1).toBe("value1");
+    expect(s.data.key2?.key3).toBe(3);
   });
 });
