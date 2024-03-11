@@ -19,16 +19,21 @@ generatorHandler({
     };
   },
   onGenerate: async (options: GeneratorOptions) => {
+    const outputDir = options.generator.output?.value!;
     await writeFileSafely(
-      path.join(options.generator.output?.value!, `index.ts`),
+      path.join(outputDir, `_types.ts`),
       generateIndex(options)
+    );
+    await writeFileSafely(
+      path.join(outputDir, `index.ts`),
+      `export * from "./_types.js";`
     );
 
     await ensureApplicationRecord(options);
 
     for (const model of options.dmmf.datamodel.models) {
       const fileName = `${toCamelCase(model.name)}.ts`;
-      const filePath = path.join(options.generator.output?.value!, fileName);
+      const filePath = path.join(outputDir, fileName);
       if (fs.existsSync(filePath)) continue;
       await writeFileSafely(filePath, generateModel(model));
       // logger.info(`added: ${fileName}`);

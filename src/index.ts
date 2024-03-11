@@ -1,5 +1,3 @@
-import { a, b } from 'accel-record-core'
+import { User } from "../tests/models/index.js";
 
-console.log('Hello, world!');
-console.log('a', a);
-console.log('a', b);
+const u = User.build({});
