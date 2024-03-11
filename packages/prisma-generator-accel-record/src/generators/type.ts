@@ -203,12 +203,13 @@ const columnForPersist = (model: DMMF.Model) => {
   return (
     model.fields
       .filter(
-        (f) => hasAutoGnerateDefault(f) || f.isUpdatedAt || f.relationName
+        (f) =>
+          hasAutoGnerateDefault(f) ||
+          f.isUpdatedAt ||
+          (f.relationName && !f.isList)
       )
       .map((f) => {
         const type = getPropertyType(f);
-        if (f.isList)
-          return `\n  ${f.name}: CollectionProxy<Persisted$${f.type}, ${model.name}Meta>;`;
         if (f.relationName) {
           const optional = f.relationFromFields?.length == 0;
           return `\n  ${f.name}: Persisted$${type}${optional ? " | undefined" : ""};`;

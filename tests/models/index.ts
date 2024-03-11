@@ -70,9 +70,7 @@ declare module "./user" {
 }
 export interface Persisted$User extends User {
   id: NonNullable<User["id"]>;
-  posts: CollectionProxy<Persisted$Post, UserMeta>;
   setting: Persisted$Setting | undefined;
-  teams: CollectionProxy<Persisted$UserTeam, UserMeta>;
   createdAt: NonNullable<User["createdAt"]>;
   updatedAt: NonNullable<User["updatedAt"]>;
   Profile: Persisted$Profile | undefined;
@@ -119,7 +117,6 @@ declare module "./team" {
 }
 export interface Persisted$Team extends Team {
   id: NonNullable<Team["id"]>;
-  users: CollectionProxy<Persisted$UserTeam, TeamMeta>;
 };
 type TeamMeta = {
   Persisted: Persisted$Team;
@@ -189,7 +186,6 @@ declare module "./post" {
 export interface Persisted$Post extends Post {
   id: NonNullable<Post["id"]>;
   author: Persisted$User;
-  tags: CollectionProxy<Persisted$PostTag, PostMeta>;
 };
 type PostMeta = {
   Persisted: Persisted$Post;
@@ -226,7 +222,6 @@ declare module "./postTag" {
 }
 export interface Persisted$PostTag extends PostTag {
   id: NonNullable<PostTag["id"]>;
-  posts: CollectionProxy<Persisted$Post, PostTagMeta>;
 };
 type PostTagMeta = {
   Persisted: Persisted$PostTag;
