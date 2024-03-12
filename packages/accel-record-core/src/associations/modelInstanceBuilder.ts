@@ -9,9 +9,6 @@ export class ModelInstanceBuilder {
     instance.isNewRecord = true;
     const proxy = ModelInstanceBuilder.createProxy<T>(instance, klass);
     for (const column of klass.columns2) {
-      if (column.columnDefault !== undefined) {
-        proxy[column.name] = column.columnDefault;
-      }
       if (column.name in input) {
         proxy[column.name] = input[column.name];
       }

@@ -12,8 +12,8 @@ describe("ManyToMany", () => {
     const team = $team.create();
     UserTeam.create({ user, team, assignedBy: "" });
 
-    expect(user.teams.first()?.team.equals(team)).toBeTruthy();
-    expect(team.users.first()?.user.equals(user)).toBeTruthy();
+    expect(user.teams.first()?.team?.equals(team)).toBeTruthy();
+    expect(team.users.first()?.user?.equals(user)).toBeTruthy();
   });
 
   test("create Implicit", () => {

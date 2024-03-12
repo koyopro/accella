@@ -22,13 +22,6 @@ describe("User#tojson()", () => {
     expect(u.name).toBe("hoge");
   });
 
-  test("default values", () => {
-    const u = User.build({});
-    expect(u.id).toBe(undefined);
-    expect(u.name).toBe(undefined);
-    expect(u.email).toBe("");
-  });
-
   test(".create()", () => {
     const u = User.create({ name: "hoge", email: "hoge@example.com" });
     expect(u).toBeInstanceOf(User);

@@ -69,7 +69,7 @@ export const Role = $Enums.Role;
 declare module "./user" {
   interface User {
     id: number | undefined;
-    email: string;
+    email: string | undefined;
     name: string | undefined;
     age: number | undefined;
     posts: CollectionProxy<Post, UserMeta>;
@@ -84,6 +84,7 @@ declare module "./user" {
 }
 export interface Persisted$User extends User {
   id: NonNullable<User["id"]>;
+  email: NonNullable<User["email"]>;
   get setting(): Persisted$Setting | undefined;
   set setting(value: Setting | undefined);
   createdAt: NonNullable<User["createdAt"]>;
@@ -127,12 +128,13 @@ type UserMeta = {
 declare module "./team" {
   interface Team {
     id: number | undefined;
-    name: string;
+    name: string | undefined;
     users: CollectionProxy<UserTeam, TeamMeta>;
   }
 }
 export interface Persisted$Team extends Team {
   id: NonNullable<Team["id"]>;
+  name: NonNullable<Team["name"]>;
 };
 type TeamMeta = {
   Persisted: Persisted$Team;
@@ -154,18 +156,25 @@ type TeamMeta = {
 
 declare module "./userTeam" {
   interface UserTeam {
-    get user(): Persisted$User;
-    set user(value: User);
-    userId: number;
-    get team(): Persisted$Team;
-    set team(value: Team);
-    teamId: number;
+    get user(): Persisted$User | undefined;
+    set user(value: User | undefined);
+    userId: number | undefined;
+    get team(): Persisted$Team | undefined;
+    set team(value: Team | undefined);
+    teamId: number | undefined;
     assignedAt: Date | undefined;
-    assignedBy: string;
+    assignedBy: string | undefined;
   }
 }
 export interface Persisted$UserTeam extends UserTeam {
+  get user(): Persisted$User;
+  set user(value: User);
+  userId: NonNullable<UserTeam["userId"]>;
+  get team(): Persisted$Team;
+  set team(value: Team);
+  teamId: NonNullable<UserTeam["teamId"]>;
   assignedAt: NonNullable<UserTeam["assignedAt"]>;
+  assignedBy: NonNullable<UserTeam["assignedBy"]>;
 };
 type UserTeamMeta = {
   Persisted: Persisted$UserTeam;
@@ -191,17 +200,21 @@ type UserTeamMeta = {
 declare module "./post" {
   interface Post {
     id: number | undefined;
-    title: string;
+    title: string | undefined;
     content: string | undefined;
     published: boolean;
-    get author(): Persisted$User;
-    set author(value: User);
-    authorId: number;
+    get author(): Persisted$User | undefined;
+    set author(value: User | undefined);
+    authorId: number | undefined;
     tags: CollectionProxy<PostTag, PostMeta>;
   }
 }
 export interface Persisted$Post extends Post {
   id: NonNullable<Post["id"]>;
+  title: NonNullable<Post["title"]>;
+  get author(): Persisted$User;
+  set author(value: User);
+  authorId: NonNullable<Post["authorId"]>;
 };
 type PostMeta = {
   Persisted: Persisted$Post;
@@ -232,12 +245,13 @@ type PostMeta = {
 declare module "./postTag" {
   interface PostTag {
     id: number | undefined;
-    name: string;
+    name: string | undefined;
     posts: CollectionProxy<Post, PostTagMeta>;
   }
 }
 export interface Persisted$PostTag extends PostTag {
   id: NonNullable<PostTag["id"]>;
+  name: NonNullable<PostTag["name"]>;
 };
 type PostTagMeta = {
   Persisted: Persisted$PostTag;
@@ -260,9 +274,9 @@ type PostTagMeta = {
 declare module "./setting" {
   interface Setting {
     settingId: number | undefined;
-    get user(): Persisted$User;
-    set user(value: User);
-    userId: number;
+    get user(): Persisted$User | undefined;
+    set user(value: User | undefined);
+    userId: number | undefined;
     threshold: number | undefined;
     createdAt: Date | undefined;
     data: Setting["data"]
@@ -270,6 +284,9 @@ declare module "./setting" {
 }
 export interface Persisted$Setting extends Setting {
   settingId: NonNullable<Setting["settingId"]>;
+  get user(): Persisted$User;
+  set user(value: User);
+  userId: NonNullable<Setting["userId"]>;
   createdAt: NonNullable<Setting["createdAt"]>;
 };
 type SettingMeta = {
@@ -299,10 +316,10 @@ type SettingMeta = {
 declare module "./profile" {
   interface Profile {
     id: number | undefined;
-    get user(): Persisted$User;
-    set user(value: User);
-    userId: number;
-    bio: string | undefined;
+    get user(): Persisted$User | undefined;
+    set user(value: User | undefined);
+    userId: number | undefined;
+    bio: string;
     point: number;
     enabled: boolean;
     role: Role;
@@ -310,6 +327,9 @@ declare module "./profile" {
 }
 export interface Persisted$Profile extends Profile {
   id: NonNullable<Profile["id"]>;
+  get user(): Persisted$User;
+  set user(value: User);
+  userId: NonNullable<Profile["userId"]>;
 };
 type ProfileMeta = {
   Persisted: Persisted$Profile;

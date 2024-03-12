@@ -53,12 +53,8 @@ const getFilterType = (type: string) => {
   }
 };
 
-const hasAutoGnerateDefault = (field: DMMF.Field) => {
-  if (field.default == undefined) return false;
-  if (typeof field.default !== "object") return false;
-  return ["autoincrement", "now"].includes(
-    (field.default as DMMF.FieldDefault)?.name
-  );
+const hasScalarDefault = (field: DMMF.Field) => {
+  return field.default != undefined && typeof field.default !== "object";
 };
 
 export const generateTypes = (options: GeneratorOptions) => {
@@ -210,17 +206,14 @@ const associationKey = (model: DMMF.Model) => {
 const columnForPersist = (model: DMMF.Model) => {
   return (
     model.fields
-      .filter(
-        (f) =>
-          hasAutoGnerateDefault(f) ||
-          f.isUpdatedAt ||
-          (f.relationName && !f.isList)
-      )
+      .filter((f) => {
+        if (hasScalarDefault(f) || f.isList) return false;
+        return f.isRequired || f.relationName;
+      })
       .map((f) => {
         const type = getPropertyType(f);
         if (f.relationName) {
           const optional = f.relationFromFields?.length == 0;
-          if (!optional) return "";
           return (
             `\n  get ${f.name}(): Persisted$${type}${optional ? " | undefined" : ""};` +
             `\n  set ${f.name}(value: ${type}${optional ? " | undefined" : ""});`
@@ -235,8 +228,6 @@ const columnForPersist = (model: DMMF.Model) => {
 const columnDefines = (model: DMMF.Model) =>
   model.fields
     .map((field) => {
-      const optional =
-        hasAutoGnerateDefault(field) || !field.isRequired || field.isUpdatedAt;
       const type = getPropertyType(field);
       if (field.type == "Json") {
         return `    ${field.name}: ${model.name}["${field.name}"]`;
@@ -248,12 +239,13 @@ const columnDefines = (model: DMMF.Model) =>
         const hasOne = field.relationFromFields?.length == 0;
         const getPrefix = hasOne ? "" : "Persisted$";
         return (
-          `    get ${field.name}(): ${getPrefix}${type}${optional ? " | undefined" : ""};\n` +
-          `    set ${field.name}(value: ${type}${optional ? " | undefined" : ""});`
+          `    get ${field.name}(): ${getPrefix}${type} | undefined;\n` +
+          `    set ${field.name}(value: ${type} | undefined);`
         );
       }
+      const nonNullable = hasScalarDefault(field);
       return `    ${field.name}: ${type}${field.isList ? "[]" : ""}${
-        optional ? " | undefined" : ""
+        nonNullable ? "" : " | undefined"
       };`;
     })
     .join("\n");
