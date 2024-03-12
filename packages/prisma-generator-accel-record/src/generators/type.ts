@@ -137,38 +137,6 @@ type Persisted<T> = Meta<T>["Persisted"];
         return ` & ({ ${f.name}: ${f.type} } | { ${foreignKeys} })`;
       })
       .join("");
-    const columnDefines = model.fields
-      .map((field) => {
-        const optional =
-          hasAutoGnerateDefault(field) ||
-          !field.isRequired ||
-          field.isUpdatedAt;
-        const type = getPropertyType(field);
-        if (field.type == "Json") {
-          return `    ${field.name}: ${model.name}["${field.name}"]`;
-        }
-        if (field.relationName && field.isList) {
-          return `    ${field.name}: CollectionProxy<${field.type}, ${model.name}Meta>;`;
-        }
-        if (field.relationName) {
-          const hasOne = field.relationFromFields?.length == 0;
-          if (hasOne) {
-            return (
-              `    get ${field.name}(): ${type}${optional ? " | undefined" : ""};\n` +
-              `    set ${field.name}(value: ${type}${optional ? " | undefined" : ""});`
-            );
-          } else {
-            return (
-              `    get ${field.name}(): Persisted$${type}${optional ? " | undefined" : ""};\n` +
-              `    set ${field.name}(value: ${type}${optional ? " | undefined" : ""});`
-            );
-          }
-        }
-        return `    ${field.name}: ${type}${field.isList ? "[]" : ""}${
-          optional ? " | undefined" : ""
-        };`;
-      })
-      .join("\n");
     const whereInputs =
       model.fields
         .filter(reject)
@@ -190,7 +158,7 @@ type Persisted<T> = Meta<T>["Persisted"];
     data += `
 declare module "./${toCamelCase(model.name)}" {
   interface ${model.name} {
-${columnDefines}
+${columnDefines(model)}
   }
 }
 export interface Persisted$${model.name} extends ${model.name} {${columnForPersist(model)}};
@@ -263,3 +231,29 @@ const columnForPersist = (model: DMMF.Model) => {
       .join("") + "\n"
   );
 };
+
+const columnDefines = (model: DMMF.Model) =>
+  model.fields
+    .map((field) => {
+      const optional =
+        hasAutoGnerateDefault(field) || !field.isRequired || field.isUpdatedAt;
+      const type = getPropertyType(field);
+      if (field.type == "Json") {
+        return `    ${field.name}: ${model.name}["${field.name}"]`;
+      }
+      if (field.relationName && field.isList) {
+        return `    ${field.name}: CollectionProxy<${field.type}, ${model.name}Meta>;`;
+      }
+      if (field.relationName) {
+        const hasOne = field.relationFromFields?.length == 0;
+        const getPrefix = hasOne ? "" : "Persisted$";
+        return (
+          `    get ${field.name}(): ${getPrefix}${type}${optional ? " | undefined" : ""};\n` +
+          `    set ${field.name}(value: ${type}${optional ? " | undefined" : ""});`
+        );
+      }
+      return `    ${field.name}: ${type}${field.isList ? "[]" : ""}${
+        optional ? " | undefined" : ""
+      };`;
+    })
+    .join("\n");
