@@ -44,13 +44,14 @@ export interface Config {
 }
 let _config: Config = { type: "sqlite" };
 let _rpcClient: any;
-export const initAccelRecord = (config: Config) => {
+export const initAccelRecord = async (config: Config) => {
   _config = config;
 
   stopRpcClient();
   _rpcClient = SyncRpc(path.resolve(__dirname, "./worker.cjs"), {
     knexConfig: getKnexConfig(config),
   });
+  await loadDmmf();
 };
 
 let _knex: Knex.Knex | undefined;
@@ -85,5 +86,3 @@ export const execSQL = (params: {
 export const stopRpcClient = () => {
   SyncRpc.stop();
 };
-
-loadDmmf();
