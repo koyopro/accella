@@ -88,6 +88,7 @@ declare module "accel-record" {
   }
   interface Model {
     isPersisted<T>(this: T): this is Persisted<T>;
+    asPersisted<T>(this: T): Persisted<T> | undefined;
     update<T>(this: T, input: Partial<Meta<T>["CreateInput"]>): this is Persisted<T>;
     save<T>(this: T): this is Persisted<T>;
   }

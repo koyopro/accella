@@ -23,6 +23,10 @@ export class Persistence {
     );
   }
 
+  asPersisted<T extends Model>(this: T): T | undefined {
+    return this.isPersisted() ? this : undefined;
+  }
+
   save<T extends Model>(this: T): boolean {
     const ret = this.createOrUpdate();
     this.isNewRecord = false;

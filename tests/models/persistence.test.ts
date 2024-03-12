@@ -60,4 +60,13 @@ describe("Persistence", () => {
     expect(User.count()).toBe(0);
     expect(Post.count()).toBe(0);
   });
+
+  test("asPersisted()", () => {
+    const u = $user.build({});
+    u.save();
+    u.isPersisted();
+    const v = u.asPersisted();
+    expect(v!.id).not.toBeUndefined();
+    expect(v!.id).toBe(u.id);
+  });
 });
