@@ -53,6 +53,10 @@ const getFilterType = (type: string) => {
   }
 };
 
+const hasScalarDefault = (field: DMMF.Field) => {
+  return field.default != undefined && typeof field.default !== "object";
+};
+
 const hasAutoGnerateDefault = (field: DMMF.Field) => {
   if (field.default == undefined) return false;
   if (typeof field.default !== "object") return false;
@@ -210,12 +214,12 @@ const associationKey = (model: DMMF.Model) => {
 const columnForPersist = (model: DMMF.Model) => {
   return (
     model.fields
-      .filter(
-        (f) =>
-          hasAutoGnerateDefault(f) ||
-          f.isUpdatedAt ||
-          (f.relationName && !f.isList)
-      )
+      .filter((f) => {
+        if (hasScalarDefault(f)) return false;
+        if (f.relationName && !f.isList) return true;
+        if (f.isList) return false;
+        return f.isRequired;
+      })
       .map((f) => {
         const type = getPropertyType(f);
         if (f.relationName) {
@@ -235,8 +239,6 @@ const columnForPersist = (model: DMMF.Model) => {
 const columnDefines = (model: DMMF.Model) =>
   model.fields
     .map((field) => {
-      const optional =
-        hasAutoGnerateDefault(field) || !field.isRequired || field.isUpdatedAt;
       const type = getPropertyType(field);
       if (field.type == "Json") {
         return `    ${field.name}: ${model.name}["${field.name}"]`;
@@ -247,13 +249,15 @@ const columnDefines = (model: DMMF.Model) =>
       if (field.relationName) {
         const hasOne = field.relationFromFields?.length == 0;
         const getPrefix = hasOne ? "" : "Persisted$";
+        const optional = !field.isRequired;
         return (
           `    get ${field.name}(): ${getPrefix}${type}${optional ? " | undefined" : ""};\n` +
           `    set ${field.name}(value: ${type}${optional ? " | undefined" : ""});`
         );
       }
+      const nonNullable = hasScalarDefault(field);
       return `    ${field.name}: ${type}${field.isList ? "[]" : ""}${
-        optional ? " | undefined" : ""
+        nonNullable ? "" : " | undefined"
       };`;
     })
     .join("\n");
