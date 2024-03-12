@@ -66,43 +66,6 @@ export class Field {
     this.primaryKeys = field.relationToFields?.map((f) => f) ?? [];
   }
 
-  get columnDefault() {
-    if (this.default) {
-      const default_ = this.default as any;
-      if (default_.name === "autoincrement") {
-        return undefined;
-      }
-      if (this.isList) return [];
-      return default_.value;
-    }
-    if (this.isUpdatedAt) {
-      return undefined;
-    }
-    if (this.isRequired) {
-      return this.defaultValue;
-    }
-    return undefined;
-  }
-
-  get defaultValue() {
-    switch (this.type) {
-      case "BigInt":
-      case "Decimal":
-      case "Float":
-      case "Int":
-        return 0;
-      case "Bytes":
-      case "String":
-        return "";
-      case "Boolean":
-        return false;
-      case "DateTime":
-        return new Date();
-      default:
-        return undefined;
-    }
-  }
-
   get defaultIsNow() {
     return this.default != undefined && this.default.name === "now";
   }
