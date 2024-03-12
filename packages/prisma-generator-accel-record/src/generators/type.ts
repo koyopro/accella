@@ -150,6 +150,20 @@ type Persisted<T> = Meta<T>["Persisted"];
         if (field.relationName && field.isList) {
           return `    ${field.name}: CollectionProxy<${field.type}, ${model.name}Meta>;`;
         }
+        if (field.relationName) {
+          const hasOne = field.relationFromFields?.length == 0;
+          if (hasOne) {
+            return (
+              `    get ${field.name}(): ${type}${optional ? " | undefined" : ""};\n` +
+              `    set ${field.name}(value: ${type}${optional ? " | undefined" : ""});`
+            );
+          } else {
+            return (
+              `    get ${field.name}(): Persisted$${type}${optional ? " | undefined" : ""};\n` +
+              `    set ${field.name}(value: ${type}${optional ? " | undefined" : ""});`
+            );
+          }
+        }
         return `    ${field.name}: ${type}${field.isList ? "[]" : ""}${
           optional ? " | undefined" : ""
         };`;
@@ -238,7 +252,11 @@ const columnForPersist = (model: DMMF.Model) => {
         const type = getPropertyType(f);
         if (f.relationName) {
           const optional = f.relationFromFields?.length == 0;
-          return `\n  ${f.name}: Persisted$${type}${optional ? " | undefined" : ""};`;
+          if (!optional) return "";
+          return (
+            `\n  get ${f.name}(): Persisted$${type}${optional ? " | undefined" : ""};` +
+            `\n  set ${f.name}(value: ${type}${optional ? " | undefined" : ""});`
+          );
         }
         return `\n  ${f.name}: NonNullable<${model.name}["${f.name}"]>;`;
       })
