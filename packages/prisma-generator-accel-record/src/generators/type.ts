@@ -57,14 +57,6 @@ const hasScalarDefault = (field: DMMF.Field) => {
   return field.default != undefined && typeof field.default !== "object";
 };
 
-const hasAutoGnerateDefault = (field: DMMF.Field) => {
-  if (field.default == undefined) return false;
-  if (typeof field.default !== "object") return false;
-  return ["autoincrement", "now"].includes(
-    (field.default as DMMF.FieldDefault)?.name
-  );
-};
-
 export const generateTypes = (options: GeneratorOptions) => {
   let data = `import type {
   CollectionProxy,
@@ -215,10 +207,8 @@ const columnForPersist = (model: DMMF.Model) => {
   return (
     model.fields
       .filter((f) => {
-        if (hasScalarDefault(f)) return false;
-        if (f.relationName && !f.isList) return true;
-        if (f.isList) return false;
-        return f.isRequired;
+        if (hasScalarDefault(f) || f.isList) return false;
+        return f.isRequired || f.relationName;
       })
       .map((f) => {
         const type = getPropertyType(f);
