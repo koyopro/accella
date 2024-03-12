@@ -18,9 +18,7 @@ export class Persistence {
   }
 
   isPersisted<T extends Model>(this: T): any {
-    return (this.columnsForPersist as (keyof T)[]).every(
-      (column: keyof T) => this[column] !== undefined
-    );
+    return !(this.isNewRecord || this.isDestroyed);
   }
 
   asPersisted<T extends Model>(this: T): T | undefined {

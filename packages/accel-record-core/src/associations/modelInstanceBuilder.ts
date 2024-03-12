@@ -83,10 +83,12 @@ export class ModelInstanceBuilder {
         } else {
           _association = new HasManyAssociation(instance, association);
         }
+        const hasAllPrimaryKeys = () =>
+          instance.primaryKeys.every((k: keyof typeof instance) => instance[k]);
         instance[key] = new CollectionProxy(
           Models[klass],
           _association,
-          input[key] ?? (instance.isPersisted() ? undefined : [])
+          input[key] ?? (hasAllPrimaryKeys() ? undefined : [])
         );
       }
     }
