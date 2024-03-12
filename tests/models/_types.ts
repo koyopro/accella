@@ -156,18 +156,22 @@ type TeamMeta = {
 
 declare module "./userTeam" {
   interface UserTeam {
-    get user(): Persisted$User;
-    set user(value: User);
+    get user(): Persisted$User | undefined;
+    set user(value: User | undefined);
     userId: number | undefined;
-    get team(): Persisted$Team;
-    set team(value: Team);
+    get team(): Persisted$Team | undefined;
+    set team(value: Team | undefined);
     teamId: number | undefined;
     assignedAt: Date | undefined;
     assignedBy: string | undefined;
   }
 }
 export interface Persisted$UserTeam extends UserTeam {
+  get user(): Persisted$User;
+  set user(value: User);
   userId: NonNullable<UserTeam["userId"]>;
+  get team(): Persisted$Team;
+  set team(value: Team);
   teamId: NonNullable<UserTeam["teamId"]>;
   assignedAt: NonNullable<UserTeam["assignedAt"]>;
   assignedBy: NonNullable<UserTeam["assignedBy"]>;
@@ -199,8 +203,8 @@ declare module "./post" {
     title: string | undefined;
     content: string | undefined;
     published: boolean;
-    get author(): Persisted$User;
-    set author(value: User);
+    get author(): Persisted$User | undefined;
+    set author(value: User | undefined);
     authorId: number | undefined;
     tags: CollectionProxy<PostTag, PostMeta>;
   }
@@ -208,6 +212,8 @@ declare module "./post" {
 export interface Persisted$Post extends Post {
   id: NonNullable<Post["id"]>;
   title: NonNullable<Post["title"]>;
+  get author(): Persisted$User;
+  set author(value: User);
   authorId: NonNullable<Post["authorId"]>;
 };
 type PostMeta = {
@@ -268,8 +274,8 @@ type PostTagMeta = {
 declare module "./setting" {
   interface Setting {
     settingId: number | undefined;
-    get user(): Persisted$User;
-    set user(value: User);
+    get user(): Persisted$User | undefined;
+    set user(value: User | undefined);
     userId: number | undefined;
     threshold: number | undefined;
     createdAt: Date | undefined;
@@ -278,6 +284,8 @@ declare module "./setting" {
 }
 export interface Persisted$Setting extends Setting {
   settingId: NonNullable<Setting["settingId"]>;
+  get user(): Persisted$User;
+  set user(value: User);
   userId: NonNullable<Setting["userId"]>;
   createdAt: NonNullable<Setting["createdAt"]>;
 };
@@ -308,8 +316,8 @@ type SettingMeta = {
 declare module "./profile" {
   interface Profile {
     id: number | undefined;
-    get user(): Persisted$User;
-    set user(value: User);
+    get user(): Persisted$User | undefined;
+    set user(value: User | undefined);
     userId: number | undefined;
     bio: string;
     point: number;
@@ -319,6 +327,8 @@ declare module "./profile" {
 }
 export interface Persisted$Profile extends Profile {
   id: NonNullable<Profile["id"]>;
+  get user(): Persisted$User;
+  set user(value: User);
   userId: NonNullable<Profile["userId"]>;
 };
 type ProfileMeta = {

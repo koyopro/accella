@@ -224,7 +224,6 @@ const columnForPersist = (model: DMMF.Model) => {
         const type = getPropertyType(f);
         if (f.relationName) {
           const optional = f.relationFromFields?.length == 0;
-          if (!optional) return "";
           return (
             `\n  get ${f.name}(): Persisted$${type}${optional ? " | undefined" : ""};` +
             `\n  set ${f.name}(value: ${type}${optional ? " | undefined" : ""});`
@@ -249,10 +248,9 @@ const columnDefines = (model: DMMF.Model) =>
       if (field.relationName) {
         const hasOne = field.relationFromFields?.length == 0;
         const getPrefix = hasOne ? "" : "Persisted$";
-        const optional = !field.isRequired;
         return (
-          `    get ${field.name}(): ${getPrefix}${type}${optional ? " | undefined" : ""};\n` +
-          `    set ${field.name}(value: ${type}${optional ? " | undefined" : ""});`
+          `    get ${field.name}(): ${getPrefix}${type} | undefined;\n` +
+          `    set ${field.name}(value: ${type} | undefined);`
         );
       }
       const nonNullable = hasScalarDefault(field);
