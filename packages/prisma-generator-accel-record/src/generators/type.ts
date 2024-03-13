@@ -95,12 +95,13 @@ class ModelWrapper {
 }
 
 export const generateTypes = (options: GeneratorOptions) => {
-  let data = `import type {
-  CollectionProxy,
-  Filter,
-  Relation,
-  SortOrder,
-  StringFilter,
+  let data = `import {
+  registerModel,
+  type CollectionProxy,
+  type Filter,
+  type Relation,
+  type SortOrder,
+  type StringFilter,
 } from "accel-record";
 
 type Class = abstract new (...args: any) => any;
@@ -211,6 +212,7 @@ ${columns}
   WhereInput: {${whereInputs}};
   OrderInput: {${orderInputs}};
 };
+registerModel(${model.persistedModel});
 `;
   }
   return data;

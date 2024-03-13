@@ -5,12 +5,13 @@ import { PostModel } from './post.js'
 import { PostTagModel } from './postTag.js'
 import { SettingModel } from './setting.js'
 import { ProfileModel } from './profile.js'
-import type {
-  CollectionProxy,
-  Filter,
-  Relation,
-  SortOrder,
-  StringFilter,
+import {
+  registerModel,
+  type CollectionProxy,
+  type Filter,
+  type Relation,
+  type SortOrder,
+  type StringFilter,
 } from "accel-record";
 
 type Class = abstract new (...args: any) => any;
@@ -123,6 +124,7 @@ type UserMeta = {
     updatedAt?: SortOrder;
   };
 };
+registerModel(User);
 
 declare module "./team" {
   interface TeamModel {
@@ -155,6 +157,7 @@ type TeamMeta = {
     name?: SortOrder;
   };
 };
+registerModel(Team);
 
 declare module "./userTeam" {
   interface UserTeamModel {
@@ -197,6 +200,7 @@ type UserTeamMeta = {
     assignedBy?: SortOrder;
   };
 };
+registerModel(UserTeam);
 
 declare module "./post" {
   interface PostModel {
@@ -243,6 +247,7 @@ type PostMeta = {
     authorId?: SortOrder;
   };
 };
+registerModel(Post);
 
 declare module "./postTag" {
   interface PostTagModel {
@@ -275,6 +280,7 @@ type PostTagMeta = {
     name?: SortOrder;
   };
 };
+registerModel(PostTag);
 
 declare module "./setting" {
   interface SettingModel {
@@ -318,6 +324,7 @@ type SettingMeta = {
     data?: SortOrder;
   };
 };
+registerModel(Setting);
 
 declare module "./profile" {
   interface ProfileModel {
@@ -365,3 +372,4 @@ type ProfileMeta = {
     role?: SortOrder;
   };
 };
+registerModel(Profile);

@@ -1,4 +1,3 @@
-import { registerModel } from "accel-record-core";
 import { ApplicationRecord } from "./applicationRecord";
 
 type SettingData = {
@@ -13,5 +12,3 @@ export class SettingModel extends ApplicationRecord {
     key1: "hoge",
   };
 }
-
-registerModel(SettingModel);
