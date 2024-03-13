@@ -1,10 +1,8 @@
+import { Post, PostTag, UserTeam } from ".";
 import { $post } from "../factories/post";
 import { $postTag } from "../factories/postTag";
 import { $team } from "../factories/team";
 import { $user } from "../factories/user";
-import { Post } from "./post";
-import { PostTag } from "./postTag";
-import { UserTeam } from "./userTeam";
 
 describe("ManyToMany", () => {
   test("create", () => {

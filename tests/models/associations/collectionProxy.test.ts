@@ -1,7 +1,6 @@
+import { Post, User } from "..";
 import { $post } from "../../factories/post";
 import { $user } from "../../factories/user";
-import { Post } from "../post";
-import { User } from "../user";
 
 describe("#CollectionProxy()", () => {
   test("#toArray()", () => {

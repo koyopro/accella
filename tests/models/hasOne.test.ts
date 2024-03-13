@@ -1,7 +1,6 @@
+import { Setting, User } from ".";
 import { $setting } from "../factories/setting";
 import { $user } from "../factories/user";
-import { Setting } from "./setting";
-import { User } from "./user";
 
 describe("hasOne", () => {
   test.skip(".associations()", () => {

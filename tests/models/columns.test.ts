@@ -1,9 +1,7 @@
 import { Model } from "accel-record";
 import { $setting } from "../factories/setting";
 import { $user } from "../factories/user";
-import { Profile } from "./profile";
-import { Setting } from "./setting";
-import { User } from "./user";
+import { User, Setting, Profile } from ".";
 
 describe("Columns", () => {
   test("createdAt", () => {

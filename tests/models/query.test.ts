@@ -1,5 +1,5 @@
 import { $user } from "../factories/user";
-import { User } from "./user";
+import { User } from "./index";
 
 describe("Query", () => {
   test(".first()", () => {

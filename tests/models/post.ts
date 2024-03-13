@@ -1,6 +1,5 @@
-import { registerModel } from "accel-record-core";
 import { ApplicationRecord } from "./applicationRecord";
 
-export class Post extends ApplicationRecord {}
+export class PostModel extends ApplicationRecord {
 
-registerModel(Post);
+}

@@ -1,6 +1,6 @@
 import { Model } from "accel-record";
 import { $user } from "../factories/user";
-import { User } from "./user";
+import { User } from "./index";
 
 test("execute", () => {
   const u = $user.create({ name: "hoge" });

@@ -1,40 +1,36 @@
-import { User } from './user.js'
-export { User } from './user.js'
-import { Team } from './team.js'
-export { Team } from './team.js'
-import { UserTeam } from './userTeam.js'
-export { UserTeam } from './userTeam.js'
-import { Post } from './post.js'
-export { Post } from './post.js'
-import { PostTag } from './postTag.js'
-export { PostTag } from './postTag.js'
-import { Setting } from './setting.js'
-export { Setting } from './setting.js'
-import { Profile } from './profile.js'
-export { Profile } from './profile.js'
-import type {
-  CollectionProxy,
-  Filter,
-  Relation,
-  SortOrder,
-  StringFilter,
+import { UserModel } from './user.js'
+import { TeamModel } from './team.js'
+import { UserTeamModel } from './userTeam.js'
+import { PostModel } from './post.js'
+import { PostTagModel } from './postTag.js'
+import { SettingModel } from './setting.js'
+import { ProfileModel } from './profile.js'
+import {
+  registerModel,
+  type CollectionProxy,
+  type Filter,
+  type Relation,
+  type SortOrder,
+  type StringFilter,
 } from "accel-record";
+
+type Class = abstract new (...args: any) => any;
 
 declare module "accel-record" {
   namespace Model {
-    function create<T>(this: T, input: Meta<T>["CreateInput"]): Persisted<T>;
-    function first<T>(this: T): Persisted<T>;
-    function find<T>(this: T, id: number): Persisted<T>;
-    function findBy<T>(this: T, input: Meta<T>['WhereInput']): Persisted<T> | undefined;
-    function all<T>(this: T): Relation<Persisted<T>, Meta<T>>;
-    function order<T>(this: T, column: keyof Meta<T>["OrderInput"], direction?: "asc" | "desc"): Relation<Persisted<T>, Meta<T>>;
-    function offset<T>(this: T, offset: number): Relation<Persisted<T>, Meta<T>>;
-    function limit<T>(this: T, limit: number): Relation<Persisted<T>, Meta<T>>;
-    function where<T>(this: T, input: Meta<T>['WhereInput']): Relation<Persisted<T>, Meta<T>>;
-    function whereNot<T>(this: T, input: Meta<T>['WhereInput']): Relation<Persisted<T>, Meta<T>>;
-    function whereRaw<T>(this: T, query: string, bindings?: any[]): Relation<Persisted<T>, Meta<T>>;
-    function build<T extends abstract new (...args: any) => any>(this: T, input: Partial<Meta<T>["CreateInput"]>): InstanceType<T>;
-    function includes<T>(this: T, ...input: Meta<T>['AssociationKey'][]): Relation<Persisted<T>, Meta<T>>;
+    function build<T extends Class>(this: T, input: Partial<Meta<T>["CreateInput"]>): New<T>;
+    function create<T extends Class>(this: T, input: Meta<T>["CreateInput"]): InstanceType<T>;
+    function first<T extends Class>(this: T): InstanceType<T>;
+    function find<T extends Class>(this: T, id: number): InstanceType<T>;
+    function findBy<T extends Class>(this: T, input: Meta<T>['WhereInput']): InstanceType<T> | undefined;
+    function all<T extends Class>(this: T): Relation<InstanceType<T>, Meta<T>>;
+    function order<T extends Class>(this: T, column: keyof Meta<T>["OrderInput"], direction?: "asc" | "desc"): Relation<InstanceType<T>, Meta<T>>;
+    function offset<T extends Class>(this: T, offset: number): Relation<InstanceType<T>, Meta<T>>;
+    function limit<T extends Class>(this: T, limit: number): Relation<InstanceType<T>, Meta<T>>;
+    function where<T extends Class>(this: T, input: Meta<T>['WhereInput']): Relation<InstanceType<T>, Meta<T>>;
+    function whereNot<T extends Class>(this: T, input: Meta<T>['WhereInput']): Relation<InstanceType<T>, Meta<T>>;
+    function whereRaw<T extends Class>(this: T, query: string, bindings?: any[]): Relation<InstanceType<T>, Meta<T>>;
+    function includes<T extends Class>(this: T, ...input: Meta<T>['AssociationKey'][]): Relation<InstanceType<T>, Meta<T>>;
   }
   interface Model {
     isPersisted<T>(this: T): this is Persisted<T>;
@@ -45,14 +41,15 @@ declare module "accel-record" {
 }
 
 type Persisted<T> = Meta<T>["Persisted"];
+type New<T> = Meta<T>["New"];
 
-type Meta<T> = T extends typeof User | User ? UserMeta :
-               T extends typeof Team | Team ? TeamMeta :
-               T extends typeof UserTeam | UserTeam ? UserTeamMeta :
-               T extends typeof Post | Post ? PostMeta :
-               T extends typeof PostTag | PostTag ? PostTagMeta :
-               T extends typeof Setting | Setting ? SettingMeta :
-               T extends typeof Profile | Profile ? ProfileMeta :
+type Meta<T> = T extends typeof UserModel | UserModel ? UserMeta :
+               T extends typeof TeamModel | TeamModel ? TeamMeta :
+               T extends typeof UserTeamModel | UserTeamModel ? UserTeamMeta :
+               T extends typeof PostModel | PostModel ? PostMeta :
+               T extends typeof PostTagModel | PostTagModel ? PostTagMeta :
+               T extends typeof SettingModel | SettingModel ? SettingMeta :
+               T extends typeof ProfileModel | ProfileModel ? ProfileMeta :
                any;
 
 export namespace $Enums {
@@ -67,45 +64,48 @@ export type Role = $Enums.Role;
 export const Role = $Enums.Role;
 
 declare module "./user" {
-  interface User {
+  interface UserModel {
     id: number | undefined;
     email: string | undefined;
     name: string | undefined;
     age: number | undefined;
-    posts: CollectionProxy<Post, UserMeta>;
-    get setting(): Setting | undefined;
-    set setting(value: Setting | undefined);
-    teams: CollectionProxy<UserTeam, UserMeta>;
+    posts: CollectionProxy<PostModel, UserMeta>;
+    get setting(): SettingModel | undefined;
+    set setting(value: SettingModel | undefined);
+    teams: CollectionProxy<UserTeamModel, UserMeta>;
     createdAt: Date | undefined;
     updatedAt: Date | undefined;
-    get Profile(): Profile | undefined;
-    set Profile(value: Profile | undefined);
+    get Profile(): ProfileModel | undefined;
+    set Profile(value: ProfileModel | undefined);
   }
 }
-export interface Persisted$User extends User {
-  id: NonNullable<User["id"]>;
-  email: NonNullable<User["email"]>;
-  get setting(): Persisted$Setting | undefined;
-  set setting(value: Setting | undefined);
-  createdAt: NonNullable<User["createdAt"]>;
-  updatedAt: NonNullable<User["updatedAt"]>;
-  get Profile(): Persisted$Profile | undefined;
-  set Profile(value: Profile | undefined);
+export interface NewUser extends UserModel {};
+export class User extends UserModel {};
+export interface User extends UserModel {
+  id: number;
+  email: string;
+  get setting(): Setting | undefined;
+  set setting(value: SettingModel | undefined);
+  createdAt: Date;
+  updatedAt: Date;
+  get Profile(): Profile | undefined;
+  set Profile(value: ProfileModel | undefined);
 };
 type UserMeta = {
-  Persisted: Persisted$User;
+  New: NewUser;
+  Persisted: User;
   AssociationKey: 'posts' | 'setting' | 'teams' | 'Profile';
   CreateInput: {
     id?: number;
     email: string;
     name?: string;
     age?: number;
-    posts?: Post[];
-    setting?: Setting;
-    teams?: UserTeam[];
+    posts?: PostModel[];
+    setting?: SettingModel;
+    teams?: UserTeamModel[];
     createdAt?: Date;
     updatedAt?: Date;
-    Profile?: Profile;
+    Profile?: ProfileModel;
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -124,25 +124,29 @@ type UserMeta = {
     updatedAt?: SortOrder;
   };
 };
+registerModel(User);
 
 declare module "./team" {
-  interface Team {
+  interface TeamModel {
     id: number | undefined;
     name: string | undefined;
-    users: CollectionProxy<UserTeam, TeamMeta>;
+    users: CollectionProxy<UserTeamModel, TeamMeta>;
   }
 }
-export interface Persisted$Team extends Team {
-  id: NonNullable<Team["id"]>;
-  name: NonNullable<Team["name"]>;
+export interface NewTeam extends TeamModel {};
+export class Team extends TeamModel {};
+export interface Team extends TeamModel {
+  id: number;
+  name: string;
 };
 type TeamMeta = {
-  Persisted: Persisted$Team;
+  New: NewTeam;
+  Persisted: Team;
   AssociationKey: 'users';
   CreateInput: {
     id?: number;
     name: string;
-    users?: UserTeam[];
+    users?: UserTeamModel[];
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -153,31 +157,31 @@ type TeamMeta = {
     name?: SortOrder;
   };
 };
+registerModel(Team);
 
 declare module "./userTeam" {
-  interface UserTeam {
-    get user(): Persisted$User | undefined;
-    set user(value: User | undefined);
+  interface UserTeamModel {
+    user: User | undefined;
     userId: number | undefined;
-    get team(): Persisted$Team | undefined;
-    set team(value: Team | undefined);
+    team: Team | undefined;
     teamId: number | undefined;
     assignedAt: Date | undefined;
     assignedBy: string | undefined;
   }
 }
-export interface Persisted$UserTeam extends UserTeam {
-  get user(): Persisted$User;
-  set user(value: User);
-  userId: NonNullable<UserTeam["userId"]>;
-  get team(): Persisted$Team;
-  set team(value: Team);
-  teamId: NonNullable<UserTeam["teamId"]>;
-  assignedAt: NonNullable<UserTeam["assignedAt"]>;
-  assignedBy: NonNullable<UserTeam["assignedBy"]>;
+export interface NewUserTeam extends UserTeamModel {};
+export class UserTeam extends UserTeamModel {};
+export interface UserTeam extends UserTeamModel {
+  user: User;
+  userId: number;
+  team: Team;
+  teamId: number;
+  assignedAt: Date;
+  assignedBy: string;
 };
 type UserTeamMeta = {
-  Persisted: Persisted$UserTeam;
+  New: NewUserTeam;
+  Persisted: UserTeam;
   AssociationKey: 'user' | 'team';
   CreateInput: {
     assignedAt?: Date;
@@ -196,35 +200,37 @@ type UserTeamMeta = {
     assignedBy?: SortOrder;
   };
 };
+registerModel(UserTeam);
 
 declare module "./post" {
-  interface Post {
+  interface PostModel {
     id: number | undefined;
     title: string | undefined;
     content: string | undefined;
     published: boolean;
-    get author(): Persisted$User | undefined;
-    set author(value: User | undefined);
+    author: User | undefined;
     authorId: number | undefined;
-    tags: CollectionProxy<PostTag, PostMeta>;
+    tags: CollectionProxy<PostTagModel, PostMeta>;
   }
 }
-export interface Persisted$Post extends Post {
-  id: NonNullable<Post["id"]>;
-  title: NonNullable<Post["title"]>;
-  get author(): Persisted$User;
-  set author(value: User);
-  authorId: NonNullable<Post["authorId"]>;
+export interface NewPost extends PostModel {};
+export class Post extends PostModel {};
+export interface Post extends PostModel {
+  id: number;
+  title: string;
+  author: User;
+  authorId: number;
 };
 type PostMeta = {
-  Persisted: Persisted$Post;
+  New: NewPost;
+  Persisted: Post;
   AssociationKey: 'author' | 'tags';
   CreateInput: {
     id?: number;
     title: string;
     content?: string;
     published?: boolean;
-    tags?: PostTag[];
+    tags?: PostTagModel[];
   } & ({ author: User } | { authorId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -241,25 +247,29 @@ type PostMeta = {
     authorId?: SortOrder;
   };
 };
+registerModel(Post);
 
 declare module "./postTag" {
-  interface PostTag {
+  interface PostTagModel {
     id: number | undefined;
     name: string | undefined;
-    posts: CollectionProxy<Post, PostTagMeta>;
+    posts: CollectionProxy<PostModel, PostTagMeta>;
   }
 }
-export interface Persisted$PostTag extends PostTag {
-  id: NonNullable<PostTag["id"]>;
-  name: NonNullable<PostTag["name"]>;
+export interface NewPostTag extends PostTagModel {};
+export class PostTag extends PostTagModel {};
+export interface PostTag extends PostTagModel {
+  id: number;
+  name: string;
 };
 type PostTagMeta = {
-  Persisted: Persisted$PostTag;
+  New: NewPostTag;
+  Persisted: PostTag;
   AssociationKey: 'posts';
   CreateInput: {
     id?: number;
     name: string;
-    posts?: Post[];
+    posts?: PostModel[];
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -270,33 +280,35 @@ type PostTagMeta = {
     name?: SortOrder;
   };
 };
+registerModel(PostTag);
 
 declare module "./setting" {
-  interface Setting {
+  interface SettingModel {
     settingId: number | undefined;
-    get user(): Persisted$User | undefined;
-    set user(value: User | undefined);
+    user: User | undefined;
     userId: number | undefined;
     threshold: number | undefined;
     createdAt: Date | undefined;
-    data: Setting["data"]
+    data: SettingModel["data"]
   }
 }
-export interface Persisted$Setting extends Setting {
-  settingId: NonNullable<Setting["settingId"]>;
-  get user(): Persisted$User;
-  set user(value: User);
-  userId: NonNullable<Setting["userId"]>;
-  createdAt: NonNullable<Setting["createdAt"]>;
+export interface NewSetting extends SettingModel {};
+export class Setting extends SettingModel {};
+export interface Setting extends SettingModel {
+  settingId: number;
+  user: User;
+  userId: number;
+  createdAt: Date;
 };
 type SettingMeta = {
-  Persisted: Persisted$Setting;
+  New: NewSetting;
+  Persisted: Setting;
   AssociationKey: 'user';
   CreateInput: {
     settingId?: number;
     threshold?: number;
     createdAt?: Date;
-    data?: Setting["data"];
+    data?: SettingModel["data"];
   } & ({ user: User } | { userId: number });
   WhereInput: {
     settingId?: number | number[] | Filter<number> | null;
@@ -312,12 +324,12 @@ type SettingMeta = {
     data?: SortOrder;
   };
 };
+registerModel(Setting);
 
 declare module "./profile" {
-  interface Profile {
+  interface ProfileModel {
     id: number | undefined;
-    get user(): Persisted$User | undefined;
-    set user(value: User | undefined);
+    user: User | undefined;
     userId: number | undefined;
     bio: string;
     point: number;
@@ -325,14 +337,16 @@ declare module "./profile" {
     role: Role;
   }
 }
-export interface Persisted$Profile extends Profile {
-  id: NonNullable<Profile["id"]>;
-  get user(): Persisted$User;
-  set user(value: User);
-  userId: NonNullable<Profile["userId"]>;
+export interface NewProfile extends ProfileModel {};
+export class Profile extends ProfileModel {};
+export interface Profile extends ProfileModel {
+  id: number;
+  user: User;
+  userId: number;
 };
 type ProfileMeta = {
-  Persisted: Persisted$Profile;
+  New: NewProfile;
+  Persisted: Profile;
   AssociationKey: 'user';
   CreateInput: {
     id?: number;
@@ -358,3 +372,4 @@ type ProfileMeta = {
     role?: SortOrder;
   };
 };
+registerModel(Profile);

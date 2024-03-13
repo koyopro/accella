@@ -1,6 +1,6 @@
 import { Model, Rollback } from "accel-record-core";
 import { $user } from "../factories/user";
-import { User } from "./user.js";
+import { User } from "./index.js";
 
 describe("Transaction", () => {
   beforeEach(() => {

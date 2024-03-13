@@ -1,4 +1,4 @@
-import { PostTag } from "../models/postTag.js";
+import { PostTag } from "../models/index.js";
 import { defineFactory } from "accel-record-factory";
 
 export const PostTagFactory = defineFactory(PostTag, ({ seq }) => ({

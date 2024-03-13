@@ -1,6 +1,5 @@
 import { $user } from "../factories/user";
-import { Post } from "./post";
-import { User } from "./user";
+import { Post, User } from "./index";
 
 describe("Relation", () => {
   test("#toArray()", () => {

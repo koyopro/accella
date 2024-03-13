@@ -1,4 +1,4 @@
-import { User } from "../models/user.js";
+import { User } from "../models/index.js";
 import { defineFactory } from "accel-record-factory";
 
 export const UserFactory = defineFactory(User, ({ seq }) => ({

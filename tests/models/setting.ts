@@ -1,4 +1,3 @@
-import { registerModel } from "accel-record-core";
 import { ApplicationRecord } from "./applicationRecord";
 
 type SettingData = {
@@ -8,10 +7,8 @@ type SettingData = {
   };
 };
 
-export class Setting extends ApplicationRecord {
+export class SettingModel extends ApplicationRecord {
   data: SettingData = {
     key1: "hoge",
   };
 }
-
-registerModel(Setting);
