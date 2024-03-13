@@ -57,6 +57,28 @@ const hasScalarDefault = (field: DMMF.Field) => {
   return field.default != undefined && typeof field.default !== "object";
 };
 
+class ModelWrapper {
+  constructor(public model: DMMF.Model) {}
+  get baseModel() {
+    return `${this.model.name}Model`;
+  }
+  get newModel() {
+    return `New${this.model.name}`;
+  }
+  get persistedModel() {
+    return `${this.model.name}`;
+  }
+  get meta() {
+    return `${this.model.name}Meta`;
+  }
+  get fileName() {
+    return toCamelCase(this.model.name);
+  }
+  get fields() {
+    return this.model.fields;
+  }
+}
+
 export const generateTypes = (options: GeneratorOptions) => {
   let data = `import type {
   CollectionProxy,
@@ -97,14 +119,16 @@ type New<T> = Meta<T>["New"];
 
 `;
   const meta = options.dmmf.datamodel.models
+    .map((model) => new ModelWrapper(model))
     .map(
       (model) =>
-        `T extends typeof ${model.name}Model | ${model.name}Model ? ${model.name}Meta :`
+        `T extends typeof ${model.baseModel} | ${model.baseModel} ? ${model.meta} :`
     )
     .join("\n               ");
   data += `type Meta<T> = ${meta}\n               any;\n`;
   data += enumData(options);
-  for (const model of options.dmmf.datamodel.models) {
+  for (const _model of options.dmmf.datamodel.models) {
+    const model = new ModelWrapper(_model);
     const reject = (f: DMMF.Field) => f.relationFromFields?.[0] == undefined;
     const relationFromFields = model.fields
       .flatMap((f) => f.relationFromFields)
@@ -121,7 +145,7 @@ type New<T> = Meta<T>["New"];
         const type = getPropertyType(field);
         const valType =
           field.type == "Json"
-            ? `${model.name}Model["${field.name}"]`
+            ? `${model.baseModel}["${field.name}"]`
             : `${type}${field.isList ? "[]" : ""}`;
         return `    ${field.name}${optional ? "?" : ""}: ${valType};`;
       })
@@ -155,17 +179,17 @@ type New<T> = Meta<T>["New"];
         .map((field) => `\n    ${field.name}?: SortOrder;`)
         .join("") + "\n  ";
     data += `
-declare module "./${toCamelCase(model.name)}" {
-  interface ${model.name}Model {
+declare module "./${model.fileName}" {
+  interface ${model.baseModel} {
 ${columnDefines(model)}
   }
 }
-export interface New${model.name} extends ${model.name}Model {};
-export class ${model.name} extends ${model.name}Model {};
-export interface ${model.name} extends ${model.name}Model {${columnForPersist(model)}};
-type ${model.name}Meta = {
-  New: New${model.name};
-  Persisted: ${model.name};
+export interface ${model.newModel} extends ${model.baseModel} {};
+export class ${model.persistedModel} extends ${model.baseModel} {};
+export interface ${model.persistedModel} extends ${model.baseModel} {${columnForPersist(model)}};
+type ${model.meta} = {
+  New: ${model.newModel};
+  Persisted: ${model.persistedModel};
   AssociationKey: ${associationKey(model)};
   CreateInput: {
 ${columns}
@@ -202,14 +226,14 @@ ${enumData}
 `;
 };
 
-const associationKey = (model: DMMF.Model) => {
+const associationKey = (model: ModelWrapper) => {
   return model.fields
     .filter((f) => f.relationName)
     .map((f) => `'${f.name}'`)
     .join(" | ");
 };
 
-const columnForPersist = (model: DMMF.Model) => {
+const columnForPersist = (model: ModelWrapper) => {
   return (
     model.fields
       .filter((f) => {
@@ -225,21 +249,21 @@ const columnForPersist = (model: DMMF.Model) => {
             `\n  set ${f.name}(value: ${type}Model${optional ? " | undefined" : ""});`
           );
         }
-        return `\n  ${f.name}: NonNullable<${model.name}Model["${f.name}"]>;`;
+        return `\n  ${f.name}: NonNullable<${model.baseModel}["${f.name}"]>;`;
       })
       .join("") + "\n"
   );
 };
 
-const columnDefines = (model: DMMF.Model) =>
+const columnDefines = (model: ModelWrapper) =>
   model.fields
     .map((field) => {
       const type = getPropertyType(field);
       if (field.type == "Json") {
-        return `    ${field.name}: ${model.name}Model["${field.name}"]`;
+        return `    ${field.name}: ${model.baseModel}["${field.name}"]`;
       }
       if (field.relationName && field.isList) {
-        return `    ${field.name}: CollectionProxy<${field.type}, ${model.name}Meta>;`;
+        return `    ${field.name}: CollectionProxy<${field.type}, ${model.meta}>;`;
       }
       if (field.relationName) {
         const hasOne = field.relationFromFields?.length == 0;
