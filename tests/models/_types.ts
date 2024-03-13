@@ -81,12 +81,12 @@ declare module "./user" {
 export interface NewUser extends UserModel {};
 export class User extends UserModel {};
 export interface User extends UserModel {
-  id: NonNullable<UserModel["id"]>;
-  email: NonNullable<UserModel["email"]>;
+  id: number;
+  email: string;
   get setting(): Setting | undefined;
   set setting(value: SettingModel | undefined);
-  createdAt: NonNullable<UserModel["createdAt"]>;
-  updatedAt: NonNullable<UserModel["updatedAt"]>;
+  createdAt: Date;
+  updatedAt: Date;
   get Profile(): Profile | undefined;
   set Profile(value: ProfileModel | undefined);
 };
@@ -134,8 +134,8 @@ declare module "./team" {
 export interface NewTeam extends TeamModel {};
 export class Team extends TeamModel {};
 export interface Team extends TeamModel {
-  id: NonNullable<TeamModel["id"]>;
-  name: NonNullable<TeamModel["name"]>;
+  id: number;
+  name: string;
 };
 type TeamMeta = {
   New: NewTeam;
@@ -170,11 +170,11 @@ export interface NewUserTeam extends UserTeamModel {};
 export class UserTeam extends UserTeamModel {};
 export interface UserTeam extends UserTeamModel {
   user: User;
-  userId: NonNullable<UserTeamModel["userId"]>;
+  userId: number;
   team: Team;
-  teamId: NonNullable<UserTeamModel["teamId"]>;
-  assignedAt: NonNullable<UserTeamModel["assignedAt"]>;
-  assignedBy: NonNullable<UserTeamModel["assignedBy"]>;
+  teamId: number;
+  assignedAt: Date;
+  assignedBy: string;
 };
 type UserTeamMeta = {
   New: NewUserTeam;
@@ -212,10 +212,10 @@ declare module "./post" {
 export interface NewPost extends PostModel {};
 export class Post extends PostModel {};
 export interface Post extends PostModel {
-  id: NonNullable<PostModel["id"]>;
-  title: NonNullable<PostModel["title"]>;
+  id: number;
+  title: string;
   author: User;
-  authorId: NonNullable<PostModel["authorId"]>;
+  authorId: number;
 };
 type PostMeta = {
   New: NewPost;
@@ -254,8 +254,8 @@ declare module "./postTag" {
 export interface NewPostTag extends PostTagModel {};
 export class PostTag extends PostTagModel {};
 export interface PostTag extends PostTagModel {
-  id: NonNullable<PostTagModel["id"]>;
-  name: NonNullable<PostTagModel["name"]>;
+  id: number;
+  name: string;
 };
 type PostTagMeta = {
   New: NewPostTag;
@@ -289,10 +289,10 @@ declare module "./setting" {
 export interface NewSetting extends SettingModel {};
 export class Setting extends SettingModel {};
 export interface Setting extends SettingModel {
-  settingId: NonNullable<SettingModel["settingId"]>;
+  settingId: number;
   user: User;
-  userId: NonNullable<SettingModel["userId"]>;
-  createdAt: NonNullable<SettingModel["createdAt"]>;
+  userId: number;
+  createdAt: Date;
 };
 type SettingMeta = {
   New: NewSetting;
@@ -333,9 +333,9 @@ declare module "./profile" {
 export interface NewProfile extends ProfileModel {};
 export class Profile extends ProfileModel {};
 export interface Profile extends ProfileModel {
-  id: NonNullable<ProfileModel["id"]>;
+  id: number;
   user: User;
-  userId: NonNullable<ProfileModel["userId"]>;
+  userId: number;
 };
 type ProfileMeta = {
   New: NewProfile;

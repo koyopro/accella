@@ -265,7 +265,7 @@ const columnForPersist = (model: ModelWrapper) => {
             `\n  set ${f.name}(value: ${f.typeName}${optional ? " | undefined" : ""});`
           );
         }
-        return `\n  ${f.name}: NonNullable<${model.baseModel}["${f.name}"]>;`;
+        return `\n  ${f.name}: ${f.typeName};`;
       })
       .join("") + "\n"
   );
