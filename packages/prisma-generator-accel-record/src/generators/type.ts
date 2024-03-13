@@ -255,12 +255,14 @@ const columnForPersist = (model: ModelWrapper) => {
         return f.isRequired || f.relationName;
       })
       .map((f) => {
-        const type = f.typeName;
         if (f.relationName) {
           const optional = f.relationFromFields?.length == 0;
+          if (!optional) {
+            return `\n  ${f.name}: ${f.type};`;
+          }
           return (
             `\n  get ${f.name}(): ${f.type}${optional ? " | undefined" : ""};` +
-            `\n  set ${f.name}(value: ${type}${optional ? " | undefined" : ""});`
+            `\n  set ${f.name}(value: ${f.typeName}${optional ? " | undefined" : ""});`
           );
         }
         return `\n  ${f.name}: NonNullable<${model.baseModel}["${f.name}"]>;`;
@@ -280,11 +282,13 @@ const columnDefines = (model: ModelWrapper) =>
         return `    ${field.name}: CollectionProxy<${type}, ${model.meta}>;`;
       }
       if (field.relationName) {
-        const hasOne = field.relationFromFields?.length == 0;
-        const _type = hasOne ? type : field.type;
+        const optional = field.relationFromFields?.length == 0;
+        if (!optional) {
+          return `    ${field.name}: ${field.type} | undefined;`;
+        }
         return (
-          `    get ${field.name}(): ${_type} | undefined;\n` +
-          `    set ${field.name}(value: ${_type} | undefined);`
+          `    get ${field.name}(): ${type} | undefined;\n` +
+          `    set ${field.name}(value: ${type} | undefined);`
         );
       }
       const nonNullable = field.hasScalarDefault;

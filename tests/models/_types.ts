@@ -158,11 +158,9 @@ type TeamMeta = {
 
 declare module "./userTeam" {
   interface UserTeamModel {
-    get user(): User | undefined;
-    set user(value: User | undefined);
+    user: User | undefined;
     userId: number | undefined;
-    get team(): Team | undefined;
-    set team(value: Team | undefined);
+    team: Team | undefined;
     teamId: number | undefined;
     assignedAt: Date | undefined;
     assignedBy: string | undefined;
@@ -171,11 +169,9 @@ declare module "./userTeam" {
 export interface NewUserTeam extends UserTeamModel {};
 export class UserTeam extends UserTeamModel {};
 export interface UserTeam extends UserTeamModel {
-  get user(): User;
-  set user(value: UserModel);
+  user: User;
   userId: NonNullable<UserTeamModel["userId"]>;
-  get team(): Team;
-  set team(value: TeamModel);
+  team: Team;
   teamId: NonNullable<UserTeamModel["teamId"]>;
   assignedAt: NonNullable<UserTeamModel["assignedAt"]>;
   assignedBy: NonNullable<UserTeamModel["assignedBy"]>;
@@ -208,8 +204,7 @@ declare module "./post" {
     title: string | undefined;
     content: string | undefined;
     published: boolean;
-    get author(): User | undefined;
-    set author(value: User | undefined);
+    author: User | undefined;
     authorId: number | undefined;
     tags: CollectionProxy<PostTagModel, PostMeta>;
   }
@@ -219,8 +214,7 @@ export class Post extends PostModel {};
 export interface Post extends PostModel {
   id: NonNullable<PostModel["id"]>;
   title: NonNullable<PostModel["title"]>;
-  get author(): User;
-  set author(value: UserModel);
+  author: User;
   authorId: NonNullable<PostModel["authorId"]>;
 };
 type PostMeta = {
@@ -285,8 +279,7 @@ type PostTagMeta = {
 declare module "./setting" {
   interface SettingModel {
     settingId: number | undefined;
-    get user(): User | undefined;
-    set user(value: User | undefined);
+    user: User | undefined;
     userId: number | undefined;
     threshold: number | undefined;
     createdAt: Date | undefined;
@@ -297,8 +290,7 @@ export interface NewSetting extends SettingModel {};
 export class Setting extends SettingModel {};
 export interface Setting extends SettingModel {
   settingId: NonNullable<SettingModel["settingId"]>;
-  get user(): User;
-  set user(value: UserModel);
+  user: User;
   userId: NonNullable<SettingModel["userId"]>;
   createdAt: NonNullable<SettingModel["createdAt"]>;
 };
@@ -330,8 +322,7 @@ type SettingMeta = {
 declare module "./profile" {
   interface ProfileModel {
     id: number | undefined;
-    get user(): User | undefined;
-    set user(value: User | undefined);
+    user: User | undefined;
     userId: number | undefined;
     bio: string;
     point: number;
@@ -343,8 +334,7 @@ export interface NewProfile extends ProfileModel {};
 export class Profile extends ProfileModel {};
 export interface Profile extends ProfileModel {
   id: NonNullable<ProfileModel["id"]>;
-  get user(): User;
-  set user(value: UserModel);
+  user: User;
   userId: NonNullable<ProfileModel["userId"]>;
 };
 type ProfileMeta = {
