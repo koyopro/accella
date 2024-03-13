@@ -12,7 +12,7 @@ describe("Persistence", () => {
     if (!u.save()) {
       throw new Error("Failed to save");
     }
-    // u should be a Persisted$User
+    // u should be a persisted User
     expect(u.id).not.toBeUndefined();
     expect(Post.all().get()).toHaveLength(2);
 
@@ -25,7 +25,7 @@ describe("Persistence", () => {
     if (!u.update({ name: "fuga" })) {
       throw new Error("Failed to update");
     }
-    // u should be a Persisted$User
+    // u should be a persisted User
     expect(u.id).not.toBeUndefined();
     expect(u.name).toBe("fuga");
     expect(User.all().get()[0].name).toBe("fuga");
