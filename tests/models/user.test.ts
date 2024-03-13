@@ -1,5 +1,4 @@
-import { Post } from "./post";
-import { User } from "./user";
+import { User, Post } from "./index";
 import { $user } from "../factories/user";
 
 describe("User#tojson()", () => {

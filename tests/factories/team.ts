@@ -1,4 +1,4 @@
-import { Team } from "../models/team.js";
+import { Team } from "../models/index.js";
 import { defineFactory } from "accel-record-factory";
 
 export const TeamFactory = defineFactory(Team, ({ seq }) => ({

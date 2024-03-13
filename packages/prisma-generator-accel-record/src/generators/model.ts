@@ -5,10 +5,10 @@ export const getModel = (model: DMMF.Model) => {
   return `import { registerModel } from "accel-record";
 import { ApplicationRecord } from "./applicationRecord";
 
-export class ${model.name} extends ApplicationRecord {
+export class ${model.name}Model extends ApplicationRecord {
 ${table}
 }
 
-registerModel(${model.name});
+registerModel(${model.name}Model);
 `;
 };

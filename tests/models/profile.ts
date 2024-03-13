@@ -1,8 +1,9 @@
-import { registerModel } from "accel-record-core";
+import { registerModel } from "accel-record";
 import { ApplicationRecord } from "./applicationRecord";
 
-export class Profile extends ApplicationRecord {
+export class ProfileModel extends ApplicationRecord {
   static table = "profiles";
+
 }
 
-registerModel(Profile);
+registerModel(ProfileModel);

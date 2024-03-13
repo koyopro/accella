@@ -66,21 +66,23 @@ export const generateTypes = (options: GeneratorOptions) => {
   StringFilter,
 } from "accel-record";
 
+type Class = abstract new (...args: any) => any;
+
 declare module "accel-record" {
   namespace Model {
-    function create<T>(this: T, input: Meta<T>["CreateInput"]): Persisted<T>;
-    function first<T>(this: T): Persisted<T>;
-    function find<T>(this: T, id: number): Persisted<T>;
-    function findBy<T>(this: T, input: Meta<T>['WhereInput']): Persisted<T> | undefined;
-    function all<T>(this: T): Relation<Persisted<T>, Meta<T>>;
-    function order<T>(this: T, column: keyof Meta<T>["OrderInput"], direction?: "asc" | "desc"): Relation<Persisted<T>, Meta<T>>;
-    function offset<T>(this: T, offset: number): Relation<Persisted<T>, Meta<T>>;
-    function limit<T>(this: T, limit: number): Relation<Persisted<T>, Meta<T>>;
-    function where<T>(this: T, input: Meta<T>['WhereInput']): Relation<Persisted<T>, Meta<T>>;
-    function whereNot<T>(this: T, input: Meta<T>['WhereInput']): Relation<Persisted<T>, Meta<T>>;
-    function whereRaw<T>(this: T, query: string, bindings?: any[]): Relation<Persisted<T>, Meta<T>>;
-    function build<T extends abstract new (...args: any) => any>(this: T, input: Partial<Meta<T>["CreateInput"]>): InstanceType<T>;
-    function includes<T>(this: T, ...input: Meta<T>['AssociationKey'][]): Relation<Persisted<T>, Meta<T>>;
+    function build<T extends Class>(this: T, input: Partial<Meta<T>["CreateInput"]>): New<T>;
+    function create<T extends Class>(this: T, input: Meta<T>["CreateInput"]): InstanceType<T>;
+    function first<T extends Class>(this: T): InstanceType<T>;
+    function find<T extends Class>(this: T, id: number): InstanceType<T>;
+    function findBy<T extends Class>(this: T, input: Meta<T>['WhereInput']): InstanceType<T> | undefined;
+    function all<T extends Class>(this: T): Relation<InstanceType<T>, Meta<T>>;
+    function order<T extends Class>(this: T, column: keyof Meta<T>["OrderInput"], direction?: "asc" | "desc"): Relation<InstanceType<T>, Meta<T>>;
+    function offset<T extends Class>(this: T, offset: number): Relation<InstanceType<T>, Meta<T>>;
+    function limit<T extends Class>(this: T, limit: number): Relation<InstanceType<T>, Meta<T>>;
+    function where<T extends Class>(this: T, input: Meta<T>['WhereInput']): Relation<InstanceType<T>, Meta<T>>;
+    function whereNot<T extends Class>(this: T, input: Meta<T>['WhereInput']): Relation<InstanceType<T>, Meta<T>>;
+    function whereRaw<T extends Class>(this: T, query: string, bindings?: any[]): Relation<InstanceType<T>, Meta<T>>;
+    function includes<T extends Class>(this: T, ...input: Meta<T>['AssociationKey'][]): Relation<InstanceType<T>, Meta<T>>;
   }
   interface Model {
     isPersisted<T>(this: T): this is Persisted<T>;
@@ -91,12 +93,13 @@ declare module "accel-record" {
 }
 
 type Persisted<T> = Meta<T>["Persisted"];
+type New<T> = Meta<T>["New"];
 
 `;
   const meta = options.dmmf.datamodel.models
     .map(
       (model) =>
-        `T extends typeof ${model.name} | ${model.name} ? ${model.name}Meta :`
+        `T extends typeof ${model.name}Model | ${model.name}Model ? ${model.name}Meta :`
     )
     .join("\n               ");
   data += `type Meta<T> = ${meta}\n               any;\n`;
@@ -118,7 +121,7 @@ type Persisted<T> = Meta<T>["Persisted"];
         const type = getPropertyType(field);
         const valType =
           field.type == "Json"
-            ? `${model.name}["${field.name}"]`
+            ? `${model.name}Model["${field.name}"]`
             : `${type}${field.isList ? "[]" : ""}`;
         return `    ${field.name}${optional ? "?" : ""}: ${valType};`;
       })
@@ -153,13 +156,16 @@ type Persisted<T> = Meta<T>["Persisted"];
         .join("") + "\n  ";
     data += `
 declare module "./${toCamelCase(model.name)}" {
-  interface ${model.name} {
+  interface ${model.name}Model {
 ${columnDefines(model)}
   }
 }
-export interface Persisted$${model.name} extends ${model.name} {${columnForPersist(model)}};
+export interface New${model.name} extends ${model.name}Model {};
+export class ${model.name} extends ${model.name}Model {};
+export interface ${model.name} extends ${model.name}Model {${columnForPersist(model)}};
 type ${model.name}Meta = {
-  Persisted: Persisted$${model.name};
+  New: New${model.name};
+  Persisted: ${model.name};
   AssociationKey: ${associationKey(model)};
   CreateInput: {
 ${columns}
@@ -215,11 +221,11 @@ const columnForPersist = (model: DMMF.Model) => {
         if (f.relationName) {
           const optional = f.relationFromFields?.length == 0;
           return (
-            `\n  get ${f.name}(): Persisted$${type}${optional ? " | undefined" : ""};` +
-            `\n  set ${f.name}(value: ${type}${optional ? " | undefined" : ""});`
+            `\n  get ${f.name}(): ${type}${optional ? " | undefined" : ""};` +
+            `\n  set ${f.name}(value: ${type}Model${optional ? " | undefined" : ""});`
           );
         }
-        return `\n  ${f.name}: NonNullable<${model.name}["${f.name}"]>;`;
+        return `\n  ${f.name}: NonNullable<${model.name}Model["${f.name}"]>;`;
       })
       .join("") + "\n"
   );
@@ -230,16 +236,16 @@ const columnDefines = (model: DMMF.Model) =>
     .map((field) => {
       const type = getPropertyType(field);
       if (field.type == "Json") {
-        return `    ${field.name}: ${model.name}["${field.name}"]`;
+        return `    ${field.name}: ${model.name}Model["${field.name}"]`;
       }
       if (field.relationName && field.isList) {
         return `    ${field.name}: CollectionProxy<${field.type}, ${model.name}Meta>;`;
       }
       if (field.relationName) {
         const hasOne = field.relationFromFields?.length == 0;
-        const getPrefix = hasOne ? "" : "Persisted$";
+        const getPrefix = hasOne ? "Model" : "";
         return (
-          `    get ${field.name}(): ${getPrefix}${type} | undefined;\n` +
+          `    get ${field.name}(): ${type}${getPrefix} | undefined;\n` +
           `    set ${field.name}(value: ${type} | undefined);`
         );
       }

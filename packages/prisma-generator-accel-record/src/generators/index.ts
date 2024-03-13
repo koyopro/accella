@@ -12,8 +12,7 @@ export const generateExportAllModels = (models: DMMF.Model[]) => {
   return models
     .map((model) =>
       [
-        `import { ${model.name} } from './${toCamelCase(model.name)}.js'`,
-        `export { ${model.name} } from './${toCamelCase(model.name)}.js'`,
+        `import { ${model.name}Model } from './${toCamelCase(model.name)}.js'`,
       ].join("\n")
     )
     .join("\n");

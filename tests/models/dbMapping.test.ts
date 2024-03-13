@@ -1,5 +1,5 @@
 import { $user } from "../factories/user";
-import { Profile } from "./profile";
+import { Profile } from "./index";
 
 describe("database mapping", () => {
   test("mapping table name, default values", () => {

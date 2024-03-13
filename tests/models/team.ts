@@ -1,8 +1,8 @@
-import { registerModel } from "accel-record-core";
+import { registerModel } from "accel-record";
 import { ApplicationRecord } from "./applicationRecord";
 
-export class Team extends ApplicationRecord {
+export class TeamModel extends ApplicationRecord {
 
 }
 
-registerModel(Team);
+registerModel(TeamModel);

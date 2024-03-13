@@ -1,8 +1,8 @@
-import { registerModel } from "accel-record-core";
+import { registerModel } from "accel-record";
 import { ApplicationRecord } from "./applicationRecord";
 
-export class PostTag extends ApplicationRecord {
+export class PostTagModel extends ApplicationRecord {
 
 }
 
-registerModel(PostTag);
+registerModel(PostTagModel);

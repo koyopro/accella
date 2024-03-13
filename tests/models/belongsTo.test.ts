@@ -1,7 +1,7 @@
+import { Setting } from ".";
 import { $post } from "../factories/post";
 import { $setting } from "../factories/setting";
 import { $user } from "../factories/user";
-import { Setting } from "./setting";
 
 describe("BelongsTo", () => {
   test("get", () => {
