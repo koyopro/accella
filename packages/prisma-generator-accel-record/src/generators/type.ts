@@ -1,46 +1,6 @@
 import { DMMF, GeneratorOptions } from "@prisma/generator-helper";
 import { toCamelCase } from "./index.js";
 
-export const getScalarDefault = (field: DMMF.Field) => {
-  switch (field.type) {
-    case "BigInt":
-    case "Decimal":
-    case "Float":
-    case "Int":
-      return 0;
-    case "Bytes":
-    case "String":
-      return "";
-    case "Boolean":
-      return false;
-    case "DateTime":
-      return new Date();
-    default:
-      return undefined;
-  }
-};
-
-const getPropertyType = (field: DMMF.Field) => {
-  switch (field.type) {
-    case "BigInt":
-    case "Decimal":
-    case "Float":
-    case "Int":
-      return "number";
-    case "Bytes":
-    case "String":
-      return "string";
-    case "Boolean":
-      return "boolean";
-    case "DateTime":
-      return "Date";
-    case "Json":
-      return "any";
-    default:
-      return field.type;
-  }
-};
-
 const getFilterType = (type: string) => {
   switch (type) {
     case "string":
@@ -53,12 +13,67 @@ const getFilterType = (type: string) => {
   }
 };
 
-const hasScalarDefault = (field: DMMF.Field) => {
-  return field.default != undefined && typeof field.default !== "object";
-};
+class FieldWrapper {
+  name: DMMF.Field["name"];
+  relationFromFields: DMMF.Field["relationFromFields"];
+  hasDefaultValue: DMMF.Field["hasDefaultValue"];
+  isRequired: DMMF.Field["isRequired"];
+  isList: DMMF.Field["isList"];
+  isUpdatedAt: DMMF.Field["isUpdatedAt"];
+  type: DMMF.Field["type"];
+  relationName: DMMF.Field["relationName"];
+
+  constructor(
+    private field: DMMF.Field,
+    private datamodel: DMMF.Datamodel
+  ) {
+    this.name = field.name;
+    this.relationFromFields = field.relationFromFields;
+    this.hasDefaultValue = field.hasDefaultValue;
+    this.isRequired = field.isRequired;
+    this.isList = field.isList;
+    this.isUpdatedAt = field.isUpdatedAt;
+    this.type = field.type;
+    this.relationName = field.relationName;
+  }
+
+  get hasScalarDefault() {
+    return (
+      this.field.default != undefined && typeof this.field.default !== "object"
+    );
+  }
+
+  get typeName() {
+    switch (this.field.type) {
+      case "BigInt":
+      case "Decimal":
+      case "Float":
+      case "Int":
+        return "number";
+      case "Bytes":
+      case "String":
+        return "string";
+      case "Boolean":
+        return "boolean";
+      case "DateTime":
+        return "Date";
+      case "Json":
+        return "any";
+      default:
+        if (this.datamodel.models.find((m) => m.name == this.field.type)) {
+          return `${this.field.type}Model`;
+        }
+        return `${this.field.type}`;
+    }
+  }
+}
 
 class ModelWrapper {
-  constructor(public model: DMMF.Model) {}
+  constructor(
+    private model: DMMF.Model,
+    private datamodel: DMMF.Datamodel
+  ) {}
+
   get baseModel() {
     return `${this.model.name}Model`;
   }
@@ -75,7 +90,7 @@ class ModelWrapper {
     return toCamelCase(this.model.name);
   }
   get fields() {
-    return this.model.fields;
+    return this.model.fields.map((f) => new FieldWrapper(f, this.datamodel));
   }
 }
 
@@ -119,7 +134,7 @@ type New<T> = Meta<T>["New"];
 
 `;
   const meta = options.dmmf.datamodel.models
-    .map((model) => new ModelWrapper(model))
+    .map((model) => new ModelWrapper(model, options.dmmf.datamodel))
     .map(
       (model) =>
         `T extends typeof ${model.baseModel} | ${model.baseModel} ? ${model.meta} :`
@@ -128,8 +143,8 @@ type New<T> = Meta<T>["New"];
   data += `type Meta<T> = ${meta}\n               any;\n`;
   data += enumData(options);
   for (const _model of options.dmmf.datamodel.models) {
-    const model = new ModelWrapper(_model);
-    const reject = (f: DMMF.Field) => f.relationFromFields?.[0] == undefined;
+    const model = new ModelWrapper(_model, options.dmmf.datamodel);
+    const reject = (f: FieldWrapper) => f.relationFromFields?.[0] == undefined;
     const relationFromFields = model.fields
       .flatMap((f) => f.relationFromFields)
       .filter((f) => f != undefined);
@@ -142,11 +157,10 @@ type New<T> = Meta<T>["New"];
           !field.isRequired ||
           field.isList ||
           field.isUpdatedAt;
-        const type = getPropertyType(field);
         const valType =
           field.type == "Json"
             ? `${model.baseModel}["${field.name}"]`
-            : `${type}${field.isList ? "[]" : ""}`;
+            : `${field.typeName}${field.isList ? "[]" : ""}`;
         return `    ${field.name}${optional ? "?" : ""}: ${valType};`;
       })
       .join("\n");
@@ -155,7 +169,7 @@ type New<T> = Meta<T>["New"];
       .map((f) => {
         const foreignKeys = model.fields
           .filter((g) => f.relationFromFields?.includes(g.name))
-          .map((g) => `${g.name}: ${getPropertyType(g)}`)
+          .map((g) => `${g.name}: ${g.typeName}`)
           .join(", ");
         return ` & ({ ${f.name}: ${f.type} } | { ${foreignKeys} })`;
       })
@@ -167,7 +181,7 @@ type New<T> = Meta<T>["New"];
           (field) => field.relationName == undefined && field.type != "Json"
         )
         .map((field) => {
-          const type = getPropertyType(field);
+          const type = field.typeName;
           const filter = getFilterType(type);
           return `\n    ${field.name}?: ${type} | ${type}[] | ${filter} | null;`;
         })
@@ -237,16 +251,16 @@ const columnForPersist = (model: ModelWrapper) => {
   return (
     model.fields
       .filter((f) => {
-        if (hasScalarDefault(f) || f.isList) return false;
+        if (f.hasScalarDefault || f.isList) return false;
         return f.isRequired || f.relationName;
       })
       .map((f) => {
-        const type = getPropertyType(f);
+        const type = f.typeName;
         if (f.relationName) {
           const optional = f.relationFromFields?.length == 0;
           return (
-            `\n  get ${f.name}(): ${type}${optional ? " | undefined" : ""};` +
-            `\n  set ${f.name}(value: ${type}Model${optional ? " | undefined" : ""});`
+            `\n  get ${f.name}(): ${f.type}${optional ? " | undefined" : ""};` +
+            `\n  set ${f.name}(value: ${type}${optional ? " | undefined" : ""});`
           );
         }
         return `\n  ${f.name}: NonNullable<${model.baseModel}["${f.name}"]>;`;
@@ -258,22 +272,22 @@ const columnForPersist = (model: ModelWrapper) => {
 const columnDefines = (model: ModelWrapper) =>
   model.fields
     .map((field) => {
-      const type = getPropertyType(field);
+      const type = field.typeName;
       if (field.type == "Json") {
         return `    ${field.name}: ${model.baseModel}["${field.name}"]`;
       }
       if (field.relationName && field.isList) {
-        return `    ${field.name}: CollectionProxy<${field.type}, ${model.meta}>;`;
+        return `    ${field.name}: CollectionProxy<${type}, ${model.meta}>;`;
       }
       if (field.relationName) {
         const hasOne = field.relationFromFields?.length == 0;
-        const getPrefix = hasOne ? "Model" : "";
+        const _type = hasOne ? type : field.type;
         return (
-          `    get ${field.name}(): ${type}${getPrefix} | undefined;\n` +
-          `    set ${field.name}(value: ${type} | undefined);`
+          `    get ${field.name}(): ${_type} | undefined;\n` +
+          `    set ${field.name}(value: ${_type} | undefined);`
         );
       }
-      const nonNullable = hasScalarDefault(field);
+      const nonNullable = field.hasScalarDefault;
       return `    ${field.name}: ${type}${field.isList ? "[]" : ""}${
         nonNullable ? "" : " | undefined"
       };`;

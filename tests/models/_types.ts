@@ -68,14 +68,14 @@ declare module "./user" {
     email: string | undefined;
     name: string | undefined;
     age: number | undefined;
-    posts: CollectionProxy<Post, UserMeta>;
+    posts: CollectionProxy<PostModel, UserMeta>;
     get setting(): SettingModel | undefined;
-    set setting(value: Setting | undefined);
-    teams: CollectionProxy<UserTeam, UserMeta>;
+    set setting(value: SettingModel | undefined);
+    teams: CollectionProxy<UserTeamModel, UserMeta>;
     createdAt: Date | undefined;
     updatedAt: Date | undefined;
     get Profile(): ProfileModel | undefined;
-    set Profile(value: Profile | undefined);
+    set Profile(value: ProfileModel | undefined);
   }
 }
 export interface NewUser extends UserModel {};
@@ -99,12 +99,12 @@ type UserMeta = {
     email: string;
     name?: string;
     age?: number;
-    posts?: Post[];
-    setting?: Setting;
-    teams?: UserTeam[];
+    posts?: PostModel[];
+    setting?: SettingModel;
+    teams?: UserTeamModel[];
     createdAt?: Date;
     updatedAt?: Date;
-    Profile?: Profile;
+    Profile?: ProfileModel;
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -128,7 +128,7 @@ declare module "./team" {
   interface TeamModel {
     id: number | undefined;
     name: string | undefined;
-    users: CollectionProxy<UserTeam, TeamMeta>;
+    users: CollectionProxy<UserTeamModel, TeamMeta>;
   }
 }
 export interface NewTeam extends TeamModel {};
@@ -144,7 +144,7 @@ type TeamMeta = {
   CreateInput: {
     id?: number;
     name: string;
-    users?: UserTeam[];
+    users?: UserTeamModel[];
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -211,7 +211,7 @@ declare module "./post" {
     get author(): User | undefined;
     set author(value: User | undefined);
     authorId: number | undefined;
-    tags: CollectionProxy<PostTag, PostMeta>;
+    tags: CollectionProxy<PostTagModel, PostMeta>;
   }
 }
 export interface NewPost extends PostModel {};
@@ -232,7 +232,7 @@ type PostMeta = {
     title: string;
     content?: string;
     published?: boolean;
-    tags?: PostTag[];
+    tags?: PostTagModel[];
   } & ({ author: User } | { authorId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -254,7 +254,7 @@ declare module "./postTag" {
   interface PostTagModel {
     id: number | undefined;
     name: string | undefined;
-    posts: CollectionProxy<Post, PostTagMeta>;
+    posts: CollectionProxy<PostModel, PostTagMeta>;
   }
 }
 export interface NewPostTag extends PostTagModel {};
@@ -270,7 +270,7 @@ type PostTagMeta = {
   CreateInput: {
     id?: number;
     name: string;
-    posts?: Post[];
+    posts?: PostModel[];
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
