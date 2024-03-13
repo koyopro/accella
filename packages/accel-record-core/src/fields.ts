@@ -70,6 +70,13 @@ export class Field {
     return this.default != undefined && this.default.name === "now";
   }
 
+  get scalarDefault() {
+    if (this.default != undefined && typeof this.default != "object") {
+      return this.cast(this.default);
+    }
+    return undefined;
+  }
+
   cast(value: any) {
     if (value == undefined) return value;
     switch (this.type) {

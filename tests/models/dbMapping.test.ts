@@ -7,11 +7,11 @@ describe("database mapping", () => {
 
     const p1 = Profile.build({});
     expect(p1.id).toBeUndefined();
-    expect(p1.point).toBeUndefined();
-    expect(p1.enabled).toBeUndefined();
-    expect(p1.bio).toBeUndefined();
+    expect(p1.point).toBe(100);
+    expect(p1.enabled).toBe(true);
+    expect(p1.bio).toBe("I'm a Prisma user!");
+    expect(p1.role).toBe("MEMBER");
     expect(p1.userId).toBeUndefined();
-    expect(p1.role).toBeUndefined();
     if (!p1.update({ user })) {
       throw new Error("Failed to save");
     }
