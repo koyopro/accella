@@ -64,4 +64,28 @@ describe("hasOne", () => {
     expect(users[0]?.setting?.isNewRecord).toBe(false);
     expect(users[1]?.setting?.isNewRecord).toBe(false);
   });
+
+  describe("getter/setter types", () => {
+    test("persisted & new", () => {
+      const user = $user.create();
+      const setting = $setting.build();
+      expect(setting.isPersisted()).toBe(false);
+      user.setting = setting;
+      expect(setting.isPersisted()).toBe(true);
+      expect(user.setting?.isPersisted()).toBe(true);
+    });
+
+    test("new & new", () => {
+      const user = $user.build();
+      const setting = $setting.build();
+      user.setting = setting;
+      expect(user.isPersisted()).toBe(false);
+      expect(setting.isPersisted()).toBe(false);
+
+      if (!user.save()) throw new Error("Failed to save user");
+      expect(user.isPersisted()).toBe(true);
+      expect(setting.isPersisted()).toBe(true);
+      expect(user.setting?.isPersisted()).toBe(true);
+    });
+  });
 });
