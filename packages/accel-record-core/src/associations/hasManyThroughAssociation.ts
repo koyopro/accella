@@ -9,6 +9,20 @@ export class HasManyThroughAssociation<
   override concat(records: T | T[]) {
     const _records = Array.isArray(records) ? records : [records];
     for (const record of _records) {
+      if (!this.owner.isPersisted()) continue;
+      record.save();
+      const query = this.connection.knex(this.info.through).insert({
+        ...this.scopeAttributes(),
+        [this.joinKey]: record.pkValues[0],
+      });
+      exec(query);
+    }
+  }
+
+  persist(records: T | T[]) {
+    const _records = Array.isArray(records) ? records : [records];
+    for (const record of _records) {
+      if (!this.owner.isPersisted()) continue;
       record.save();
       const query = this.connection.knex(this.info.through).insert({
         ...this.scopeAttributes(),

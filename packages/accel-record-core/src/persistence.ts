@@ -123,14 +123,12 @@ export class Persistence {
     }
     const returning = exec(q.insert(data)) as Record<keyof T, any>[];
     this.retriveInsertedAttributes(returning[0] ?? {});
+    this.isNewRecord = false;
     for (const [key, association] of Object.entries(this.associations)) {
       const { foreignKey, primaryKey } = association;
       const value = this[key as keyof T];
       if (value instanceof CollectionProxy) {
-        for (const instance of value) {
-          instance[foreignKey] = this[primaryKey as keyof T];
-          instance.save();
-        }
+        value.persist();
         value.resetOptions();
         value.reset();
       } else if (association.isHasOne && value instanceof Model) {

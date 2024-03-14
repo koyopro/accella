@@ -13,6 +13,16 @@ export class HasManyAssociation<T extends Model> extends Association<T> {
     }
   }
 
+  persist(records: T | T[]) {
+    const _records = Array.isArray(records) ? records : [records];
+    for (const record of _records) {
+      Object.assign(record, this.scopeAttributes());
+      if (this.owner.isPersisted()) {
+        record.save();
+      }
+    }
+  }
+
   deleteAll() {
     Models[this.info.klass].where(this.scopeAttributes()).deleteAll();
   }

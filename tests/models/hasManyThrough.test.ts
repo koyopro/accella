@@ -74,4 +74,28 @@ describe("hasManyThrogh", () => {
     t1.destroy();
     expect(p.tags.count()).toEqual(0);
   });
+
+  describe("getter/setter types", () => {
+    test("persisted & new", () => {
+      const post = $post.create({ author: $user.create() });
+      const tag = $postTag.build();
+      expect(tag.isPersisted()).toBe(false);
+      post.tags.push([tag]);
+      expect(tag.isPersisted()).toBe(true);
+      expect(post.tags.first()?.isPersisted()).toBe(true);
+    });
+
+    test("new & new", () => {
+      const post = $post.build({ author: $user.create() });
+      const tag = $postTag.build();
+      post.tags.push([tag]);
+      expect(post.isPersisted()).toBe(false);
+      expect(tag.isPersisted()).toBe(false);
+
+      if (!post.save()) throw new Error("Failed to save user");
+      expect(post.isPersisted()).toBe(true);
+      expect(tag.isPersisted()).toBe(true);
+      expect(post.tags.first()?.isPersisted()).toBe(true);
+    });
+  });
 });

@@ -32,6 +32,11 @@ export class CollectionProxy<
     return this;
   }
 
+  persist() {
+    this.association.persist(this.cache || []);
+    return this;
+  }
+
   deleteAll() {
     const ret = this.toArray();
     this.association.deleteAll();
