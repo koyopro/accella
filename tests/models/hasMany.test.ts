@@ -93,4 +93,28 @@ describe("ManyToMany", () => {
     t1.destroy();
     expect(p.tags.count()).toEqual(0);
   });
+
+  describe("getter/setter types", () => {
+    test("persisted & new", () => {
+      const user = $user.create();
+      const post = $post.build();
+      expect(post.isPersisted()).toBe(false);
+      user.posts.push(post);
+      expect(post.isPersisted()).toBe(true);
+      expect(user.posts.first()?.isPersisted()).toBe(true);
+    });
+
+    test("new & new", () => {
+      const user = $user.build();
+      const post = $post.build();
+      user.posts.push(post);
+      expect(user.isPersisted()).toBe(false);
+      expect(post.isPersisted()).toBe(false);
+
+      if (!user.save()) throw new Error("Failed to save user");
+      expect(user.isPersisted()).toBe(true);
+      expect(post.isPersisted()).toBe(true);
+      expect(user.posts.first()?.isPersisted()).toBe(true);
+    });
+  });
 });

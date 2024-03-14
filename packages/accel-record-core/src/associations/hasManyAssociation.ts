@@ -7,7 +7,9 @@ export class HasManyAssociation<T extends Model> extends Association<T> {
     const _records = Array.isArray(records) ? records : [records];
     for (const record of _records) {
       Object.assign(record, this.scopeAttributes());
-      record.save();
+      if (this.owner.isPersisted()) {
+        record.save();
+      }
     }
   }
 

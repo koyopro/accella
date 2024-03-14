@@ -2,10 +2,10 @@ import { ModelMeta, type Model } from "../index.js";
 import { Options, Relation } from "../relation.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
 
-export class CollectionProxy<T extends Model, S extends ModelMeta> extends Relation<
-  T,
-  S
-> {
+export class CollectionProxy<
+  T extends Model,
+  S extends ModelMeta,
+> extends Relation<T, S> {
   constructor(
     model: typeof Model,
     private association: HasManyAssociation<T>,
@@ -28,7 +28,8 @@ export class CollectionProxy<T extends Model, S extends ModelMeta> extends Relat
 
   concat(records: T | T[]) {
     this.association.concat(records);
-    return this.reset();
+    (this.cache ||= []).push(...(Array.isArray(records) ? records : [records]));
+    return this;
   }
 
   deleteAll() {

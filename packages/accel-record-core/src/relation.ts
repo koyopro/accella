@@ -22,7 +22,7 @@ export class Relation<T, M extends ModelMeta> {
   constructor(
     protected model: typeof Model,
     options: Partial<Options> = {},
-    private cache: T[] | undefined = undefined
+    protected cache: T[] | undefined = undefined
   ) {
     this.model = model;
     this.client = model.client;
