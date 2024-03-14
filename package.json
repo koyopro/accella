@@ -7,8 +7,7 @@
     "test": "vitest",
     "test:migrate": "DATABASE_URL=file:./test.db npx prisma migrate dev --schema=tests/prisma/schema.prisma",
     "test:mysql:migrate": "npx prisma migrate dev --schema=tests/prisma_mysql/schema.prisma",
-    "test:mysql": "DB_ENGINE=mysql vitest",
-    "test:mysql:typecheck": "DB_ENGINE=mysql vitest --typecheck"
+    "test:mysql": "DB_ENGINE=mysql vitest --typecheck"
   },
   "repository": {
     "type": "git",

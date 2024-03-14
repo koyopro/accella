@@ -187,7 +187,7 @@ export class Relation<T, M extends ModelMeta> {
         const included = Models[klass].where({ [foreignKey]: primaryKeys });
         const mapping: any = {};
         for (const row of included) {
-          (mapping[row[foreignKey]] ||= []).push(row);
+          (mapping[(row as any)[foreignKey]] ||= []).push(row);
         }
         for (const row of rows) {
           row[name] = mapping[row[primaryKey]] ?? [];
@@ -204,7 +204,7 @@ export class Relation<T, M extends ModelMeta> {
     const mapping: any = {};
     const included = Models[klass].where({ [primaryKey]: foreignKeys });
     for (const row of included) {
-      mapping[row[primaryKey]] = row;
+      mapping[(row as any)[primaryKey]] = row;
     }
     for (const row of rows) {
       row[name] = mapping[row[foreignKey]];

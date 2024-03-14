@@ -2,6 +2,7 @@ import Knex from "knex";
 import path from "path";
 import { fileURLToPath } from "url";
 import { loadDmmf } from "./fields";
+// @ts-ignore
 import SyncRpc from "./sync-rpc/index.cjs";
 
 const DEBUG = false;

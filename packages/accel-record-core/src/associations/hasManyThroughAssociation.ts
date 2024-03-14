@@ -26,7 +26,10 @@ export class HasManyThroughAssociation<
   deleteAll() {
     const query = this.connection
       .knex(this.info.through)
-      .where(this.info.foreignKey, this.owner[this.info.primaryKey as keyof T])
+      .where(
+        this.info.foreignKey,
+        this.owner[this.info.primaryKey as keyof T] as any
+      )
       .delete();
     exec(query);
   }
@@ -42,7 +45,7 @@ export class HasManyThroughAssociation<
         .knex(this.info.through)
         .where(
           this.info.foreignKey,
-          this.owner[this.info.primaryKey as keyof T]
+          this.owner[this.info.primaryKey as keyof T] as any
         )
         .where(this.joinKey, record.pkValues[0])
         .delete();

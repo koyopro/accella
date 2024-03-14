@@ -38,7 +38,7 @@ export class ModelInstanceBuilder {
             [association.primaryKey]: target[association.foreignKey],
           }));
         }
-        return Reflect.get(...arguments);
+        return Reflect.get(target, prop, receiver);
       },
       set(target, prop, value, receiver) {
         const column = klass.attributeToColumn(prop as string);
