@@ -168,7 +168,7 @@ export class Persistence {
         value.resetOptions();
         value.reset();
       } else if (association.isHasOne && value instanceof Model) {
-        value[foreignKey] = this[primaryKey as keyof T];
+        (value as any)[foreignKey] = this[primaryKey as keyof T];
         value.save();
       }
     }
