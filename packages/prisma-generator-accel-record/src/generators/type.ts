@@ -288,10 +288,7 @@ const columnDefines = (model: ModelWrapper) =>
         if (!optional) {
           return `    ${field.name}: ${field.type} | undefined;`;
         }
-        return (
-          `    get ${field.name}(): ${type} | undefined;\n` +
-          `    set ${field.name}(value: ${type} | undefined);`
-        );
+        return `    ${field.name}: ${type} | undefined;`;
       }
       const nonNullable = field.hasScalarDefault;
       return `    ${field.name}: ${type}${field.isList ? "[]" : ""}${

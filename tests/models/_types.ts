@@ -70,13 +70,11 @@ declare module "./user" {
     name: string | undefined;
     age: number | undefined;
     posts: CollectionProxy<PostModel, UserMeta>;
-    get setting(): SettingModel | undefined;
-    set setting(value: SettingModel | undefined);
+    setting: SettingModel | undefined;
     teams: CollectionProxy<UserTeamModel, UserMeta>;
     createdAt: Date | undefined;
     updatedAt: Date | undefined;
-    get Profile(): ProfileModel | undefined;
-    set Profile(value: ProfileModel | undefined);
+    Profile: ProfileModel | undefined;
   }
 }
 export interface NewUser extends UserModel {};
