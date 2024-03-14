@@ -28,6 +28,7 @@ export class Persistence {
   save<T extends Model>(this: T): boolean {
     const ret = this.createOrUpdate();
     this.isNewRecord = false;
+    this.saveAssociations();
     return ret;
   }
 
@@ -73,17 +74,6 @@ export class Persistence {
     const data = this.makeUpdateParams();
     exec(this.client.where(this.primaryKeysCondition()).update(data));
     this.retriveUpdatedAt(data);
-    for (const [key, association] of Object.entries(this.associations)) {
-      const value = this[key as keyof T];
-      if (association.through) {
-        continue;
-      }
-      if (value instanceof CollectionProxy) {
-        for (const instance of value.toArray()) {
-          instance.save();
-        }
-      }
-    }
     return true;
   }
 
@@ -123,21 +113,6 @@ export class Persistence {
     }
     const returning = exec(q.insert(data)) as Record<keyof T, any>[];
     this.retriveInsertedAttributes(returning[0] ?? {});
-    for (const [key, association] of Object.entries(this.associations)) {
-      const { foreignKey, primaryKey } = association;
-      const value = this[key as keyof T];
-      if (value instanceof CollectionProxy) {
-        for (const instance of value) {
-          instance[foreignKey] = this[primaryKey as keyof T];
-          instance.save();
-        }
-        value.resetOptions();
-        value.reset();
-      } else if (association.isHasOne && value instanceof Model) {
-        value[foreignKey] = this[primaryKey as keyof T];
-        value.save();
-      }
-    }
     return true;
   }
 
@@ -182,6 +157,21 @@ export class Persistence {
       }
     }
     return data;
+  }
+
+  protected saveAssociations<T extends Model>(this: T) {
+    for (const [key, association] of Object.entries(this.associations)) {
+      const { foreignKey, primaryKey } = association;
+      const value = this[key as keyof T];
+      if (value instanceof CollectionProxy) {
+        value.persist();
+        value.resetOptions();
+        value.reset();
+      } else if (association.isHasOne && value instanceof Model) {
+        (value as any)[foreignKey] = this[primaryKey as keyof T];
+        value.save();
+      }
+    }
   }
 
   protected deleteRecord<T extends Model>(this: T): boolean {

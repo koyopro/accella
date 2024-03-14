@@ -33,4 +33,16 @@ describe("BelongsTo", () => {
     expect(settings[0].user.isNewRecord).toBe(false);
     expect(settings[1].user.isNewRecord).toBe(false);
   });
+
+  describe("getter/setter types", () => {
+    test("new & persisted", () => {
+      const user = $user.create();
+      const setting = $setting.build();
+      expect(setting.isPersisted()).toBe(false);
+      setting.user = user;
+      expect(setting.isPersisted()).toBe(false);
+      if (!setting.save()) throw new Error("Failed to save");
+      expect(setting.isPersisted()).toBe(true);
+    });
+  });
 });

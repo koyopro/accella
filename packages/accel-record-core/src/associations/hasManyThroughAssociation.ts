@@ -7,8 +7,13 @@ export class HasManyThroughAssociation<
   T extends Model,
 > extends HasManyAssociation<T> {
   override concat(records: T | T[]) {
+    this.persist(records);
+  }
+
+  persist(records: T | T[]) {
     const _records = Array.isArray(records) ? records : [records];
     for (const record of _records) {
+      if (!this.owner.isPersisted()) continue;
       record.save();
       const query = this.connection.knex(this.info.through).insert({
         ...this.scopeAttributes(),
