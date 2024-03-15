@@ -43,6 +43,12 @@ class FieldWrapper {
     );
   }
 
+  get model() {
+    const model = this.datamodel.models.find((m) => m.name == this.field.type);
+    if (model) return new ModelWrapper(model, this.datamodel);
+    return undefined;
+  }
+
   get typeName() {
     switch (this.field.type) {
       case "BigInt":
@@ -280,8 +286,9 @@ const columnDefines = (model: ModelWrapper) =>
       if (field.type == "Json") {
         return `    ${field.name}: ${model.baseModel}["${field.name}"]`;
       }
-      if (field.relationName && field.isList) {
-        return `    ${field.name}: CollectionProxy<${type}, ${model.meta}>;`;
+      const m = field.model;
+      if (field.relationName && field.isList && m) {
+        return `    ${field.name}: CollectionProxy<${type}, ${m.meta}>;`;
       }
       if (field.relationName) {
         const optional = field.relationFromFields?.length == 0;

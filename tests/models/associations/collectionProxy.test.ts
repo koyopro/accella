@@ -96,4 +96,11 @@ describe("#CollectionProxy()", () => {
     u.posts.replace([p2, p3]);
     expect(u.posts.map((p) => p.title)).toEqual(["post2", "post3"]);
   });
+
+  test("where()", () => {
+    const u = $user.create({});
+    $post.create({ title: "post1", authorId: u.id });
+    $post.create({ title: "post2", authorId: u.id });
+    expect(u.posts.where({ title: "post1" }).count()).toBe(1);
+  });
 });
