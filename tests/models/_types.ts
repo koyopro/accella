@@ -7,7 +7,7 @@ import { SettingModel } from './setting.js'
 import { ProfileModel } from './profile.js'
 import {
   registerModel,
-  type CollectionProxy,
+  type Collection,
   type Filter,
   type Relation,
   type SortOrder,
@@ -69,9 +69,11 @@ declare module "./user" {
     email: string | undefined;
     name: string | undefined;
     age: number | undefined;
-    posts: CollectionProxy<PostModel, UserMeta>;
+    get posts(): Collection<PostModel, PostMeta> | Collection<Post, PostMeta>;
+    set posts(value: PostModel[]);
     setting: SettingModel | undefined;
-    teams: CollectionProxy<UserTeamModel, UserMeta>;
+    get teams(): Collection<UserTeamModel, UserTeamMeta> | Collection<UserTeam, UserTeamMeta>;
+    set teams(value: UserTeamModel[]);
     createdAt: Date | undefined;
     updatedAt: Date | undefined;
     Profile: ProfileModel | undefined;
@@ -82,14 +84,19 @@ export class User extends UserModel {};
 export interface User extends UserModel {
   id: number;
   email: string;
+  get posts(): Collection<Post, PostMeta>;
+  set posts(value: PostModel[]);
   get setting(): Setting | undefined;
   set setting(value: SettingModel | undefined);
+  get teams(): Collection<UserTeam, UserTeamMeta>;
+  set teams(value: UserTeamModel[]);
   createdAt: Date;
   updatedAt: Date;
   get Profile(): Profile | undefined;
   set Profile(value: ProfileModel | undefined);
 };
 type UserMeta = {
+  Base: UserModel;
   New: NewUser;
   Persisted: User;
   AssociationKey: 'posts' | 'setting' | 'teams' | 'Profile';
@@ -128,7 +135,8 @@ declare module "./team" {
   interface TeamModel {
     id: number | undefined;
     name: string | undefined;
-    users: CollectionProxy<UserTeamModel, TeamMeta>;
+    get users(): Collection<UserTeamModel, UserTeamMeta> | Collection<UserTeam, UserTeamMeta>;
+    set users(value: UserTeamModel[]);
   }
 }
 export interface NewTeam extends TeamModel {};
@@ -136,8 +144,11 @@ export class Team extends TeamModel {};
 export interface Team extends TeamModel {
   id: number;
   name: string;
+  get users(): Collection<UserTeam, UserTeamMeta>;
+  set users(value: UserTeamModel[]);
 };
 type TeamMeta = {
+  Base: TeamModel;
   New: NewTeam;
   Persisted: Team;
   AssociationKey: 'users';
@@ -178,6 +189,7 @@ export interface UserTeam extends UserTeamModel {
   assignedBy: string;
 };
 type UserTeamMeta = {
+  Base: UserTeamModel;
   New: NewUserTeam;
   Persisted: UserTeam;
   AssociationKey: 'user' | 'team';
@@ -208,7 +220,8 @@ declare module "./post" {
     published: boolean;
     author: User | undefined;
     authorId: number | undefined;
-    tags: CollectionProxy<PostTagModel, PostMeta>;
+    get tags(): Collection<PostTagModel, PostTagMeta> | Collection<PostTag, PostTagMeta>;
+    set tags(value: PostTagModel[]);
   }
 }
 export interface NewPost extends PostModel {};
@@ -218,8 +231,11 @@ export interface Post extends PostModel {
   title: string;
   author: User;
   authorId: number;
+  get tags(): Collection<PostTag, PostTagMeta>;
+  set tags(value: PostTagModel[]);
 };
 type PostMeta = {
+  Base: PostModel;
   New: NewPost;
   Persisted: Post;
   AssociationKey: 'author' | 'tags';
@@ -251,7 +267,8 @@ declare module "./postTag" {
   interface PostTagModel {
     id: number | undefined;
     name: string | undefined;
-    posts: CollectionProxy<PostModel, PostTagMeta>;
+    get posts(): Collection<PostModel, PostMeta> | Collection<Post, PostMeta>;
+    set posts(value: PostModel[]);
   }
 }
 export interface NewPostTag extends PostTagModel {};
@@ -259,8 +276,11 @@ export class PostTag extends PostTagModel {};
 export interface PostTag extends PostTagModel {
   id: number;
   name: string;
+  get posts(): Collection<Post, PostMeta>;
+  set posts(value: PostModel[]);
 };
 type PostTagMeta = {
+  Base: PostTagModel;
   New: NewPostTag;
   Persisted: PostTag;
   AssociationKey: 'posts';
@@ -299,6 +319,7 @@ export interface Setting extends SettingModel {
   createdAt: Date;
 };
 type SettingMeta = {
+  Base: SettingModel;
   New: NewSetting;
   Persisted: Setting;
   AssociationKey: 'user';
@@ -343,6 +364,7 @@ export interface Profile extends ProfileModel {
   userId: number;
 };
 type ProfileMeta = {
+  Base: ProfileModel;
   New: NewProfile;
   Persisted: Profile;
   AssociationKey: 'user';

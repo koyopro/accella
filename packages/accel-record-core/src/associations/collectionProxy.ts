@@ -2,13 +2,13 @@ import { ModelMeta, type Model } from "../index.js";
 import { Options, Relation } from "../relation.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
 
-export class CollectionProxy<
-  T extends Model,
-  S extends ModelMeta,
-> extends Relation<T, S> {
+export class Collection<T extends Model, S extends ModelMeta> extends Relation<
+  T,
+  S
+> {
   constructor(
     model: typeof Model,
-    private association: HasManyAssociation<T>,
+    private association: HasManyAssociation<S["Base"]>,
     cache: T[] | undefined = undefined
   ) {
     super(model, association.whereAttributes(), cache);
@@ -22,13 +22,17 @@ export class CollectionProxy<
     }
   }
 
-  push(record: T | T[]) {
+  push(record: S["Base"] | S["Base"][]) {
     return this.concat(record);
   }
 
-  concat(records: T | T[]) {
+  concat(records: S["Base"] | S["Base"][]) {
     this.association.concat(records);
-    (this.cache ||= []).push(...(Array.isArray(records) ? records : [records]));
+    const _records = Array.isArray(records) ? records : [records];
+    for (const record of _records) {
+      if (this.toArray().find((r) => r.equals(record as T))) continue;
+      (this.cache ||= []).push(record as T);
+    }
     return this;
   }
 
@@ -51,21 +55,21 @@ export class CollectionProxy<
     return ret;
   }
 
-  delete(...records: T[]) {
+  delete(...records: S["Base"][]) {
     const ret = this.association.delete(...records);
     this.reset();
     return ret;
   }
 
-  destroy(...records: T[]) {
+  destroy(...records: S["Base"][]) {
     const ret = this.association.destroy(...records);
     this.reset();
     return ret;
   }
 
-  replace(records: T[]) {
+  replace(records: S["Base"][]) {
     const array = this.toArray();
-    const added = records.filter((r) => !array.find((a) => a.equals(r)));
+    const added = records.filter((r) => !array.find((a) => a.equals(r as T)));
     const deleted = array.filter((a) => !records.find((r) => r.equals(a)));
     this.destroy(...deleted);
     this.concat(added);

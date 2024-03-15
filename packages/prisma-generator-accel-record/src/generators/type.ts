@@ -43,6 +43,12 @@ class FieldWrapper {
     );
   }
 
+  get model() {
+    const model = this.datamodel.models.find((m) => m.name == this.field.type);
+    if (model) return new ModelWrapper(model, this.datamodel);
+    return undefined;
+  }
+
   get typeName() {
     switch (this.field.type) {
       case "BigInt":
@@ -60,10 +66,7 @@ class FieldWrapper {
       case "Json":
         return "any";
       default:
-        if (this.datamodel.models.find((m) => m.name == this.field.type)) {
-          return `${this.field.type}Model`;
-        }
-        return `${this.field.type}`;
+        return this.model?.baseModel ?? this.field.type;
     }
   }
 }
@@ -97,7 +100,7 @@ class ModelWrapper {
 export const generateTypes = (options: GeneratorOptions) => {
   let data = `import {
   registerModel,
-  type CollectionProxy,
+  type Collection,
   type Filter,
   type Relation,
   type SortOrder,
@@ -203,6 +206,7 @@ export interface ${model.newModel} extends ${model.baseModel} {};
 export class ${model.persistedModel} extends ${model.baseModel} {};
 export interface ${model.persistedModel} extends ${model.baseModel} {${columnForPersist(model)}};
 type ${model.meta} = {
+  Base: ${model.baseModel};
   New: ${model.newModel};
   Persisted: ${model.persistedModel};
   AssociationKey: ${associationKey(model)};
@@ -253,10 +257,17 @@ const columnForPersist = (model: ModelWrapper) => {
   return (
     model.fields
       .filter((f) => {
-        if (f.hasScalarDefault || f.isList) return false;
+        if (f.hasScalarDefault) return false;
         return f.isRequired || f.relationName;
       })
       .map((f) => {
+        const m = f.model;
+        if (f.relationName && f.isList && m) {
+          return (
+            `\n  get ${f.name}(): Collection<${m.persistedModel}, ${m.meta}>;` +
+            `\n  set ${f.name}(value: ${m.baseModel}[]);`
+          );
+        }
         if (f.relationName) {
           const optional = f.relationFromFields?.length == 0;
           if (!optional) {
@@ -280,8 +291,12 @@ const columnDefines = (model: ModelWrapper) =>
       if (field.type == "Json") {
         return `    ${field.name}: ${model.baseModel}["${field.name}"]`;
       }
-      if (field.relationName && field.isList) {
-        return `    ${field.name}: CollectionProxy<${type}, ${model.meta}>;`;
+      const m = field.model;
+      if (field.relationName && field.isList && m) {
+        return (
+          `    get ${field.name}(): Collection<${m.baseModel}, ${m.meta}> | Collection<${m.persistedModel}, ${m.meta}>;\n` +
+          `    set ${field.name}(value: ${m.baseModel}[]);`
+        );
       }
       if (field.relationName) {
         const optional = field.relationFromFields?.length == 0;

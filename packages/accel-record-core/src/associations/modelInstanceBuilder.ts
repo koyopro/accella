@@ -1,4 +1,4 @@
-import { CollectionProxy } from "./collectionProxy.js";
+import { Collection } from "./collectionProxy.js";
 import { Models, type Model } from "../index.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
 import { HasManyThroughAssociation } from "./hasManyThroughAssociation.js";
@@ -58,6 +58,10 @@ export class ModelInstanceBuilder {
         if (association?.isBelongsTo) {
           target[association.foreignKey] = value[association.primaryKey];
         }
+        if (target[prop] instanceof Collection && Array.isArray(value)) {
+          target[prop].replace(value);
+          return true;
+        }
         target[prop] = value;
         return true;
       },
@@ -76,8 +80,8 @@ export class ModelInstanceBuilder {
         proxy[key] = input[key];
       } else if (field.isList || key in input) {
         let _association:
-          | HasManyAssociation<InstanceType<T>>
-          | HasManyThroughAssociation<InstanceType<T>>;
+          | HasManyAssociation<Model>
+          | HasManyThroughAssociation<Model>;
         if (association.through) {
           _association = new HasManyThroughAssociation(instance, association);
         } else {
@@ -85,7 +89,7 @@ export class ModelInstanceBuilder {
         }
         const hasAllPrimaryKeys = () =>
           instance.primaryKeys.every((k: keyof typeof instance) => instance[k]);
-        instance[key] = new CollectionProxy(
+        instance[key] = new Collection(
           Models[klass],
           _association,
           input[key] ?? (hasAllPrimaryKeys() ? undefined : [])

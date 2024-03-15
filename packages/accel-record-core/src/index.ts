@@ -6,7 +6,7 @@ import { Query } from "./query";
 import { Transaction } from "./transaction";
 import { classIncludes } from "./utils";
 
-export { CollectionProxy } from "./associations/collectionProxy.js";
+export { Collection } from "./associations/collectionProxy.js";
 export {
   initAccelRecord,
   getConfig,
@@ -35,6 +35,9 @@ export type StringFilter = Filter<string> & {
 };
 
 export type ModelMeta = {
+  Base: Model;
+  New: Model;
+  Persisted: Model;
   AssociationKey: string;
   WhereInput: Record<string, any>;
   OrderInput: Record<string, SortOrder>;
