@@ -66,10 +66,7 @@ class FieldWrapper {
       case "Json":
         return "any";
       default:
-        if (this.datamodel.models.find((m) => m.name == this.field.type)) {
-          return `${this.field.type}Model`;
-        }
-        return `${this.field.type}`;
+        return this.model?.baseModel ?? this.field.type;
     }
   }
 }
