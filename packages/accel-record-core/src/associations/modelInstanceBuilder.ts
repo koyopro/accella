@@ -58,6 +58,10 @@ export class ModelInstanceBuilder {
         if (association?.isBelongsTo) {
           target[association.foreignKey] = value[association.primaryKey];
         }
+        if (target[prop] instanceof Collection && Array.isArray(value)) {
+          target[prop].replace(value);
+          return true;
+        }
         target[prop] = value;
         return true;
       },

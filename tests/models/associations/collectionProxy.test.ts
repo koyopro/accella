@@ -97,6 +97,17 @@ describe("#Collection()", () => {
     expect(u.posts.map((p) => p.title)).toEqual(["post2", "post3"]);
   });
 
+  test("replace with setter", () => {
+    const u = $user.create({});
+    const p1 = $post.create({ title: "post1", authorId: u.id });
+    const p2 = $post.create({ title: "post2", authorId: u.id });
+    expect(u.posts.toArray()).toHaveLength(2);
+    const p3 = $post.build({ title: "post3", authorId: undefined });
+    u.posts = [p2, p3];
+    expect(u.posts.count()).toBe(2);
+    expect(u.posts.map((p) => p.title)).toEqual(["post2", "post3"]);
+  });
+
   test("where()", () => {
     const u = $user.create({});
     $post.create({ title: "post1", authorId: u.id });
