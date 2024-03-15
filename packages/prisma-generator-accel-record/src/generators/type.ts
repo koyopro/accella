@@ -100,7 +100,7 @@ class ModelWrapper {
 export const generateTypes = (options: GeneratorOptions) => {
   let data = `import {
   registerModel,
-  type CollectionProxy,
+  type Collection,
   type Filter,
   type Relation,
   type SortOrder,
@@ -285,7 +285,7 @@ const columnDefines = (model: ModelWrapper) =>
       }
       const m = field.model;
       if (field.relationName && field.isList && m) {
-        return `    ${field.name}: CollectionProxy<${type}, ${m.meta}>;`;
+        return `    ${field.name}: Collection<${type}, ${m.meta}>;`;
       }
       if (field.relationName) {
         const optional = field.relationFromFields?.length == 0;

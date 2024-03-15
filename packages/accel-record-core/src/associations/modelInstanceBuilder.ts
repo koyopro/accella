@@ -1,4 +1,4 @@
-import { CollectionProxy } from "./collectionProxy.js";
+import { Collection } from "./collectionProxy.js";
 import { Models, type Model } from "../index.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
 import { HasManyThroughAssociation } from "./hasManyThroughAssociation.js";
@@ -85,7 +85,7 @@ export class ModelInstanceBuilder {
         }
         const hasAllPrimaryKeys = () =>
           instance.primaryKeys.every((k: keyof typeof instance) => instance[k]);
-        instance[key] = new CollectionProxy(
+        instance[key] = new Collection(
           Models[klass],
           _association,
           input[key] ?? (hasAllPrimaryKeys() ? undefined : [])

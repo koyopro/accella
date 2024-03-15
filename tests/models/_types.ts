@@ -7,7 +7,7 @@ import { SettingModel } from './setting.js'
 import { ProfileModel } from './profile.js'
 import {
   registerModel,
-  type CollectionProxy,
+  type Collection,
   type Filter,
   type Relation,
   type SortOrder,
@@ -69,9 +69,9 @@ declare module "./user" {
     email: string | undefined;
     name: string | undefined;
     age: number | undefined;
-    posts: CollectionProxy<PostModel, PostMeta>;
+    posts: Collection<PostModel, PostMeta>;
     setting: SettingModel | undefined;
-    teams: CollectionProxy<UserTeamModel, UserTeamMeta>;
+    teams: Collection<UserTeamModel, UserTeamMeta>;
     createdAt: Date | undefined;
     updatedAt: Date | undefined;
     Profile: ProfileModel | undefined;
@@ -128,7 +128,7 @@ declare module "./team" {
   interface TeamModel {
     id: number | undefined;
     name: string | undefined;
-    users: CollectionProxy<UserTeamModel, UserTeamMeta>;
+    users: Collection<UserTeamModel, UserTeamMeta>;
   }
 }
 export interface NewTeam extends TeamModel {};
@@ -208,7 +208,7 @@ declare module "./post" {
     published: boolean;
     author: User | undefined;
     authorId: number | undefined;
-    tags: CollectionProxy<PostTagModel, PostTagMeta>;
+    tags: Collection<PostTagModel, PostTagMeta>;
   }
 }
 export interface NewPost extends PostModel {};
@@ -251,7 +251,7 @@ declare module "./postTag" {
   interface PostTagModel {
     id: number | undefined;
     name: string | undefined;
-    posts: CollectionProxy<PostModel, PostMeta>;
+    posts: Collection<PostModel, PostMeta>;
   }
 }
 export interface NewPostTag extends PostTagModel {};

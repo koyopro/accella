@@ -6,7 +6,7 @@ import { Query } from "./query";
 import { Transaction } from "./transaction";
 import { classIncludes } from "./utils";
 
-export { CollectionProxy } from "./associations/collectionProxy.js";
+export { Collection } from "./associations/collectionProxy.js";
 export {
   initAccelRecord,
   getConfig,

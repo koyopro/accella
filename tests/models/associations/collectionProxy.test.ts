@@ -2,7 +2,7 @@ import { Post, User } from "..";
 import { $post } from "../../factories/post";
 import { $user } from "../../factories/user";
 
-describe("#CollectionProxy()", () => {
+describe("#Collection()", () => {
   test("#toArray()", () => {
     const posts = [
       Post.build({ title: "post1" }),

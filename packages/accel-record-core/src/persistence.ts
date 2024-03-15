@@ -1,6 +1,6 @@
 import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder";
 import { exec, execSQL } from "./database";
-import { CollectionProxy, Model } from "./index.js";
+import { Collection, Model } from "./index.js";
 
 export class Persistence {
   isNewRecord: boolean = true;
@@ -48,7 +48,7 @@ export class Persistence {
     if (this.isReadonly) throw new Error("Readonly record");
     for (const [key, association] of Object.entries(this.associations)) {
       const value = this[key as keyof T] as any;
-      if (value instanceof CollectionProxy) {
+      if (value instanceof Collection) {
         value.destroyAll();
       } else if (association.isHasOne) {
         value?.destroy();
@@ -163,7 +163,7 @@ export class Persistence {
     for (const [key, association] of Object.entries(this.associations)) {
       const { foreignKey, primaryKey } = association;
       const value = this[key as keyof T];
-      if (value instanceof CollectionProxy) {
+      if (value instanceof Collection) {
         value.persist();
         value.resetOptions();
         value.reset();
