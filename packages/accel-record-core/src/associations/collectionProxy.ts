@@ -28,7 +28,11 @@ export class CollectionProxy<
 
   concat(records: T | T[]) {
     this.association.concat(records);
-    (this.cache ||= []).push(...(Array.isArray(records) ? records : [records]));
+    const _records = Array.isArray(records) ? records : [records];
+    for (const record of _records) {
+      if (this.toArray().find((r) => r.equals(record))) continue;
+      (this.cache ||= []).push(record);
+    }
     return this;
   }
 

@@ -22,6 +22,17 @@ describe("ManyToMany", () => {
     expect(user.teams.toArray()).toEqual([]);
   });
 
+  test("push multi times", () => {
+    const user = $user.create();
+    const post1 = $post.build();
+    const post2 = $post.build();
+    user.posts.push([post1, post2]);
+    expect(user.posts.toArray().length).toEqual(2);
+    expect(post1.isPersisted()).toBe(true);
+    user.posts.push(post1);
+    expect(user.posts.toArray().length).toEqual(2);
+  });
+
   describe("getter/setter types", () => {
     test("persisted & new", () => {
       const user = $user.create();
