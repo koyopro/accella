@@ -75,6 +75,16 @@ describe("hasManyThrogh", () => {
     expect(p.tags.count()).toEqual(0);
   });
 
+  test("push multi times", () => {
+    const p = $post.create({ author: $user.create() });
+    const t1 = $postTag.create({ name: "tag1" });
+    const t2 = $postTag.create({ name: "tag2" });
+    p.tags.push([t1, t2]);
+    expect(p.tags.toArray().length).toEqual(2);
+    p.tags.push(t1);
+    expect(p.tags.toArray().length).toEqual(2);
+  });
+
   describe("getter/setter types", () => {
     test("persisted & new", () => {
       const post = $post.create({ author: $user.create() });

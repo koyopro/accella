@@ -15,10 +15,14 @@ export class HasManyThroughAssociation<
     for (const record of _records) {
       if (!this.owner.isPersisted()) continue;
       record.save();
-      const query = this.connection.knex(this.info.through).insert({
-        ...this.scopeAttributes(),
-        [this.joinKey]: record.pkValues[0],
-      });
+      const query = this.connection
+        .knex(this.info.through)
+        .insert({
+          ...this.scopeAttributes(),
+          [this.joinKey]: record.pkValues[0],
+        })
+        .onConflict([this.info.foreignKey, this.joinKey])
+        .ignore();
       exec(query);
     }
   }
