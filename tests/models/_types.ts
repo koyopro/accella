@@ -96,6 +96,7 @@ export interface User extends UserModel {
   set Profile(value: ProfileModel | undefined);
 };
 type UserMeta = {
+  Base: UserModel;
   New: NewUser;
   Persisted: User;
   AssociationKey: 'posts' | 'setting' | 'teams' | 'Profile';
@@ -147,6 +148,7 @@ export interface Team extends TeamModel {
   set users(value: UserTeamModel[]);
 };
 type TeamMeta = {
+  Base: TeamModel;
   New: NewTeam;
   Persisted: Team;
   AssociationKey: 'users';
@@ -187,6 +189,7 @@ export interface UserTeam extends UserTeamModel {
   assignedBy: string;
 };
 type UserTeamMeta = {
+  Base: UserTeamModel;
   New: NewUserTeam;
   Persisted: UserTeam;
   AssociationKey: 'user' | 'team';
@@ -232,6 +235,7 @@ export interface Post extends PostModel {
   set tags(value: PostTagModel[]);
 };
 type PostMeta = {
+  Base: PostModel;
   New: NewPost;
   Persisted: Post;
   AssociationKey: 'author' | 'tags';
@@ -276,6 +280,7 @@ export interface PostTag extends PostTagModel {
   set posts(value: PostModel[]);
 };
 type PostTagMeta = {
+  Base: PostTagModel;
   New: NewPostTag;
   Persisted: PostTag;
   AssociationKey: 'posts';
@@ -314,6 +319,7 @@ export interface Setting extends SettingModel {
   createdAt: Date;
 };
 type SettingMeta = {
+  Base: SettingModel;
   New: NewSetting;
   Persisted: Setting;
   AssociationKey: 'user';
@@ -358,6 +364,7 @@ export interface Profile extends ProfileModel {
   userId: number;
 };
 type ProfileMeta = {
+  Base: ProfileModel;
   New: NewProfile;
   Persisted: Profile;
   AssociationKey: 'user';

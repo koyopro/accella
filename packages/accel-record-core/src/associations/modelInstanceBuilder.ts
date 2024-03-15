@@ -76,8 +76,8 @@ export class ModelInstanceBuilder {
         proxy[key] = input[key];
       } else if (field.isList || key in input) {
         let _association:
-          | HasManyAssociation<InstanceType<T>>
-          | HasManyThroughAssociation<InstanceType<T>>;
+          | HasManyAssociation<Model>
+          | HasManyThroughAssociation<Model>;
         if (association.through) {
           _association = new HasManyThroughAssociation(instance, association);
         } else {

@@ -206,6 +206,7 @@ export interface ${model.newModel} extends ${model.baseModel} {};
 export class ${model.persistedModel} extends ${model.baseModel} {};
 export interface ${model.persistedModel} extends ${model.baseModel} {${columnForPersist(model)}};
 type ${model.meta} = {
+  Base: ${model.baseModel};
   New: ${model.newModel};
   Persisted: ${model.persistedModel};
   AssociationKey: ${associationKey(model)};
