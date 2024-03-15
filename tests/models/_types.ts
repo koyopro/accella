@@ -69,9 +69,11 @@ declare module "./user" {
     email: string | undefined;
     name: string | undefined;
     age: number | undefined;
-    posts: Collection<PostModel, PostMeta>;
+    get posts(): Collection<PostModel, PostMeta> | Collection<Post, PostMeta>;
+    set posts(value: PostModel[]);
     setting: SettingModel | undefined;
-    teams: Collection<UserTeamModel, UserTeamMeta>;
+    get teams(): Collection<UserTeamModel, UserTeamMeta> | Collection<UserTeam, UserTeamMeta>;
+    set teams(value: UserTeamModel[]);
     createdAt: Date | undefined;
     updatedAt: Date | undefined;
     Profile: ProfileModel | undefined;
@@ -82,8 +84,12 @@ export class User extends UserModel {};
 export interface User extends UserModel {
   id: number;
   email: string;
+  get posts(): Collection<Post, PostMeta>;
+  set posts(value: PostModel[]);
   get setting(): Setting | undefined;
   set setting(value: SettingModel | undefined);
+  get teams(): Collection<UserTeam, UserTeamMeta>;
+  set teams(value: UserTeamModel[]);
   createdAt: Date;
   updatedAt: Date;
   get Profile(): Profile | undefined;
@@ -128,7 +134,8 @@ declare module "./team" {
   interface TeamModel {
     id: number | undefined;
     name: string | undefined;
-    users: Collection<UserTeamModel, UserTeamMeta>;
+    get users(): Collection<UserTeamModel, UserTeamMeta> | Collection<UserTeam, UserTeamMeta>;
+    set users(value: UserTeamModel[]);
   }
 }
 export interface NewTeam extends TeamModel {};
@@ -136,6 +143,8 @@ export class Team extends TeamModel {};
 export interface Team extends TeamModel {
   id: number;
   name: string;
+  get users(): Collection<UserTeam, UserTeamMeta>;
+  set users(value: UserTeamModel[]);
 };
 type TeamMeta = {
   New: NewTeam;
@@ -208,7 +217,8 @@ declare module "./post" {
     published: boolean;
     author: User | undefined;
     authorId: number | undefined;
-    tags: Collection<PostTagModel, PostTagMeta>;
+    get tags(): Collection<PostTagModel, PostTagMeta> | Collection<PostTag, PostTagMeta>;
+    set tags(value: PostTagModel[]);
   }
 }
 export interface NewPost extends PostModel {};
@@ -218,6 +228,8 @@ export interface Post extends PostModel {
   title: string;
   author: User;
   authorId: number;
+  get tags(): Collection<PostTag, PostTagMeta>;
+  set tags(value: PostTagModel[]);
 };
 type PostMeta = {
   New: NewPost;
@@ -251,7 +263,8 @@ declare module "./postTag" {
   interface PostTagModel {
     id: number | undefined;
     name: string | undefined;
-    posts: Collection<PostModel, PostMeta>;
+    get posts(): Collection<PostModel, PostMeta> | Collection<Post, PostMeta>;
+    set posts(value: PostModel[]);
   }
 }
 export interface NewPostTag extends PostTagModel {};
@@ -259,6 +272,8 @@ export class PostTag extends PostTagModel {};
 export interface PostTag extends PostTagModel {
   id: number;
   name: string;
+  get posts(): Collection<Post, PostMeta>;
+  set posts(value: PostModel[]);
 };
 type PostTagMeta = {
   New: NewPostTag;

@@ -256,10 +256,17 @@ const columnForPersist = (model: ModelWrapper) => {
   return (
     model.fields
       .filter((f) => {
-        if (f.hasScalarDefault || f.isList) return false;
+        if (f.hasScalarDefault) return false;
         return f.isRequired || f.relationName;
       })
       .map((f) => {
+        const m = f.model;
+        if (f.relationName && f.isList && m) {
+          return (
+            `\n  get ${f.name}(): Collection<${m.persistedModel}, ${m.meta}>;` +
+            `\n  set ${f.name}(value: ${m.baseModel}[]);`
+          );
+        }
         if (f.relationName) {
           const optional = f.relationFromFields?.length == 0;
           if (!optional) {
@@ -285,7 +292,10 @@ const columnDefines = (model: ModelWrapper) =>
       }
       const m = field.model;
       if (field.relationName && field.isList && m) {
-        return `    ${field.name}: Collection<${type}, ${m.meta}>;`;
+        return (
+          `    get ${field.name}(): Collection<${m.baseModel}, ${m.meta}> | Collection<${m.persistedModel}, ${m.meta}>;\n` +
+          `    set ${field.name}(value: ${m.baseModel}[]);`
+        );
       }
       if (field.relationName) {
         const optional = field.relationFromFields?.length == 0;
