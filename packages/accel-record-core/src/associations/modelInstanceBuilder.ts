@@ -1,3 +1,4 @@
+import { createId as cuid } from "@paralleldrive/cuid2";
 import { Collection } from "./collectionProxy.js";
 import { Models, type Model } from "../index.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
@@ -14,6 +15,9 @@ export class ModelInstanceBuilder {
       }
       if (column.defaultIsUuid && !(column.name in instance)) {
         proxy[column.name] = crypto.randomUUID();
+      }
+      if (column.defaultIsCuid && !(column.name in instance)) {
+        proxy[column.name] = cuid();
       }
       if (column.name in input) {
         proxy[column.name] = input[column.name];

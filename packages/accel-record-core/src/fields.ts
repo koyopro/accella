@@ -74,6 +74,10 @@ export class Field {
     return this.default != undefined && this.default.name === "uuid";
   }
 
+  get defaultIsCuid() {
+    return this.default != undefined && this.default.name === "cuid";
+  }
+
   get scalarDefault() {
     if (this.default != undefined && typeof this.default != "object") {
       return this.cast(this.default);

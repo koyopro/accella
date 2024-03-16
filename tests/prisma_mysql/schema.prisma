@@ -82,6 +82,7 @@ model Profile {
   role      Role     @default(MEMBER)
   createdAt DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3)"))
   uuid      String   @default(uuid())
+  cuid      String   @default(cuid())
 
   @@map("profiles")
 }

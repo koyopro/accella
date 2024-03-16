@@ -14,6 +14,7 @@ describe("database mapping", () => {
     expect(p1.createdAt).toBeUndefined();
     expect(p1.userId).toBeUndefined();
     expect(p1.uuid).not.toBeUndefined();
+    expect(p1.cuid).not.toBeUndefined();
     if (!p1.update({ user })) {
       throw new Error("Failed to save");
     }
@@ -27,6 +28,7 @@ describe("database mapping", () => {
       expect(p.role).toBe("MEMBER");
       expect(p.createdAt).not.toBeUndefined();
       expect(p.uuid).not.toBeUndefined();
+      expect(p.cuid).not.toBeUndefined();
     }
   });
 });

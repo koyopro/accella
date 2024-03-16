@@ -362,6 +362,7 @@ declare module "./profile" {
     role: Role;
     createdAt: Date | undefined;
     uuid: string;
+    cuid: string;
   }
 }
 export interface NewProfile extends ProfileModel {};
@@ -386,6 +387,7 @@ type ProfileMeta = {
     role?: Role;
     createdAt?: Date;
     uuid?: string;
+    cuid?: string;
   } & ({ user: User } | { userId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -396,6 +398,7 @@ type ProfileMeta = {
     role?: Role | Role[] | undefined | null;
     createdAt?: Date | Date[] | Filter<number> | null;
     uuid?: string | string[] | StringFilter | null;
+    cuid?: string | string[] | StringFilter | null;
   };
   OrderInput: {
     id?: SortOrder;
@@ -406,6 +409,7 @@ type ProfileMeta = {
     role?: SortOrder;
     createdAt?: SortOrder;
     uuid?: SortOrder;
+    cuid?: SortOrder;
   };
 };
 registerModel(Profile);

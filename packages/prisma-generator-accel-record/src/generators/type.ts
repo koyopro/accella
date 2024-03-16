@@ -42,7 +42,7 @@ class FieldWrapper {
       typeof this.field.default === "object" &&
       "name" in this.field.default
     ) {
-      return ["uuid"].includes(this.field.default.name);
+      return ["uuid", "cuid"].includes(this.field.default.name);
     }
     return (
       this.field.default != undefined && typeof this.field.default !== "object"
