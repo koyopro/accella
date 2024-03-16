@@ -86,6 +86,9 @@ class ModelWrapper {
   get persistedModel() {
     return `${this.model.name}`;
   }
+  get collection() {
+    return `${this.model.name}Collection`;
+  }
   get meta() {
     return `${this.model.name}Meta`;
   }
@@ -205,6 +208,7 @@ ${columnDefines(model)}
 export interface ${model.newModel} extends ${model.baseModel} {};
 export class ${model.persistedModel} extends ${model.baseModel} {};
 export interface ${model.persistedModel} extends ${model.baseModel} {${columnForPersist(model)}};
+type ${model.collection}<T extends ${model.baseModel}> = Collection<T, ${model.meta}> | Collection<${model.persistedModel}, ${model.meta}>;
 type ${model.meta} = {
   Base: ${model.baseModel};
   New: ${model.newModel};
@@ -264,7 +268,7 @@ const columnForPersist = (model: ModelWrapper) => {
         const m = f.model;
         if (f.relationName && f.isList && m) {
           return (
-            `\n  get ${f.name}(): Collection<${m.persistedModel}, ${m.meta}>;` +
+            `\n  get ${f.name}(): ${m.collection}<${m.persistedModel}>;` +
             `\n  set ${f.name}(value: ${m.baseModel}[]);`
           );
         }
@@ -294,7 +298,7 @@ const columnDefines = (model: ModelWrapper) =>
       const m = field.model;
       if (field.relationName && field.isList && m) {
         return (
-          `    get ${field.name}(): Collection<${m.baseModel}, ${m.meta}> | Collection<${m.persistedModel}, ${m.meta}>;\n` +
+          `    get ${field.name}(): ${m.collection}<${m.baseModel}>;\n` +
           `    set ${field.name}(value: ${m.baseModel}[]);`
         );
       }

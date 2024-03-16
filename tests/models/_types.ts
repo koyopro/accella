@@ -69,10 +69,10 @@ declare module "./user" {
     email: string | undefined;
     name: string | undefined;
     age: number | undefined;
-    get posts(): Collection<PostModel, PostMeta> | Collection<Post, PostMeta>;
+    get posts(): PostCollection<PostModel>;
     set posts(value: PostModel[]);
     setting: SettingModel | undefined;
-    get teams(): Collection<UserTeamModel, UserTeamMeta> | Collection<UserTeam, UserTeamMeta>;
+    get teams(): UserTeamCollection<UserTeamModel>;
     set teams(value: UserTeamModel[]);
     createdAt: Date | undefined;
     updatedAt: Date | undefined;
@@ -84,17 +84,18 @@ export class User extends UserModel {};
 export interface User extends UserModel {
   id: number;
   email: string;
-  get posts(): Collection<Post, PostMeta>;
+  get posts(): PostCollection<Post>;
   set posts(value: PostModel[]);
   get setting(): Setting | undefined;
   set setting(value: SettingModel | undefined);
-  get teams(): Collection<UserTeam, UserTeamMeta>;
+  get teams(): UserTeamCollection<UserTeam>;
   set teams(value: UserTeamModel[]);
   createdAt: Date;
   updatedAt: Date;
   get Profile(): Profile | undefined;
   set Profile(value: ProfileModel | undefined);
 };
+type UserCollection<T extends UserModel> = Collection<T, UserMeta> | Collection<User, UserMeta>;
 type UserMeta = {
   Base: UserModel;
   New: NewUser;
@@ -135,7 +136,7 @@ declare module "./team" {
   interface TeamModel {
     id: number | undefined;
     name: string | undefined;
-    get users(): Collection<UserTeamModel, UserTeamMeta> | Collection<UserTeam, UserTeamMeta>;
+    get users(): UserTeamCollection<UserTeamModel>;
     set users(value: UserTeamModel[]);
   }
 }
@@ -144,9 +145,10 @@ export class Team extends TeamModel {};
 export interface Team extends TeamModel {
   id: number;
   name: string;
-  get users(): Collection<UserTeam, UserTeamMeta>;
+  get users(): UserTeamCollection<UserTeam>;
   set users(value: UserTeamModel[]);
 };
+type TeamCollection<T extends TeamModel> = Collection<T, TeamMeta> | Collection<Team, TeamMeta>;
 type TeamMeta = {
   Base: TeamModel;
   New: NewTeam;
@@ -188,6 +190,7 @@ export interface UserTeam extends UserTeamModel {
   assignedAt: Date;
   assignedBy: string;
 };
+type UserTeamCollection<T extends UserTeamModel> = Collection<T, UserTeamMeta> | Collection<UserTeam, UserTeamMeta>;
 type UserTeamMeta = {
   Base: UserTeamModel;
   New: NewUserTeam;
@@ -220,7 +223,7 @@ declare module "./post" {
     published: boolean;
     author: User | undefined;
     authorId: number | undefined;
-    get tags(): Collection<PostTagModel, PostTagMeta> | Collection<PostTag, PostTagMeta>;
+    get tags(): PostTagCollection<PostTagModel>;
     set tags(value: PostTagModel[]);
   }
 }
@@ -231,9 +234,10 @@ export interface Post extends PostModel {
   title: string;
   author: User;
   authorId: number;
-  get tags(): Collection<PostTag, PostTagMeta>;
+  get tags(): PostTagCollection<PostTag>;
   set tags(value: PostTagModel[]);
 };
+type PostCollection<T extends PostModel> = Collection<T, PostMeta> | Collection<Post, PostMeta>;
 type PostMeta = {
   Base: PostModel;
   New: NewPost;
@@ -267,7 +271,7 @@ declare module "./postTag" {
   interface PostTagModel {
     id: number | undefined;
     name: string | undefined;
-    get posts(): Collection<PostModel, PostMeta> | Collection<Post, PostMeta>;
+    get posts(): PostCollection<PostModel>;
     set posts(value: PostModel[]);
   }
 }
@@ -276,9 +280,10 @@ export class PostTag extends PostTagModel {};
 export interface PostTag extends PostTagModel {
   id: number;
   name: string;
-  get posts(): Collection<Post, PostMeta>;
+  get posts(): PostCollection<Post>;
   set posts(value: PostModel[]);
 };
+type PostTagCollection<T extends PostTagModel> = Collection<T, PostTagMeta> | Collection<PostTag, PostTagMeta>;
 type PostTagMeta = {
   Base: PostTagModel;
   New: NewPostTag;
@@ -318,6 +323,7 @@ export interface Setting extends SettingModel {
   userId: number;
   createdAt: Date;
 };
+type SettingCollection<T extends SettingModel> = Collection<T, SettingMeta> | Collection<Setting, SettingMeta>;
 type SettingMeta = {
   Base: SettingModel;
   New: NewSetting;
@@ -363,6 +369,7 @@ export interface Profile extends ProfileModel {
   user: User;
   userId: number;
 };
+type ProfileCollection<T extends ProfileModel> = Collection<T, ProfileMeta> | Collection<Profile, ProfileMeta>;
 type ProfileMeta = {
   Base: ProfileModel;
   New: NewProfile;
