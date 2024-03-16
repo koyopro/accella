@@ -360,6 +360,7 @@ declare module "./profile" {
     point: number;
     enabled: boolean;
     role: Role;
+    createdAt: Date | undefined;
   }
 }
 export interface NewProfile extends ProfileModel {};
@@ -368,6 +369,7 @@ export interface Profile extends ProfileModel {
   id: number;
   user: User;
   userId: number;
+  createdAt: Date;
 };
 type ProfileCollection<T extends ProfileModel> = Collection<T, ProfileMeta> | Collection<Profile, ProfileMeta>;
 type ProfileMeta = {
@@ -381,6 +383,7 @@ type ProfileMeta = {
     point?: number;
     enabled?: boolean;
     role?: Role;
+    createdAt?: Date;
   } & ({ user: User } | { userId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -389,6 +392,7 @@ type ProfileMeta = {
     point?: number | number[] | Filter<number> | null;
     enabled?: boolean | boolean[] | undefined | null;
     role?: Role | Role[] | undefined | null;
+    createdAt?: Date | Date[] | Filter<number> | null;
   };
   OrderInput: {
     id?: SortOrder;
@@ -397,6 +401,7 @@ type ProfileMeta = {
     point?: SortOrder;
     enabled?: SortOrder;
     role?: SortOrder;
+    createdAt?: SortOrder;
   };
 };
 registerModel(Profile);
