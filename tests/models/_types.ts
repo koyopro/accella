@@ -361,6 +361,7 @@ declare module "./profile" {
     enabled: boolean;
     role: Role;
     createdAt: Date | undefined;
+    uuid: string;
   }
 }
 export interface NewProfile extends ProfileModel {};
@@ -384,6 +385,7 @@ type ProfileMeta = {
     enabled?: boolean;
     role?: Role;
     createdAt?: Date;
+    uuid?: string;
   } & ({ user: User } | { userId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -393,6 +395,7 @@ type ProfileMeta = {
     enabled?: boolean | boolean[] | undefined | null;
     role?: Role | Role[] | undefined | null;
     createdAt?: Date | Date[] | Filter<number> | null;
+    uuid?: string | string[] | StringFilter | null;
   };
   OrderInput: {
     id?: SortOrder;
@@ -402,6 +405,7 @@ type ProfileMeta = {
     enabled?: SortOrder;
     role?: SortOrder;
     createdAt?: SortOrder;
+    uuid?: SortOrder;
   };
 };
 registerModel(Profile);

@@ -81,6 +81,7 @@ model Profile {
   enabled   Boolean  @default(true)
   role      Role     @default(MEMBER)
   createdAt DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3)"))
+  uuid      String   @default(uuid())
 
   @@map("profiles")
 }

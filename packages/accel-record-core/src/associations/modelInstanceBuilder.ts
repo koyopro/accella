@@ -12,6 +12,9 @@ export class ModelInstanceBuilder {
       if (column.scalarDefault && !(column.name in instance)) {
         proxy[column.name] = column.scalarDefault;
       }
+      if (column.defaultIsUuid && !(column.name in instance)) {
+        proxy[column.name] = crypto.randomUUID();
+      }
       if (column.name in input) {
         proxy[column.name] = input[column.name];
       }
