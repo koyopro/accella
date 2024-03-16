@@ -1,3 +1,4 @@
+import { createId as cuid } from "@paralleldrive/cuid2";
 import { BaseDMMF, DMMF } from "prisma/prisma-client/runtime/library.js";
 
 export class Association {
@@ -83,6 +84,12 @@ export class Field {
       return this.cast(this.default);
     }
     return undefined;
+  }
+
+  getInitialValue() {
+    if (this.defaultIsUuid) return crypto.randomUUID();
+    if (this.defaultIsCuid) return cuid();
+    return this.scalarDefault;
   }
 
   cast(value: any) {
