@@ -1,7 +1,7 @@
 {
   "name": "prisma-generator-accel-record",
+  "version": "0.1.0",
   "description": "",
-  "version": "0.0.1",
   "main": "dist/generator.js",
   "license": "Apache-2.0",
   "bin": {
@@ -17,6 +17,17 @@
     "prepack": "yarn build",
     "test": "vitest"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koyopro/accella.git"
+  },
+  "bugs": {
+    "url": "https://github.com/koyopro/accella/issues"
+  },
+  "homepage": "https://github.com/koyopro/accella",
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@prisma/client": "^5.0.0",
     "@prisma/generator-helper": "^5.0.0",
@@ -27,8 +38,10 @@
     "prisma": "^5.0.0",
     "typescript": "^5.0.0"
   },
-  "author": "koyopro <koyopro2.0@gmail.com>",
+  "author": "koyopro",
   "keywords": [
+    "accella",
+    "accel-record",
     "prisma",
     "prisma2",
     "generator"

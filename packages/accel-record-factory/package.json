@@ -1,13 +1,31 @@
 {
   "name": "accel-record-factory",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
-  "main": "index.ts",
+  "main": "dist/index.js",
   "types": "index.ts",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "koyopro <koyopro2.0@gmail.com>",
-  "license": "Apache-2.0"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koyopro/accella"
+  },
+  "bugs": {
+    "url": "https://github.com/koyopro/accella/issues"
+  },
+  "homepage": "https://github.com/koyopro/accella",
+  "keywords": [
+    "accella",
+    "accel-record"
+  ],
+  "files": [
+    "dist",
+    "index.ts"
+  ],
+  "author": "koyopro",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "accel-record-core": "^0.1.0"
+  }
 }
