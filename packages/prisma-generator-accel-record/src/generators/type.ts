@@ -7,7 +7,7 @@ const getFilterType = (type: string) => {
       return "StringFilter";
     case "number":
     case "Date":
-      return "Filter<number>";
+      return `Filter<${type}>`;
     default:
       return "undefined";
   }

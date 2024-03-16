@@ -102,6 +102,18 @@ describe("Relation", () => {
     expect(subject({ name: { like: "%ug%" } })).toStrictEqual(["fuga"]);
   });
 
+  test("#where() with Date filter", () => {
+    const now = new Date();
+    $user.create({ name: "hoge", createdAt: now });
+    $user.create({ name: "fuga", createdAt: new Date(now.getTime() + 1000) });
+    expect(User.findBy({ createdAt: { "<=": now } })?.name).toStrictEqual(
+      "hoge"
+    );
+    expect(User.findBy({ createdAt: { ">": now } })?.name).toStrictEqual(
+      "fuga"
+    );
+  });
+
   test("#where() in", () => {
     $user.create({ name: "hoge", age: 20 });
     $user.create({ name: "fuga", age: 30 });

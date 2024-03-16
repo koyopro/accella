@@ -118,8 +118,8 @@ type UserMeta = {
     email?: string | string[] | StringFilter | null;
     name?: string | string[] | StringFilter | null;
     age?: number | number[] | Filter<number> | null;
-    createdAt?: Date | Date[] | Filter<number> | null;
-    updatedAt?: Date | Date[] | Filter<number> | null;
+    createdAt?: Date | Date[] | Filter<Date> | null;
+    updatedAt?: Date | Date[] | Filter<Date> | null;
   };
   OrderInput: {
     id?: SortOrder;
@@ -203,7 +203,7 @@ type UserTeamMeta = {
   WhereInput: {
     userId?: number | number[] | Filter<number> | null;
     teamId?: number | number[] | Filter<number> | null;
-    assignedAt?: Date | Date[] | Filter<number> | null;
+    assignedAt?: Date | Date[] | Filter<Date> | null;
     assignedBy?: string | string[] | StringFilter | null;
   };
   OrderInput: {
@@ -339,7 +339,7 @@ type SettingMeta = {
     settingId?: number | number[] | Filter<number> | null;
     userId?: number | number[] | Filter<number> | null;
     threshold?: number | number[] | Filter<number> | null;
-    createdAt?: Date | Date[] | Filter<number> | null;
+    createdAt?: Date | Date[] | Filter<Date> | null;
   };
   OrderInput: {
     settingId?: SortOrder;
@@ -396,7 +396,7 @@ type ProfileMeta = {
     point?: number | number[] | Filter<number> | null;
     enabled?: boolean | boolean[] | undefined | null;
     role?: Role | Role[] | undefined | null;
-    createdAt?: Date | Date[] | Filter<number> | null;
+    createdAt?: Date | Date[] | Filter<Date> | null;
     uuid?: string | string[] | StringFilter | null;
     cuid?: string | string[] | StringFilter | null;
   };
