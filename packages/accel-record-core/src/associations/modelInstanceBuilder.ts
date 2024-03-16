@@ -1,5 +1,5 @@
-import { Collection } from "./collectionProxy.js";
 import { Models, type Model } from "../index.js";
+import { Collection } from "./collectionProxy.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
 import { HasManyThroughAssociation } from "./hasManyThroughAssociation.js";
 
@@ -9,8 +9,8 @@ export class ModelInstanceBuilder {
     instance.isNewRecord = true;
     const proxy = ModelInstanceBuilder.createProxy<T>(instance, klass);
     for (const column of klass.columns2) {
-      if (column.scalarDefault && !(column.name in instance)) {
-        proxy[column.name] = column.scalarDefault;
+      if (!(column.name in instance)) {
+        proxy[column.name] = column.getInitialValue();
       }
       if (column.name in input) {
         proxy[column.name] = input[column.name];

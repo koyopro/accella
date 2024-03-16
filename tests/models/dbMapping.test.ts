@@ -11,7 +11,10 @@ describe("database mapping", () => {
     expect(p1.enabled).toBe(true);
     expect(p1.bio).toBe("I'm a Prisma user!");
     expect(p1.role).toBe("MEMBER");
+    expect(p1.createdAt).toBeUndefined();
     expect(p1.userId).toBeUndefined();
+    expect(p1.uuid).not.toBeUndefined();
+    expect(p1.cuid).not.toBeUndefined();
     if (!p1.update({ user })) {
       throw new Error("Failed to save");
     }
@@ -23,6 +26,9 @@ describe("database mapping", () => {
       expect(p.bio).toBe("I'm a Prisma user!");
       expect(p.userId).toBe(user.id);
       expect(p.role).toBe("MEMBER");
+      expect(p.createdAt).not.toBeUndefined();
+      expect(p.uuid).not.toBeUndefined();
+      expect(p.cuid).not.toBeUndefined();
     }
   });
 });
