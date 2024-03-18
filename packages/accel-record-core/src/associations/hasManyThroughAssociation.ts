@@ -1,6 +1,6 @@
-import { exec } from "../database";
+import { exec } from "../database.js";
 import { Model } from "../index.js";
-import { HasManyAssociation } from "./hasManyAssociation";
+import { HasManyAssociation } from "./hasManyAssociation.js";
 
 // cf. https://github.com/rails/rails/blob/main/activerecord/lib/active_record/associations/has_many_through_association.rb
 export class HasManyThroughAssociation<

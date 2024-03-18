@@ -1,18 +1,18 @@
-'use strict';
+"use strict";
 
-const path = require('path');
-const spawn = require('child_process').spawn;
-const spawnSync = require('child_process').spawnSync;
-const v8 = require('node:v8');
+const path = require("path");
+const spawn = require("child_process").spawn;
+const spawnSync = require("child_process").spawnSync;
+const v8 = require("node:v8");
 
-const host = '127.0.0.1';
+const host = "127.0.0.1";
 function nodeNetCatSrc(port, input) {
   return (
     "var c=require('net').connect(" +
     port +
     ",'127.0.0.1',()=>{c.pipe(process.stdout);c.end(" +
     JSON.stringify(input) +
-    ')})'
+    ")})"
   );
 }
 
@@ -29,7 +29,7 @@ function start() {
     );
   }
   const port = findPort();
-  const p = spawn(process.execPath, [require.resolve("./worker"), port], {
+  const p = spawn(process.execPath, [require.resolve("./worker.cjs"), port], {
     stdio: "inherit",
     windowsHide: true,
   });

@@ -1,10 +1,10 @@
-import { AttributeAssignment } from "./attributeAssignment";
-import { Connection } from "./connection";
-import { Fields } from "./fields";
-import { Persistence } from "./persistence";
-import { Query } from "./query";
-import { Transaction } from "./transaction";
-import { classIncludes } from "./utils";
+import { AttributeAssignment } from "./attributeAssignment.js";
+import { Connection } from "./connection.js";
+import { Fields } from "./fields.js";
+import { Persistence } from "./persistence.js";
+import { Query } from "./query.js";
+import { Transaction } from "./transaction.js";
+import { classIncludes } from "./utils.js";
 
 export { Collection } from "./associations/collectionProxy.js";
 export {
