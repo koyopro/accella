@@ -1,6 +1,6 @@
 {
   "name": "accel-record",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
@@ -28,8 +28,8 @@
   "author": "koyopro",
   "license": "Apache-2.0",
   "dependencies": {
-    "accel-record-core": "^0.1.0",
-    "accel-record-factory": "^0.1.0",
-    "prisma-generator-accel-record": "^0.1.0"
+    "accel-record-core": "^0.1.1",
+    "accel-record-factory": "^0.1.1",
+    "prisma-generator-accel-record": "^0.1.1"
   }
 }
