@@ -1,4 +1,4 @@
-import { execSQL } from "./database";
+import { execSQL } from "./database.js";
 
 export class Rollback extends Error {
   constructor() {

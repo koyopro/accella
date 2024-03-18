@@ -257,10 +257,12 @@ ${enumData}
 };
 
 const associationKey = (model: ModelWrapper) => {
-  return model.fields
-    .filter((f) => f.relationName)
-    .map((f) => `'${f.name}'`)
-    .join(" | ");
+  return (
+    model.fields
+      .filter((f) => f.relationName)
+      .map((f) => `'${f.name}'`)
+      .join(" | ") || "never"
+  );
 };
 
 const columnForPersist = (model: ModelWrapper) => {

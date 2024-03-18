@@ -1,4 +1,4 @@
-import { ApplicationRecord } from "./applicationRecord";
+import { ApplicationRecord } from "./applicationRecord.js";
 
 type SettingData = {
   key1?: string;

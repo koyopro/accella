@@ -1,5 +1,5 @@
-import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder";
-import { exec, execSQL } from "./database";
+import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder.js";
+import { exec, execSQL } from "./database.js";
 import { Collection, Model } from "./index.js";
 
 export class Persistence {
