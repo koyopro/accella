@@ -236,3 +236,139 @@ user.delete();
 // Alternatively, delete with associations
 user.destroy();
 ```
+
+## モデルの型
+
+### NewModelとPersistedModel
+
+Accel Recordでは、新規作成されたモデルと保存済みのモデルを区別するために、それぞれ`NewModel`と`PersistedModel`という型を提供しています。 \
+スキーマ定義に応じて一部のプロパティにおいては、`NewModel`ではundefinedを許容し`PersistedModel`ではundefinedを許容しない型となります。 \
+これにより、保存前のモデルと保存後のモデルをどちらも型安全に扱うことができます。
+
+```ts
+// src/index.ts
+import { User, NewUser } from "./models/index.js";
+
+/*
+NewModelの例：
+NewUser型 は新規作成された保存前のモデルを表し、以下のような型となります。
+
+interface NewUser {
+  id: number | undefined;
+  firstName: string | undefined;
+  lastName: string | undefined;
+  age: number | undefined;
+}
+*/
+const newUser: NewUser = User.build({});
+
+/*
+PersistedModelの例：
+User型 は保存済みのモデルを表し、以下のような型となります。
+
+interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  age: number | undefined;
+}
+*/
+const persistedUser: User = User.first()!;
+```
+
+### BaseModel
+
+上記のNewModelとPersistedModelは、BaseModelを継承しています。
+BaseModelに定義されたメソッドは、NewModelとPersistedModelの両方で利用することができます。
+
+```ts
+// src/models/user.ts
+import { ApplicationRecord } from "./applicationRecord.js";
+
+/*
+BaseModelの例：
+UserModelはNewUserとUserに対応するBaseModelとなります。
+ */
+class UserModel extends ApplicationRecord {
+  // ここで定義したメソッドはNewUserとUserの両方で利用することができます。
+  get fullName(): string {
+    if (!this.firstName || !this.lastName) {
+      // NewUserではfirstNameとlastNameがundefinedの可能性を考慮する必要があります。
+      return undefined;
+    }
+    return `${this.firstName} ${this.lastName}`;
+  }
+}
+```
+
+```ts
+// src/index.ts
+import { User, NewUser } from "./models/index.js";
+
+const newUser: NewUser = User.build({});
+console.log(user.fullName); // => undefined
+
+const user: User = User.first()!;
+console.log(user.fullName); // => "John Doe"
+```
+
+またメソッドにthisの型を指定することで、PersistedModelのみで型安全に利用できるメソッドを定義することもできます。(この場合はTypeScriptの仕様により、getキーワードを利用することができません)
+
+```ts
+// src/models/user.ts
+import { ApplicationRecord } from "./applicationRecord.js";
+import { User } from "./index.js";
+
+class UserModel extends ApplicationRecord {
+  // このメソッドはUserのみで型安全に利用することができ、NewUserで利用した場合には型エラーとなります。
+  fullName(this: User): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
+}
+```
+
+```ts
+// src/index.ts
+import { User, NewUser } from "./models/index.js";
+
+const newUser: NewUser = User.build({});
+// @ts-expect-error
+newUser.fullName();
+// => The 'this' context of type 'NewUser' is not assignable to method's 'this' of type 'User'.
+
+const user: User = User.first()!;
+console.log(user.fullName()); // => "John Doe"
+```
+
+### NewModelからPersistedModelへの変換
+
+`save()`や`isPersisted()`等のメソッドを利用することで、NewModel型をPersistedModel型に変換することができます。
+
+```ts
+// src/index.ts
+import { User, NewUser } from "./models/index.js";
+
+// NewModel型のユーザーを用意
+const user: NewUser = User.build({
+  firstName: "John",
+  lastName: "Doe",
+});
+
+if (user.save()) {
+  // saveが成功した場合、NewModelはPersistedModelに変換されます。
+  // このブロック中では、userはUser型として扱うことができます。
+} else {
+  // saveが失敗した場合、NewModelはそのままの型です。
+  // このブロック中では、userはNewUser型のままになります。
+}
+
+const someFunc = (user: NewUser | User) => {
+  if (user.isPersisted()) {
+    // isPersisted()がtrueの場合、NewModelはPersistedModelに変換されます。
+    // このブロック中では、userはUser型として扱うことができます。
+  } else {
+    // isPersisted()がfalseの場合、NewModelはそのままの型です。
+    // このブロック中では、userはNewUser型のままになります。
+  }
+};
+```
