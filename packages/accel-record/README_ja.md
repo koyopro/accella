@@ -164,3 +164,75 @@ $ npm i -D tsx
 $ npx tsx src/index.ts
 New user created! User.count is 1
 ```
+
+## Examples
+
+### データの作成と保存
+
+```ts
+// src/index.ts
+import { User } from "./models/index.js";
+
+// Create a user
+const user: User = User.create({
+  firstName: "John",
+  lastName: "Doe",
+});
+console.log(user.id); // => 1
+
+// You can also write it like this
+const user: NewUser = User.build({});
+user.firstName = "Alice";
+user.lastName = "Smith";
+user.save();
+console.log(user.id); // => 2
+```
+
+### データベースからの取得
+
+```ts
+// src/index.ts
+import { User } from "./models/index.js";
+
+const allUsers = User.all();
+console.log(`IDs of all users: ${allUsers.map((u) => u.id).join(", ")}`);
+
+const firstUser = User.first();
+console.log(`Name of the first user: ${firstUser?.firstName}`);
+
+const john = User.findBy({ firstName: "John" });
+console.log(`ID of the user with the name John: ${john?.id}`);
+
+const does = User.where({ lastName: "Doe" });
+console.log(`Number of users with the last name Doe: ${does.count()}`);
+```
+
+### データの更新
+
+```ts
+// src/index.ts
+import { User } from "./models/index.js";
+
+const user = User.first()!;
+
+user.update({ age: 26 });
+
+// You can also write it like this
+user.age = 26;
+user.save();
+```
+
+### データの削除
+
+```ts
+// src/index.ts
+import { User } from "./models/index.js";
+
+const user = User.first()!;
+
+// Delete a record
+user.delete();
+
+// Alternatively, delete with associations
+user.destroy();
+```
