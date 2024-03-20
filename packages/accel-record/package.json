@@ -19,7 +19,9 @@
   "homepage": "https://github.com/koyopro/accella/tree/master/packages/accel-record",
   "keywords": [
     "accella",
-    "accel-record"
+    "accel-record",
+    "activerecord",
+    "orm"
   ],
   "files": [
     "README.md",
