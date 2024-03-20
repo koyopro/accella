@@ -1,6 +1,6 @@
 {
   "name": "accel-record",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
@@ -16,12 +16,13 @@
   "bugs": {
     "url": "https://github.com/koyopro/accella/issues"
   },
-  "homepage": "https://github.com/koyopro/accella",
+  "homepage": "https://github.com/koyopro/accella/tree/master/packages/accel-record",
   "keywords": [
     "accella",
     "accel-record"
   ],
   "files": [
+    "README.md",
     "index.js",
     "index.d.ts"
   ],
