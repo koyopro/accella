@@ -92,4 +92,14 @@ describe("User#tojson()", () => {
       field: expect.anything(),
     });
   });
+
+  test("#reload()", () => {
+    const u = $user.create({ name: "hoge" });
+    u.name = "fuga";
+    expect(u.posts.toArray()).toHaveLength(0);
+    Post.create({ title: "post1", author: u });
+    expect(u.reload().name).toBe("hoge");
+    expect(u.name).toBe("hoge");
+    expect(u.posts.toArray()).toHaveLength(1);
+  });
 });

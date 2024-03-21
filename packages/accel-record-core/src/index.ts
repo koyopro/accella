@@ -1,3 +1,4 @@
+import { Collection } from "./associations/collectionProxy.js";
 import { AttributeAssignment } from "./attributeAssignment.js";
 import { Connection } from "./connection.js";
 import { Fields } from "./fields.js";
@@ -8,14 +9,14 @@ import { classIncludes } from "./utils.js";
 
 export { Collection } from "./associations/collectionProxy.js";
 export {
-  initAccelRecord,
   getConfig,
+  initAccelRecord,
   stopRpcClient as stopWorker,
 } from "./database.js";
-export { Relation } from "./relation.js";
-export { Rollback } from "./transaction.js";
 export { Migration } from "./migration.js";
+export { Relation } from "./relation.js";
 export { DatabaseCleaner } from "./testUtils.js";
+export { Rollback } from "./transaction.js";
 
 export type SortOrder = "asc" | "desc";
 
@@ -76,5 +77,17 @@ export class Model extends classIncludes(
       ret[column as string] = this[column];
     }
     return ret;
+  }
+
+  reload() {
+    this.retriveInsertedAttributes({} as Record<keyof this, any>);
+    for (const [key, association] of Object.entries(this.associations)) {
+      const value = this[key as keyof this];
+      if (value instanceof Collection) {
+        value.reset();
+      }
+      // TODO: hasOne, belongsTo
+    }
+    return this;
   }
 }
