@@ -372,3 +372,83 @@ const someFunc = (user: NewUser | User) => {
   }
 };
 ```
+
+## Prismaスキーマとフィールドの型
+
+Accel Recordはスキーマ定義にPrismaを利用していますが、各機能のサポート状況は以下の通りです。
+
+| 機能                            | 記法        | サポート |
+| ------------------------------- | ----------- | -------- |
+| ID                              | @id         | ✅       |
+| Multi-field ID (Composite ID)   | @@id        | -        |
+| Table name mapping              | @@map       | ✅       |
+| Column name mapping             | @map        | ✅       |
+| Default value                   | @default    | ✅       |
+| Updated at                      | @updatedAt  | ✅       |
+| List                            | []          | ✅       |
+| Optional                        | ?           | ✅       |
+| Relation field                  |             | ✅       |
+| Implicit many-to-many relations |             | ✅       |
+| Enums                           | enum        | ✅       |
+| Unsupported type                | Unsupported | -        |
+
+フィールドタイプが必須の場合とオプションの場合で、NewModelとPersistedModelの型が異なります。
+
+| type           | NewModel | PersistedModel  |
+| -------------- | -------- | --------------- |
+| Required Field | Nullable | **NonNullable** |
+| Optional Field | Nullable | Nullable        |
+
+また、デフォルト値の指定方法によってもNewModelとPersistedModelの型が異なります。
+
+| arg             | NewModel        | PersistedModel  |
+| --------------- | --------------- | --------------- |
+| static value    | **NonNullable** | **NonNullable** |
+| autoincrement() | Nullable        | **NonNullable** |
+| now()           | Nullable        | **NonNullable** |
+| dbgenerated()   | Nullable        | **NonNullable** |
+| uuid()          | **NonNullable** | **NonNullable** |
+| cuid()          | **NonNullable** | **NonNullable** |
+
+以下に、モデル定義とそれに対応するNewModelとPersistedModelの例を示します。
+
+```ts
+// prisma/schema.prisma
+
+model Sample {
+  id         Int      @id @default(autoincrement())
+  required   Int
+  optional   String?
+  hasDefault Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  uuid       String   @default(uuid())
+  cuid       String   @default(cuid())
+}
+```
+
+```ts
+// NewModel
+interface NewSample {
+  id: number | undefined;
+  required: number | undefined;
+  optional: string | undefined;
+  hasDefault: boolean;
+  createdAt: Date | undefined;
+  updatedAt: Date | undefined;
+  uuid: string;
+  cuid: string;
+}
+
+// PersistedModel
+interface Sample {
+  id: number;
+  required: number;
+  optional: string | undefined;
+  hasDefault: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  uuid: string;
+  cuid: string;
+}
+```
