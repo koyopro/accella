@@ -188,7 +188,7 @@ user.save();
 console.log(user.id); // => 2
 ```
 
-### データベースからの取得
+### データの取得
 
 ```ts
 // src/index.ts
@@ -357,18 +357,22 @@ const user: NewUser = User.build({
 if (user.save()) {
   // saveが成功した場合、NewModelはPersistedModelに変換されます。
   // このブロック中では、userはUser型として扱うことができます。
+  console.log(user.id); // user.idは number型
 } else {
   // saveが失敗した場合、NewModelはそのままの型です。
   // このブロック中では、userはNewUser型のままになります。
+  console.log(user.id); // user.idは number | undefined型
 }
 
 const someFunc = (user: NewUser | User) => {
   if (user.isPersisted()) {
     // isPersisted()がtrueの場合、NewModelはPersistedModelに変換されます。
     // このブロック中では、userはUser型として扱うことができます。
+    console.log(user.id); // user.idは number型
   } else {
     // isPersisted()がfalseの場合、NewModelはそのままの型です。
     // このブロック中では、userはNewUser型のままになります。
+    console.log(user.id); // user.idは number | undefined型
   }
 };
 ```

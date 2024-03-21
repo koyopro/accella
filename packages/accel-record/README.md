@@ -187,7 +187,7 @@ user.save();
 console.log(user.id); // => 2
 ```
 
-### Retrieving Data from the Database
+### Retrieving Data
 
 ```ts
 // src/index.ts
@@ -356,18 +356,22 @@ const user: NewUser = User.build({
 if (user.save()) {
   // If save is successful, the NewModel is converted to PersistedModel.
   // In this block, the user can be treated as User type.
+  console.log(user.id); // user.id is of type number
 } else {
   // If save fails, the NewModel remains the same type.
   // In this block, the user remains as NewUser type.
+  console.log(user.id); // user.id is of type number | undefined
 }
 
 const someFunc = (user: NewUser | User) => {
   if (user.isPersisted()) {
     // If isPersisted() is true, the NewModel is converted to PersistedModel.
     // In this block, the user can be treated as User type.
+    console.log(user.id); // user.id is of type number
   } else {
     // If isPersisted() is false, the NewModel remains the same type.
     // In this block, the user remains as NewUser type.
+    console.log(user.id); // user.id is of type number | undefined
   }
 };
 ```
