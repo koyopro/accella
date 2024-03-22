@@ -94,6 +94,7 @@ export class ModelInstanceBuilder {
           _association,
           input[key] ?? (hasAllPrimaryKeys() ? undefined : [])
         );
+        instance.associations[key] = _association;
       }
     }
   }

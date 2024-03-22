@@ -1,3 +1,4 @@
+import { Association } from "./associations/association.js";
 import { Collection } from "./associations/collectionProxy.js";
 import { AttributeAssignment } from "./attributeAssignment.js";
 import { Connection } from "./connection.js";
@@ -58,6 +59,8 @@ export class Model extends classIncludes(
   Query,
   Transaction
 ) {
+  associations: Map<string, Association<Model>> = new Map();
+
   equals<T extends Model>(this: T, other: T): boolean {
     if (this.constructor.name !== other.constructor.name) {
       return false;
