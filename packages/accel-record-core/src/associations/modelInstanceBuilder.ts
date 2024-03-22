@@ -30,10 +30,10 @@ export class ModelInstanceBuilder {
           return target[column];
         }
         const association = target.associations.get(prop as string);
-        if (association instanceof HasOneAssociation) {
-          return association.reader();
-        }
-        if (association instanceof BelongsToAssociation) {
+        if (
+          association instanceof HasOneAssociation ||
+          association instanceof BelongsToAssociation
+        ) {
           return association.reader();
         }
         return Reflect.get(target, prop, receiver);
@@ -45,10 +45,10 @@ export class ModelInstanceBuilder {
           return true;
         }
         const association = target.associations.get(prop as string);
-        if (association instanceof HasOneAssociation) {
-          association.setter(value);
-        }
-        if (association instanceof BelongsToAssociation) {
+        if (
+          association instanceof HasOneAssociation ||
+          association instanceof BelongsToAssociation
+        ) {
           association.setter(value);
         }
         if (target[prop] instanceof Collection && Array.isArray(value)) {
@@ -68,7 +68,7 @@ export class ModelInstanceBuilder {
     instance: any
   ) {
     for (const [key, association] of Object.entries(klass.associations)) {
-      const { klass, foreignKey, primaryKey, field } = association;
+      const { klass, field } = association;
       if (association.isHasOne) {
         (instance.associations as Map<string, any>).set(
           key,
