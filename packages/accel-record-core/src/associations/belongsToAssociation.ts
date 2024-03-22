@@ -27,16 +27,4 @@ export class BelongsToAssociation<
       [this.info.primaryKey]: this.owner[this.info.foreignKey as keyof O],
     };
   }
-
-  persist(records: T | T[]) {
-    // TODO: implement
-  }
-
-  delete(...records: T[]) {
-    // TODO: implement
-  }
-
-  destroy(...records: T[]) {
-    // TODO: implement
-  }
 }
