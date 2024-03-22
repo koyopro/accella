@@ -14,7 +14,8 @@ export class HasManyAssociation<
     const _records = Array.isArray(records) ? records : [records];
     for (const record of _records) {
       Object.assign(record, this.scopeAttributes());
-      if (this.owner.isPersisted()) {
+      // TODO: Instead of isNewRecord, determine with isChanged.
+      if (this.owner.isPersisted() && record.isNewRecord) {
         record.save();
       }
     }

@@ -29,6 +29,7 @@ export class HasOneAssociation<
     if (!this.target) return;
     if (!this.ownersPrimary) return;
     this.target[this.info.foreignKey as keyof T] = this.ownersPrimary as any;
+    if (!this.target.isNewRecord) return; // TODO: Instead, determine with isChanged.
     this.target.save();
   }
 
