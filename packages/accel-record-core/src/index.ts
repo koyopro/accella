@@ -1,5 +1,7 @@
 import { Association } from "./associations/association.js";
 import { Collection } from "./associations/collectionProxy.js";
+import { HasManyAssociation } from "./associations/hasManyAssociation.js";
+import { HasOneAssociation } from "./associations/hasOneAssociation.js";
 import { AttributeAssignment } from "./attributeAssignment.js";
 import { Connection } from "./connection.js";
 import { Fields } from "./fields.js";
@@ -84,12 +86,16 @@ export class Model extends classIncludes(
 
   reload() {
     this.retriveInsertedAttributes({} as Record<keyof this, any>);
-    for (const [key, association] of Object.entries(this.associationInfos)) {
-      const value = this[key as keyof this];
-      if (value instanceof Collection) {
-        value.reset();
+    for (const [key, association] of this.associations.entries()) {
+      if (association instanceof HasOneAssociation) {
+        association.reset();
       }
-      // TODO: hasOne, belongsTo
+      if (association instanceof HasManyAssociation) {
+        const value = this[key as keyof this];
+        if (value instanceof Collection) {
+          value.reset();
+        }
+      }
     }
     return this;
   }

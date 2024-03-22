@@ -10,6 +10,11 @@ export class Association<T extends Model> {
     protected info: Info
   ) {}
 
+  reset() {
+    this.target = undefined;
+    this.isLoaded = false;
+  }
+
   whereAttributes(): Record<string, any> {
     return { wheres: [this.scopeAttributes()] };
   }

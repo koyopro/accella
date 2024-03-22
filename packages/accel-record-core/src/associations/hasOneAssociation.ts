@@ -7,7 +7,7 @@ export class HasOneAssociation<T extends Model> extends Association<T> {
       this.target = Models[this.info.klass].findBy(this.scopeAttributes()) as
         | T
         | undefined;
-      // this.isLoaded = true;
+      this.isLoaded = true;
     }
     return this.target;
   }
