@@ -46,7 +46,7 @@ export class Persistence {
 
   destroy<T extends Model>(this: T): boolean {
     if (this.isReadonly) throw new Error("Readonly record");
-    for (const [key, association] of Object.entries(this.associations)) {
+    for (const [key, association] of Object.entries(this.associationInfos)) {
       const value = this[key as keyof T] as any;
       if (value instanceof Collection) {
         value.destroyAll();
@@ -160,7 +160,7 @@ export class Persistence {
   }
 
   protected saveAssociations<T extends Model>(this: T) {
-    for (const [key, association] of Object.entries(this.associations)) {
+    for (const [key, association] of Object.entries(this.associationInfos)) {
       const { foreignKey, primaryKey } = association;
       const value = this[key as keyof T];
       if (value instanceof Collection) {

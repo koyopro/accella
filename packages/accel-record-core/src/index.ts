@@ -81,7 +81,7 @@ export class Model extends classIncludes(
 
   reload() {
     this.retriveInsertedAttributes({} as Record<keyof this, any>);
-    for (const [key, association] of Object.entries(this.associations)) {
+    for (const [key, association] of Object.entries(this.associationInfos)) {
       const value = this[key as keyof this];
       if (value instanceof Collection) {
         value.reset();
