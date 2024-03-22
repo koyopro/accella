@@ -61,7 +61,7 @@ export class Model extends classIncludes(
   Query,
   Transaction
 ) {
-  associations: Map<string, Association<Model>> = new Map();
+  associations: Map<string, Association<Model, Model>> = new Map();
 
   equals<T extends Model>(this: T, other: T): boolean {
     if (this.constructor.name !== other.constructor.name) {

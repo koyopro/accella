@@ -1,12 +1,12 @@
 import { Model } from "../index.js";
 import { Association as Info } from "../fields";
 
-export class Association<T extends Model> {
+export class Association<O extends Model, T extends Model> {
   protected target: T | undefined = undefined;
   protected isLoaded: boolean = false;
 
   constructor(
-    protected owner: T,
+    protected owner: O,
     protected info: Info
   ) {}
 
@@ -21,7 +21,7 @@ export class Association<T extends Model> {
 
   scopeAttributes() {
     return {
-      [this.info.foreignKey]: this.owner[this.info.primaryKey as keyof T],
+      [this.info.foreignKey]: this.owner[this.info.primaryKey as keyof O],
     };
   }
 

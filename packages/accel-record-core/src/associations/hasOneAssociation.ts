@@ -1,7 +1,10 @@
 import { Model, Models } from "../index.js";
 import { Association } from "./association.js";
 
-export class HasOneAssociation<T extends Model> extends Association<T> {
+export class HasOneAssociation<
+  O extends Model,
+  T extends Model,
+> extends Association<O, T> {
   reader() {
     if (!this.isLoaded) {
       this.target = Models[this.info.klass].findBy(this.scopeAttributes()) as
@@ -24,9 +27,9 @@ export class HasOneAssociation<T extends Model> extends Association<T> {
 
   persist() {
     if (!this.target) return;
-    const primary = this.owner[this.info.primaryKey as keyof T];
+    const primary = this.owner[this.info.primaryKey as keyof O];
     if (!primary) return;
-    this.target[this.info.foreignKey as keyof T] = primary;
+    this.target[this.info.foreignKey as keyof T] = primary as any;
     this.target.save();
   }
 
