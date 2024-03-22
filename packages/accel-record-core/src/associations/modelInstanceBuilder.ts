@@ -1,11 +1,13 @@
 import { Models, type Model } from "../index.js";
+import { BelongsToAssociation } from "./belongsToAssociation.js";
 import { Collection } from "./collectionProxy.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
 import { HasManyThroughAssociation } from "./hasManyThroughAssociation.js";
+import { HasOneAssociation } from "./hasOneAssociation.js";
 
 export class ModelInstanceBuilder {
   static build<T extends typeof Model>(klass: T, input: any): InstanceType<T> {
-    const instance = new klass();
+    const instance = new klass() as InstanceType<T>;
     instance.isNewRecord = true;
     const proxy = ModelInstanceBuilder.createProxy<T>(instance, klass);
     for (const column of klass.columns2) {
@@ -27,16 +29,12 @@ export class ModelInstanceBuilder {
         if (typeof column === "string") {
           return target[column];
         }
-        const association = klass.associations[prop as any];
-        if (association?.isHasOne) {
-          return (target[prop] ||= Models[association.klass].findBy({
-            [association.foreignKey]: target[association.primaryKey],
-          }));
-        }
-        if (association?.isBelongsTo) {
-          return (target[prop] ||= Models[association.klass].findBy({
-            [association.primaryKey]: target[association.foreignKey],
-          }));
+        const association = target.associations.get(prop as string);
+        if (
+          association instanceof HasOneAssociation ||
+          association instanceof BelongsToAssociation
+        ) {
+          return association.reader();
         }
         return Reflect.get(target, prop, receiver);
       },
@@ -46,17 +44,12 @@ export class ModelInstanceBuilder {
           target[column] = value;
           return true;
         }
-        const association = klass.associations[prop as any];
-        if (association?.isHasOne && target[association.primaryKey]) {
-          if (value == undefined) {
-            target[prop]?.destroy();
-          } else {
-            value[association.foreignKey] = target[association.primaryKey];
-            value.save();
-          }
-        }
-        if (association?.isBelongsTo) {
-          target[association.foreignKey] = value[association.primaryKey];
+        const association = target.associations.get(prop as string);
+        if (
+          association instanceof HasOneAssociation ||
+          association instanceof BelongsToAssociation
+        ) {
+          association.setter(value);
         }
         if (target[prop] instanceof Collection && Array.isArray(value)) {
           target[prop].replace(value);
@@ -72,26 +65,32 @@ export class ModelInstanceBuilder {
     klass: T,
     input: any,
     proxy: any,
-    instance: any
+    obj: Model
   ) {
-    for (const [key, association] of Object.entries(klass.associations)) {
-      const { klass, foreignKey, primaryKey, field } = association;
-      if (!field.isList && key in input) {
-        proxy[key] = input[key];
-      } else if (field.isList || key in input) {
-        let _association:
-          | HasManyAssociation<Model>
-          | HasManyThroughAssociation<Model>;
-        if (association.through) {
-          _association = new HasManyThroughAssociation(instance, association);
-        } else {
-          _association = new HasManyAssociation(instance, association);
+    for (const [key, info] of Object.entries(klass.associations)) {
+      if (info.isHasOne) {
+        obj.associations.set(key, new HasOneAssociation(obj, info));
+        if (key in input) {
+          proxy[key] = input[key];
         }
+      }
+      if (info.isBelongsTo) {
+        obj.associations.set(key, new BelongsToAssociation(obj, info));
+        if (key in input) {
+          proxy[key] = input[key];
+        }
+      }
+      if (info.field.isList) {
+        const association = info.through
+          ? new HasManyThroughAssociation(obj, info)
+          : new HasManyAssociation(obj, info);
+        obj.associations.set(key, association);
+
         const hasAllPrimaryKeys = () =>
-          instance.primaryKeys.every((k: keyof typeof instance) => instance[k]);
-        instance[key] = new Collection(
-          Models[klass],
-          _association,
+          obj.primaryKeys.every((k) => (obj as any)[k]);
+        (obj as any)[key] = new Collection(
+          Models[info.klass],
+          obj.associations.get(key) as any,
           input[key] ?? (hasAllPrimaryKeys() ? undefined : [])
         );
       }

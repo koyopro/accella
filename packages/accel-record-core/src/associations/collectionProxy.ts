@@ -8,7 +8,7 @@ export class Collection<T extends Model, S extends ModelMeta> extends Relation<
 > {
   constructor(
     model: typeof Model,
-    private association: HasManyAssociation<S["Base"]>,
+    private association: HasManyAssociation<Model, S["Base"]>,
     cache: T[] | undefined = undefined
   ) {
     super(model, association.whereAttributes(), cache);

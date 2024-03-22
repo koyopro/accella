@@ -4,8 +4,9 @@ import { HasManyAssociation } from "./hasManyAssociation.js";
 
 // cf. https://github.com/rails/rails/blob/main/activerecord/lib/active_record/associations/has_many_through_association.rb
 export class HasManyThroughAssociation<
+  O extends Model,
   T extends Model,
-> extends HasManyAssociation<T> {
+> extends HasManyAssociation<O, T> {
   override concat(records: T | T[]) {
     this.persist(records);
   }
@@ -30,10 +31,7 @@ export class HasManyThroughAssociation<
   deleteAll() {
     const query = this.connection
       .knex(this.info.through)
-      .where(
-        this.info.foreignKey,
-        this.owner[this.info.primaryKey as keyof T] as any
-      )
+      .where(this.info.foreignKey, this.ownersPrimary as any)
       .delete();
     exec(query);
   }
@@ -47,10 +45,7 @@ export class HasManyThroughAssociation<
     for (const record of records) {
       const query = this.connection
         .knex(this.info.through)
-        .where(
-          this.info.foreignKey,
-          this.owner[this.info.primaryKey as keyof T] as any
-        )
+        .where(this.info.foreignKey, this.ownersPrimary as any)
         .where(this.joinKey, record.pkValues[0])
         .delete();
       if (exec(query)) {
@@ -76,8 +71,7 @@ export class HasManyThroughAssociation<
       ],
       wheres: [
         {
-          [`${this.info.through}.${this.info.foreignKey}`]:
-            this.owner[this.info.primaryKey as keyof T],
+          [`${this.info.through}.${this.info.foreignKey}`]: this.ownersPrimary,
         },
       ],
     };
@@ -85,7 +79,7 @@ export class HasManyThroughAssociation<
 
   scopeAttributes() {
     return {
-      [this.info.foreignKey]: this.owner[this.info.primaryKey as keyof T],
+      [this.info.foreignKey]: this.ownersPrimary,
     };
   }
 

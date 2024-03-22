@@ -1,5 +1,6 @@
-import { User, Post } from "./index";
+import { $setting } from "../factories/setting";
 import { $user } from "../factories/user";
+import { Post, User } from "./index";
 
 describe("User#tojson()", () => {
   test("serialize()", () => {
@@ -95,11 +96,17 @@ describe("User#tojson()", () => {
 
   test("#reload()", () => {
     const u = $user.create({ name: "hoge" });
+    const s = $setting.create({ user: u });
     u.name = "fuga";
     expect(u.posts.toArray()).toHaveLength(0);
+    expect(u.setting).toBeDefined();
+
     Post.create({ title: "post1", author: u });
+    s.destroy();
+
     expect(u.reload().name).toBe("hoge");
     expect(u.name).toBe("hoge");
     expect(u.posts.toArray()).toHaveLength(1);
+    expect(u.setting).toBeUndefined();
   });
 });

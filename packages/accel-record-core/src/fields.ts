@@ -261,10 +261,6 @@ export class Fields {
     return (this.constructor as any).columnsForPersist;
   }
 
-  get associations(): Record<string, Association> {
-    return (this.constructor as any).associations;
-  }
-
   get primaryKeys(): string[] {
     return (this.constructor as any).primaryKeys;
   }

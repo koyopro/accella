@@ -2,7 +2,10 @@ import { Model, Models } from "../index.js";
 import { Association } from "./association.js";
 
 // cf. https://github.com/rails/rails/blob/main/activerecord/lib/active_record/associations/has_many_association.rb#L11
-export class HasManyAssociation<T extends Model> extends Association<T> {
+export class HasManyAssociation<
+  O extends Model,
+  T extends Model,
+> extends Association<O, T> {
   concat(records: T | T[]) {
     this.persist(records);
   }
@@ -11,7 +14,8 @@ export class HasManyAssociation<T extends Model> extends Association<T> {
     const _records = Array.isArray(records) ? records : [records];
     for (const record of _records) {
       Object.assign(record, this.scopeAttributes());
-      if (this.owner.isPersisted()) {
+      // TODO: Instead of isNewRecord, determine with isChanged.
+      if (this.owner.isPersisted() && record.isNewRecord) {
         record.save();
       }
     }

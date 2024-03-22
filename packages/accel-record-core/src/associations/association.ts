@@ -1,20 +1,30 @@
 import { Model } from "../index.js";
 import { Association as Info } from "../fields";
 
-export class Association<T extends Model> {
+export class Association<O extends Model, T extends Model> {
+  protected target: T | undefined = undefined;
+  protected isLoaded: boolean = false;
+
   constructor(
-    protected owner: T,
+    protected owner: O,
     protected info: Info
   ) {}
+
+  reset() {
+    this.target = undefined;
+    this.isLoaded = false;
+  }
 
   whereAttributes(): Record<string, any> {
     return { wheres: [this.scopeAttributes()] };
   }
 
   scopeAttributes() {
-    return {
-      [this.info.foreignKey]: this.owner[this.info.primaryKey as keyof T],
-    };
+    return { [this.info.foreignKey]: this.ownersPrimary };
+  }
+
+  get ownersPrimary() {
+    return this.owner[this.info.primaryKey as keyof O];
   }
 
   protected get connection() {

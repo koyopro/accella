@@ -1,3 +1,5 @@
+import { HasManyAssociation } from "./associations/hasManyAssociation.js";
+import { HasOneAssociation } from "./associations/hasOneAssociation.js";
 import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder.js";
 import { exec, execSQL } from "./database.js";
 import { Collection, Model } from "./index.js";
@@ -46,12 +48,15 @@ export class Persistence {
 
   destroy<T extends Model>(this: T): boolean {
     if (this.isReadonly) throw new Error("Readonly record");
-    for (const [key, association] of Object.entries(this.associations)) {
-      const value = this[key as keyof T] as any;
-      if (value instanceof Collection) {
-        value.destroyAll();
-      } else if (association.isHasOne) {
-        value?.destroy();
+    for (const [key, association] of this.associations.entries()) {
+      if (association instanceof HasOneAssociation) {
+        association.destroy();
+      }
+      if (association instanceof HasManyAssociation) {
+        const value = this[key as keyof T];
+        if (value instanceof Collection) {
+          value.destroyAll();
+        }
       }
     }
     this.deleteRecord();
@@ -160,16 +165,17 @@ export class Persistence {
   }
 
   protected saveAssociations<T extends Model>(this: T) {
-    for (const [key, association] of Object.entries(this.associations)) {
-      const { foreignKey, primaryKey } = association;
-      const value = this[key as keyof T];
-      if (value instanceof Collection) {
-        value.persist();
-        value.resetOptions();
-        value.reset();
-      } else if (association.isHasOne && value instanceof Model) {
-        (value as any)[foreignKey] = this[primaryKey as keyof T];
-        value.save();
+    for (const [key, association] of this.associations.entries()) {
+      if (association instanceof HasOneAssociation) {
+        association.persist();
+      }
+      if (association instanceof HasManyAssociation) {
+        const value = this[key as keyof T];
+        if (value instanceof Collection) {
+          value.persist();
+          value.resetOptions();
+          value.reset();
+        }
       }
     }
   }
