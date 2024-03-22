@@ -375,3 +375,83 @@ const someFunc = (user: NewUser | User) => {
   }
 };
 ```
+
+## Prisma Schema and Field Types
+
+Accel Record uses Prisma for schema definition, and the support status for each feature is as follows:
+
+| Feature                         | Notation    | Support |
+| ------------------------------- | ----------- | ------- |
+| ID                              | @id         | ✅      |
+| Multi-field ID (Composite ID)   | @@id        | -       |
+| Table name mapping              | @@map       | ✅      |
+| Column name mapping             | @map        | ✅      |
+| Default value                   | @default    | ✅      |
+| Updated at                      | @updatedAt  | ✅      |
+| List                            | []          | ✅      |
+| Optional                        | ?           | ✅      |
+| Relation field                  |             | ✅      |
+| Implicit many-to-many relations |             | ✅      |
+| Enums                           | enum        | ✅      |
+| Unsupported type                | Unsupported | -       |
+
+The types of NewModel and PersistedModel differ depending on whether the field type is required or optional.
+
+| Type           | NewModel | PersistedModel  |
+| -------------- | -------- | --------------- |
+| Required Field | Nullable | **NonNullable** |
+| Optional Field | Nullable | Nullable        |
+
+In addition, the types of NewModel and PersistedModel differ depending on how the default value is specified.
+
+| Argument        | NewModel        | PersistedModel  |
+| --------------- | --------------- | --------------- |
+| Static value    | **NonNullable** | **NonNullable** |
+| autoincrement() | Nullable        | **NonNullable** |
+| now()           | Nullable        | **NonNullable** |
+| dbgenerated()   | Nullable        | **NonNullable** |
+| uuid()          | **NonNullable** | **NonNullable** |
+| cuid()          | **NonNullable** | **NonNullable** |
+
+Here are examples of model definitions and their corresponding NewModel and PersistedModel:
+
+```ts
+// prisma/schema.prisma
+
+model Sample {
+  id         Int      @id @default(autoincrement())
+  required   Int
+  optional   String?
+  hasDefault Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  uuid       String   @default(uuid())
+  cuid       String   @default(cuid())
+}
+```
+
+```ts
+// NewModel
+interface NewSample {
+  id: number | undefined;
+  required: number | undefined;
+  optional: string | undefined;
+  hasDefault: boolean;
+  createdAt: Date | undefined;
+  updatedAt: Date | undefined;
+  uuid: string;
+  cuid: string;
+}
+
+// PersistedModel
+interface Sample {
+  id: number;
+  required: number;
+  optional: string | undefined;
+  hasDefault: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  uuid: string;
+  cuid: string;
+}
+```
