@@ -31,10 +31,7 @@ export class HasManyThroughAssociation<
   deleteAll() {
     const query = this.connection
       .knex(this.info.through)
-      .where(
-        this.info.foreignKey,
-        this.owner[this.info.primaryKey as keyof O] as any
-      )
+      .where(this.info.foreignKey, this.ownersPrimary as any)
       .delete();
     exec(query);
   }
@@ -48,10 +45,7 @@ export class HasManyThroughAssociation<
     for (const record of records) {
       const query = this.connection
         .knex(this.info.through)
-        .where(
-          this.info.foreignKey,
-          this.owner[this.info.primaryKey as keyof O] as any
-        )
+        .where(this.info.foreignKey, this.ownersPrimary as any)
         .where(this.joinKey, record.pkValues[0])
         .delete();
       if (exec(query)) {
@@ -77,8 +71,7 @@ export class HasManyThroughAssociation<
       ],
       wheres: [
         {
-          [`${this.info.through}.${this.info.foreignKey}`]:
-            this.owner[this.info.primaryKey as keyof O],
+          [`${this.info.through}.${this.info.foreignKey}`]: this.ownersPrimary,
         },
       ],
     };
@@ -86,7 +79,7 @@ export class HasManyThroughAssociation<
 
   scopeAttributes() {
     return {
-      [this.info.foreignKey]: this.owner[this.info.primaryKey as keyof O],
+      [this.info.foreignKey]: this.ownersPrimary,
     };
   }
 

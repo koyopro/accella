@@ -27,9 +27,8 @@ export class HasOneAssociation<
 
   persist() {
     if (!this.target) return;
-    const primary = this.owner[this.info.primaryKey as keyof O];
-    if (!primary) return;
-    this.target[this.info.foreignKey as keyof T] = primary as any;
+    if (!this.ownersPrimary) return;
+    this.target[this.info.foreignKey as keyof T] = this.ownersPrimary as any;
     this.target.save();
   }
 

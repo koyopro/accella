@@ -20,9 +20,11 @@ export class Association<O extends Model, T extends Model> {
   }
 
   scopeAttributes() {
-    return {
-      [this.info.foreignKey]: this.owner[this.info.primaryKey as keyof O],
-    };
+    return { [this.info.foreignKey]: this.ownersPrimary };
+  }
+
+  get ownersPrimary() {
+    return this.owner[this.info.primaryKey as keyof O];
   }
 
   protected get connection() {
