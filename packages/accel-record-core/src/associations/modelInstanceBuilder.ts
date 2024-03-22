@@ -90,7 +90,7 @@ export class ModelInstanceBuilder {
           obj.primaryKeys.every((k) => (obj as any)[k]);
         (obj as any)[key] = new Collection(
           Models[info.klass],
-          obj.associations.get(key) as any,
+          association,
           input[key] ?? (hasAllPrimaryKeys() ? undefined : [])
         );
       }
