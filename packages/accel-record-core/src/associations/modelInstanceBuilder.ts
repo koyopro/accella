@@ -1,7 +1,9 @@
 import { Models, type Model } from "../index.js";
+import { BelongsToAssociation } from "./belongsToAssociation.js";
 import { Collection } from "./collectionProxy.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
 import { HasManyThroughAssociation } from "./hasManyThroughAssociation.js";
+import { HasOneAssociation } from "./hasOneAssociation.js";
 
 export class ModelInstanceBuilder {
   static build<T extends typeof Model>(klass: T, input: any): InstanceType<T> {
@@ -27,16 +29,12 @@ export class ModelInstanceBuilder {
         if (typeof column === "string") {
           return target[column];
         }
-        const association = klass.associations[prop as any];
-        if (association?.isHasOne) {
-          return (target[prop] ||= Models[association.klass].findBy({
-            [association.foreignKey]: target[association.primaryKey],
-          }));
+        const association = target.associations.get(prop as string);
+        if (association instanceof HasOneAssociation) {
+          return association.reader();
         }
-        if (association?.isBelongsTo) {
-          return (target[prop] ||= Models[association.klass].findBy({
-            [association.primaryKey]: target[association.foreignKey],
-          }));
+        if (association instanceof BelongsToAssociation) {
+          return association.reader();
         }
         return Reflect.get(target, prop, receiver);
       },
@@ -46,17 +44,12 @@ export class ModelInstanceBuilder {
           target[column] = value;
           return true;
         }
-        const association = klass.associations[prop as any];
-        if (association?.isHasOne && target[association.primaryKey]) {
-          if (value == undefined) {
-            target[prop]?.destroy();
-          } else {
-            value[association.foreignKey] = target[association.primaryKey];
-            value.save();
-          }
+        const association = target.associations.get(prop as string);
+        if (association instanceof HasOneAssociation) {
+          association.setter(value);
         }
-        if (association?.isBelongsTo) {
-          target[association.foreignKey] = value[association.primaryKey];
+        if (association instanceof BelongsToAssociation) {
+          association.setter(value);
         }
         if (target[prop] instanceof Collection && Array.isArray(value)) {
           target[prop].replace(value);
@@ -76,6 +69,18 @@ export class ModelInstanceBuilder {
   ) {
     for (const [key, association] of Object.entries(klass.associations)) {
       const { klass, foreignKey, primaryKey, field } = association;
+      if (association.isHasOne) {
+        (instance.associations as Map<string, any>).set(
+          key,
+          new HasOneAssociation(instance, association)
+        );
+      }
+      if (association.isBelongsTo) {
+        (instance.associations as Map<string, any>).set(
+          key,
+          new BelongsToAssociation(instance, association)
+        );
+      }
       if (!field.isList && key in input) {
         proxy[key] = input[key];
       } else if (field.isList || key in input) {
@@ -94,7 +99,7 @@ export class ModelInstanceBuilder {
           _association,
           input[key] ?? (hasAllPrimaryKeys() ? undefined : [])
         );
-        instance.associations[key] = _association;
+        (instance.associations as Map<string, any>).set(key, _association);
       }
     }
   }

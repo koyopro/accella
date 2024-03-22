@@ -1,3 +1,4 @@
+import { HasOneAssociation } from "./associations/hasOneAssociation.js";
 import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder.js";
 import { exec, execSQL } from "./database.js";
 import { Collection, Model } from "./index.js";
@@ -160,6 +161,11 @@ export class Persistence {
   }
 
   protected saveAssociations<T extends Model>(this: T) {
+    for (const m of this.associations.values()) {
+      if (m instanceof HasOneAssociation) {
+        m.persist();
+      }
+    }
     for (const [key, association] of Object.entries(this.associationInfos)) {
       const { foreignKey, primaryKey } = association;
       const value = this[key as keyof T];
