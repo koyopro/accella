@@ -31,7 +31,6 @@ model User {
 You can write domain logic as follows:
 
 ```ts
-// src/index.ts
 import { User } from "./models/index.js";
 
 const user: User = User.create({
@@ -70,7 +69,6 @@ export class UserModel extends ApplicationRecord {
 ```
 
 ```ts
-// src/index.ts
 import { User } from "./models/index.js";
 
 const user = User.create({
@@ -169,7 +167,6 @@ New user created! User.count is 1
 ### Creating and Saving Data
 
 ```ts
-// src/index.ts
 import { NewUser, User } from "./models/index.js";
 
 // Create a user
@@ -190,7 +187,6 @@ console.log(user.id); // => 2
 ### Retrieving Data
 
 ```ts
-// src/index.ts
 import { User } from "./models/index.js";
 
 const allUsers = User.all();
@@ -209,7 +205,6 @@ console.log(`Number of users with the last name Doe: ${does.count()}`);
 ### Updating Data
 
 ```ts
-// src/index.ts
 import { User } from "./models/index.js";
 
 const user = User.first()!;
@@ -224,7 +219,6 @@ user.save();
 ### Deleting Data
 
 ```ts
-// src/index.ts
 import { User } from "./models/index.js";
 
 const user = User.first()!;
@@ -245,7 +239,6 @@ Depending on the schema definition, some properties in `NewModel` allow `undefin
 This allows you to handle both pre-save and post-save models in a type-safe manner.
 
 ```ts
-// src/index.ts
 import { User, NewUser } from "./models/index.js";
 
 /*
@@ -301,7 +294,6 @@ export class UserModel extends ApplicationRecord {
 ```
 
 ```ts
-// src/index.ts
 import { User, NewUser } from "./models/index.js";
 
 const newUser: NewUser = User.build({});
@@ -327,7 +319,6 @@ export class UserModel extends ApplicationRecord {
 ```
 
 ```ts
-// src/index.ts
 import { User, NewUser } from "./models/index.js";
 
 const newUser: NewUser = User.build({});
@@ -344,7 +335,6 @@ console.log(user.fullName()); // => "John Doe"
 By using methods like `save()` and `isPersisted()`, you can convert a `NewModel` type to a `PersistedModel` type.
 
 ```ts
-// src/index.ts
 import { User, NewUser } from "./models/index.js";
 
 // Prepare a user of NewModel type

@@ -32,7 +32,6 @@ model User {
 以下のようにドメインロジックを記述することができます。
 
 ```ts
-// src/index.ts
 import { User } from "./models/index.js";
 
 const user: User = User.create({
@@ -71,7 +70,6 @@ export class UserModel extends ApplicationRecord {
 ```
 
 ```ts
-// src/index.ts
 import { User } from "./models/index.js";
 
 const user = User.create({
@@ -170,7 +168,6 @@ New user created! User.count is 1
 ### データの作成と保存
 
 ```ts
-// src/index.ts
 import { NewUser, User } from "./models/index.js";
 
 // Create a user
@@ -191,7 +188,6 @@ console.log(user.id); // => 2
 ### データの取得
 
 ```ts
-// src/index.ts
 import { User } from "./models/index.js";
 
 const allUsers = User.all();
@@ -210,7 +206,6 @@ console.log(`Number of users with the last name Doe: ${does.count()}`);
 ### データの更新
 
 ```ts
-// src/index.ts
 import { User } from "./models/index.js";
 
 const user = User.first()!;
@@ -225,7 +220,6 @@ user.save();
 ### データの削除
 
 ```ts
-// src/index.ts
 import { User } from "./models/index.js";
 
 const user = User.first()!;
@@ -246,7 +240,6 @@ Accel Recordでは、新規作成されたモデルと保存済みのモデル�
 これにより、保存前のモデルと保存後のモデルをどちらも型安全に扱うことができます。
 
 ```ts
-// src/index.ts
 import { User, NewUser } from "./models/index.js";
 
 /*
@@ -302,7 +295,6 @@ export class UserModel extends ApplicationRecord {
 ```
 
 ```ts
-// src/index.ts
 import { User, NewUser } from "./models/index.js";
 
 const newUser: NewUser = User.build({});
@@ -328,7 +320,6 @@ export class UserModel extends ApplicationRecord {
 ```
 
 ```ts
-// src/index.ts
 import { User, NewUser } from "./models/index.js";
 
 const newUser: NewUser = User.build({});
@@ -345,7 +336,6 @@ console.log(user.fullName()); // => "John Doe"
 `save()`や`isPersisted()`等のメソッドを利用することで、NewModel型をPersistedModel型に変換することができます。
 
 ```ts
-// src/index.ts
 import { User, NewUser } from "./models/index.js";
 
 // NewModel型のユーザーを用意
