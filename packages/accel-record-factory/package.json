@@ -27,6 +27,6 @@
   "author": "koyopro",
   "license": "Apache-2.0",
   "dependencies": {
-    "accel-record-core": "^0.1.1"
+    "accel-record-core": "^0.2.0"
   }
 }
