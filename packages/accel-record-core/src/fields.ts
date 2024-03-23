@@ -185,7 +185,7 @@ export class Fields {
       .map((field) => field.dbName);
   }
 
-  static get columns2(): Readonly<Field[]> {
+  static get columnFields(): Readonly<Field[]> {
     return this.fields.filter((f) => f.relationName == undefined);
   }
 
@@ -249,8 +249,8 @@ export class Fields {
     return (this.constructor as any).columns;
   }
 
-  get columns2(): Readonly<Field[]> {
-    return (this.constructor as any).columns2;
+  get columnFields(): Readonly<Field[]> {
+    return (this.constructor as any).columnFields;
   }
 
   get columnsMapping(): Record<string, string> {

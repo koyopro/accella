@@ -90,7 +90,7 @@ export class Persistence {
   protected makeUpdateParams<T extends Model>(this: T) {
     const data: Record<string, any> = {};
     const now = new Date();
-    for (const field of this.columns2) {
+    for (const field of this.columnFields) {
       const column = field.dbName as keyof T;
       if (this.isAttributeChanged(field.name) && this[column] !== undefined) {
         data[column as string] = this[column];

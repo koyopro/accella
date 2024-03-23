@@ -10,12 +10,12 @@ export class ModelInstanceBuilder {
     const instance = new klass() as InstanceType<T>;
     instance.isNewRecord = true;
     const proxy = ModelInstanceBuilder.createProxy<T>(instance, klass);
-    for (const column of klass.columns2) {
-      if (!(column.name in instance)) {
-        proxy[column.name] = column.getInitialValue();
+    for (const field of klass.columnFields) {
+      if (!(field.name in instance)) {
+        proxy[field.name] = field.getInitialValue();
       }
-      if (column.name in input) {
-        proxy[column.name] = input[column.name];
+      if (field.name in input) {
+        proxy[field.name] = input[field.name];
       }
     }
     this.initAssociations<T>(klass, instance);
