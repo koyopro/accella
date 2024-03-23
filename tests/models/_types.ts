@@ -39,7 +39,7 @@ declare module "accel-record" {
     save<T>(this: T): this is Persisted<T>;
 
     isChanged<T>(this: T, attr?: keyof Meta<T>["OrderInput"]): boolean;
-    isAttributeChanged<T>(this: T, attr?: keyof Meta<T>["OrderInput"]): boolean;
+    isAttributeChanged<T>(this: T, attr: keyof Meta<T>["OrderInput"]): boolean;
   }
 }
 
