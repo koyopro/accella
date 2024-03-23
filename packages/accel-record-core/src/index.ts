@@ -5,6 +5,7 @@ import { HasOneAssociation } from "./associations/hasOneAssociation.js";
 import { AttributeAssignment } from "./attributeAssignment.js";
 import { Connection } from "./connection.js";
 import { Fields } from "./fields.js";
+import { Dirty } from "./model/dirty.js";
 import { Persistence } from "./persistence.js";
 import { Query } from "./query.js";
 import { Transaction } from "./transaction.js";
@@ -56,6 +57,7 @@ export const registerModel = (model: any) => {
 export class Model extends classIncludes(
   AttributeAssignment,
   Connection,
+  Dirty,
   Fields,
   Persistence,
   Query,

@@ -139,6 +139,9 @@ declare module "accel-record" {
     asPersisted<T>(this: T): Persisted<T> | undefined;
     update<T>(this: T, input: Partial<Meta<T>["CreateInput"]>): this is Persisted<T>;
     save<T>(this: T): this is Persisted<T>;
+
+    isChanged<T>(this: T, attr?: keyof Meta<T>["OrderInput"]): boolean;
+    isAttributeChanged<T>(this: T, attr: keyof Meta<T>["OrderInput"]): boolean;
   }
 }
 

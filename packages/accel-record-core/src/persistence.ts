@@ -10,7 +10,9 @@ export class Persistence {
   isDestroyed: boolean = false;
 
   static build<T extends typeof Model>(this: T, input: any) {
-    return ModelInstanceBuilder.build(this as T, input);
+    const obj = ModelInstanceBuilder.build(this as T, input);
+    obj.storeOriginalValues();
+    return obj;
   }
 
   static create<T extends typeof Model>(this: T, input: any) {
@@ -31,6 +33,7 @@ export class Persistence {
     const ret = this.createOrUpdate();
     this.isNewRecord = false;
     this.saveAssociations();
+    this.storeOriginalValues();
     return ret;
   }
 
@@ -76,17 +79,20 @@ export class Persistence {
   }
 
   protected updateRecord<T extends Model>(this: T): boolean {
-    const data = this.makeUpdateParams();
-    exec(this.client.where(this.primaryKeysCondition()).update(data));
-    this.retriveUpdatedAt(data);
+    if (this.isChanged()) {
+      const data = this.makeUpdateParams();
+      exec(this.client.where(this.primaryKeysCondition()).update(data));
+      this.retriveUpdatedAt(data);
+    }
     return true;
   }
 
   protected makeUpdateParams<T extends Model>(this: T) {
-    const data: any = {};
+    const data: Record<string, any> = {};
     const now = new Date();
-    for (const column of this.columns as (keyof T)[]) {
-      if (this[column] !== undefined) {
+    for (const field of this.columns2) {
+      const column = field.dbName as keyof T;
+      if (this.isAttributeChanged(field.name) && this[column] !== undefined) {
         data[column as string] = this[column];
       }
       if (this.findField(column as string)?.isUpdatedAt) {
