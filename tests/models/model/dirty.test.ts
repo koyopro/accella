@@ -5,6 +5,8 @@ test("isChanged()", () => {
   expect(user.isChanged()).toBe(false);
   expect(user.isChanged("name")).toBe(false);
   expect(user.isChanged("email")).toBe(false);
+  // @ts-expect-error
+  user.isChanged("foo");
 
   user.name = "hoge";
   expect(user.isChanged()).toBe(true);
