@@ -18,7 +18,12 @@ export class ModelInstanceBuilder {
         proxy[column.name] = input[column.name];
       }
     }
-    this.initValues<T>(klass, input, proxy, instance);
+    this.initAssociations<T>(klass, instance);
+    for (const key of instance.associations.keys()) {
+      if (key in input) {
+        proxy[key] = input[key];
+      }
+    }
     return proxy;
   }
 
@@ -61,24 +66,16 @@ export class ModelInstanceBuilder {
     });
   }
 
-  private static initValues<T extends typeof Model>(
+  private static initAssociations<T extends typeof Model>(
     klass: T,
-    input: any,
-    proxy: any,
     obj: Model
   ) {
     for (const [key, info] of Object.entries(klass.associations)) {
       if (info.isHasOne) {
         obj.associations.set(key, new HasOneAssociation(obj, info));
-        if (key in input) {
-          proxy[key] = input[key];
-        }
       }
       if (info.isBelongsTo) {
         obj.associations.set(key, new BelongsToAssociation(obj, info));
-        if (key in input) {
-          proxy[key] = input[key];
-        }
       }
       if (info.field.isList) {
         const association = info.through
@@ -86,12 +83,11 @@ export class ModelInstanceBuilder {
           : new HasManyAssociation(obj, info);
         obj.associations.set(key, association);
 
-        const hasAllPrimaryKeys = () =>
-          obj.primaryKeys.every((k) => (obj as any)[k]);
+        const hasAllPrimaryKeys = obj.primaryKeys.every((k) => (obj as any)[k]);
         (obj as any)[key] = new Collection(
           Models[info.klass],
           association,
-          input[key] ?? (hasAllPrimaryKeys() ? undefined : [])
+          hasAllPrimaryKeys ? undefined : []
         );
       }
     }

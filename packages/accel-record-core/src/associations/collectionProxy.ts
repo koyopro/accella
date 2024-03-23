@@ -44,26 +44,26 @@ export class Collection<T extends Model, S extends ModelMeta> extends Relation<
   deleteAll() {
     const ret = this.toArray();
     this.association.deleteAll();
-    this.reset();
+    this.cache = [];
     return ret;
   }
 
   destroyAll() {
     const ret = this.toArray();
     this.association.destroyAll();
-    this.reset();
+    this.cache = [];
     return ret;
   }
 
   delete(...records: S["Base"][]) {
     const ret = this.association.delete(...records);
-    this.reset();
+    this.cache = this.cache?.filter((r) => !records.find((a) => a.equals(r)));
     return ret;
   }
 
   destroy(...records: S["Base"][]) {
     const ret = this.association.destroy(...records);
-    this.reset();
+    this.cache = this.cache?.filter((r) => !records.find((a) => a.equals(r)));
     return ret;
   }
 
@@ -73,6 +73,6 @@ export class Collection<T extends Model, S extends ModelMeta> extends Relation<
     const deleted = array.filter((a) => !records.find((r) => r.equals(a)));
     this.destroy(...deleted);
     this.concat(added);
-    return this.reset();
+    return this;
   }
 }
