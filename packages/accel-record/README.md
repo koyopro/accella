@@ -61,7 +61,7 @@ You can also extend models and define custom methods as you like.
 // src/models/user.ts
 import { ApplicationRecord } from "./applicationRecord.js";
 
-class UserModel extends ApplicationRecord {
+export class UserModel extends ApplicationRecord {
   // Define a method to get the full name
   get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
@@ -170,7 +170,7 @@ New user created! User.count is 1
 
 ```ts
 // src/index.ts
-import { User } from "./models/index.js";
+import { NewUser, User } from "./models/index.js";
 
 // Create a user
 const user: User = User.create({
@@ -288,9 +288,9 @@ import { ApplicationRecord } from "./applicationRecord.js";
 Example of BaseModel:
 UserModel corresponds to `NewUser` and `User` in `BaseModel`.
  */
-class UserModel extends ApplicationRecord {
+export class UserModel extends ApplicationRecord {
   // Methods defined here can be used by both `NewUser` and `User`.
-  get fullName(): string {
+  get fullName(): string | undefined {
     if (!this.firstName || !this.lastName) {
       // For `NewUser`, we need to consider the possibility of `firstName` and `lastName` being `undefined`.
       return undefined;
@@ -305,7 +305,7 @@ class UserModel extends ApplicationRecord {
 import { User, NewUser } from "./models/index.js";
 
 const newUser: NewUser = User.build({});
-console.log(user.fullName); // => undefined
+console.log(newUser.fullName); // => undefined
 
 const user: User = User.first()!;
 console.log(user.fullName); // => "John Doe"
@@ -318,7 +318,7 @@ You can also define methods that are type-safe and can only be used by `Persiste
 import { ApplicationRecord } from "./applicationRecord.js";
 import { User } from "./index.js";
 
-class UserModel extends ApplicationRecord {
+export class UserModel extends ApplicationRecord {
   // This method can only be used by `User` and is type-safe. Using it with `NewUser` will result in a type error.
   fullName(this: User): string {
     return `${this.firstName} ${this.lastName}`;

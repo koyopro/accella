@@ -62,7 +62,7 @@ john.delete();
 // src/models/user.ts
 import { ApplicationRecord } from "./applicationRecord.js";
 
-class UserModel extends ApplicationRecord {
+export class UserModel extends ApplicationRecord {
   // フルネームを取得するメソッドを定義
   get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
@@ -171,7 +171,7 @@ New user created! User.count is 1
 
 ```ts
 // src/index.ts
-import { User } from "./models/index.js";
+import { NewUser, User } from "./models/index.js";
 
 // Create a user
 const user: User = User.create({
@@ -289,9 +289,9 @@ import { ApplicationRecord } from "./applicationRecord.js";
 BaseModelの例：
 UserModelはNewUserとUserに対応するBaseModelとなります。
  */
-class UserModel extends ApplicationRecord {
+export class UserModel extends ApplicationRecord {
   // ここで定義したメソッドはNewUserとUserの両方で利用することができます。
-  get fullName(): string {
+  get fullName(): string | undefined {
     if (!this.firstName || !this.lastName) {
       // NewUserではfirstNameとlastNameがundefinedの可能性を考慮する必要があります。
       return undefined;
@@ -306,7 +306,7 @@ class UserModel extends ApplicationRecord {
 import { User, NewUser } from "./models/index.js";
 
 const newUser: NewUser = User.build({});
-console.log(user.fullName); // => undefined
+console.log(newUser.fullName); // => undefined
 
 const user: User = User.first()!;
 console.log(user.fullName); // => "John Doe"
@@ -319,7 +319,7 @@ console.log(user.fullName); // => "John Doe"
 import { ApplicationRecord } from "./applicationRecord.js";
 import { User } from "./index.js";
 
-class UserModel extends ApplicationRecord {
+export class UserModel extends ApplicationRecord {
   // このメソッドはUserのみで型安全に利用することができ、NewUserで利用した場合には型エラーとなります。
   fullName(this: User): string {
     return `${this.firstName} ${this.lastName}`;
