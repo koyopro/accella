@@ -31,9 +31,9 @@ export class Persistence {
 
   save<T extends Model>(this: T): boolean {
     const ret = this.createOrUpdate();
-    this.storeOriginalValues();
     this.isNewRecord = false;
     this.saveAssociations();
+    this.storeOriginalValues();
     return ret;
   }
 
@@ -110,10 +110,7 @@ export class Persistence {
     data: Record<string, any>
   ) {
     for (const column of this.columns as (keyof T)[]) {
-      if (
-        this.findField(column as string)?.isUpdatedAt &&
-        data[column as string]
-      ) {
+      if (this.findField(column as string)?.isUpdatedAt) {
         this[column as keyof T] = data[column as string];
       }
     }
