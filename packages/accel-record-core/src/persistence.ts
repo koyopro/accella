@@ -10,7 +10,9 @@ export class Persistence {
   isDestroyed: boolean = false;
 
   static build<T extends typeof Model>(this: T, input: any) {
-    return ModelInstanceBuilder.build(this as T, input);
+    const obj = ModelInstanceBuilder.build(this as T, input);
+    obj.storeOriginalValues();
+    return obj;
   }
 
   static create<T extends typeof Model>(this: T, input: any) {
@@ -29,6 +31,7 @@ export class Persistence {
 
   save<T extends Model>(this: T): boolean {
     const ret = this.createOrUpdate();
+    this.storeOriginalValues();
     this.isNewRecord = false;
     this.saveAssociations();
     return ret;
