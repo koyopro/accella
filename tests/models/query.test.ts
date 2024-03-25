@@ -66,7 +66,7 @@ describe("Query", () => {
   test(".whereRaw()", () => {
     $user.create({ name: "hoge", age: 20 });
     $user.create({ name: "fuga", age: 30 });
-    expect(User.whereRaw('age = ?', [30]).first()?.name).toBe("fuga");
+    expect(User.whereRaw("age = ?", 30).first()?.name).toBe("fuga");
   });
 
   test(".find()", () => {

@@ -150,7 +150,8 @@ describe("Relation", () => {
   test("#whereRaw()", () => {
     $user.create({ name: "hoge", age: 20 });
     $user.create({ name: "fuga", age: 30 });
-    expect(User.all().whereRaw("age = ?", [30]).first()?.name).toBe("fuga");
+    expect(User.all().whereRaw("age = ?", 30).first()?.name).toBe("fuga");
+    expect(User.all().where("age >= ?", 30).first()?.name).toBe("fuga");
     expect(User.all().where("age IS NOT NULL").first()?.name).toBe("hoge");
   });
 

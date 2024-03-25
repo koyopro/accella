@@ -28,8 +28,10 @@ declare module "accel-record" {
     function offset<T extends Class>(this: T, offset: number): Relation<InstanceType<T>, Meta<T>>;
     function limit<T extends Class>(this: T, limit: number): Relation<InstanceType<T>, Meta<T>>;
     function where<T extends Class>(this: T, input: Meta<T>['WhereInput']): Relation<InstanceType<T>, Meta<T>>;
+    function where<T extends Class>(this: T, query: string, ...bindings: any[]): Relation<InstanceType<T>, Meta<T>>;
+    function where<T extends Class>(this: T, queryOrInput: string | Meta<T>['WhereInput'], ...bindings: any[]): Relation<InstanceType<T>, Meta<T>>;
     function whereNot<T extends Class>(this: T, input: Meta<T>['WhereInput']): Relation<InstanceType<T>, Meta<T>>;
-    function whereRaw<T extends Class>(this: T, query: string, bindings?: any[]): Relation<InstanceType<T>, Meta<T>>;
+    function whereRaw<T extends Class>(this: T, query: string, ...bindings: any[]): Relation<InstanceType<T>, Meta<T>>;
     function includes<T extends Class>(this: T, ...input: Meta<T>['AssociationKey'][]): Relation<InstanceType<T>, Meta<T>>;
   }
   interface Model {
