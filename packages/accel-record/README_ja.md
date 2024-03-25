@@ -446,3 +446,48 @@ interface Sample {
   cuid: string;
 }
 ```
+
+## Jsonフィールドの型
+
+通常PrismaスキーマでJson型を定義する場合、厳密な型を指定できません。
+
+```ts
+// prisma/schema.prisma
+model Sample {
+  id   Int  @id @default(autoincrement())
+  data Json // Jsonフィールドには厳密な型がありません
+}
+```
+
+Accel RecordではBaseModelにおいてJson型のフィールドに対して型を指定することができます。 \
+この場合は、Json型のフィールドも読み書きともに型安全に扱うことができます。
+
+```ts
+// src/models/sample.ts
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class SampleModel extends ApplicationRecord {
+  // BaseModel上でJson型のフィールドに対して型を指定できる
+  data: { myKey1: string; myKey2: number } | undefined = undefined;
+}
+```
+
+```ts
+import { Sample } from "./models/index.js";
+
+const sample = Sample.build({});
+
+// OK
+sample.data = { myKey1: "value1", myKey2: 123 };
+
+// Type Error !
+sample.data = { foo: "value1" };
+// => Type '{ foo: string; }' is not assignable to type '{ myKey1: string; myKey2: number; } | undefined'.
+
+// OK
+console.log(sample.data?.myKey1);
+
+// Type Error !
+console.log(sample.data?.foo);
+// => Property 'foo' does not exist on type '{ myKey1: string; myKey2: number; } | undefined'.
+```
