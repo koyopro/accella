@@ -32,7 +32,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "accel-record-core": "^0.2.0",
-    "accel-record-factory": "^0.1.1",
+    "accel-record-factory": "^0.2.0",
     "prisma-generator-accel-record": "^0.2.0"
   }
 }
