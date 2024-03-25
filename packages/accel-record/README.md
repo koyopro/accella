@@ -445,3 +445,48 @@ interface Sample {
   cuid: string;
 }
 ```
+
+## Type of Json Field
+
+When defining a Json type in a typical Prisma schema, you cannot specify strict types.
+
+```ts
+// prisma/schema.prisma
+model Sample {
+  id   Int  @id @default(autoincrement())
+  data Json // you don't have strict type for Json field
+}
+```
+
+With Accel Record, you can specify the type for Json fields in the BaseModel. \
+In this case, you can handle Json fields in a type-safe manner for both reading and writing.
+
+```ts
+// src/models/sample.ts
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class SampleModel extends ApplicationRecord {
+  // You can specify the type for Json fields in the BaseModel
+  data: { myKey1: string; myKey2: number } | undefined = undefined;
+}
+```
+
+```ts
+import { Sample } from "./models/index.js";
+
+const sample = Sample.build({});
+
+// OK
+sample.data = { myKey1: "value1", myKey2: 123 };
+
+// Type Error !
+sample.data = { foo: "value1" };
+// => Type '{ foo: string; }' is not assignable to type '{ myKey1: string; myKey2: number; } | undefined'.
+
+// OK
+console.log(sample.data?.myKey1);
+
+// Type Error !
+console.log(sample.data?.foo);
+// => Property 'foo' does not exist on type '{ myKey1: string; myKey2: number; } | undefined'.
+```
