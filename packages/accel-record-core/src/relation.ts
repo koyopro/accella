@@ -79,7 +79,17 @@ export class Relation<T, M extends ModelMeta> {
     newOptions["orders"].push([column, direction]);
     return new Relation(this.model, newOptions);
   }
-  where(input: M["WhereInput"]): Relation<T, M> {
+
+  where(query: string, bindings?: any[]): Relation<T, M>;
+  where(input: M["WhereInput"]): Relation<T, M>;
+  where(
+    queryOrInput: string | M["WhereInput"],
+    bindings: any[] = []
+  ): Relation<T, M> {
+    if (typeof queryOrInput === "string") {
+      return this.whereRaw(queryOrInput, bindings);
+    }
+    const input = queryOrInput;
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key in input) {
       if (Array.isArray(input[key])) {
