@@ -1,5 +1,5 @@
 import type { Model, ModelMeta } from "./index.js";
-import { Relation } from "./relation.js";
+import { Relation } from "./relation/index.js";
 
 export class Query {
   static all<T extends typeof Model>(this: T): Relation<any, any> {
@@ -11,6 +11,13 @@ export class Query {
     R extends ModelMeta["AssociationKey"][],
   >(this: T, ...input: R): Relation<any, any> {
     return this.all().includes(...input);
+  }
+
+  static select<T extends typeof Model>(
+    this: T,
+    ...columns: string[]
+  ): Relation<any, any> {
+    return this.all().select(...columns);
   }
 
   static first<T extends typeof Model>(this: T) {
@@ -73,5 +80,17 @@ export class Query {
 
   static findBy<T extends typeof Model>(this: T, input: object) {
     return this.all().where(input).first();
+  }
+
+  static maximum<T extends typeof Model>(this: T, column: string) {
+    return this.all().maximum(column);
+  }
+
+  static minimum<T extends typeof Model>(this: T, column: string) {
+    return this.all().minimum(column);
+  }
+
+  static average<T extends typeof Model>(this: T, column: string) {
+    return this.all().average(column);
   }
 }

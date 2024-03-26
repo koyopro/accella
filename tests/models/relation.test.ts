@@ -182,4 +182,24 @@ describe("Relation", () => {
     expect(author.posts.toArray()[0].title).toBe("post1");
     expect(author.posts.toArray()[1].title).toBe("post2");
   });
+
+  test("aggregate", () => {
+    $user.create({ age: 21 });
+    $user.create({ age: 24 });
+
+    expect(User.all().minimum("age")).toBe(21);
+    expect(User.all().maximum("age")).toBe(24);
+    expect(User.all().average("age")).toBe(22.5);
+  });
+
+  test("select", () => {
+    $user.create({ name: "hoge", age: 20 });
+    $user.create({ name: "fuga", age: 30 });
+
+    const users = User.all().select("name").select("id").toArray();
+    expect(users.map(u => u.name)).toEqual(["hoge", "fuga"]);
+    expect(users[0] instanceof User).toBeFalsy();
+    // @ts-expect-error
+    users[0].age;
+  })
 });

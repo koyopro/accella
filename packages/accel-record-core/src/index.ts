@@ -18,7 +18,7 @@ export {
   stopRpcClient as stopWorker,
 } from "./database.js";
 export { Migration } from "./migration.js";
-export { Relation } from "./relation.js";
+export { Relation } from "./relation/index.js";
 export { DatabaseCleaner } from "./testUtils.js";
 export { Rollback } from "./transaction.js";
 
