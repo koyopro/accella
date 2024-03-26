@@ -1,5 +1,5 @@
 import { ModelMeta, type Model } from "../index.js";
-import { Options, Relation } from "../relation.js";
+import { Options, Relation } from "../relation/index.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
 
 export class Collection<T extends Model, S extends ModelMeta> extends Relation<

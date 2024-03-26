@@ -1,5 +1,5 @@
 import type { Model, ModelMeta } from "./index.js";
-import { Relation } from "./relation.js";
+import { Relation } from "./relation/index.js";
 
 export class Query {
   static all<T extends typeof Model>(this: T): Relation<any, any> {
