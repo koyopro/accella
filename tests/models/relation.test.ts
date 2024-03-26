@@ -182,4 +182,13 @@ describe("Relation", () => {
     expect(author.posts.toArray()[0].title).toBe("post1");
     expect(author.posts.toArray()[1].title).toBe("post2");
   });
+
+  test("aggregate", () => {
+    $user.create({ age: 21 });
+    $user.create({ age: 24 });
+
+    expect(User.all().minimum("age")).toBe(21);
+    expect(User.all().maximum("age")).toBe(24);
+    expect(User.all().average("age")).toBe(22.5);
+  });
 });

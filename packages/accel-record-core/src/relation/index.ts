@@ -92,6 +92,24 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     );
     return new Relation(this.model, newOptions);
   }
+  minimum(attr: keyof M["OrderInput"]) {
+    const res = exec(
+      this.query().min(this.model.attributeToColumn(attr as string))
+    );
+    return Number(Object.values(res[0])[0]);
+  }
+  maximum(attr: keyof M["OrderInput"]) {
+    const res = exec(
+      this.query().max(this.model.attributeToColumn(attr as string))
+    );
+    return Number(Object.values(res[0])[0]);
+  }
+  average(attr: keyof M["OrderInput"]) {
+    const res = exec(
+      this.query().avg(this.model.attributeToColumn(attr as string))
+    );
+    return Number(Object.values(res[0])[0]);
+  }
   get(): T[] {
     const rows = exec(this.query().select(`${this.model.tableName}.*`));
     this.loadIncludes(rows);

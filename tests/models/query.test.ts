@@ -90,4 +90,13 @@ describe("Query", () => {
     expect(u!.name).toBe("hoge");
     expect(u!.email).toBe("hoge@example.com");
   });
+
+  test("aggregate", () => {
+    $user.create({ age: 21 });
+    $user.create({ age: 24 });
+
+    expect(User.minimum("age")).toBe(21);
+    expect(User.maximum("age")).toBe(24);
+    expect(User.average("age")).toBe(22.5);
+  });
 });

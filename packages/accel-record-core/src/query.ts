@@ -74,4 +74,16 @@ export class Query {
   static findBy<T extends typeof Model>(this: T, input: object) {
     return this.all().where(input).first();
   }
+
+  static maximum<T extends typeof Model>(this: T, column: string) {
+    return this.all().maximum(column);
+  }
+
+  static minimum<T extends typeof Model>(this: T, column: string) {
+    return this.all().minimum(column);
+  }
+
+  static average<T extends typeof Model>(this: T, column: string) {
+    return this.all().average(column);
+  }
 }
