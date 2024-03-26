@@ -176,7 +176,7 @@ describe("Relation", () => {
     Post.create({ title: "post1", authorId: u.id });
     Post.create({ title: "post2", authorId: u.id });
     // TODO: improve this test
-    const author = User.all().includes("posts").get()[0];
+    const author = User.all().includes("posts").load()[0];
     expect(author.posts.toArray()).toHaveLength(2);
     expect(author.posts.toArray()[0]).toBeInstanceOf(Post);
     expect(author.posts.toArray()[0].title).toBe("post1");
@@ -197,9 +197,9 @@ describe("Relation", () => {
     $user.create({ name: "fuga", age: 30 });
 
     const users = User.all().select("name").select("id").toArray();
-    expect(users.map(u => u.name)).toEqual(["hoge", "fuga"]);
+    expect(users.map((u) => u.name)).toEqual(["hoge", "fuga"]);
     expect(users[0] instanceof User).toBeFalsy();
     // @ts-expect-error
     users[0].age;
-  })
+  });
 });

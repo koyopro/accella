@@ -11,7 +11,7 @@ export class RelationBase {
   ) {
     this.options[key] = value;
   }
-  protected _get(this: Relation<unknown, ModelMeta>) {
+  protected _load(this: Relation<unknown, ModelMeta>) {
     const select =
       this.options.select.length > 0
         ? this.options.select.map(

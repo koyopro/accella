@@ -46,10 +46,10 @@ describe("Query", () => {
   });
 
   test(".where", () => {
-    expect(User.where({ name: "hoge" }).get()).toEqual([]);
+    expect(User.where({ name: "hoge" }).load()).toEqual([]);
 
     $user.create({ name: "hoge", email: "hoge@example.com" });
-    const users = User.where({ name: "hoge" }).get();
+    const users = User.where({ name: "hoge" }).load();
     expect(users).toHaveLength(1);
     const u = users[0];
     expect(u).toBeInstanceOf(User);

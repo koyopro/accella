@@ -27,7 +27,7 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     this.options = Object.assign(getDefaultOptions(), options) as Options;
   }
   toArray(): T[] {
-    return (this.cache ||= this.get());
+    return (this.cache ||= this.load());
   }
   map<F extends (value: T, index: number, array: T[]) => any>(
     func: F
@@ -49,7 +49,7 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     return new Relation<T, M>(this.model, {
       ...this.options,
       limit: 1,
-    }).get()[0];
+    }).load()[0];
   }
   offset(offset: number): Relation<T, M> {
     return new Relation(this.model, { ...this.options, offset });
@@ -112,8 +112,8 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     );
     return Number(Object.values(res[0])[0]);
   }
-  get(): T[] {
-    return this._get();
+  load(): T[] {
+    return this._load();
   }
   [Symbol.iterator]() {
     const _this = this;

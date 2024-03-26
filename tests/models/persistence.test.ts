@@ -14,7 +14,7 @@ describe("Persistence", () => {
     }
     // u should be a persisted User
     expect(u.id).not.toBeUndefined();
-    expect(Post.all().get()).toHaveLength(2);
+    expect(Post.all().load()).toHaveLength(2);
 
     u.isReadonly = true;
     expect(() => u.save()).toThrowError("Readonly record");
@@ -28,7 +28,7 @@ describe("Persistence", () => {
     // u should be a persisted User
     expect(u.id).not.toBeUndefined();
     expect(u.name).toBe("fuga");
-    expect(User.all().get()[0].name).toBe("fuga");
+    expect(User.all().load()[0].name).toBe("fuga");
   });
 
   test("#delete()", () => {

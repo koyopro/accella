@@ -34,7 +34,7 @@ describe("User#tojson()", () => {
 
     {
       /*
-      This means you can use iterator to get all users.
+      This means you can use iterator to load all users.
 
       for (const user of User.all()) {
         console.log(user);
@@ -45,7 +45,7 @@ describe("User#tojson()", () => {
       expect(users[1]!.name).toEqual("fuga");
     }
     {
-      const users = User.all().get();
+      const users = User.all().load();
       expect(users[0].name).toEqual("hoge");
       expect(users[1].name).toEqual("fuga");
     }
@@ -67,7 +67,7 @@ describe("User#tojson()", () => {
     Post.create({ title: "post1", authorId: u.id });
     Post.create({ title: "post2", authorId: u.id });
     // TODO: improve this test
-    const author = User.includes("posts").get()[0];
+    const author = User.includes("posts").load()[0];
     expect(author.posts.toArray()).toHaveLength(2);
     expect(author.posts.toArray()[0]).toBeInstanceOf(Post);
     expect(author.posts.toArray()[0].title).toBe("post1");
