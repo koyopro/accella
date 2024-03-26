@@ -1,3 +1,4 @@
+import { exec } from "../database.js";
 import { ModelMeta, Models } from "../index.js";
 import { Relation } from "./index.js";
 import { Options } from "./options.js";
@@ -9,6 +10,24 @@ export class RelationBase {
     value: any
   ) {
     this.options[key] = value;
+  }
+  protected _get(this: Relation<unknown, ModelMeta>) {
+    const select =
+      this.options.select.length > 0
+        ? this.options.select.map(
+            (column) =>
+              `${this.model.tableName}.${this.model.attributeToColumn(column)}`
+          )
+        : [`${this.model.tableName}.*`];
+    const rows = exec(this.query().select(...select));
+    this.loadIncludes(rows);
+    const records = rows.map((row: object) => this.makeAttributes(row));
+    if (this.options.select.length > 0) return records;
+    return records.map((record: object) => {
+      const obj = this.model.build(record);
+      obj.isNewRecord = false;
+      return obj;
+    });
   }
   protected query(this: Relation<unknown, ModelMeta>) {
     let q = this.client.clone();

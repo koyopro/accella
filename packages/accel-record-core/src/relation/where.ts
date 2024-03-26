@@ -1,4 +1,4 @@
-import { ModelMeta, Relation } from "..";
+import { ModelMeta, Relation } from "../index.js";
 
 export class Where {
   protected addWhere(

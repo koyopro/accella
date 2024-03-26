@@ -1,6 +1,6 @@
+import { exec } from "../database.js";
+import { Model, ModelMeta } from "../index.js";
 import { Relation } from "./index.js";
-import { ModelMeta } from "../index.js";
-import { exec } from "../database";
 
 export class Query {
   reset(this: Relation<unknown, ModelMeta>) {
@@ -17,5 +17,13 @@ export class Query {
   }
   isEmpty(this: Relation<unknown, ModelMeta>): boolean {
     return !this.exists();
+  }
+  deleteAll(this: Relation<unknown, ModelMeta>) {
+    exec(this.query().del());
+  }
+  destroyAll(this: Relation<unknown, ModelMeta>) {
+    for (const record of this.toArray()) {
+      if (record instanceof Model) record.destroy();
+    }
   }
 }

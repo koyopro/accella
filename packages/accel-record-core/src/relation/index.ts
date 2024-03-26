@@ -83,14 +83,6 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
   whereRaw(query: string, ...bindings: any[]): Relation<T, M> {
     return new Relation(this.model, this.addWhereRaw(query, ...bindings));
   }
-  deleteAll() {
-    exec(this.query().del());
-  }
-  destroyAll() {
-    for (const record of this.toArray()) {
-      if (record instanceof Model) record.destroy();
-    }
-  }
   includes(
     ...input: M["AssociationKey"][]
   ): Relation<T, M & { [K in M["AssociationKey"][number]]: ModelMeta }> {
@@ -121,22 +113,7 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     return Number(Object.values(res[0])[0]);
   }
   get(): T[] {
-    const select =
-      this.options.select.length > 0
-        ? this.options.select.map(
-            (column) =>
-              `${this.model.tableName}.${this.model.attributeToColumn(column)}`
-          )
-        : [`${this.model.tableName}.*`];
-    const rows = exec(this.query().select(...select));
-    this.loadIncludes(rows);
-    const records = rows.map((row: object) => this.makeAttributes(row));
-    if (this.options.select.length > 0) return records as T[];
-    return records.map((record: object) => {
-      const obj = this.model.build(record);
-      obj.isNewRecord = false;
-      return obj;
-    });
+    return this._get();
   }
   [Symbol.iterator]() {
     const _this = this;
