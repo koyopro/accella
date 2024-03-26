@@ -1,6 +1,7 @@
 import { Association } from "../fields.js";
 
 export type Options = {
+  select: string[];
   joins: any[];
   wheres: any[];
   whereNots: any[];
@@ -14,6 +15,7 @@ export type Options = {
 };
 
 export const getDefaultOptions = (): Options => ({
+  select: [],
   joins: [],
   includes: [],
   wheres: [],

@@ -13,6 +13,13 @@ export class Query {
     return this.all().includes(...input);
   }
 
+  static select<T extends typeof Model>(
+    this: T,
+    ...columns: string[]
+  ): Relation<any, any> {
+    return this.all().select(...columns);
+  }
+
   static first<T extends typeof Model>(this: T) {
     return this.all().first();
   }

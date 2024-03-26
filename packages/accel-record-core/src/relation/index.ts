@@ -34,6 +34,16 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
   ): ReturnType<F>[] {
     return this.toArray().map((row, i, array) => func(row, i, array));
   }
+  select<
+    F extends (keyof M["OrderInput"])[],
+    // @ts-ignore
+    R extends { [K in F[number]]: M["Persisted"][K] },
+  >(...columns: F): Relation<T extends Model ? R : T & R, M> {
+    return new Relation(this.model, {
+      ...this.options,
+      select: [...this.options.select, ...(columns as string[])],
+    });
+  }
   first(): T | undefined {
     if (this.cache) return this.cache[0];
     return new Relation<T, M>(this.model, {
@@ -111,10 +121,19 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     return Number(Object.values(res[0])[0]);
   }
   get(): T[] {
-    const rows = exec(this.query().select(`${this.model.tableName}.*`));
+    const select =
+      this.options.select.length > 0
+        ? this.options.select.map(
+            (column) =>
+              `${this.model.tableName}.${this.model.attributeToColumn(column)}`
+          )
+        : [`${this.model.tableName}.*`];
+    const rows = exec(this.query().select(...select));
     this.loadIncludes(rows);
-    return rows.map((row: object) => {
-      const obj = this.model.build(this.makeAttributes(row));
+    const records = rows.map((row: object) => this.makeAttributes(row));
+    if (this.options.select.length > 0) return records as T[];
+    return records.map((record: object) => {
+      const obj = this.model.build(record);
       obj.isNewRecord = false;
       return obj;
     });

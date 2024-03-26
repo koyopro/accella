@@ -20,6 +20,7 @@ declare module "accel-record" {
   namespace Model {
     function build<T extends Class>(this: T, input: Partial<Meta<T>["CreateInput"]>): New<T>;
     function create<T extends Class>(this: T, input: Meta<T>["CreateInput"]): InstanceType<T>;
+    function select<T extends Class, F extends (keyof Meta<T>["OrderInput"])[]>(this: T, ...columns: F): Relation<{ [K in F[number]]: InstanceType<T>[K] }, Meta<T>>;
     function first<T extends Class>(this: T): InstanceType<T>;
     function find<T extends Class>(this: T, id: number): InstanceType<T>;
     function findBy<T extends Class>(this: T, input: Meta<T>['WhereInput']): InstanceType<T> | undefined;

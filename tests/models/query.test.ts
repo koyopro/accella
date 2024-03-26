@@ -99,4 +99,13 @@ describe("Query", () => {
     expect(User.maximum("age")).toBe(24);
     expect(User.average("age")).toBe(22.5);
   });
+
+  test("select", () => {
+    $user.create({ name: "hoge" });
+
+    const users = User.select("name").select("id").toArray();
+    expect(users.map((u) => u.name)).toEqual(["hoge"]);
+    // @ts-expect-error
+    users[0].age;
+  });
 });
