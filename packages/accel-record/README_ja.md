@@ -631,3 +631,85 @@ user.groups.destroy(group);
 // 関連の削除(パターン2)
 group.users.destroy(user);
 ```
+
+## クエリインターフェース
+
+### モデルのクエリインターフェース
+
+モデルに対するクエリを行うためのインターフェースの利用例を示します。
+各メソッドではモデル定義から生成された情報を利用し、型安全にクエリを行うことができます。
+また、IDEの補完機能も利用することができます。
+
+より詳細についてはRelationクラスのメソッド一覧を参照してください。
+
+```ts
+import { User } from "./models/index.js";
+
+User.where({
+  name: "John",
+  age: { ">=": 18 },
+  email: { endsWith: "@example.com" },
+})
+  .order("createdAt", "desc")
+  .includes("posts", "setting")
+  .offset(10)
+  .limit(10);
+
+User.where({ name: ["John", "Alice"] }).exists();
+
+User.where("createdAt < ?", new Date("2021-01-01")).count();
+
+User.first()?.posts.destroyAll();
+```
+
+モデルのクエリインターフェースでは、joinやgroup byなどの機能は現在サポートされていません。
+これらのクエリではスキーマの型情報を利用するメリットが少ないためです。
+
+モデルのクエリインターフェースでは実現できないクエリを実行する場合は、以下で説明する生SQLやKnexのQueryBuilderを使ったクエリ実行を利用してください。
+
+### 生SQLのクエリ実行
+
+`Model.connection.execute()` メソッドを利用することで生のSQLクエリを実行し、同期的に結果を取得することができます。
+
+```ts
+import { Model } from "accel-record";
+
+const { cnt } = Model.connection.execute(
+  `select count(User.id) as cnt
+    from User
+    left join Post
+      on User.id = Post.authorId
+    where Post.title = ?`,
+  ["title1"]
+)[0];
+
+console.log(cnt); // => 1
+```
+
+### KnexのQueryBuilderを使ったクエリ実行
+
+Knexを利用してのクエリの構築や実行ができます。 \
+またKnexのQueryBuilderに `execute()` メソッドを追加しており、これを利用すると同期的にクエリを実行することができます。
+
+機能の詳細は以下のリンクを参照してください。 \
+[Knex Query Builder | Knex.js](https://knexjs.org/guide/query-builder.html)
+
+```ts
+import { Model } from "accel-record";
+import { User } from "./models/index.js";
+
+// Model.connection.knex で Knex のインスタンスを取得できます。
+const knex = Model.connection.knex;
+const rows = knex
+  .select("name", knex.raw("SUM(score) as total"))
+  .from("Score")
+  .groupBy("name")
+  .execute();
+
+console.log(rows); // => [{ name: "John", total: "1" }, { name: "Alice", total: "2" }]
+
+// queryBuiler プロパティを利用して、各モデルに対応するテーブルへのクエリを行うことができます。
+const rows = User.queryBuilder.select("name").groupBy("name").execute();
+
+console.log(rows); // => [{ name: "John" }, { name: "Alice" }]
+```
