@@ -102,3 +102,11 @@ export class Model extends classIncludes(
     return this;
   }
 }
+
+declare module "knex" {
+  namespace Knex {
+    interface QueryBuilder {
+      execute(): any[];
+    }
+  }
+}
