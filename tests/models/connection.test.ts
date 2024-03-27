@@ -11,7 +11,7 @@ test("execute", () => {
   Model.connection.execute("update User set name = 'fuga' where id = ?", [
     u.id,
   ]);
-  expect(User.find(u.id)!.name).toBe("fuga");
+  expect(u.reload().name).toBe("fuga");
 
   const r = Model.connection.execute(
     `select count(User.id) as cnt
@@ -35,8 +35,10 @@ test("knex builder", async () => {
     expect(r[0].name).toBe("hoge");
   }
   {
-    const r = User.client
-      .select("name", Model.connection.knex.raw("SUM(id) as s"))
+    const knex = Model.connection.knex;
+    const r = knex
+      .select("name", knex.raw("SUM(id) as s"))
+      .from("User")
       .groupBy("id")
       .execute();
     expect(r[0].name).toBe(u.name);
