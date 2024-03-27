@@ -491,3 +491,143 @@ console.log(sample.data?.myKey1);
 console.log(sample.data?.foo);
 // => Property 'foo' does not exist on type '{ myKey1: string; myKey2: number; } | undefined'.
 ```
+
+## 関連付け
+
+以下に、関連付けを持つモデルに対する操作の例を示します。
+
+### One-to-One リレーション
+
+```ts
+// prisma/schema.prisma
+model User {
+  id      Int    @id @default(autoincrement())
+  profile Profile?
+}
+
+model Profile {
+  id     Int    @id @default(autoincrement())
+  userId Int    @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
+```
+
+```ts
+import { User, Profile } from "./models/index.js";
+
+const user = User.create({});
+
+// 関連の保存(パターン1)
+const profile = Profile.create({ user });
+
+// 関連の保存(パターン2)
+user.profile = Profile.build({});
+
+// 関連の保存(パターン3)
+user.update({ profile: Profile.build({}) });
+
+// 関連の取得
+user.profile;
+
+profile.user;
+
+// 関連の削除(パターン1)
+user.profile?.destroy();
+
+// 関連の削除(パターン2)
+user.profile = undefined;
+```
+
+### One-to-Many リレーション
+
+```ts
+// prisma/schema.prisma
+model User {
+  id       Int      @id @default(autoincrement())
+  posts    Post[]
+}
+
+model Post {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  user   User   @relation(fields: [userId], references: [id])
+}
+```
+
+```ts
+import { User, Post } from "./models/index.js";
+
+const user = User.create({});
+
+// 関連の保存(パターン1)
+const post = Post.create({ user });
+
+// 関連の保存(パターン2)
+user.posts.push(Post.build({}));
+
+// 関連の保存(パターン3)
+user.posts = [Post.build({})];
+
+// 関連の取得
+user.posts.toArray();
+
+post.user;
+
+// 関連の削除(パターン1)
+user.posts.destroy(post);
+
+// 関連の削除(パターン2)
+post.destroy();
+```
+
+### Many-to-Many リレーション
+
+Prismaスキーマでは、明示的なMany-to-Manyリレーションと、非明示的なMany-to-Manyリレーションの2つの方法があります。
+
+明示的なMany-to-Manyリレーションの場合、中間テーブルを定義します。
+この場合は、前項のOne-to-Manyリレーションと同様に操作することになります。
+
+以下では、非明示的なMany-to-Manyリレーションの例を示します。
+
+```ts
+// prisma/schema.prisma
+model User {
+  id     Int     @id @default(autoincrement())
+  groups Group[]
+}
+
+model Group {
+  id    Int    @id @default(autoincrement())
+  users User[]
+}
+```
+
+```ts
+import { User, Group } from "./models/index.js";
+
+const user = User.create({});
+const group = Group.create({});
+
+// 関連の保存(パターン1)
+user.groups.push(group);
+
+// 関連の保存(パターン2)
+user.groups = [group];
+
+// 関連の保存(パターン3)
+group.users.push(user);
+
+// 関連の保存(パターン4)
+group.users = [user];
+
+// 関連の取得
+user.groups.toArray();
+
+group.users.toArray();
+
+// 関連の削除(パターン1)
+user.groups.destroy(group);
+
+// 関連の削除(パターン2)
+group.users.destroy(user);
+```
