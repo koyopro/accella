@@ -490,3 +490,143 @@ console.log(sample.data?.myKey1);
 console.log(sample.data?.foo);
 // => Property 'foo' does not exist on type '{ myKey1: string; myKey2: number; } | undefined'.
 ```
+
+## Associations
+
+Below are examples of operations on models with associations.
+
+### One-to-One Relationship
+
+```ts
+// prisma/schema.prisma
+model User {
+  id      Int    @id @default(autoincrement())
+  profile Profile?
+}
+
+model Profile {
+  id     Int    @id @default(autoincrement())
+  userId Int    @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
+```
+
+```ts
+import { User, Profile } from "./models/index.js";
+
+const user = User.create({});
+
+// Saving the association (Pattern 1)
+const profile = Profile.create({ user });
+
+// Saving the association (Pattern 2)
+user.profile = Profile.build({});
+
+// Saving the association (Pattern 3)
+user.update({ profile: Profile.build({}) });
+
+// Retrieving the association
+user.profile;
+
+profile.user;
+
+// Deleting the association (Pattern 1)
+user.profile?.destroy();
+
+// Deleting the association (Pattern 2)
+user.profile = undefined;
+```
+
+### One-to-Many Relationship
+
+```ts
+// prisma/schema.prisma
+model User {
+  id       Int      @id @default(autoincrement())
+  posts    Post[]
+}
+
+model Post {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  user   User   @relation(fields: [userId], references: [id])
+}
+```
+
+```ts
+import { User, Post } from "./models/index.js";
+
+const user = User.create({});
+
+// Saving the association (Pattern 1)
+const post = Post.create({ user });
+
+// Saving the association (Pattern 2)
+user.posts.push(Post.build({}));
+
+// Saving the association (Pattern 3)
+user.posts = [Post.build({})];
+
+// Retrieving the association
+user.posts.toArray();
+
+post.user;
+
+// Deleting the association (Pattern 1)
+user.posts.destroy(post);
+
+// Deleting the association (Pattern 2)
+post.destroy();
+```
+
+### Many-to-Many Relationship
+
+In Prisma schema, there are two ways to define Many-to-Many relationships: explicit and implicit.
+
+For explicit Many-to-Many relationships, you define an intermediate table.
+In this case, you would operate in a similar way as the previous One-to-Many relationship.
+
+Here is an example of an implicit Many-to-Many relationship.
+
+```ts
+// prisma/schema.prisma
+model User {
+  id     Int     @id @default(autoincrement())
+  groups Group[]
+}
+
+model Group {
+  id    Int    @id @default(autoincrement())
+  users User[]
+}
+```
+
+```ts
+import { User, Group } from "./models/index.js";
+
+const user = User.create({});
+const group = Group.create({});
+
+// Saving the association (Pattern 1)
+user.groups.push(group);
+
+// Saving the association (Pattern 2)
+user.groups = [group];
+
+// Saving the association (Pattern 3)
+group.users.push(user);
+
+// Saving the association (Pattern 4)
+group.users = [user];
+
+// Retrieving the association
+user.groups.toArray();
+
+group.users.toArray();
+
+// Deleting the association (Pattern 1)
+user.groups.destroy(group);
+
+// Deleting the association (Pattern 2)
+group.users.destroy(user);
+```
