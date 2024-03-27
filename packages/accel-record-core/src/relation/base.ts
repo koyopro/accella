@@ -30,7 +30,7 @@ export class RelationBase {
     });
   }
   protected query(this: Relation<unknown, ModelMeta>) {
-    let q = this.client.clone();
+    let q = this.queryBuilder.clone();
     for (const join of this.options.joins) {
       q = q.join(...join);
     }

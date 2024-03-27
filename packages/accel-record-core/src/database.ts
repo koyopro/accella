@@ -2,6 +2,7 @@ import Knex from "knex";
 import path from "path";
 import { fileURLToPath } from "url";
 import { loadDmmf } from "./fields.js";
+import { Model } from "./index.js";
 // @ts-ignore
 import SyncRpc from "./sync-rpc/index.cjs";
 
@@ -53,6 +54,10 @@ export const initAccelRecord = async (config: Config) => {
     knexConfig: getKnexConfig(config),
   });
   await loadDmmf();
+
+  Model.queryBuilder.constructor.prototype.execute = function () {
+    return exec(this);
+  };
 };
 
 let _knex: Knex.Knex | undefined;
