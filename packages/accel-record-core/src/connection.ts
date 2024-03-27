@@ -16,7 +16,7 @@ export class Connection {
   }
 
   static get queryBuilder() {
-    return this.connection.knex((this as typeof Model).tableName);
+    return this.connection.knex((this as typeof Model).tableName).clone();
   }
 
   get queryBuilder() {

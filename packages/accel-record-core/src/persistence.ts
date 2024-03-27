@@ -118,7 +118,7 @@ export class Persistence {
 
   protected createRecord<T extends Model>(this: T): boolean {
     const data = this.makeInsertParams();
-    let q = this.queryBuilder.clone();
+    let q = this.queryBuilder;
     if (Model.connection.returningUsable()) {
       q = q.returning(this.primaryKeys);
     }
