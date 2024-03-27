@@ -23,7 +23,7 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
   ) {
     super();
     this.model = model;
-    this.client = model.client;
+    this.client = model.queryBuilder;
     this.options = Object.assign(getDefaultOptions(), options) as Options;
   }
   toArray(): T[] {

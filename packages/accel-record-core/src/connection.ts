@@ -15,11 +15,11 @@ export class Connection {
     };
   }
 
-  static get client() {
+  static get queryBuilder() {
     return this.connection.knex((this as typeof Model).tableName);
   }
 
-  get client() {
-    return (this.constructor as typeof Connection).client;
+  get queryBuilder() {
+    return (this.constructor as typeof Connection).queryBuilder;
   }
 }

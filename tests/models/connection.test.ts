@@ -30,7 +30,7 @@ test("knex builder", async () => {
     posts: [$post.build({ title: "title1" })],
   });
   {
-    const r = User.client.select("name").groupBy("name").execute();
+    const r = User.queryBuilder.select("name").groupBy("name").execute();
     // const r = Model.client.select("name").from("User").groupBy("name").execute();
     expect(r[0].name).toBe("hoge");
   }

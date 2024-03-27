@@ -55,7 +55,7 @@ export const initAccelRecord = async (config: Config) => {
   });
   await loadDmmf();
 
-  Model.client.constructor.prototype.execute = function () {
+  Model.queryBuilder.constructor.prototype.execute = function () {
     return exec(this);
   };
 };

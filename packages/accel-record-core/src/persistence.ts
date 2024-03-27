@@ -81,7 +81,7 @@ export class Persistence {
   protected updateRecord<T extends Model>(this: T): boolean {
     if (this.isChanged()) {
       const data = this.makeUpdateParams();
-      exec(this.client.where(this.primaryKeysCondition()).update(data));
+      exec(this.queryBuilder.where(this.primaryKeysCondition()).update(data));
       this.retriveUpdatedAt(data);
     }
     return true;
@@ -118,7 +118,7 @@ export class Persistence {
 
   protected createRecord<T extends Model>(this: T): boolean {
     const data = this.makeInsertParams();
-    let q = this.client.clone();
+    let q = this.queryBuilder.clone();
     if (Model.connection.returningUsable()) {
       q = q.returning(this.primaryKeys);
     }
@@ -135,7 +135,7 @@ export class Persistence {
     for (const key of this.primaryKeys as (keyof T)[]) {
       data[key] = this[key] || returning[key] || this.getLastInsertId();
     }
-    const [record] = exec(this.client.where(data).limit(1));
+    const [record] = exec(this.queryBuilder.where(data).limit(1));
     for (const [key, value] of Object.entries(record)) {
       this[key as keyof T] = this.findField(key)?.cast(value) ?? value;
     }
@@ -187,7 +187,7 @@ export class Persistence {
   }
 
   protected deleteRecord<T extends Model>(this: T): boolean {
-    exec(this.client.where(this.primaryKeysCondition()).delete());
+    exec(this.queryBuilder.where(this.primaryKeysCondition()).delete());
     return true;
   }
 
