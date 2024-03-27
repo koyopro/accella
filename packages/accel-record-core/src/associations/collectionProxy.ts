@@ -30,7 +30,6 @@ export class Collection<T extends Model, S extends ModelMeta> extends Relation<
     this.association.concat(records);
     const _records = Array.isArray(records) ? records : [records];
     for (const record of _records) {
-      if (this.toArray().find((r) => r.equals(record as T))) continue;
       (this.cache ||= []).push(record as T);
     }
     return this;

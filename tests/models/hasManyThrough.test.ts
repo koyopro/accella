@@ -82,7 +82,8 @@ describe("hasManyThrogh", () => {
     p.tags.push([t1, t2]);
     expect(p.tags.toArray().length).toEqual(2);
     p.tags.push(t1);
-    expect(p.tags.toArray().length).toEqual(2);
+    expect(p.tags.toArray().length).toEqual(3);
+    expect(p.reload().tags.toArray().length).toEqual(2);
   });
 
   describe("getter/setter types", () => {

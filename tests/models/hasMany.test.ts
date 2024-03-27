@@ -30,7 +30,8 @@ describe("ManyToMany", () => {
     expect(user.posts.toArray().length).toEqual(2);
     expect(post1.isPersisted()).toBe(true);
     user.posts.push(post1);
-    expect(user.posts.toArray().length).toEqual(2);
+    expect(user.posts.toArray().length).toEqual(3);
+    expect(user.reload().posts.toArray().length).toEqual(2);
   });
 
   describe("getter/setter types", () => {
