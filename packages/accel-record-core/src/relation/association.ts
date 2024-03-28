@@ -1,8 +1,21 @@
-import { Relation } from ".";
-import { ModelMeta } from "..";
 import { Association as Info } from "../fields.js";
+import { ModelMeta } from "../index.js";
+import { Relation } from "./index.js";
 
 export class Association {
+  protected addIncludes(
+    this: Relation<unknown, ModelMeta>,
+    ...input: string[]
+  ) {
+    const newOptions = JSON.parse(JSON.stringify(this.options));
+    newOptions["includes"].push(
+      ...input.map((key) => {
+        return { name: key, ...this.model.associations[key] };
+      })
+    );
+    return newOptions;
+  }
+
   protected addJoins(this: Relation<unknown, ModelMeta>, ...input: string[]) {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key of input) {
