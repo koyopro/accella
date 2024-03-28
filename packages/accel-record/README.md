@@ -635,8 +635,8 @@ group.users.destroy(user);
 
 ### Model Query Interface
 
-Here are examples of using the query interface to perform queries on models.
-Each method allows you to query the model using the information generated from the model definition, ensuring type safety.
+Here are some examples of using the interface to perform queries on models.
+Each method allows you to query the model in a type-safe manner using information generated from the model definition.
 You can also take advantage of IDE autocompletion.
 
 For more details, refer to the list of methods in the Relation class.
@@ -656,39 +656,38 @@ User.where({
 
 User.where({ name: ["John", "Alice"] }).exists();
 
-User.where("createdAt < ?", new Date("2021-01-01")).count();
+User.joins("profile").where("Profile.name = ?", "John").count();
 
 User.first()?.posts.destroyAll();
 ```
 
-The model query interface does not currently support features like join or group by.
-This is because these queries have limited benefits from utilizing schema type information.
+The model query interface does not currently support features like GROUP BY.
+This is because these queries have limited benefits from using schema type information.
 
-If you need to execute queries that cannot be achieved with the model query interface, please use the raw SQL query execution or the query execution using Knex's QueryBuilder, as explained below.
+If you need to execute queries that cannot be achieved with the model query interface, please use raw SQL or the Knex QueryBuilder explained below.
 
-### Raw SQL Query Execution
+### Executing Raw SQL Queries
 
 You can use the `Model.connection.execute()` method to execute raw SQL queries and synchronously retrieve the results.
 
 ```ts
 import { Model } from "accel-record";
 
-const { cnt } = Model.connection.execute(
-  `select count(User.id) as cnt
-    from User
-    left join Post
-      on User.id = Post.authorId
-    where Post.title = ?`,
-  ["title1"]
-)[0];
+const rows = Model.connection.execute(
+  `select firstName, count(id) as cnt
+   from User
+   group by firstName`,
+  []
+);
 
-console.log(cnt); // => 1
+console.log(rows);
+// => [{ firstName: "John", cnt: 1 }, { firstName: "Alice", cnt: 2 }]
 ```
 
-### Query Execution Using Knex's QueryBuilder
+### Executing Queries with Knex QueryBuilder
 
 You can use Knex to build and execute queries.
-We have added the `execute()` method to Knex's QueryBuilder, which allows you to execute queries synchronously.
+We have added an `execute()` method to Knex's QueryBuilder, which allows you to execute queries synchronously.
 
 For more details on the functionality, refer to the following link:
 [Knex Query Builder | Knex.js](https://knexjs.org/guide/query-builder.html)
@@ -697,7 +696,7 @@ For more details on the functionality, refer to the following link:
 import { Model } from "accel-record";
 import { User } from "./models/index.js";
 
-// You can obtain the Knex instance using Model.connection.knex.
+// You can obtain an instance of Knex with Model.connection.knex.
 const knex = Model.connection.knex;
 const rows = knex
   .select("name", knex.raw("SUM(score) as total"))
@@ -705,7 +704,8 @@ const rows = knex
   .groupBy("name")
   .execute();
 
-console.log(rows); // => [{ name: "John", total: "1" }, { name: "Alice", total: "2" }]
+console.log(rows);
+// => [{ name: "John", total: "1" }, { name: "Alice", total: "2" }]
 
 // You can perform queries on the corresponding tables for each model using the queryBuilder property.
 const rows = User.queryBuilder.select("name").groupBy("name").execute();

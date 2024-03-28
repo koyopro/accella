@@ -657,12 +657,12 @@ User.where({
 
 User.where({ name: ["John", "Alice"] }).exists();
 
-User.where("createdAt < ?", new Date("2021-01-01")).count();
+User.joins("profile").where("Profile.name = ?", "John").count();
 
 User.first()?.posts.destroyAll();
 ```
 
-モデルのクエリインターフェースでは、joinやgroup byなどの機能は現在サポートされていません。
+モデルのクエリインターフェースでは、GROUP BY等の機能は現在サポートされていません。
 これらのクエリではスキーマの型情報を利用するメリットが少ないためです。
 
 モデルのクエリインターフェースでは実現できないクエリを実行する場合は、以下で説明する生SQLやKnexのQueryBuilderを使ったクエリ実行を利用してください。
@@ -674,16 +674,15 @@ User.first()?.posts.destroyAll();
 ```ts
 import { Model } from "accel-record";
 
-const { cnt } = Model.connection.execute(
-  `select count(User.id) as cnt
-    from User
-    left join Post
-      on User.id = Post.authorId
-    where Post.title = ?`,
-  ["title1"]
-)[0];
+const rows = Model.connection.execute(
+  `select firstName, count(id) as cnt
+   from User
+   group by firstName`,
+  []
+);
 
-console.log(cnt); // => 1
+console.log(rows);
+// => [{ firstName: "John", cnt: 1 }, { firstName: "Alice", cnt: 2 }]
 ```
 
 ### KnexのQueryBuilderを使ったクエリ実行
@@ -706,7 +705,8 @@ const rows = knex
   .groupBy("name")
   .execute();
 
-console.log(rows); // => [{ name: "John", total: "1" }, { name: "Alice", total: "2" }]
+console.log(rows);
+// => [{ name: "John", total: "1" }, { name: "Alice", total: "2" }]
 
 // queryBuiler プロパティを利用して、各モデルに対応するテーブルへのクエリを行うことができます。
 const rows = User.queryBuilder.select("name").groupBy("name").execute();
