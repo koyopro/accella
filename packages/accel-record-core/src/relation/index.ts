@@ -1,6 +1,7 @@
 import { exec } from "../database.js";
 import { Model, type ModelMeta } from "../index.js";
 import { classIncludes } from "../utils.js";
+import { Association } from "./association.js";
 import { RelationBase } from "./base.js";
 import { Options, getDefaultOptions } from "./options.js";
 import { Query } from "./query.js";
@@ -9,6 +10,7 @@ import { Where } from "./where.js";
 export { Options } from "./options.js";
 
 export class Relation<T, M extends ModelMeta> extends classIncludes(
+  Association,
   Query,
   RelationBase,
   Where
@@ -95,41 +97,7 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     return new Relation(this.model, newOptions);
   }
   joins(...input: M["AssociationKey"][]): Relation<T, M> {
-    const newOptions = JSON.parse(JSON.stringify(this.options));
-    for (const key of input) {
-      const info = this.model.associations[key];
-      if (info.isBelongsTo) {
-        newOptions["joins"].push([
-          info.model.tableName,
-          `${info.model.tableName}.${info.primaryKey}`,
-          "=",
-          `${this.model.tableName}.${info.foreignKey}`,
-        ]);
-      } else if (info.through) {
-        const joinKey = info.foreignKey == "A" ? "B" : "A";
-        newOptions["joins"].push([
-          info.through,
-          `${info.through}.${info.foreignKey}`,
-          "=",
-          `${this.model.tableName}.${info.primaryKey}`,
-        ]);
-        newOptions["joins"].push([
-          info.model.tableName,
-          `${info.through}.${joinKey}`,
-          "=",
-          `${info.model.tableName}.${info.primaryKey}`,
-        ]);
-      } else {
-        // hasOne, hasMany
-        newOptions["joins"].push([
-          info.model.tableName,
-          `${this.model.tableName}.${info.primaryKey}`,
-          "=",
-          `${info.model.tableName}.${info.foreignKey}`,
-        ]);
-      }
-    }
-    return new Relation(this.model, newOptions);
+    return new Relation(this.model, this.addJoins(...input));
   }
   minimum(attr: keyof M["OrderInput"]) {
     const res = exec(
