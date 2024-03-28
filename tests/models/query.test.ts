@@ -1,3 +1,4 @@
+import { $post } from "../factories/post";
 import { $user } from "../factories/user";
 import { User } from "./index";
 
@@ -107,5 +108,21 @@ describe("Query", () => {
     expect(users.map((u) => u.name)).toEqual(["hoge"]);
     // @ts-expect-error
     users[0].age;
+  });
+
+  test("joins", () => {
+    $post.create({ author: $user.create(), title: "title1" });
+
+    const cnt = User.joins("posts").where("Post.title = ?", "title1").count();
+    expect(cnt).toBe(1);
+  });
+
+  test("joinsRaw", () => {
+    $post.create({ author: $user.create(), title: "title1" });
+
+    const cnt = User.joinsRaw("INNER JOIN Post ON authorId = User.id")
+      .where("Post.title = ?", "title1")
+      .count();
+    expect(cnt).toBe(1);
   });
 });

@@ -9,7 +9,9 @@ export class Query {
     return this;
   }
   count(this: Relation<unknown, ModelMeta>): number {
-    const res = exec(this.query().count(this.model.primaryKeys[0]));
+    const res = exec(
+      this.query().count(`${this.model.tableName}.${this.model.primaryKeys[0]}`)
+    );
     return Number(Object.values(res[0])[0]);
   }
   exists(this: Relation<unknown, ModelMeta>): boolean {

@@ -134,3 +134,5 @@ tsconfig.vitest-temp.json
 *.db
 *.db-journal
 .DS_Store
+
+tmp/

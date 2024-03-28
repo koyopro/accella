@@ -136,6 +136,8 @@ declare module "accel-record" {
     function whereNot<T extends Class>(this: T, input: Meta<T>['WhereInput']): Relation<InstanceType<T>, Meta<T>>;
     function whereRaw<T extends Class>(this: T, query: string, ...bindings: any[]): Relation<InstanceType<T>, Meta<T>>;
     function includes<T extends Class>(this: T, ...input: Meta<T>['AssociationKey'][]): Relation<InstanceType<T>, Meta<T>>;
+    function joins<T extends Class>(this: T, ...input: Meta<T>['AssociationKey'][]): Relation<InstanceType<T>, Meta<T>>;
+    function joinsRaw<T extends Class>(this: T, query: string, ...bindings: any[]): Relation<InstanceType<T>, Meta<T>>;
     function maximum<T extends Class>(this: T, column: keyof Meta<T>["OrderInput"]): number;
     function minimum<T extends Class>(this: T, column: keyof Meta<T>["OrderInput"]): number;
     function average<T extends Class>(this: T, column: keyof Meta<T>["OrderInput"]): number;

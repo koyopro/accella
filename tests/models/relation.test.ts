@@ -1,3 +1,6 @@
+import { $post } from "../factories/post";
+import { $postTag } from "../factories/postTag";
+import { $setting } from "../factories/setting";
 import { $user } from "../factories/user";
 import { Post, User } from "./index";
 
@@ -201,5 +204,72 @@ describe("Relation", () => {
     expect(users[0] instanceof User).toBeFalsy();
     // @ts-expect-error
     users[0].age;
+  });
+
+  test("joins hasOne", () => {
+    $setting.create({ user: $user.create(), threshold: 10 });
+    $setting.create({ user: $user.create(), threshold: 20 });
+
+    const cnt = User.all()
+      .joins("setting")
+      .where("Setting.threshold > ?", 10)
+      .count();
+    expect(cnt).toBe(1);
+  });
+
+  test("joins belongsTo", () => {
+    const u = $user.create({ name: "foo" });
+    Post.create({ title: "post1", authorId: u.id });
+
+    const post = Post.all()
+      .joins("author")
+      .where("User.name = ?", "foo")
+      .first();
+    expect(post?.title).toBe("post1");
+  });
+
+  test("joins hasMany", () => {
+    const u = $user.create();
+    Post.create({ title: "post1", authorId: u.id });
+    Post.create({ title: "post2", authorId: u.id });
+
+    const cnt = User.all()
+      .joins("posts")
+      .where("Post.title = ?", "post1")
+      .count();
+    expect(cnt).toBe(1);
+  });
+
+  test("joins hasManyThrough", () => {
+    const p1 = $post.create({ author: $user.create(), title: "post1" });
+    const p2 = $post.create({ author: $user.create(), title: "post2" });
+    const t1 = $postTag.create({ name: "tag1" });
+    const t2 = $postTag.create({ name: "tag2" });
+
+    p1.tags = [t1, t2];
+    p2.tags = [t1];
+
+    const cnt1 = Post.all()
+      .joins("tags")
+      .where("PostTag.name = ?", "tag1")
+      .count();
+    expect(cnt1).toBe(2);
+
+    const cnt2 = Post.all()
+      .joins("tags")
+      .where("PostTag.name = ?", "tag2")
+      .count();
+    expect(cnt2).toBe(1);
+  });
+
+  test("joinsRaw", () => {
+    $setting.create({ user: $user.create(), threshold: 10 });
+    $setting.create({ user: $user.create(), threshold: 20 });
+
+    const cnt = User.all()
+      .joinsRaw("join Setting on Setting.userId = User.id")
+      .where("Setting.threshold > ?", 10)
+      .count();
+    expect(cnt).toBe(1);
   });
 });

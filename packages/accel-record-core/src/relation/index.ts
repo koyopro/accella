@@ -1,6 +1,7 @@
 import { exec } from "../database.js";
 import { Model, type ModelMeta } from "../index.js";
 import { classIncludes } from "../utils.js";
+import { Association } from "./association.js";
 import { RelationBase } from "./base.js";
 import { Options, getDefaultOptions } from "./options.js";
 import { Query } from "./query.js";
@@ -9,6 +10,7 @@ import { Where } from "./where.js";
 export { Options } from "./options.js";
 
 export class Relation<T, M extends ModelMeta> extends classIncludes(
+  Association,
   Query,
   RelationBase,
   Where
@@ -83,16 +85,14 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
   whereRaw(query: string, ...bindings: any[]): Relation<T, M> {
     return new Relation(this.model, this.addWhereRaw(query, ...bindings));
   }
-  includes(
-    ...input: M["AssociationKey"][]
-  ): Relation<T, M & { [K in M["AssociationKey"][number]]: ModelMeta }> {
-    const newOptions = JSON.parse(JSON.stringify(this.options));
-    newOptions["includes"].push(
-      ...input.map((key) => {
-        return { name: key, ...this.model.associations[key] };
-      })
-    );
-    return new Relation(this.model, newOptions);
+  includes(...input: M["AssociationKey"][]): Relation<T, M> {
+    return new Relation(this.model, this.addIncludes(...input));
+  }
+  joins(...input: M["AssociationKey"][]): Relation<T, M> {
+    return new Relation(this.model, this.addJoins(...input));
+  }
+  joinsRaw(query: string, ...bindings: any[]): Relation<T, M> {
+    return new Relation(this.model, this.addJoinsRaw(query, ...bindings));
   }
   minimum(attr: keyof M["OrderInput"]) {
     const res = exec(
