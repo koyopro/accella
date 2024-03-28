@@ -116,4 +116,13 @@ describe("Query", () => {
     const cnt = User.joins("posts").where("Post.title = ?", "title1").count();
     expect(cnt).toBe(1);
   });
+
+  test("joinsRaw", () => {
+    $post.create({ author: $user.create(), title: "title1" });
+
+    const cnt = User.joinsRaw("INNER JOIN Post ON authorId = User.id")
+      .where("Post.title = ?", "title1")
+      .count();
+    expect(cnt).toBe(1);
+  });
 });

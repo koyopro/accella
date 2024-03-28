@@ -261,4 +261,15 @@ describe("Relation", () => {
       .count();
     expect(cnt2).toBe(1);
   });
+
+  test("joinsRaw", () => {
+    $setting.create({ user: $user.create(), threshold: 10 });
+    $setting.create({ user: $user.create(), threshold: 20 });
+
+    const cnt = User.all()
+      .joinsRaw("join Setting on Setting.userId = User.id")
+      .where("Setting.threshold > ?", 10)
+      .count();
+    expect(cnt).toBe(1);
+  });
 });

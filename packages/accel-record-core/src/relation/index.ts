@@ -91,6 +91,9 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
   joins(...input: M["AssociationKey"][]): Relation<T, M> {
     return new Relation(this.model, this.addJoins(...input));
   }
+  joinsRaw(query: string, ...bindings: any[]): Relation<T, M> {
+    return new Relation(this.model, this.addJoinsRaw(query, ...bindings));
+  }
   minimum(attr: keyof M["OrderInput"]) {
     const res = exec(
       this.query().min(this.model.attributeToColumn(attr as string))

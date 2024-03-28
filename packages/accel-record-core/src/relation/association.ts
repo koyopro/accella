@@ -76,4 +76,14 @@ export class Association {
       ],
     ];
   }
+
+  protected addJoinsRaw(
+    this: Relation<unknown, ModelMeta>,
+    query: string,
+    ...bindings: any[]
+  ) {
+    const newOptions = JSON.parse(JSON.stringify(this.options));
+    newOptions["joinsRaw"].push([query, bindings]);
+    return newOptions;
+  }
 }

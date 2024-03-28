@@ -34,6 +34,9 @@ export class RelationBase {
     for (const join of this.options.joins) {
       q = q.join(...join);
     }
+    for (const [query, bindings] of this.options.joinsRaw) {
+      q = q.joinRaw(query, bindings);
+    }
     for (const where of this.options.wheres) {
       if (Array.isArray(where)) {
         q = q.where(...where);
