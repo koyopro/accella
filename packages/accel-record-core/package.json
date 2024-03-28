@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc && cd src/ && find . -name '*js' -print0 | cpio -pd0 ../dist/"
   },
   "repository": {
     "type": "git",

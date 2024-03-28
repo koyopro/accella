@@ -5,6 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "build": "npm run build --workspaces --if-present",
     "test": "vitest",
     "test:migrate": "DATABASE_URL=file:./test.db npx prisma migrate dev --schema=tests/prisma/schema.prisma",
     "test:mysql:migrate": "npx prisma migrate dev --schema=tests/prisma_mysql/schema.prisma",
