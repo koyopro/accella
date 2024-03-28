@@ -1,5 +1,6 @@
 import { createId as cuid } from "@paralleldrive/cuid2";
 import { BaseDMMF, DMMF } from "prisma/prisma-client/runtime/library.js";
+import { Models } from "./index.js";
 
 export class Association {
   klass: string;
@@ -29,6 +30,10 @@ export class Association {
     } else {
       this.isBelongsTo = (relation.relationToFields?.length ?? 0) == 0;
     }
+  }
+
+  get model() {
+    return Models[this.klass];
   }
 
   get isHasOne() {

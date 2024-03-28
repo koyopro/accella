@@ -94,6 +94,43 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     );
     return new Relation(this.model, newOptions);
   }
+  joins(...input: M["AssociationKey"][]): Relation<T, M> {
+    const newOptions = JSON.parse(JSON.stringify(this.options));
+    for (const key of input) {
+      const info = this.model.associations[key];
+      if (info.isBelongsTo) {
+        newOptions["joins"].push([
+          info.model.tableName,
+          `${info.model.tableName}.${info.primaryKey}`,
+          "=",
+          `${this.model.tableName}.${info.foreignKey}`,
+        ]);
+      } else if (info.through) {
+        const joinKey = info.foreignKey == "A" ? "B" : "A";
+        newOptions["joins"].push([
+          info.through,
+          `${info.through}.${info.foreignKey}`,
+          "=",
+          `${this.model.tableName}.${info.primaryKey}`,
+        ]);
+        newOptions["joins"].push([
+          info.model.tableName,
+          `${info.through}.${joinKey}`,
+          "=",
+          `${info.model.tableName}.${info.primaryKey}`,
+        ]);
+      } else {
+        // hasOne, hasMany
+        newOptions["joins"].push([
+          info.model.tableName,
+          `${this.model.tableName}.${info.primaryKey}`,
+          "=",
+          `${info.model.tableName}.${info.foreignKey}`,
+        ]);
+      }
+    }
+    return new Relation(this.model, newOptions);
+  }
   minimum(attr: keyof M["OrderInput"]) {
     const res = exec(
       this.query().min(this.model.attributeToColumn(attr as string))
