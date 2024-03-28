@@ -1,6 +1,6 @@
 {
   "name": "prisma-generator-accel-record",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "",
   "main": "dist/generator.js",
   "license": "Apache-2.0",
