@@ -13,6 +13,13 @@ export class Query {
     return this.all().includes(...input);
   }
 
+  static joins<T extends typeof Model, R extends ModelMeta["AssociationKey"][]>(
+    this: T,
+    ...input: R
+  ): Relation<any, any> {
+    return this.all().joins(...input);
+  }
+
   static select<T extends typeof Model>(
     this: T,
     ...columns: string[]

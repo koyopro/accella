@@ -6,3 +6,8 @@ test("select", () => {
     { name: string | undefined; email: string; id: number }[]
   >();
 });
+
+test("joins", () => {
+  const users = User.joins("posts").toArray();
+  expectTypeOf(users).toMatchTypeOf<User[]>();
+});
