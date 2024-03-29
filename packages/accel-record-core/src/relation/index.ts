@@ -125,8 +125,8 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
         ) as T;
         return { value, done };
       },
-      return() {
-        return { done: true, value: undefined };
+      return(): { value: T; done: boolean } {
+        return { done: true, value: undefined as T };
       },
     };
   }

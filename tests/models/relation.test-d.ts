@@ -6,3 +6,9 @@ test("select", () => {
     { name: string | undefined; email: string; id: number }[]
   >();
 });
+
+test("generator", () => {
+  for (const user of User.all()) {
+    expectTypeOf(user).toMatchTypeOf<User>();
+  }
+});
