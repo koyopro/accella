@@ -76,16 +76,6 @@ export class Model extends classIncludes(
     return true;
   }
 
-  serialize(): Record<string, unknown> {
-    const ret: Record<string, unknown> = {
-      _className: this.constructor.name,
-    };
-    for (const column of this.columns as (keyof this)[]) {
-      ret[column as string] = this[column];
-    }
-    return ret;
-  }
-
   reload() {
     this.retriveInsertedAttributes({} as Record<keyof this, any>);
     for (const [key, association] of this.associations.entries()) {
