@@ -7,16 +7,18 @@ export class Where {
   ) {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key in input) {
+      const column = this.model.attributeToColumn(key);
+      if (!column) continue;
       if (Array.isArray(input[key])) {
-        newOptions["wheres"].push([key, "in", input[key]]);
+        newOptions["wheres"].push([column, "in", input[key]]);
       } else if (input[key] != null && typeof input[key] === "object") {
         for (const operator in input[key]) {
           newOptions["wheres"].push(
-            makeWhere(key, operator, input[key][operator])
+            makeWhere(column, operator, input[key][operator])
           );
         }
       } else {
-        newOptions["wheres"].push({ [key]: input[key] });
+        newOptions["wheres"].push({ [column]: input[key] });
       }
     }
     return newOptions;
@@ -28,18 +30,20 @@ export class Where {
   ) {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key in input) {
+      const column = this.model.attributeToColumn(key);
+      if (!column) continue;
       if (input[key] != null && typeof input[key] === "object") {
         for (const operator in input[key]) {
           if (operator === "in") {
-            newOptions["wheres"].push([key, "not in", input[key][operator]]);
+            newOptions["wheres"].push([column, "not in", input[key][operator]]);
           } else {
             newOptions["whereNots"].push(
-              makeWhere(key, operator, input[key][operator])
+              makeWhere(column, operator, input[key][operator])
             );
           }
         }
       } else {
-        newOptions["whereNots"].push({ [key]: input[key] });
+        newOptions["whereNots"].push({ [column]: input[key] });
       }
     }
     return newOptions;

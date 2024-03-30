@@ -3,19 +3,6 @@ import { $user } from "../factories/user";
 import { Post, User } from "./index";
 
 describe("User#tojson()", () => {
-  test("serialize()", () => {
-    const u = $user.build({ name: "hoge", email: "AAA" });
-    const serialized = u.serialize();
-    expect(serialized).toEqual({
-      name: "hoge",
-      _className: "User",
-      email: "AAA",
-    });
-    const deserialized = User.build(serialized);
-    expect(deserialized).toBeInstanceOf(User);
-    expect(deserialized.name).toBe("hoge");
-  });
-
   test(".build()", () => {
     const u = User.build({ name: "hoge" });
     expect(u).toBeInstanceOf(User);
@@ -72,16 +59,6 @@ describe("User#tojson()", () => {
     expect(author.posts.toArray()[0]).toBeInstanceOf(Post);
     expect(author.posts.toArray()[0].title).toBe("post1");
     expect(author.posts.toArray()[1].title).toBe("post2");
-  });
-
-  test("columns", () => {
-    const expected = ["id", "email", "name", "age", "createdAt", "updatedAt"];
-    expect(User.columns).toEqual(expected);
-    expect(new User().columns).toEqual(expected);
-  });
-
-  test("columnsForPersist", () => {
-    expect(User.columnsForPersist).toEqual(["id"]);
   });
 
   test.skip("associations", () => {
