@@ -1,6 +1,6 @@
 # Accel Record
 
-<video src="https://github.com/koyopro/accella/assets/1678310/6e4787b3-71ae-4a60-b9c5-db0c3a645ec6"></video>
+<video autoplay muted playsinline loop witdh="800" src="https://github.com/koyopro/accella/assets/1678310/6e4787b3-71ae-4a60-b9c5-db0c3a645ec6"></video>
 
 Accel Record is a type-safe and synchronous ORM for TypeScript. It adopts the Active Record pattern and is heavily influenced by Ruby on Rails' Active Record.
 
