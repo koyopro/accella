@@ -61,16 +61,6 @@ describe("User#tojson()", () => {
     expect(author.posts.toArray()[1].title).toBe("post2");
   });
 
-  test("columns", () => {
-    const expected = ["id", "email", "name", "age", "createdAt", "updatedAt"];
-    expect(User.columns).toEqual(expected);
-    expect(new User().columns).toEqual(expected);
-  });
-
-  test("columnsForPersist", () => {
-    expect(User.columnsForPersist).toEqual(["id"]);
-  });
-
   test.skip("associations", () => {
     expect(User.associations.posts).toEqual({
       klass: "Post",

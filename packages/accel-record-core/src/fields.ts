@@ -1,6 +1,6 @@
 import { createId as cuid } from "@paralleldrive/cuid2";
 import { BaseDMMF, DMMF } from "prisma/prisma-client/runtime/library.js";
-import { Models } from "./index.js";
+import { Model, Models } from "./index.js";
 
 export class Association {
   klass: string;
@@ -184,12 +184,6 @@ export class Fields {
     return this.fields.find((f) => f.name === name);
   }
 
-  static get columns() {
-    return this.fields
-      .filter((f) => f.relationName == undefined)
-      .map((field) => field.dbName);
-  }
-
   static get columnFields(): Readonly<Field[]> {
     return this.fields.filter((f) => f.relationName == undefined);
   }
@@ -218,15 +212,6 @@ export class Fields {
     );
   }
 
-  static get columnsForPersist() {
-    return this.fields
-      .filter(
-        (f) =>
-          (f.default as DMMF.FieldDefault | undefined)?.name == "autoincrement"
-      )
-      .map((field) => field.name);
-  }
-
   static get associations(): Record<string, Association> {
     const myModel = this.model;
     return this.fields
@@ -243,31 +228,23 @@ export class Fields {
   }
 
   get fields(): Readonly<Field[]> {
-    return (this.constructor as any).fields;
+    return (this.constructor as typeof Model).fields;
   }
 
   findField(name: string): Field | undefined {
     return this.fields.find((f) => f.name === name);
   }
 
-  get columns(): string[] {
-    return (this.constructor as any).columns;
-  }
-
   get columnFields(): Readonly<Field[]> {
-    return (this.constructor as any).columnFields;
+    return (this.constructor as typeof Model).columnFields;
   }
 
-  get columnsMapping(): Record<string, string> {
-    return (this.constructor as any).columnsMapping;
+  get columns(): string[] {
+    return this.columnFields.map((f) => f.dbName);
   }
 
-  get columnsForPersist(): string[] {
-    return (this.constructor as any).columnsForPersist;
-  }
-
-  get primaryKeys(): string[] {
-    return (this.constructor as any).primaryKeys;
+  get primaryKeys(): readonly string[] {
+    return (this.constructor as typeof Model).primaryKeys;
   }
 
   get pkValues(): any[] {
