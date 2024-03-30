@@ -122,12 +122,12 @@ declare module "accel-record" {
   namespace Model {
     function build<T extends Class>(this: T, input: Partial<Meta<T>["CreateInput"]>): New<T>;
     function create<T extends Class>(this: T, input: Meta<T>["CreateInput"]): InstanceType<T>;
-    function select<T extends Class, F extends (keyof Meta<T>["OrderInput"])[]>(this: T, ...columns: F): Relation<{ [K in F[number]]: InstanceType<T>[K] }, Meta<T>>;
+    function select<T extends Class, F extends (keyof Meta<T>["OrderInput"])[]>(this: T, ...attributes: F): Relation<{ [K in F[number]]: InstanceType<T>[K] }, Meta<T>>;
     function first<T extends Class>(this: T): InstanceType<T>;
     function find<T extends Class>(this: T, id: number): InstanceType<T>;
     function findBy<T extends Class>(this: T, input: Meta<T>['WhereInput']): InstanceType<T> | undefined;
     function all<T extends Class>(this: T): Relation<InstanceType<T>, Meta<T>>;
-    function order<T extends Class>(this: T, column: keyof Meta<T>["OrderInput"], direction?: "asc" | "desc"): Relation<InstanceType<T>, Meta<T>>;
+    function order<T extends Class>(this: T, attribute: keyof Meta<T>["OrderInput"], direction?: "asc" | "desc"): Relation<InstanceType<T>, Meta<T>>;
     function offset<T extends Class>(this: T, offset: number): Relation<InstanceType<T>, Meta<T>>;
     function limit<T extends Class>(this: T, limit: number): Relation<InstanceType<T>, Meta<T>>;
     function where<T extends Class>(this: T, input: Meta<T>['WhereInput']): Relation<InstanceType<T>, Meta<T>>;
@@ -138,9 +138,9 @@ declare module "accel-record" {
     function includes<T extends Class>(this: T, ...input: Meta<T>['AssociationKey'][]): Relation<InstanceType<T>, Meta<T>>;
     function joins<T extends Class>(this: T, ...input: Meta<T>['AssociationKey'][]): Relation<InstanceType<T>, Meta<T>>;
     function joinsRaw<T extends Class>(this: T, query: string, ...bindings: any[]): Relation<InstanceType<T>, Meta<T>>;
-    function maximum<T extends Class>(this: T, column: keyof Meta<T>["OrderInput"]): number;
-    function minimum<T extends Class>(this: T, column: keyof Meta<T>["OrderInput"]): number;
-    function average<T extends Class>(this: T, column: keyof Meta<T>["OrderInput"]): number;
+    function maximum<T extends Class>(this: T, attribute: keyof Meta<T>["OrderInput"]): number;
+    function minimum<T extends Class>(this: T, attribute: keyof Meta<T>["OrderInput"]): number;
+    function average<T extends Class>(this: T, attribute: keyof Meta<T>["OrderInput"]): number;
   }
   interface Model {
     isPersisted<T>(this: T): this is Persisted<T>;

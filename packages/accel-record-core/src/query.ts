@@ -53,10 +53,10 @@ export class Query {
 
   static order<T extends typeof Model>(
     this: T,
-    column: string,
+    attribute: string,
     direction: "asc" | "desc" = "asc"
   ) {
-    return this.all().order(column, direction);
+    return this.all().order(attribute, direction);
   }
 
   static offset<T extends typeof Model>(this: T, offset: number) {
@@ -97,15 +97,15 @@ export class Query {
     return this.all().where(input).first();
   }
 
-  static maximum<T extends typeof Model>(this: T, column: string) {
-    return this.all().maximum(column);
+  static maximum<T extends typeof Model>(this: T, attribute: string) {
+    return this.all().maximum(attribute);
   }
 
-  static minimum<T extends typeof Model>(this: T, column: string) {
-    return this.all().minimum(column);
+  static minimum<T extends typeof Model>(this: T, attribute: string) {
+    return this.all().minimum(attribute);
   }
 
-  static average<T extends typeof Model>(this: T, column: string) {
-    return this.all().average(column);
+  static average<T extends typeof Model>(this: T, attribute: string) {
+    return this.all().average(attribute);
   }
 }

@@ -1,3 +1,4 @@
+import { $user } from "../factories/user";
 import { Profile } from "./index";
 
 describe("Query with DB mappings", () => {
@@ -20,6 +21,9 @@ describe("Query with DB mappings", () => {
     expect(() => Profile.average("userId")).not.toThrowError();
   });
   test("select", () => {
-    expect(() => Profile.select("userId", "bio").first()).not.toThrowError();
+    Profile.create({ user: $user.create({ id: 1 }), bio: "I am me." });
+    const profile = Profile.select("userId", "bio").first();
+    expect(profile?.userId).toBe(1);
+    expect(profile?.bio).toBe("I am me.");
   });
 });

@@ -40,10 +40,10 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     F extends (keyof M["OrderInput"])[],
     // @ts-ignore
     R extends { [K in F[number]]: M["Persisted"][K] },
-  >(...columns: F): Relation<T extends Model ? R : T & R, M> {
+  >(...attributes: F): Relation<T extends Model ? R : T & R, M> {
     return new Relation(this.model, {
       ...this.options,
-      select: [...this.options.select, ...(columns as string[])],
+      select: [...this.options.select, ...(attributes as string[])],
     });
   }
   first(): T | undefined {
@@ -60,12 +60,12 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     return new Relation(this.model, { ...this.options, limit });
   }
   order(
-    column: keyof M["OrderInput"],
+    attribute: keyof M["OrderInput"],
     direction: "asc" | "desc" = "asc"
   ): Relation<T, M> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     newOptions["orders"].push([
-      this.model.attributeToColumn(column as string),
+      this.model.attributeToColumn(attribute as string),
       direction,
     ]);
     return new Relation(this.model, newOptions);
@@ -97,21 +97,21 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
   joinsRaw(query: string, ...bindings: any[]): Relation<T, M> {
     return new Relation(this.model, this.addJoinsRaw(query, ...bindings));
   }
-  minimum(attr: keyof M["OrderInput"]) {
+  minimum(attribute: keyof M["OrderInput"]) {
     const res = exec(
-      this.query().min(this.model.attributeToColumn(attr as string))
+      this.query().min(this.model.attributeToColumn(attribute as string))
     );
     return Number(Object.values(res[0])[0]);
   }
-  maximum(attr: keyof M["OrderInput"]) {
+  maximum(attribute: keyof M["OrderInput"]) {
     const res = exec(
-      this.query().max(this.model.attributeToColumn(attr as string))
+      this.query().max(this.model.attributeToColumn(attribute as string))
     );
     return Number(Object.values(res[0])[0]);
   }
-  average(attr: keyof M["OrderInput"]) {
+  average(attribute: keyof M["OrderInput"]) {
     const res = exec(
-      this.query().avg(this.model.attributeToColumn(attr as string))
+      this.query().avg(this.model.attributeToColumn(attribute as string))
     );
     return Number(Object.values(res[0])[0]);
   }
