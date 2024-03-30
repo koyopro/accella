@@ -64,7 +64,10 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     direction: "asc" | "desc" = "asc"
   ): Relation<T, M> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
-    newOptions["orders"].push([column, direction]);
+    newOptions["orders"].push([
+      this.model.attributeToColumn(column as string),
+      direction,
+    ]);
     return new Relation(this.model, newOptions);
   }
 
