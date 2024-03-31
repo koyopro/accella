@@ -15,6 +15,7 @@ const dbConfig = () => {
   if (process.env.DB_ENGINE == "mysql") {
     return {
       type: "mysql",
+      // logLevel: "DEBUG",
       prismaDir: path.resolve(__dirname, "./prisma_mysql"),
       knexConfig: {
         client: "mysql2",
