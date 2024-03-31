@@ -10,13 +10,13 @@ const log = (logLevel: LogLevel, ...args: any[]) => {
   if (
     LogLevel.indexOf(logLevel) >= LogLevel.indexOf(_config.logLevel ?? "WARN")
   ) {
-    const func = (logLevel.toLowerCase() ?? "info") as keyof typeof logger;
-    const _logger = _config.logger ?? logger;
-    _logger[func](...args);
+    const func = (logLevel.toLowerCase() ?? "info") as keyof Logger;
+    const logger = _config.logger ?? defaultLogger;
+    logger[func](...args);
   }
 };
 
-const logger = {
+const defaultLogger = {
   trace: console.log as (...args: any[]) => any,
   debug: console.debug as (...args: any[]) => any,
   info: console.info as (...args: any[]) => any,
@@ -24,6 +24,7 @@ const logger = {
   error: console.error as (...args: any[]) => any,
   fatal: console.error as (...args: any[]) => any,
 };
+export type Logger = typeof defaultLogger;
 
 const getKnexConfig = (config: Config) => {
   if (config.knexConfig) return config.knexConfig;
@@ -51,7 +52,7 @@ type LogLevel = (typeof LogLevel)[number];
 export interface Config {
   type: "mysql" | "sqlite";
   logLevel?: LogLevel;
-  logger?: typeof logger;
+  logger?: Logger;
   datasourceUrl?: string;
   knexConfig?: Knex.Knex.Config;
   prismaDir?: string;
