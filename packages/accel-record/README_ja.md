@@ -713,3 +713,15 @@ const rows = User.queryBuilder.select("name").groupBy("name").execute();
 
 console.log(rows); // => [{ name: "John" }, { name: "Alice" }]
 ```
+
+## 今後予定されている機能追加
+
+- [accel-record-core] バリデーション
+- [accel-record-core] スコープ
+- [accel-record-core] Bulk Insert
+- [accel-record-core] トランザクションのネスト
+- [accel-record-core] PostgreSQLのサポート
+- [accel-record-core] 複合IDの対応
+- [accel-record-core] クエリインターフェースの拡充
+- [accel-record-factory] trait
+- [prisma-generator-accel-record] 各モデル用Factoryの生成
