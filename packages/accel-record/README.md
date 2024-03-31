@@ -712,3 +712,17 @@ const rows = User.queryBuilder.select("name").groupBy("name").execute();
 
 console.log(rows); // => [{ name: "John" }, { name: "Alice" }]
 ```
+
+## Future Planned Features
+
+- [accel-record-core] Validation
+- [accel-record-core] Scopes
+- [accel-record-core] Bulk Insert
+- [accel-record-core] Nested Transactions
+- [accel-record-core] PostgreSQL Support
+- [accel-record-core] Support for Composite IDs
+- [accel-record-core] Expansion of Query Interface
+- [accel-record-factory] Trait
+- [prisma-generator-accel-record] Generation of Factories for each Model
+
+Related: [Accel Record Roadmap · Issue #1 · koyopro/accella](https://github.com/koyopro/accella/issues/1)
