@@ -724,3 +724,5 @@ console.log(rows); // => [{ name: "John" }, { name: "Alice" }]
 - [accel-record-core] Expansion of Query Interface
 - [accel-record-factory] Trait
 - [prisma-generator-accel-record] Generation of Factories for each Model
+
+Related: [Accel Record Roadmap · Issue #1 · koyopro/accella](https://github.com/koyopro/accella/issues/1)

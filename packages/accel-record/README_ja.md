@@ -725,3 +725,5 @@ console.log(rows); // => [{ name: "John" }, { name: "Alice" }]
 - [accel-record-core] クエリインターフェースの拡充
 - [accel-record-factory] trait
 - [prisma-generator-accel-record] 各モデル用Factoryの生成
+
+関連：[Accel Record Roadmap · Issue #1 · koyopro/accella](https://github.com/koyopro/accella/issues/1)
