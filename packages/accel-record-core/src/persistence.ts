@@ -135,7 +135,7 @@ export class Persistence {
     for (const key of this.primaryKeys as (keyof T)[]) {
       data[key] = this[key] || returning[key] || this.getLastInsertId();
     }
-    const [record] = exec(this.queryBuilder.where(data).limit(1));
+    const [record] = exec(this.queryBuilder.where(data).limit(1), "TRACE");
     for (const [key, value] of Object.entries(record)) {
       this[key as keyof T] = this.findField(key)?.cast(value) ?? value;
     }
@@ -146,6 +146,7 @@ export class Persistence {
     return execSQL({
       sql: "select last_insert_id() as id;",
       bindings: [],
+      logLevel: "TRACE",
     })[0]["id"];
   }
 
