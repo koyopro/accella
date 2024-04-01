@@ -9,6 +9,51 @@ describe("Query", () => {
     expect(User.first()).not.toBeUndefined();
   });
 
+  test("findOrCreateBy", () => {
+    {
+      const u = User.findOrCreateBy({ email: "foo@example.com" }, (u) => {
+        u.name = "foo";
+      });
+      expect(u.name).toBe("foo");
+      expect(u.email).toBe("foo@example.com");
+      expect(u.isPersisted()).toBe(true);
+      u.save();
+      expect(User.count()).toBe(1);
+    }
+    {
+      const u = User.findOrCreateBy({ email: "foo@example.com" }, (u) => {
+        u.name = "bar";
+      });
+      expect(u.name).toBe("foo");
+      expect(u.email).toBe("foo@example.com");
+      expect(u.isPersisted()).toBe(true);
+      expect(User.count()).toBe(1);
+    }
+  });
+
+  test("findOrInitializeBy", () => {
+    {
+      const u = User.findOrInitializeBy({ email: "foo@example.com" }, (u) => {
+        u.name = "foo";
+      });
+      expect(u.name).toBe("foo");
+      expect(u.email).toBe("foo@example.com");
+      expect(u.isPersisted()).toBe(false);
+      u.save();
+      expect(User.count()).toBe(1);
+    }
+    {
+      const u = User.findOrInitializeBy({ email: "foo@example.com" }, (u) => {
+        u.name = "bar";
+      });
+      expect(u.name).toBe("foo");
+      expect(u.email).toBe("foo@example.com");
+      expect(u.isPersisted()).toBe(true);
+      u.save();
+      expect(User.count()).toBe(1);
+    }
+  });
+
   test(".exists()", () => {
     expect(User.exists()).toBe(false);
     $user.create();
