@@ -6,6 +6,35 @@ export class Query {
     return new Relation(this);
   }
 
+  static findOrCreateBy<T extends typeof Model>(
+    this: T,
+    params: Parameters<typeof Model.create<T>>[0],
+    callback?: (obj: InstanceType<T>) => void
+  ): InstanceType<T> {
+    const user = this.findBy(params);
+    if (user) return user;
+    const newUser = this.create(params);
+    callback?.(newUser);
+    return newUser;
+  }
+
+  static findOrInitializeBy<
+    T extends typeof Model,
+    S extends
+      | ReturnType<typeof Model.build<T>>
+      | ReturnType<typeof Model.create<T>>,
+  >(
+    this: T,
+    params: Parameters<typeof Model.build<T>>[0],
+    callback?: (obj: S) => void
+  ): S {
+    const user = this.findBy(params);
+    if (user) return user;
+    const newUser = this.build(params) as S;
+    callback?.(newUser);
+    return newUser;
+  }
+
   static includes<
     T extends typeof Model,
     R extends ModelMeta["AssociationKey"][],
