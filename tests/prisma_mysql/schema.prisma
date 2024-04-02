@@ -86,3 +86,16 @@ model Profile {
 
   @@map("profiles")
 }
+
+model Company {
+  id        Int        @id @default(autoincrement()) @map("_id")
+  name      String
+  employees Employee[]
+}
+
+model Employee {
+  id        Int     @id @default(autoincrement())
+  name      String
+  companyId Int     @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id])
+}

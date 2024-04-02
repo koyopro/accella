@@ -5,6 +5,8 @@ import { PostModel } from './post.js'
 import { PostTagModel } from './postTag.js'
 import { SettingModel } from './setting.js'
 import { ProfileModel } from './profile.js'
+import { CompanyModel } from './company.js'
+import { EmployeeModel } from './employee.js'
 import {
   registerModel,
   type Collection,
@@ -61,6 +63,8 @@ type Meta<T> = T extends typeof UserModel | UserModel ? UserMeta :
                T extends typeof PostTagModel | PostTagModel ? PostTagMeta :
                T extends typeof SettingModel | SettingModel ? SettingMeta :
                T extends typeof ProfileModel | ProfileModel ? ProfileMeta :
+               T extends typeof CompanyModel | CompanyModel ? CompanyMeta :
+               T extends typeof EmployeeModel | EmployeeModel ? EmployeeMeta :
                any;
 
 export namespace $Enums {
@@ -419,3 +423,80 @@ type ProfileMeta = {
   };
 };
 registerModel(Profile);
+
+declare module "./company" {
+  interface CompanyModel {
+    id: number | undefined;
+    name: string | undefined;
+    get employees(): EmployeeCollection<EmployeeModel>;
+    set employees(value: EmployeeModel[]);
+  }
+}
+export interface NewCompany extends CompanyModel {};
+export class Company extends CompanyModel {};
+export interface Company extends CompanyModel {
+  id: number;
+  name: string;
+  get employees(): EmployeeCollection<Employee>;
+  set employees(value: EmployeeModel[]);
+};
+type CompanyCollection<T extends CompanyModel> = Collection<T, CompanyMeta> | Collection<Company, CompanyMeta>;
+type CompanyMeta = {
+  Base: CompanyModel;
+  New: NewCompany;
+  Persisted: Company;
+  AssociationKey: 'employees';
+  CreateInput: {
+    id?: number;
+    name: string;
+    employees?: EmployeeModel[];
+  };
+  WhereInput: {
+    id?: number | number[] | Filter<number> | null;
+    name?: string | string[] | StringFilter | null;
+  };
+  OrderInput: {
+    id?: SortOrder;
+    name?: SortOrder;
+  };
+};
+registerModel(Company);
+
+declare module "./employee" {
+  interface EmployeeModel {
+    id: number | undefined;
+    name: string | undefined;
+    companyId: number | undefined;
+    company: Company | undefined;
+  }
+}
+export interface NewEmployee extends EmployeeModel {};
+export class Employee extends EmployeeModel {};
+export interface Employee extends EmployeeModel {
+  id: number;
+  name: string;
+  companyId: number;
+  company: Company;
+};
+type EmployeeCollection<T extends EmployeeModel> = Collection<T, EmployeeMeta> | Collection<Employee, EmployeeMeta>;
+type EmployeeMeta = {
+  Base: EmployeeModel;
+  New: NewEmployee;
+  Persisted: Employee;
+  AssociationKey: 'company';
+  CreateInput: {
+    id?: number;
+    name: string;
+  } & ({ company: Company } | { companyId: number });
+  WhereInput: {
+    id?: number | number[] | Filter<number> | null;
+    name?: string | string[] | StringFilter | null;
+    companyId?: number | number[] | Filter<number> | null;
+  };
+  OrderInput: {
+    id?: SortOrder;
+    name?: SortOrder;
+    companyId?: SortOrder;
+  };
+};
+registerModel(Employee);
