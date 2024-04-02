@@ -73,7 +73,7 @@ enum Role {
 }
 
 model Profile {
-  id      Int     @id @default(autoincrement())
+  id      Int     @id @default(autoincrement()) @map("_id")
   user    User    @relation(fields: [userId], references: [id])
   userId  Int     @unique @map("user_id")
   bio     String? @default("I'm a Prisma user!") @map("description")
