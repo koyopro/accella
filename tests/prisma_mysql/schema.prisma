@@ -61,7 +61,7 @@ model PostTag {
 model Setting {
   settingId Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
-  userId    Int      @unique
+  userId    Int      @unique @map("user_id")
   threshold Float?
   createdAt DateTime @default(now())
   data      Json     @default("{}")
