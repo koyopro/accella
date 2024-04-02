@@ -371,7 +371,6 @@ declare module "./profile" {
     point: number;
     enabled: boolean;
     role: Role;
-    createdAt: Date | undefined;
     uuid: string;
     cuid: string;
   }
@@ -382,7 +381,6 @@ export interface Profile extends ProfileModel {
   id: number;
   user: User;
   userId: number;
-  createdAt: Date;
 };
 type ProfileCollection<T extends ProfileModel> = Collection<T, ProfileMeta> | Collection<Profile, ProfileMeta>;
 type ProfileMeta = {
@@ -396,7 +394,6 @@ type ProfileMeta = {
     point?: number;
     enabled?: boolean;
     role?: Role;
-    createdAt?: Date;
     uuid?: string;
     cuid?: string;
   } & ({ user: User } | { userId: number });
@@ -407,7 +404,6 @@ type ProfileMeta = {
     point?: number | number[] | Filter<number> | null;
     enabled?: boolean | boolean[] | undefined | null;
     role?: Role | Role[] | undefined | null;
-    createdAt?: Date | Date[] | Filter<Date> | null;
     uuid?: string | string[] | StringFilter | null;
     cuid?: string | string[] | StringFilter | null;
   };
@@ -418,7 +414,6 @@ type ProfileMeta = {
     point?: SortOrder;
     enabled?: SortOrder;
     role?: SortOrder;
-    createdAt?: SortOrder;
     uuid?: SortOrder;
     cuid?: SortOrder;
   };
