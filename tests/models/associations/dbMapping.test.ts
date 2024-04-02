@@ -17,4 +17,5 @@ test("hasOne with dbMapping", () => {
   const setting = $setting.create({ user });
 
   expect(user.reload().setting?.equals(setting)).toBeTruthy();
+  expect(setting.reload().user.equals(user)).toBeTruthy();
 });
