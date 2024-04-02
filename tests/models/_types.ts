@@ -24,7 +24,6 @@ declare module "accel-record" {
     function create<T extends Class>(this: T, input: Meta<T>["CreateInput"]): InstanceType<T>;
     function select<T extends Class, F extends (keyof Meta<T>["OrderInput"])[]>(this: T, ...attributes: F): Relation<{ [K in F[number]]: InstanceType<T>[K] }, Meta<T>>;
     function first<T extends Class>(this: T): InstanceType<T>;
-    function find<T extends Class>(this: T, id: number): InstanceType<T>;
     function findBy<T extends Class>(this: T, input: Meta<T>['WhereInput']): InstanceType<T> | undefined;
     function all<T extends Class>(this: T): Relation<InstanceType<T>, Meta<T>>;
     function order<T extends Class>(this: T, attribute: keyof Meta<T>["OrderInput"], direction?: "asc" | "desc"): Relation<InstanceType<T>, Meta<T>>;

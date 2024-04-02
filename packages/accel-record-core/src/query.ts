@@ -119,7 +119,7 @@ export class Query {
     if (!instance) {
       throw new Error("Record Not found");
     }
-    return instance;
+    return instance as InstanceType<T>;
   }
 
   static findBy<T extends typeof Model>(this: T, input: object) {
