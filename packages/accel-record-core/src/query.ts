@@ -114,12 +114,12 @@ export class Query {
 
   static find<T extends typeof Model>(this: T, id: number) {
     const instance = this.all()
-      .where({ [this.primaryKeys[0]]: id })
+      .setOption("wheres", [{ [this.primaryKeys[0]]: id }])
       .first();
     if (!instance) {
       throw new Error("Record Not found");
     }
-    return instance;
+    return instance as InstanceType<T>;
   }
 
   static findBy<T extends typeof Model>(this: T, input: object) {

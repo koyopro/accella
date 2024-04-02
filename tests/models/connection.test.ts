@@ -8,16 +8,16 @@ test("execute", () => {
     name: "hoge",
     posts: [$post.build({ title: "title1" })],
   });
-  Model.connection.execute("update User set name = 'fuga' where id = ?", [
+  Model.connection.execute("update User set name = 'fuga' where _id = ?", [
     u.id,
   ]);
   expect(u.reload().name).toBe("fuga");
 
   const r = Model.connection.execute(
-    `select count(User.id) as cnt
+    `select count(User._id) as cnt
      from User
      left join Post
-       on User.id = Post.authorId
+       on User._id = Post.author_id
      where Post.title = ?`,
     ["title1"]
   );
@@ -37,9 +37,9 @@ test("knex builder", async () => {
   {
     const knex = Model.connection.knex;
     const r = knex
-      .select("name", knex.raw("SUM(id) as s"))
+      .select("name", knex.raw("SUM(_id) as s"))
       .from("User")
-      .groupBy("id")
+      .groupBy("_id")
       .execute();
     expect(r[0].name).toBe(u.name);
     expect(Number(r[0].s)).toBe(u.id);

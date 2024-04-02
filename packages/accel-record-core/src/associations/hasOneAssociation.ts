@@ -7,9 +7,10 @@ export class HasOneAssociation<
 > extends Association<O, T> {
   reader() {
     if (!this.isLoaded) {
-      this.target = Models[this.info.klass].findBy(this.scopeAttributes()) as
-        | T
-        | undefined;
+      this.target = Models[this.info.klass]
+        .all()
+        .setOption("wheres", [this.scopeAttributes()])
+        .first() as T | undefined;
       this.isLoaded = true;
     }
     return this.target;

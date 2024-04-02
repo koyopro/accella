@@ -10,6 +10,7 @@ export class RelationBase {
     value: any
   ) {
     this.options[key] = value;
+    return this;
   }
   protected _load(this: Relation<unknown, ModelMeta>) {
     const select =
@@ -68,7 +69,8 @@ export class RelationBase {
       } else {
         const { klass, name, primaryKey, foreignKey } = association;
         const primaryKeys = rows.map((row: any) => row[primaryKey]);
-        const included = Models[klass].where({ [foreignKey]: primaryKeys });
+        const attribute = Models[klass].columnToAttribute(foreignKey)!;
+        const included = Models[klass].where({ [attribute]: primaryKeys });
         const mapping: any = {};
         for (const row of included) {
           (mapping[(row as any)[foreignKey]] ||= []).push(row);
@@ -86,7 +88,8 @@ export class RelationBase {
     const { klass, name, primaryKey, foreignKey } = association;
     const foreignKeys = rows.map((row: any) => row[foreignKey]);
     const mapping: any = {};
-    const included = Models[klass].where({ [primaryKey]: foreignKeys });
+    const attribute = Models[klass].columnToAttribute(primaryKey)!;
+    const included = Models[klass].where({ [attribute]: foreignKeys });
     for (const row of included) {
       mapping[(row as any)[primaryKey]] = row;
     }

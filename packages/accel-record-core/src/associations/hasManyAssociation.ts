@@ -21,11 +21,17 @@ export class HasManyAssociation<
   }
 
   deleteAll() {
-    Models[this.info.klass].where(this.scopeAttributes()).deleteAll();
+    Models[this.info.klass]
+      .all()
+      .setOption("wheres", [this.scopeAttributes()])
+      .deleteAll();
   }
 
   destroyAll() {
-    Models[this.info.klass].where(this.scopeAttributes()).destroyAll();
+    Models[this.info.klass]
+      .all()
+      .setOption("wheres", [this.scopeAttributes()])
+      .destroyAll();
   }
 
   delete(...records: T[]) {

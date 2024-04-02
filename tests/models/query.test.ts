@@ -165,7 +165,7 @@ describe("Query", () => {
   test("joinsRaw", () => {
     $post.create({ author: $user.create(), title: "title1" });
 
-    const cnt = User.joinsRaw("INNER JOIN Post ON authorId = User.id")
+    const cnt = User.joinsRaw("INNER JOIN Post ON author_id = User._id")
       .where("Post.title = ?", "title1")
       .count();
     expect(cnt).toBe(1);

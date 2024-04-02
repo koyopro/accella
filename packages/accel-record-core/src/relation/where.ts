@@ -8,7 +8,7 @@ export class Where {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key in input) {
       const column = this.model.attributeToColumn(key);
-      if (!column) continue;
+      if (!column) throw new Error(`Attribute not found: ${key}`);
       if (Array.isArray(input[key])) {
         newOptions["wheres"].push([column, "in", input[key]]);
       } else if (input[key] != null && typeof input[key] === "object") {
@@ -31,7 +31,7 @@ export class Where {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key in input) {
       const column = this.model.attributeToColumn(key);
-      if (!column) continue;
+      if (!column) throw new Error(`Attribute not found: ${key}`);
       if (input[key] != null && typeof input[key] === "object") {
         for (const operator in input[key]) {
           if (operator === "in") {

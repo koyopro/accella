@@ -207,7 +207,7 @@ export class Fields {
   static get primaryKeys() {
     return (
       this.model?.primaryKey?.fields ??
-      this.model?.fields.filter((f) => f.isId).map((f) => f.name) ??
+      this.model?.fields.filter((f) => f.isId).map((f) => f.dbName ?? f.name) ??
       []
     );
   }
