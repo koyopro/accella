@@ -4,7 +4,7 @@ Accel Record is a type-safe and synchronous ORM for TypeScript. It adopts the Ac
 
 It uses Prisma for schema management and migration, and you can also use existing Prisma schemas as is.
 
-It supports MySQL and SQLite and is currently in alpha version.
+It supports MySQL and SQLite and is currently in beta version.
 
 ## Features
 
