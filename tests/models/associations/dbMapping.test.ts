@@ -9,6 +9,9 @@ test("hasMany with dbMapping", () => {
 
   expect(company1.employees.first()?.equals(employee)).toBeTruthy();
   expect(employee.company.equals(company1)).toBeTruthy();
+
+  company1.employees.deleteAll();
+  company1.employees.destroyAll();
 });
 
 test("hasOne with dbMapping", () => {
