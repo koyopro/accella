@@ -10,6 +10,7 @@ export class RelationBase {
     value: any
   ) {
     this.options[key] = value;
+    return this;
   }
   protected _load(this: Relation<unknown, ModelMeta>) {
     const select =
