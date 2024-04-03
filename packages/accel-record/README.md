@@ -713,6 +713,73 @@ const rows = User.queryBuilder.select("name").groupBy("name").execute();
 console.log(rows); // => [{ name: "John" }, { name: "Alice" }]
 ```
 
+## Testing
+
+### Testing with Vitest
+
+In Vitest, you prepare a setup file like the following for testing.
+
+```ts
+// tests/vitest.setup.ts
+
+import {
+  DatabaseCleaner,
+  Migration,
+  initAccelRecord,
+  stopWorker,
+} from "accel-record";
+import path from "path";
+import { fileURLToPath } from "url";
+
+import "../src/models/index.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+beforeAll(async () => {
+  await initAccelRecord({
+    type: "mysql",
+    // Vitest usually performs tests in a multi-threaded manner.
+    // To use different databases in each thread, separate the databases using VITEST_POOL_ID.
+    datasourceUrl: `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`,
+    // Specify the directory of the Prisma schema file.
+    // This is necessary for performing database migration before running the tests.
+    prismaDir: path.resolve(__dirname, "../prisma"),
+  });
+  // If prismaDir is specified in initAccelRecord, you can execute pending migrations.
+  await Migration.migrate();
+});
+
+// Use DatabaseCleaner in beforeEach and afterEach to clean up the database for each test.
+beforeEach(async () => {
+  DatabaseCleaner.start();
+});
+
+afterEach(async () => {
+  DatabaseCleaner.clean();
+});
+
+// Call stopWorker in afterAll to stop the synchronous subprocess at the end of the test.
+afterAll(async () => {
+  stopWorker();
+});
+```
+
+By specifying the above file in the setupFiles of the Vitest configuration file, you can initialize the database before running the tests.
+For more details, refer to the [Vitest documentation](https://vitest.dev/config/#setupfiles).
+
+```js
+// vitest.config.js
+
+export default {
+  test: {
+    globals: true,
+    setupFiles: ["./tests/vitest.setup.ts"], // Add here
+    // ...
+  },
+  // ...
+};
+```
+
 ## Future Planned Features
 
 - [accel-record-core] Validation

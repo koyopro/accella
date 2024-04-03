@@ -714,6 +714,73 @@ const rows = User.queryBuilder.select("name").groupBy("name").execute();
 console.log(rows); // => [{ name: "John" }, { name: "Alice" }]
 ```
 
+## テスト
+
+### Vitestを利用したテスト
+
+Vitestを使ったテストでは、以下のようなsetupファイルを用意します。
+
+```ts
+// tests/vitest.setup.ts
+
+import {
+  DatabaseCleaner,
+  Migration,
+  initAccelRecord,
+  stopWorker,
+} from "accel-record";
+import path from "path";
+import { fileURLToPath } from "url";
+
+import "../src/models/index.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+beforeAll(async () => {
+  await initAccelRecord({
+    type: "mysql",
+    // Vitestは通常マルチスレッドでてテストが行われます。
+    // 各スレッドで異なるデータベースを利用するためには、VITEST_POOL_IDを利用してデータベースを分離します。
+    datasourceUrl: `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`,
+    // Prismaのスキーマファイルのディレクトリを指定します。
+    // これは、テスト実行前にデータベースのマイグレーションを行うために必要な設定です。
+    prismaDir: path.resolve(__dirname, "../prisma"),
+  });
+  // initAccelRecordでprismaDirを指定している場合、未反映のマイグレーションを実行することができます。
+  await Migration.migrate();
+});
+
+// beforeEach, afterEachでDatabaseCleanerを利用し、各テスト毎にデータベースをクリーンアップします。
+beforeEach(async () => {
+  DatabaseCleaner.start();
+});
+
+afterEach(async () => {
+  DatabaseCleaner.clean();
+});
+
+// テスト終了時に同期処理用のサブプロセスを停止するために、afterAllでstopWorkerを呼び出します。
+afterAll(async () => {
+  stopWorker();
+});
+```
+
+Vitest設定ファイルのsetupFilesに上記のファイルを指定することで、テスト実行前にデータベースの初期化を行うことができます。  
+詳細は[Vitestのドキュメント](https://vitest.dev/config/#setupfiles)を参照してください。
+
+```js
+// vitest.config.js
+
+export default {
+  test: {
+    globals: true,
+    setupFiles: ["./tests/vitest.setup.ts"], // ここに追加
+    // ...
+  },
+  // ...
+};
+```
+
 ## 今後予定されている機能追加
 
 - [accel-record-core] バリデーション
