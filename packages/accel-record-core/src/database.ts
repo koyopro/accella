@@ -26,7 +26,7 @@ const defaultLogger = {
 };
 export type Logger = typeof defaultLogger;
 
-const getKnexConfig = (config: Config) => {
+export const getKnexConfig = (config: Config) => {
   if (config.knexConfig) return config.knexConfig;
   if (config.datasourceUrl) {
     const client = config.type == "mysql" ? "mysql2" : "better-sqlite3";
