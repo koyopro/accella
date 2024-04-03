@@ -64,7 +64,7 @@ export class Query {
     return this.all().select(...columns);
   }
 
-  static first<T extends typeof Model>(this: T) {
+  static first<T extends typeof Model>(this: T): InstanceType<T> {
     return this.all().first();
   }
 
