@@ -2,7 +2,7 @@ import crypto from "crypto";
 import fs from "fs";
 import Knex from "knex";
 import path from "path";
-import { getConfig, getKnex } from "./database.js";
+import { getConfig, getKnex, getKnexConfig } from "./database.js";
 
 const logsTable = "_prisma_migrations";
 
@@ -21,16 +21,17 @@ export class Migration {
     const config = getConfig();
     if (config.type == "mysql") {
       const parse = () => {
-        if (typeof config.knexConfig?.connection == "string") {
-          const u = new URL(config.knexConfig.connection);
+        const knexConfig = getKnexConfig(config);
+        if (typeof knexConfig?.connection == "string") {
+          const u = new URL(knexConfig.connection);
           const database = u.pathname.replace("/", "");
           u.pathname = "";
-          const newConfig = { ...config.knexConfig, connection: u.toString() };
+          const newConfig = { ...knexConfig, connection: u.toString() };
           return [database, newConfig];
-        } else if (config.knexConfig) {
+        } else if (knexConfig) {
           // @ts-ignore
-          const { database, ...rest } = config.knexConfig.connection;
-          const newConfig = { ...config.knexConfig, connection: rest };
+          const { database, ...rest } = knexConfig.connection;
+          const newConfig = { ...knexConfig, connection: rest };
           return [database, newConfig];
         } else {
           throw new Error("Invalid knexConfig");
