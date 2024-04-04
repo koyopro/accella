@@ -4,6 +4,7 @@ export class Dirty {
   private originalValues: Record<string, any> = {};
 
   storeOriginalValues(this: Model) {
+    this.originalValues = {}; // clear
     for (const { name } of this.columnFields) {
       this.originalValues[name] = this[name as keyof Model];
     }

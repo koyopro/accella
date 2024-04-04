@@ -66,6 +66,7 @@ export interface Config {
 }
 let _config: Config = { type: "sqlite" };
 let _rpcClient: any;
+let _queryCount: number = 0;
 export const initAccelRecord = async (config: Config) => {
   _config = config;
   _config.logLevel ??= "WARN";
@@ -88,6 +89,10 @@ export const getKnex = () => {
 
 export const getConfig = () => {
   return _config;
+};
+
+export const getQueryCount = () => {
+  return _queryCount;
 };
 
 export const exec = (
@@ -115,6 +120,7 @@ export const execSQL = (params: {
     `  \x1b[36mSQL(${time}ms)  ${color}${sql}\x1b[39m`,
     bindings
   );
+  _queryCount++;
   return _config.type == "mysql" ? ret[0] : ret;
 };
 

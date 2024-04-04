@@ -59,10 +59,12 @@ describe("hasOne", () => {
   test("includes", () => {
     $setting.create({ user: $user.create() });
     $setting.create({ user: $user.create() });
-    // Confirm: that N+1 queries are not occurring
-    const users = User.includes("setting").toArray();
+
+    const users = User.all().includes("setting").toArray();
+    const beforeCount = User.connection.queryCount;
     expect(users[0]?.setting?.isNewRecord).toBe(false);
     expect(users[1]?.setting?.isNewRecord).toBe(false);
+    expect(User.connection.queryCount).toBe(beforeCount);
   });
 
   describe("getter/setter types", () => {

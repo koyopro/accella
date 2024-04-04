@@ -1,4 +1,4 @@
-import { UserTeam } from ".";
+import { User, UserTeam } from ".";
 import { $post } from "../factories/post";
 import { $team } from "../factories/team";
 import { $user } from "../factories/user";
@@ -32,6 +32,15 @@ describe("ManyToMany", () => {
     user.posts.push(post1);
     expect(user.posts.toArray().length).toEqual(3);
     expect(user.reload().posts.toArray().length).toEqual(2);
+  });
+
+  test("includes", () => {
+    $user.create({ posts: [$post.build()] });
+
+    const user = User.includes("posts").first()!;
+    const beforeCount = User.connection.queryCount;
+    expect(user.posts.toArray().length).toBe(1);
+    expect(User.connection.queryCount).toBe(beforeCount);
   });
 
   describe("getter/setter types", () => {

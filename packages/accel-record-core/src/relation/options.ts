@@ -10,9 +10,7 @@ export type Options = {
   orders: [string, "asc" | "desc"][];
   offset: number | undefined;
   limit: number | undefined;
-  includes: (Association & {
-    name: string;
-  })[];
+  includes: Association[];
 };
 
 export const getDefaultOptions = (): Options => ({

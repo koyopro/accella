@@ -178,12 +178,14 @@ describe("Relation", () => {
     const u = $user.create();
     Post.create({ title: "post1", authorId: u.id });
     Post.create({ title: "post2", authorId: u.id });
-    // TODO: improve this test
-    const author = User.all().includes("posts").load()[0];
+
+    const author = User.all().includes("posts").first()!;
+    const beforeCount = User.connection.queryCount;
     expect(author.posts.toArray()).toHaveLength(2);
     expect(author.posts.toArray()[0]).toBeInstanceOf(Post);
     expect(author.posts.toArray()[0].title).toBe("post1");
     expect(author.posts.toArray()[1].title).toBe("post2");
+    expect(User.connection.queryCount).toBe(beforeCount);
   });
 
   test("aggregate", () => {
