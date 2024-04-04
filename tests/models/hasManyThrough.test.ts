@@ -91,8 +91,10 @@ describe("hasManyThrogh", () => {
     const t = $postTag.create();
     p.tags.push(t);
     const post = Post.includes("tags").first();
-    // TODO: check query count
+
+    const beforeCount = Post.connection.queryCount;
     expect(post?.tags.toArray().length).toBe(1);
+    expect(Post.connection.queryCount).toBe(beforeCount);
   });
 
   describe("getter/setter types", () => {

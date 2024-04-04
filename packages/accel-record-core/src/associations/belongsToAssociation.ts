@@ -21,6 +21,7 @@ export class BelongsToAssociation<
     this.owner[this.info.foreignKey as keyof O] = record[
       this.info.primaryKey as keyof T
     ] as any;
+    this.isLoaded = true;
   }
 
   override scopeAttributes() {

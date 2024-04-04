@@ -24,6 +24,7 @@ export class HasOneAssociation<
       this.target = record;
       this.persist();
     }
+    this.isLoaded = true;
   }
 
   persist() {

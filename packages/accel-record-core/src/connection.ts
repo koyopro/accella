@@ -1,4 +1,4 @@
-import { execSQL, getConfig, getKnex } from "./database.js";
+import { execSQL, getConfig, getKnex, getQueryCount } from "./database.js";
 import { Model } from "./index.js";
 
 export class Connection {
@@ -11,6 +11,9 @@ export class Connection {
       },
       execute: (sql: string, bindings: any[]) => {
         return execSQL({ sql, bindings });
+      },
+      get queryCount() {
+        return getQueryCount();
       },
     };
   }
