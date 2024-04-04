@@ -84,6 +84,6 @@ export class HasManyThroughAssociation<
   }
 
   private get joinKey() {
-    return this.info.foreignKey == "A" ? "B" : "A";
+    return this.info.joinKey;
   }
 }

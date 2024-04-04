@@ -10,7 +10,7 @@ export class Association {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     newOptions["includes"].push(
       ...input.map((key) => {
-        return { name: key, ...this.model.associations[key] };
+        return this.model.associations[key];
       })
     );
     return newOptions;
@@ -59,8 +59,7 @@ export class Association {
     this: Relation<unknown, ModelMeta>,
     info: Info
   ) {
-    const { through, model, primaryKey, foreignKey } = info;
-    const joinKey = info.foreignKey == "A" ? "B" : "A";
+    const { through, model, primaryKey, foreignKey, joinKey } = info;
     return [
       [
         through,

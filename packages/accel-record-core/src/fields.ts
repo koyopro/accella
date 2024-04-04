@@ -39,6 +39,10 @@ export class Association {
   get isHasOne() {
     return !this.field.isList && !this.isBelongsTo;
   }
+
+  get joinKey() {
+    return this.foreignKey == "A" ? "B" : "A";
+  }
 }
 
 export class Field {

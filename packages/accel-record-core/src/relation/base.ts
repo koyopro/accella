@@ -69,7 +69,8 @@ export class RelationBase {
       } else if (association.through) {
         this.loadHasManyThroughIncludes(association, rows);
       } else {
-        const { klass, name, primaryKey, foreignKey } = association;
+        const { klass, primaryKey, foreignKey } = association;
+        const name = association.field.name;
         const primaryKeys = rows.map((row: any) => row[primaryKey]);
         const attribute = Models[klass].columnToAttribute(foreignKey)!;
         const included = Models[klass].where({ [attribute]: primaryKeys });
@@ -88,13 +89,13 @@ export class RelationBase {
     association: Options["includes"][0],
     rows: any[]
   ) {
-    const { klass, primaryKey, name } = association;
-    const joinKey = association.foreignKey == "A" ? "B" : "A";
+    const { klass, primaryKey, foreignKey, joinKey } = association;
+    const name = association.field.name;
     const primaryKeys = rows.map((row: any) => row[primaryKey]);
 
     const relations = this.model.connection
       .knex(association.through)
-      .where(association.foreignKey, "in", primaryKeys)
+      .where(foreignKey, "in", primaryKeys)
       .execute();
 
     const targetModel = Models[klass];
@@ -105,14 +106,12 @@ export class RelationBase {
     });
     const includedMap: any = {};
     for (const row of included) {
-      includedMap[row[pk]] = row;
+      includedMap[(row as any)[pk]] = row;
     }
 
     const mapping: any = {};
     for (const row of relations) {
-      (mapping[row[association.foreignKey]] ||= []).push(
-        includedMap[row[joinKey]]
-      );
+      (mapping[row[foreignKey]] ||= []).push(includedMap[row[joinKey]]);
     }
     for (const row of rows) {
       row[name] = mapping[row[primaryKey]] ?? [];
@@ -123,7 +122,8 @@ export class RelationBase {
     rows: any[],
     association: Options["includes"][0]
   ) {
-    const { klass, name, primaryKey, foreignKey } = association;
+    const { klass, primaryKey, foreignKey } = association;
+    const name = association.field.name;
     const foreignKeys = rows.map((row: any) => row[foreignKey]);
     const mapping: any = {};
     const attribute = Models[klass].columnToAttribute(primaryKey)!;
