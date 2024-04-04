@@ -66,6 +66,8 @@ export class RelationBase {
     for (const association of this.options.includes ?? []) {
       if (association.isBelongsTo) {
         this.loadBelongsToIncludes(rows, association);
+      } else if (association.through) {
+        this.loadHasManyThroughIncludes(association, rows);
       } else {
         const { klass, name, primaryKey, foreignKey } = association;
         const primaryKeys = rows.map((row: any) => row[primaryKey]);
@@ -81,6 +83,42 @@ export class RelationBase {
       }
     }
   }
+  private loadHasManyThroughIncludes(
+    this: Relation<unknown, ModelMeta>,
+    association: Options["includes"][0],
+    rows: any[]
+  ) {
+    const { klass, primaryKey, name } = association;
+    const joinKey = association.foreignKey == "A" ? "B" : "A";
+    const primaryKeys = rows.map((row: any) => row[primaryKey]);
+
+    const relations = this.model.connection
+      .knex(association.through)
+      .where(association.foreignKey, "in", primaryKeys)
+      .execute();
+
+    const targetModel = Models[klass];
+    const pk = targetModel.primaryKeys[0];
+    const attribute = targetModel.columnToAttribute(pk)!;
+    const included = targetModel.where({
+      [attribute]: relations.map((r) => r[joinKey]),
+    });
+    const includedMap: any = {};
+    for (const row of included) {
+      includedMap[row[pk]] = row;
+    }
+
+    const mapping: any = {};
+    for (const row of relations) {
+      (mapping[row[association.foreignKey]] ||= []).push(
+        includedMap[row[joinKey]]
+      );
+    }
+    for (const row of rows) {
+      row[name] = mapping[row[primaryKey]] ?? [];
+    }
+  }
+
   protected loadBelongsToIncludes(
     rows: any[],
     association: Options["includes"][0]
