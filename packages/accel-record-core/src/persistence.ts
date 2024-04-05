@@ -4,31 +4,66 @@ import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder.js";
 import { exec, execSQL } from "./database.js";
 import { Collection, Model } from "./index.js";
 
+/**
+ * Represents a Persistence class that provides methods for managing records.
+ */
 export class Persistence {
   isNewRecord: boolean = true;
   isReadonly: boolean = false;
   isDestroyed: boolean = false;
 
+  /**
+   * Builds a new instance of the model using the provided input.
+   *
+   * @template T - The type of the model.
+   * @param input - The input data used to build the model instance.
+   * @returns A new instance of the model.
+   */
   static build<T extends typeof Model>(this: T, input: any) {
     const obj = ModelInstanceBuilder.build(this as T, input);
     obj.storeOriginalValues();
     return obj;
   }
 
+  /**
+   * Creates a new instance of the model using the provided input, saves it, and returns the instance.
+   *
+   * @template T - The type of the model.
+   * @param input - The input data used to create the model instance.
+   * @returns The created instance of the model.
+   */
   static create<T extends typeof Model>(this: T, input: any) {
     const instance = this.build(input);
     instance.save();
     return instance;
   }
 
+  /**
+   * Checks if the model instance is persisted (not a new record and not destroyed).
+   *
+   * @template T - The type of the model.
+   * @returns A boolean indicating whether the model instance is persisted.
+   */
   isPersisted<T extends Model>(this: T): any {
     return !(this.isNewRecord || this.isDestroyed);
   }
 
+  /**
+   * Returns the model instance if it is persisted, otherwise returns undefined.
+   *
+   * @template T - The type of the model.
+   * @returns The persisted instance of the model, or undefined if not persisted.
+   */
   asPersisted<T extends Model>(this: T): T | undefined {
     return this.isPersisted() ? this : undefined;
   }
 
+  /**
+   * Saves the model instance.
+   *
+   * @template T - The type of the model.
+   * @returns A boolean indicating whether the save operation was successful.
+   */
   save<T extends Model>(this: T): boolean {
     const ret = this.createOrUpdate();
     this.isNewRecord = false;
@@ -37,11 +72,22 @@ export class Persistence {
     return ret;
   }
 
+  /**
+   * Updates the model instance with the provided data and saves it.
+   *
+   * @template T - The type of the model.
+   * @param data - The data used to update the model instance.
+   * @returns A boolean indicating whether the update operation was successful.
+   */
   update<T extends Model>(this: T, data: object): boolean {
     this.assignAttributes(data);
     return this.save();
   }
 
+  /**
+   * Deletes the record from the database.
+   * @returns A boolean indicating whether the record was successfully deleted.
+   */
   delete<T extends Model>(this: T): boolean {
     const ret = this.deleteRecord();
     this.isDestroyed = true;
@@ -49,6 +95,11 @@ export class Persistence {
     return ret;
   }
 
+  /**
+   * Destroys the record and its associated records from the database.
+   * @returns A boolean indicating whether the record was successfully destroyed.
+   * @throws An error if the record is readonly.
+   */
   destroy<T extends Model>(this: T): boolean {
     if (this.isReadonly) throw new Error("Readonly record");
     for (const [key, association] of this.associations.entries()) {
@@ -68,16 +119,22 @@ export class Persistence {
     return true;
   }
 
+  /**
+   * Creates or updates the record in the database.
+   * @returns A boolean indicating whether the record was successfully created or updated.
+   * @throws An error if the record is readonly.
+   */
   protected createOrUpdate<T extends Model>(this: T): boolean {
     if (this.isReadonly) {
       throw new Error("Readonly record");
     }
-    // if (this.destroyed) {
-    //   return false;
-    // }
     return this.isNewRecord ? this.createRecord() : this.updateRecord();
   }
 
+  /**
+   * Updates the record in the database.
+   * @returns A boolean indicating whether the record was successfully updated.
+   */
   protected updateRecord<T extends Model>(this: T): boolean {
     if (this.isChanged()) {
       const data = this.makeUpdateParams();
@@ -87,6 +144,10 @@ export class Persistence {
     return true;
   }
 
+  /**
+   * Creates the parameters for updating the record.
+   * @returns The update parameters.
+   */
   protected makeUpdateParams<T extends Model>(this: T) {
     const data: Record<string, any> = {};
     const now = new Date();
@@ -105,6 +166,10 @@ export class Persistence {
     return data;
   }
 
+  /**
+   * Retrieves the updated attributes of the record from the database.
+   * @param data - The updated data returned from the database.
+   */
   protected retriveUpdatedAt<T extends Model>(
     this: T,
     data: Record<string, any>
@@ -116,6 +181,10 @@ export class Persistence {
     }
   }
 
+  /**
+   * Creates the record in the database.
+   * @returns A boolean indicating whether the record was successfully created.
+   */
   protected createRecord<T extends Model>(this: T): boolean {
     const data = this.makeInsertParams();
     let q = this.queryBuilder;
@@ -127,6 +196,10 @@ export class Persistence {
     return true;
   }
 
+  /**
+   * Retrieves the inserted attributes of the record from the database.
+   * @param returning - The inserted data returned from the database.
+   */
   protected retriveInsertedAttributes<T extends Model>(
     this: T,
     returning: Record<keyof T, any>
@@ -150,6 +223,10 @@ export class Persistence {
     })[0]["id"];
   }
 
+  /**
+   * Creates the parameters for inserting the record.
+   * @returns The insert parameters.
+   */
   protected makeInsertParams<T extends Model>(this: T) {
     const data: any = {};
     const now = new Date();
@@ -171,6 +248,9 @@ export class Persistence {
     return data;
   }
 
+  /**
+   * Saves the associations of the record.
+   */
   protected saveAssociations<T extends Model>(this: T) {
     for (const [key, association] of this.associations.entries()) {
       if (association instanceof HasOneAssociation) {
@@ -187,11 +267,19 @@ export class Persistence {
     }
   }
 
+  /**
+   * Deletes the record from the database.
+   * @returns A boolean indicating whether the record was successfully deleted.
+   */
   protected deleteRecord<T extends Model>(this: T): boolean {
     exec(this.queryBuilder.where(this.primaryKeysCondition()).delete());
     return true;
   }
 
+  /**
+   * Creates the condition for the primary keys of the record.
+   * @returns The primary keys condition.
+   */
   protected primaryKeysCondition<T extends Model>(this: T) {
     const where = {} as Record<keyof T, any>;
     for (const key of this.primaryKeys as (keyof T)[]) {
