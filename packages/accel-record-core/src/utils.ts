@@ -9,7 +9,7 @@ type ObjectIntersection<T extends any[]> = T extends [
   infer Head extends abstract new (...args: any) => any,
   ...infer Tail extends (abstract new (...args: any) => any)[],
 ]
-  ? { [K in keyof Head]: Head[K] } & ObjectIntersection<Tail>
+  ? Head & ObjectIntersection<Tail>
   : {};
 
 export const classIncludes = <T extends (new (...args: any) => any)[]>(

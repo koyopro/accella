@@ -54,6 +54,7 @@ export const registerModel = (model: any) => {
   Models[model.name] = model;
 };
 
+// @ts-ignore
 export class Model extends classIncludes(
   AttributeAssignment,
   Connection,
@@ -65,6 +66,11 @@ export class Model extends classIncludes(
 ) {
   associations: Map<string, Association<Model, Model>> = new Map();
 
+  /**
+   * Checks if the current instance is equal to another instance of the same type.
+   * @param other The other instance to compare with.
+   * @returns Returns `true` if the instances are equal, `false` otherwise.
+   */
   equals<T extends Model>(this: T, other: T): boolean {
     if (this.constructor.name !== other.constructor.name) {
       return false;
@@ -76,6 +82,10 @@ export class Model extends classIncludes(
     return true;
   }
 
+  /**
+   * Reloads the record by resetting associations and attributes.
+   * @returns The reloaded record.
+   */
   reload() {
     this.retriveInsertedAttributes({} as Record<keyof this, any>);
     for (const [key, association] of this.associations.entries()) {

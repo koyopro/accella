@@ -1,5 +1,10 @@
 import { ModelMeta, Relation } from "../index.js";
 
+/**
+ * Provides the *where* related methods for relations.
+ *
+ * This class is intended to be inherited by the Relation class.
+ */
 export class Where {
   protected addWhere(
     this: Relation<unknown, ModelMeta>,
