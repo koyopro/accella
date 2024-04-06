@@ -3,6 +3,11 @@ import { ModelMeta, Models } from "../index.js";
 import { Relation } from "./index.js";
 import { Options } from "./options.js";
 
+/**
+ * Provides the base methods for relations.
+ *
+ * This class is intended to be inherited by the Relation class.
+ */
 export class RelationBase {
   setOption(
     this: Relation<unknown, ModelMeta>,

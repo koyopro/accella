@@ -2,6 +2,11 @@ import { Association as Info } from "../fields.js";
 import { ModelMeta } from "../index.js";
 import { Relation } from "./index.js";
 
+/**
+ * Provides the association methods for relations.
+ *
+ * This class is intended to be inherited by the Relation class.
+ */
 export class Association {
   protected addIncludes(
     this: Relation<unknown, ModelMeta>,

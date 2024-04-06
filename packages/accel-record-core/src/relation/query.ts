@@ -2,6 +2,11 @@ import { exec } from "../database.js";
 import { Model, ModelMeta } from "../index.js";
 import { Relation } from "./index.js";
 
+/**
+ * Provides the query methods for relations.
+ *
+ * This class is intended to be inherited by the Relation class.
+ */
 export class Query {
   reset(this: Relation<unknown, ModelMeta>) {
     this.cache = undefined;
