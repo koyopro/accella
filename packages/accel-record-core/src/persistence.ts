@@ -6,6 +6,8 @@ import { Collection, Model } from "./index.js";
 
 /**
  * Represents a Persistence class that provides methods for managing records.
+ *
+ * This class is intended to be inherited by the Model class.
  */
 export class Persistence {
   isNewRecord: boolean = true;

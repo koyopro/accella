@@ -2,6 +2,8 @@ import { Model } from "../index.js";
 
 /**
  * Represents a utility class for tracking changes in a model.
+ *
+ * This class is intended to be inherited by the Model class.
  */
 export class Dirty {
   private originalValues: Record<string, any> = {};

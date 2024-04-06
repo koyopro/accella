@@ -8,6 +8,8 @@ export class Rollback extends Error {
 
 /**
  * Represents a transaction for executing SQL statements.
+ *
+ * This class is intended to be inherited by the Model class.
  */
 export class Transaction {
   /**

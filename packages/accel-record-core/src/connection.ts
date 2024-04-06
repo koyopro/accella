@@ -3,6 +3,8 @@ import { Model } from "./index.js";
 
 /**
  * Represents a connection to a database.
+ *
+ * This class is intended to be inherited by the Model class.
  */
 export class Connection {
   /**

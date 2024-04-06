@@ -261,6 +261,8 @@ export const loadDmmf = async () => {
 
 /**
  * Represents a collection of utility methods for working with fields in a database table.
+ *
+ * This class is intended to be inherited by the Model class.
  */
 export class Fields {
   static table: string | undefined = undefined;
@@ -347,8 +349,8 @@ export class Fields {
   }
 
   /**
-   * Gets a record of associations associated with the current class.
-   * The record is a key-value pair where the key is the field name and the value is the `Association` instance.
+   * Gets association informations associated with the current class.
+   * The record is a key-value pair where the key is the field name and the value is the `Association`.
    */
   static get associations(): Record<string, Association> {
     const myModel = this.model;

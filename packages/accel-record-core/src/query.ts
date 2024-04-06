@@ -3,6 +3,8 @@ import { Relation } from "./relation/index.js";
 
 /**
  * Represents a query class for performing database queries.
+ *
+ * This class is intended to be inherited by the Model class.
  */
 export class Query {
   /**
