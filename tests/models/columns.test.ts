@@ -43,8 +43,8 @@ describe("Columns", () => {
       data: { key1: "value1", key2: { key3: 3 } },
     });
     const s = Setting.first();
-    expect(s.data.key1).toBe("value1");
-    expect(s.data.key2?.key3).toBe(3);
+    expect(s?.data.key1).toBe("value1");
+    expect(s?.data.key2?.key3).toBe(3);
   });
 
   test("enum column", () => {
@@ -54,7 +54,7 @@ describe("Columns", () => {
     const p = Profile.create({ user: user });
     expect(p.role).toBe("MEMBER");
     p.update({ role: "ADMIN" });
-    expect(Profile.first().role).toBe("ADMIN");
+    expect(Profile.first()?.role).toBe("ADMIN");
 
     // for type check
     expect(

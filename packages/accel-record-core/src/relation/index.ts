@@ -1,5 +1,6 @@
 import { exec } from "../database.js";
-import { Model, type ModelMeta } from "../index.js";
+import { Model } from "../index.js";
+import { type ModelMeta } from "../meta.js";
 import { classIncludes } from "../utils.js";
 import { Association } from "./association.js";
 import { RelationBase } from "./base.js";

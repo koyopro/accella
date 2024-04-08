@@ -1,4 +1,5 @@
-import type { Model, ModelMeta } from "./index.js";
+import type { Model } from "./index.js";
+import type { Meta } from "./meta.js";
 import { Relation } from "./relation/index.js";
 
 /**
@@ -11,7 +12,9 @@ export class Query {
    * Retrieves all records of the model.
    * @returns A `Relation` object representing the query result.
    */
-  static all<T extends typeof Model>(this: T): Relation<any, any> {
+  static all<T extends typeof Model>(
+    this: T
+  ): Relation<InstanceType<T>, Meta<T>> {
     return new Relation(this);
   }
 
@@ -39,19 +42,14 @@ export class Query {
    * @param callback - An optional callback function to be called with the found or initialized record.
    * @returns The found or initialized record.
    */
-  static findOrInitializeBy<
-    T extends typeof Model,
-    S extends
-      | ReturnType<typeof Model.build<T>>
-      | ReturnType<typeof Model.create<T>>,
-  >(
+  static findOrInitializeBy<T extends typeof Model>(
     this: T,
     params: Parameters<typeof Model.build<T>>[0],
-    callback?: (obj: S) => void
-  ): S {
+    callback?: (obj: Meta<T>["Base"]) => void
+  ): Meta<T>["Base"] {
     const user = this.findBy(params);
     if (user) return user;
-    const newUser = this.build(params) as S;
+    const newUser = this.build(params);
     callback?.(newUser);
     return newUser;
   }
@@ -61,10 +59,10 @@ export class Query {
    * @param input - The associations to include.
    * @returns A `Relation` object representing the query result with the included associations.
    */
-  static includes<
-    T extends typeof Model,
-    R extends ModelMeta["AssociationKey"][],
-  >(this: T, ...input: R): Relation<any, any> {
+  static includes<T extends typeof Model>(
+    this: T,
+    ...input: Meta<T>["AssociationKey"][]
+  ): Relation<InstanceType<T>, Meta<T>> {
     return this.all().includes(...input);
   }
 
@@ -73,10 +71,10 @@ export class Query {
    * @param input - The associations to join.
    * @returns A `Relation` object representing the query result with the joined associations.
    */
-  static joins<T extends typeof Model, R extends ModelMeta["AssociationKey"][]>(
+  static joins<T extends typeof Model>(
     this: T,
-    ...input: R
-  ): Relation<any, any> {
+    ...input: Meta<T>["AssociationKey"][]
+  ): Relation<InstanceType<T>, Meta<T>> {
     return this.all().joins(...input);
   }
 
@@ -90,7 +88,7 @@ export class Query {
     this: T,
     query: string,
     ...bindings: any[]
-  ): Relation<any, any> {
+  ): Relation<InstanceType<T>, Meta<T>> {
     return this.all().joinsRaw(query, ...bindings);
   }
 
@@ -99,18 +97,22 @@ export class Query {
    * @param columns - The columns to select.
    * @returns A `Relation` object representing the query result with the selected columns.
    */
-  static select<T extends typeof Model>(
+  static select<
+    T extends typeof Model,
+    F extends (keyof Meta<T>["OrderInput"])[],
+  >(
     this: T,
-    ...columns: string[]
-  ): Relation<any, any> {
-    return this.all().select(...columns);
+    ...attributes: F
+    // @ts-ignore
+  ): Relation<{ [K in F[number]]: InstanceType<T>[K] }, Meta<T>> {
+    return this.all().select(...attributes);
   }
 
   /**
    * Retrieves the first record of the model.
    * @returns The first record of the model.
    */
-  static first<T extends typeof Model>(this: T): InstanceType<T> {
+  static first<T extends typeof Model>(this: T) {
     return this.all().first();
   }
 
@@ -146,9 +148,9 @@ export class Query {
    */
   static order<T extends typeof Model>(
     this: T,
-    attribute: string,
-    direction: "asc" | "desc" = "asc"
-  ) {
+    attribute: keyof Meta<T>["OrderInput"],
+    direction?: "asc" | "desc"
+  ): Relation<InstanceType<T>, Meta<T>> {
     return this.all().order(attribute, direction);
   }
 
@@ -157,7 +159,10 @@ export class Query {
    * @param offset - The offset value.
    * @returns A `Relation` object representing the query result with the offset applied.
    */
-  static offset<T extends typeof Model>(this: T, offset: number) {
+  static offset<T extends typeof Model>(
+    this: T,
+    offset: number
+  ): Relation<InstanceType<T>, Meta<T>> {
     return this.all().offset(offset);
   }
 
@@ -166,17 +171,49 @@ export class Query {
    * @param limit - The limit value.
    * @returns A `Relation` object representing the query result with the limit applied.
    */
-  static limit<T extends typeof Model>(this: T, limit: number) {
+  static limit<T extends typeof Model>(
+    this: T,
+    limit: number
+  ): Relation<InstanceType<T>, Meta<T>> {
     return this.all().limit(limit);
   }
 
   /**
-   * Adds a WHERE condition to the query.
-   * @param input - The WHERE condition.
-   * @returns A `Relation` object representing the query result with the WHERE condition applied.
+   * @function where
+   * @description Filters the model instances based on the provided input.
+   * @param {T} this - The model class.
+   * @param {Meta<T>['WhereInput']} input - The input data for filtering the model instances.
+   * @returns {Relation<InstanceType<T>, Meta<T>>} - The relation containing the filtered model instances.
    */
-  static where<T extends typeof Model>(this: T, input: object) {
-    return this.all().where(input);
+  static where<T extends typeof Model>(
+    this: T,
+    input: Meta<T>["WhereInput"]
+  ): Relation<InstanceType<T>, Meta<T>>;
+
+  /**
+   * @function where
+   * @description Filters the model instances based on the provided query and bindings.
+   * @param {T} this - The model class.
+   * @param {string} query - The query string.
+   * @param {...any[]} bindings - The query bindings.
+   * @returns {Relation<InstanceType<T>, Meta<T>>} - The relation containing the filtered model instances.
+   */
+  static where<T extends typeof Model>(
+    this: T,
+    query: string,
+    ...bindings: any[]
+  ): Relation<InstanceType<T>, Meta<T>>;
+
+  static where<T extends typeof Model>(
+    this: T,
+    queryOrInput: string | Meta<T>["WhereInput"],
+    ...bindings: any[]
+  ): Relation<InstanceType<T>, Meta<T>> {
+    if (typeof queryOrInput === "string") {
+      return this.whereRaw(queryOrInput, ...bindings);
+    } else {
+      return this.all().where(queryOrInput);
+    }
   }
 
   /**
@@ -184,7 +221,10 @@ export class Query {
    * @param input - The WHERE NOT condition.
    * @returns A `Relation` object representing the query result with the WHERE NOT condition applied.
    */
-  static whereNot<T extends typeof Model>(this: T, input: object) {
+  static whereNot<T extends typeof Model>(
+    this: T,
+    input: Meta<T>["WhereInput"]
+  ): Relation<InstanceType<T>, Meta<T>> {
     return this.all().whereNot(input);
   }
 
@@ -197,9 +237,9 @@ export class Query {
   static whereRaw<T extends typeof Model>(
     this: T,
     query: string,
-    bindings: any[] = []
-  ) {
-    return this.all().whereRaw(query, bindings);
+    ...bindings: any[]
+  ): Relation<InstanceType<T>, Meta<T>> {
+    return this.all().whereRaw(query, ...bindings);
   }
 
   /**
@@ -223,7 +263,10 @@ export class Query {
    * @param input - The parameters used to find the record.
    * @returns The found record.
    */
-  static findBy<T extends typeof Model>(this: T, input: object) {
+  static findBy<T extends typeof Model>(
+    this: T,
+    input: Meta<T>["WhereInput"]
+  ): InstanceType<T> | undefined {
     return this.all().where(input).first();
   }
 
@@ -232,7 +275,10 @@ export class Query {
    * @param attribute - The attribute to retrieve the maximum value for.
    * @returns The maximum value of the attribute.
    */
-  static maximum<T extends typeof Model>(this: T, attribute: string) {
+  static maximum<T extends typeof Model>(
+    this: T,
+    attribute: keyof Meta<T>["OrderInput"]
+  ) {
     return this.all().maximum(attribute);
   }
 
@@ -241,7 +287,10 @@ export class Query {
    * @param attribute - The attribute to retrieve the minimum value for.
    * @returns The minimum value of the attribute.
    */
-  static minimum<T extends typeof Model>(this: T, attribute: string) {
+  static minimum<T extends typeof Model>(
+    this: T,
+    attribute: keyof Meta<T>["OrderInput"]
+  ) {
     return this.all().minimum(attribute);
   }
 
@@ -250,7 +299,10 @@ export class Query {
    * @param attribute - The attribute to retrieve the average value for.
    * @returns The average value of the attribute.
    */
-  static average<T extends typeof Model>(this: T, attribute: string) {
+  static average<T extends typeof Model>(
+    this: T,
+    attribute: keyof Meta<T>["OrderInput"]
+  ) {
     return this.all().average(attribute);
   }
 }

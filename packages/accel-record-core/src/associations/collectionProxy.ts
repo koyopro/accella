@@ -1,4 +1,5 @@
-import { ModelMeta, type Model } from "../index.js";
+import { type Model } from "../index.js";
+import { ModelMeta } from "../meta.js";
 import { Options, Relation } from "../relation/index.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
 

@@ -1,4 +1,5 @@
 import { Model } from "../index.js";
+import { Meta } from "../meta.js";
 
 /**
  * Represents a utility class for tracking changes in a model.
@@ -21,22 +22,30 @@ export class Dirty {
 
   /**
    * Checks if a specific attribute of the model has been changed.
-   * @param attr - The name of the attribute to check.
+   * @param attribute - The name of the attribute to check.
    * @returns A boolean indicating whether the attribute has been changed.
    */
-  isAttributeChanged(this: Model, attr: string): boolean {
-    return this[attr as keyof Model] !== this.originalValues[attr];
+  isAttributeChanged<T extends Model>(
+    this: T,
+    attribute: keyof Meta<T>["OrderInput"]
+  ): boolean {
+    return (
+      this[attribute as keyof T] !== this.originalValues[attribute as string]
+    );
   }
 
   /**
    * Checks if any attribute of the model has been changed.
    * If an attribute name is provided, only that attribute will be checked.
-   * @param attr - Optional. The name of the attribute to check.
+   * @param attribute - Optional. The name of the attribute to check.
    * @returns A boolean indicating whether any attribute has been changed.
    */
-  isChanged(this: Model, attr?: string): boolean {
-    if (attr) {
-      return this.isAttributeChanged(attr);
+  isChanged<T extends Model>(
+    this: T,
+    attribute?: keyof Meta<T>["OrderInput"]
+  ): boolean {
+    if (attribute) {
+      return this.isAttributeChanged(attribute);
     }
     for (const { name } of this.columnFields) {
       if (this.isAttributeChanged(name)) {
