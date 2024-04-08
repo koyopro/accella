@@ -27,15 +27,6 @@ declare module "accel-record" {
    */
   namespace Model {
     /**
-     * @function build
-     * @description Creates a new instance of a model with the provided input.
-     * @param {T} this - The model class.
-     * @param {Partial<Meta<T>["CreateInput"]>} input - The input data for creating the model instance.
-     * @returns {New<T>} - The newly created model instance.
-     */
-    function build<T extends Class>(this: T, input: Partial<Meta<T>["CreateInput"]>): New<T>;
-
-    /**
      * @function select
      * @description Selects specific attributes from the model instances.
      * @param {T} this - The model class.
@@ -194,35 +185,6 @@ declare module "accel-record" {
   }
 
   interface Model {
-    /**
-     * @function isPersisted
-     * @description Checks if the model instance is persisted in the database.
-     * @returns {boolean} - True if the model instance is persisted, false otherwise.
-     */
-    isPersisted<T>(this: T): this is Persisted<T>;
-
-    /**
-     * @function asPersisted
-     * @description Converts the model instance to a persisted instance.
-     * @returns {Persisted<T> | undefined} - The persisted instance, or undefined if not persisted.
-     */
-    asPersisted<T>(this: T): Persisted<T> | undefined;
-
-    /**
-     * @function update
-     * @description Updates the model instance with the provided input.
-     * @param {Partial<Meta<T>["CreateInput"]>} input - The input data for updating the model instance.
-     * @returns {boolean} - True if the model instance is updated, false otherwise.
-     */
-    update<T>(this: T, input: Partial<Meta<T>["CreateInput"]>): this is Persisted<T>;
-
-    /**
-     * @function save
-     * @description Saves the model instance to the database.
-     * @returns {boolean} - True if the model instance is saved, false otherwise.
-     */
-    save<T>(this: T): this is Persisted<T>;
-
     /**
      * @function isChanged
      * @description Checks if the model instance has changed.

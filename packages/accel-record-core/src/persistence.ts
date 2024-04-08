@@ -2,7 +2,7 @@ import { HasManyAssociation } from "./associations/hasManyAssociation.js";
 import { HasOneAssociation } from "./associations/hasOneAssociation.js";
 import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder.js";
 import { exec, execSQL } from "./database.js";
-import { Collection, Meta, Model } from "./index.js";
+import { Collection, Meta, Model, New, Persisted } from "./index.js";
 
 /**
  * Represents a Persistence class that provides methods for managing records.
@@ -21,7 +21,10 @@ export class Persistence {
    * @param input - The input data used to build the model instance.
    * @returns A new instance of the model.
    */
-  static build<T extends typeof Model>(this: T, input: any) {
+  static build<T extends typeof Model>(
+    this: T,
+    input: Partial<Meta<T>["CreateInput"]>
+  ): New<T> {
     const obj = ModelInstanceBuilder.build(this as T, input);
     obj.storeOriginalValues();
     return obj;
@@ -40,7 +43,7 @@ export class Persistence {
   ): InstanceType<T> {
     const instance = this.build(input);
     instance.save();
-    return instance;
+    return instance as InstanceType<T>;
   }
 
   /**
@@ -49,7 +52,7 @@ export class Persistence {
    * @template T - The type of the model.
    * @returns A boolean indicating whether the model instance is persisted.
    */
-  isPersisted<T extends Model>(this: T): any {
+  isPersisted<T extends Model>(this: T): this is Persisted<T> {
     return !(this.isNewRecord || this.isDestroyed);
   }
 
@@ -59,7 +62,7 @@ export class Persistence {
    * @template T - The type of the model.
    * @returns The persisted instance of the model, or undefined if not persisted.
    */
-  asPersisted<T extends Model>(this: T): T | undefined {
+  asPersisted<T extends Model>(this: T): Persisted<T> | undefined {
     return this.isPersisted() ? this : undefined;
   }
 
@@ -69,7 +72,7 @@ export class Persistence {
    * @template T - The type of the model.
    * @returns A boolean indicating whether the save operation was successful.
    */
-  save<T extends Model>(this: T): boolean {
+  save<T extends Model>(this: T): this is Persisted<T> {
     const ret = this.createOrUpdate();
     this.isNewRecord = false;
     this.saveAssociations();
@@ -84,8 +87,11 @@ export class Persistence {
    * @param data - The data used to update the model instance.
    * @returns A boolean indicating whether the update operation was successful.
    */
-  update<T extends Model>(this: T, data: object): boolean {
-    this.assignAttributes(data);
+  update<T extends Model>(
+    this: T,
+    input: Partial<Meta<T>["CreateInput"]>
+  ): this is Persisted<T> {
+    this.assignAttributes(input);
     return this.save();
   }
 
