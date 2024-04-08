@@ -111,19 +111,13 @@ export const generateTypes = (options: GeneratorOptions) => {
   registerModel,
   type Collection,
   type Filter,
-  type Relation,
   type SortOrder,
   type StringFilter,
 } from "accel-record";
 
-type Class = abstract new (...args: any) => any;
-
 declare module "accel-record" {
   function meta<T>(model: T): Meta<T>;
 }
-
-type Persisted<T> = Meta<T>["Persisted"];
-type New<T> = Meta<T>["New"];
 
 `;
   const meta = options.dmmf.datamodel.models
