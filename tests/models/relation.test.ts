@@ -80,6 +80,7 @@ describe("Relation", () => {
     expect(
       User.all().where({ name: "fuga" }).where({ name: "hoge" }).first()
     ).toBeUndefined();
+    expect(User.all().where({ age: undefined }).first()?.name).toBe("piyo");
     expect(User.all().where({ age: null }).first()?.name).toBe("piyo");
   });
 
@@ -147,6 +148,7 @@ describe("Relation", () => {
         .whereNot({ age: { in: [20] } })
         .first()?.name
     ).toBe("fuga");
+    expect(User.all().whereNot({ age: undefined }).first()?.name).toBe("hoge");
     expect(User.all().whereNot({ age: null }).first()?.name).toBe("hoge");
   });
 

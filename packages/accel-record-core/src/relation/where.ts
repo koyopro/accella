@@ -24,7 +24,9 @@ export class Where {
           );
         }
       } else {
-        newOptions["wheres"].push({ [column]: input[key] });
+        // In knex, we need to use null instead of undefined."
+        const value = input[key] ?? null;
+        newOptions["wheres"].push({ [column]: value });
       }
     }
     return newOptions;
@@ -49,7 +51,9 @@ export class Where {
           }
         }
       } else {
-        newOptions["whereNots"].push({ [column]: input[key] });
+        // In knex, we need to use null instead of undefined."
+        const value = input[key] ?? null;
+        newOptions["whereNots"].push({ [column]: value });
       }
     }
     return newOptions;
