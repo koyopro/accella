@@ -119,6 +119,8 @@ export const generateTypes = (options: GeneratorOptions) => {
 type Class = abstract new (...args: any) => any;
 
 declare module "accel-record" {
+  function meta<T>(model: T): Meta<T>;
+
   /**
    * @namespace Model
    * @description This namespace contains various functions related to model operations.
@@ -132,15 +134,6 @@ declare module "accel-record" {
      * @returns {New<T>} - The newly created model instance.
      */
     function build<T extends Class>(this: T, input: Partial<Meta<T>["CreateInput"]>): New<T>;
-
-    /**
-     * @function create
-     * @description Creates a new instance of a model with the provided input and saves it to the database.
-     * @param {T} this - The model class.
-     * @param {Meta<T>["CreateInput"]} input - The input data for creating the model instance.
-     * @returns {InstanceType<T>} - The newly created and saved model instance.
-     */
-    function create<T extends Class>(this: T, input: Meta<T>["CreateInput"]): InstanceType<T>;
 
     /**
      * @function select

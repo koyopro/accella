@@ -2,7 +2,7 @@ import { HasManyAssociation } from "./associations/hasManyAssociation.js";
 import { HasOneAssociation } from "./associations/hasOneAssociation.js";
 import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder.js";
 import { exec, execSQL } from "./database.js";
-import { Collection, Model } from "./index.js";
+import { Collection, Meta, Model } from "./index.js";
 
 /**
  * Represents a Persistence class that provides methods for managing records.
@@ -34,7 +34,10 @@ export class Persistence {
    * @param input - The input data used to create the model instance.
    * @returns The created instance of the model.
    */
-  static create<T extends typeof Model>(this: T, input: any) {
+  static create<T extends typeof Model>(
+    this: T,
+    input: Meta<T>["CreateInput"]
+  ): InstanceType<T> {
     const instance = this.build(input);
     instance.save();
     return instance;
