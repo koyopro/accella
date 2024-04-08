@@ -146,7 +146,6 @@ export class Query {
    * @param direction - The direction of the ordering (ascending or descending).
    * @returns A `Relation` object representing the ordered query result.
    */
-  // function order<T extends Class>(this: T, attribute: keyof Meta<T>["OrderInput"], direction?: "asc" | "desc"): Relation<InstanceType<T>, Meta<T>>;
   static order<T extends typeof Model>(
     this: T,
     attribute: keyof Meta<T>["OrderInput"],
