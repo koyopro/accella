@@ -2,7 +2,8 @@ import { HasManyAssociation } from "./associations/hasManyAssociation.js";
 import { HasOneAssociation } from "./associations/hasOneAssociation.js";
 import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder.js";
 import { exec, execSQL } from "./database.js";
-import { Collection, Meta, Model, New, Persisted } from "./index.js";
+import { Collection, Model } from "./index.js";
+import { Meta, New, Persisted } from "./meta.js";
 
 /**
  * Represents a Persistence class that provides methods for managing records.

@@ -22,11 +22,7 @@ export { Relation } from "./relation/index.js";
 export { DatabaseCleaner } from "./testUtils.js";
 export { Rollback } from "./transaction.js";
 
-export type Meta<T> = ReturnType<typeof meta<T>>;
-export type Persisted<T> = Meta<T>["Persisted"];
-export type New<T> = Meta<T>["New"];
-
-export declare function meta<T>(model: T): ModelMeta;
+export { meta } from "./meta.js";
 
 export type SortOrder = "asc" | "desc";
 
@@ -43,16 +39,6 @@ export type StringFilter = Filter<string> & {
   startsWith?: string;
   endsWith?: string;
   like?: string;
-};
-
-export type ModelMeta = {
-  Base: Model;
-  New: Model;
-  Persisted: Model;
-  AssociationKey: string;
-  WhereInput: Record<string, any>;
-  CreateInput: Record<string, any>;
-  OrderInput: Record<string, SortOrder>;
 };
 
 export const Models: Record<string, typeof Model> = {};

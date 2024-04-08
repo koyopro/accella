@@ -1,5 +1,5 @@
 import { Association as Info } from "../fields.js";
-import { ModelMeta } from "../index.js";
+import { ModelMeta } from "../meta.js";
 import { Relation } from "./index.js";
 
 /**

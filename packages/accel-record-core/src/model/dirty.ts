@@ -1,4 +1,5 @@
-import { Meta, Model } from "../index.js";
+import { Model } from "../index.js";
+import { Meta } from "../meta.js";
 
 /**
  * Represents a utility class for tracking changes in a model.

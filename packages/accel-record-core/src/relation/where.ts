@@ -1,4 +1,5 @@
-import { ModelMeta, Relation } from "../index.js";
+import { Relation } from "../index.js";
+import { ModelMeta } from "../meta.js";
 
 /**
  * Provides the *where* related methods for relations.
