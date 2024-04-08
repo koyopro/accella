@@ -120,24 +120,6 @@ type Class = abstract new (...args: any) => any;
 
 declare module "accel-record" {
   function meta<T>(model: T): Meta<T>;
-
-  interface Model {
-    /**
-     * @function isChanged
-     * @description Checks if the model instance has changed.
-     * @param {keyof Meta<T>["OrderInput"]} [attr] - The attribute to check for changes. If not provided, checks if any attribute has changed.
-     * @returns {boolean} - True if the model instance has changed, false otherwise.
-     */
-    isChanged<T>(this: T, attr?: keyof Meta<T>["OrderInput"]): boolean;
-
-    /**
-     * @function isAttributeChanged
-     * @description Checks if the specified attribute of the model instance has changed.
-     * @param {keyof Meta<T>["OrderInput"]} attr - The attribute to check for changes.
-     * @returns {boolean} - True if the attribute has changed, false otherwise.
-     */
-    isAttributeChanged<T>(this: T, attr: keyof Meta<T>["OrderInput"]): boolean;
-  }
 }
 
 type Persisted<T> = Meta<T>["Persisted"];
