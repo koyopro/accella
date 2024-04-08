@@ -112,8 +112,8 @@ export class Query {
    * Retrieves the first record of the model.
    * @returns The first record of the model.
    */
-  static first<T extends typeof Model>(this: T): InstanceType<T> {
-    return this.all().first() as InstanceType<T>; // FIXME:
+  static first<T extends typeof Model>(this: T) {
+    return this.all().first();
   }
 
   /**
