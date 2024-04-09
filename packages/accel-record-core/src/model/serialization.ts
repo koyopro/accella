@@ -37,7 +37,7 @@ type ToHashInclude<O extends ToHashOptions<T>, T> = O["include"] extends string
       }
     : {};
 
-type ToHashResult<T, O extends ToHashOptions<T>> = {
+export type ToHashResult<T, O extends ToHashOptions<T>> = {
   [K in undefined extends O["only"]
     ? Exclude<keyof Meta<T>["OrderInput"], ToUnion<O["except"]>>
     : ToUnion<O["only"]>]: T[Extract<K, keyof T>];
@@ -49,7 +49,7 @@ type ToHashIncludeOption<T> = {
     : never;
 };
 
-type ToHashOptions<T> = {
+export type ToHashOptions<T> = {
   only?: (keyof Meta<T>["OrderInput"])[];
   except?: (keyof Meta<T>["OrderInput"])[];
   methods?: (keyof T)[];

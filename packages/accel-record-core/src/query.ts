@@ -105,6 +105,7 @@ export class Query {
     ...attributes: F
     // @ts-ignore
   ): Relation<{ [K in F[number]]: InstanceType<T>[K] }, Meta<T>> {
+    // @ts-ignore
     return this.all().select(...attributes);
   }
 

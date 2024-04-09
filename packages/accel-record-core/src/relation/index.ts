@@ -1,5 +1,6 @@
 import { Model } from "../index.js";
 import { type ModelMeta } from "../meta.js";
+import { ToHashOptions, ToHashResult } from "../model/serialization.js";
 import { classIncludes } from "../utils.js";
 import { Association } from "./association.js";
 import { RelationBase } from "./base.js";
@@ -41,11 +42,15 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     return (this.cache ||= this.load());
   }
 
+  toHashArray<O extends ToHashOptions<T>>(
+    options?: O
+  ): T extends Model ? ToHashResult<T, O>[] : never;
   toHashArray(options = {}): Record<string, any>[] {
     return this.toArray().map((row) =>
       row instanceof Model ? row.toHash(options) : {}
     );
   }
+
   /**
    * Applies a function to each element in the relation and returns an array of the results.
    *
