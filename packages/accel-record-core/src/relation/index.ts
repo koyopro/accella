@@ -41,6 +41,11 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     return (this.cache ||= this.load());
   }
 
+  toHashArray(options = {}): Record<string, any>[] {
+    return this.toArray().map((row) =>
+      row instanceof Model ? row.toHash(options) : {}
+    );
+  }
   /**
    * Applies a function to each element in the relation and returns an array of the results.
    *
