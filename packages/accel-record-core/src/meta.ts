@@ -1,6 +1,6 @@
-import { Model, SortOrder } from "./index.js";
+import { Meta, Model, SortOrder } from "./index.js";
 
-export type Meta<T> = ReturnType<typeof meta<T>>;
+export type { Meta };
 export type Persisted<T> = Meta<T>["Persisted"];
 export type New<T> = Meta<T>["New"];
 
@@ -13,5 +13,3 @@ export type ModelMeta = {
   CreateInput: Record<string, any>;
   OrderInput: Record<string, SortOrder>;
 };
-
-export declare function meta<T>(model: T): ModelMeta;

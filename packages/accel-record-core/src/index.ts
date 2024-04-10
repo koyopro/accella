@@ -5,6 +5,7 @@ import { HasOneAssociation } from "./associations/hasOneAssociation.js";
 import { AttributeAssignment } from "./attributeAssignment.js";
 import { Connection } from "./connection.js";
 import { Fields } from "./fields.js";
+import { ModelMeta } from "./meta.js";
 import { Dirty } from "./model/dirty.js";
 import { Persistence } from "./persistence.js";
 import { Query } from "./query.js";
@@ -22,7 +23,9 @@ export { Relation } from "./relation/index.js";
 export { DatabaseCleaner } from "./testUtils.js";
 export { Rollback } from "./transaction.js";
 
-export { meta } from "./meta.js";
+export type Meta<T> = ReturnType<typeof meta<T>>;
+
+export declare function meta<T>(model: T): ModelMeta;
 
 export type SortOrder = "asc" | "desc";
 
