@@ -32,16 +32,29 @@ type ToHashInclude<O extends ToHashOptions<T>, T> = O["include"] extends string
         [K in keyof O["include"]]: ToHashIncludeResult<
           K,
           T,
+          // @ts-ignore
           NonNullable<O["include"][K]>
         >;
       }
     : {};
 
+type ToHashMethods<
+  O extends ToHashOptions<T>,
+  T,
+> = undefined extends O["methods"]
+  ? {}
+  : {
+      [K in ToUnion<O["methods"]>]: T[Extract<K, keyof T>] extends () => any
+        ? ReturnType<T[Extract<K, keyof T>]>
+        : never;
+    };
+
 export type ToHashResult<T, O extends ToHashOptions<T>> = {
   [K in undefined extends O["only"]
     ? Exclude<keyof Meta<T>["OrderInput"], ToUnion<O["except"]>>
     : ToUnion<O["only"]>]: T[Extract<K, keyof T>];
-} & ToHashInclude<O, T>;
+} & ToHashInclude<O, T> &
+  ToHashMethods<O, T>;
 
 type ToHashIncludeOption<T> = {
   [K in Meta<T>["AssociationKey"]]?: K extends keyof T
@@ -49,10 +62,14 @@ type ToHashIncludeOption<T> = {
     : never;
 };
 
+type NoArgMethods<T> = {
+  [K in keyof T]: T[K] extends () => any ? K : never;
+}[keyof T];
+
 export type ToHashOptions<T> = {
   only?: (keyof Meta<T>["OrderInput"])[];
   except?: (keyof Meta<T>["OrderInput"])[];
-  methods?: (keyof T)[];
+  methods?: NoArgMethods<T>[];
   include?: Meta<T>["AssociationKey"] | ToHashIncludeOption<T>;
 };
 

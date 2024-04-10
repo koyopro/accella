@@ -25,13 +25,9 @@ test("toHash", () => {
     age: number | undefined;
   }>();
 
-  // expectTypeOf(
-  //   u.toHash({ only: ["name", "age"], methods: ["isPersisted"] })
-  // ).toEqualTypeOf<{
-  //   name: string | undefined;
-  //   age: number | undefined;
-  //   isPersisted: boolean;
-  // }>();
+  const withMethods = u.toHash({ only: ["name"], methods: ["isPersisted"] });
+  expectTypeOf(withMethods.name).toEqualTypeOf<string | undefined>();
+  expectTypeOf(withMethods.isPersisted).toEqualTypeOf<boolean>();
 });
 
 test("toHash with include", () => {
