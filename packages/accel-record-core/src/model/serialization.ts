@@ -139,6 +139,14 @@ export class Serialization {
     return undefined;
   }
 
+  /**
+   * Converts the model instance to a JSON string representation.
+   *
+   * @typeparam T - The type of the model.
+   * @typeparam O - The type of the options for serialization.
+   * @param options - The options for serialization.
+   * @returns The JSON string representation of the model instance.
+   */
   toJson<T extends Model, O extends ToHashOptions<T>>(
     this: T,
     options?: O

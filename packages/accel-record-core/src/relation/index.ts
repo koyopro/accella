@@ -42,6 +42,12 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     return (this.cache ||= this.load());
   }
 
+  /**
+   * Converts the relation to an array of hash objects.
+   *
+   * @param options - The options for the conversion.
+   * @returns An array of hash objects.
+   */
   toHashArray<O extends ToHashOptions<T>>(
     options?: O
   ): T extends Model ? ToHashResult<T, O>[] : never;
@@ -51,6 +57,12 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     );
   }
 
+  /**
+   * Converts the relation to a JSON string representation.
+   *
+   * @param options - The options for the conversion.
+   * @returns A JSON string representation of the relation.
+   */
   toJson<O extends ToHashOptions<T>>(
     options?: O
   ): T extends Model ? string : never;
