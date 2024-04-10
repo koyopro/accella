@@ -93,3 +93,28 @@ test("toHash with include belongsTo", () => {
     })
   );
 });
+
+test("toJson", () => {
+  const u = $user.create({ name: "hoge" });
+
+  expect(u.toJson({ only: ["name", "age"] })).toEqual(
+    JSON.stringify({
+      name: "hoge",
+      age: undefined,
+    })
+  );
+
+  expect(
+    u.toJson({
+      except: ["createdAt", "updatedAt", "email"],
+      methods: ["isPersisted"],
+    })
+  ).toEqual(
+    JSON.stringify({
+      id: u.id,
+      name: "hoge",
+      age: undefined,
+      isPersisted: true,
+    })
+  );
+});

@@ -51,6 +51,13 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     );
   }
 
+  toJson<O extends ToHashOptions<T>>(
+    options?: O
+  ): T extends Model ? string : never;
+  toJson(options = {}): string {
+    return JSON.stringify(this.toHashArray(options));
+  }
+
   /**
    * Applies a function to each element in the relation and returns an array of the results.
    *

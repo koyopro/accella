@@ -138,4 +138,11 @@ export class Serialization {
     }
     return undefined;
   }
+
+  toJson<T extends Model, O extends ToHashOptions<T>>(
+    this: T,
+    options?: O
+  ): string {
+    return JSON.stringify(this.toHash(options));
+  }
 }
