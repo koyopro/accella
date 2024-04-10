@@ -10,15 +10,12 @@ import { Options } from "./options.js";
  * This class is intended to be inherited by the Relation class.
  */
 export class RelationBase {
-  setOption(
-    this: Relation<unknown, ModelMeta>,
-    key: keyof Options,
-    value: any
-  ) {
+  setOption<T>(this: Relation<T, ModelMeta>, key: keyof Options, value: any) {
     this.options[key] = value;
     return this;
   }
-  protected _load(this: Relation<unknown, ModelMeta>) {
+
+  load<T, M extends ModelMeta>(this: Relation<T, M>): T[] {
     const select =
       this.options.select.length > 0
         ? this.options.select.map(
@@ -36,7 +33,7 @@ export class RelationBase {
       return obj;
     });
   }
-  protected query(this: Relation<unknown, ModelMeta>) {
+  protected query<T>(this: Relation<T, ModelMeta>) {
     let q = this.queryBuilder.clone();
     for (const join of this.options.joins) {
       q = q.join(...join);
@@ -68,7 +65,7 @@ export class RelationBase {
     }
     return q;
   }
-  protected loadIncludes(this: Relation<unknown, ModelMeta>, rows: any[]) {
+  protected loadIncludes<T>(this: Relation<T, ModelMeta>, rows: any[]) {
     for (const association of this.options.includes ?? []) {
       if (association.isBelongsTo) {
         this.loadBelongsToIncludes(rows, association);
@@ -90,8 +87,8 @@ export class RelationBase {
       }
     }
   }
-  private loadHasManyThroughIncludes(
-    this: Relation<unknown, ModelMeta>,
+  private loadHasManyThroughIncludes<T>(
+    this: Relation<T, ModelMeta>,
     association: Options["includes"][0],
     rows: any[]
   ) {
@@ -141,7 +138,7 @@ export class RelationBase {
       row[name] = mapping[row[foreignKey]];
     }
   }
-  protected makeAttributes(this: Relation<unknown, ModelMeta>, row: object) {
+  protected makeAttributes<T>(this: Relation<T, ModelMeta>, row: object) {
     const attributes = {} as any;
     for (const [key, value] of Object.entries(row)) {
       const association = this.model.associations[key];

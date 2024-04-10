@@ -8,20 +8,35 @@ import { Relation } from "./index.js";
  * This class is intended to be inherited by the Relation class.
  */
 export class Association {
-  protected addIncludes(
-    this: Relation<unknown, ModelMeta>,
-    ...input: string[]
-  ) {
+  /**
+   * Adds associations to be included in the query result.
+   *
+   * @param input - The association keys to include.
+   * @returns A new `Relation` instance with the specified associations included.
+   */
+  includes<T, M extends ModelMeta>(
+    this: Relation<T, M>,
+    ...input: M["AssociationKey"][]
+  ): Relation<T, M> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     newOptions["includes"].push(
       ...input.map((key) => {
         return this.model.associations[key];
       })
     );
-    return newOptions;
+    return new Relation(this.model, newOptions);
   }
 
-  protected addJoins(this: Relation<unknown, ModelMeta>, ...input: string[]) {
+  /**
+   * Adds join conditions to the relation.
+   *
+   * @param input - The association keys to join.
+   * @returns A new `Relation` instance with the added join conditions.
+   */
+  joins<T, M extends ModelMeta>(
+    this: Relation<T, M>,
+    ...input: M["AssociationKey"][]
+  ): Relation<T, M> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key of input) {
       const info = this.model.associations[key];
@@ -32,13 +47,10 @@ export class Association {
           : this.hasOneOrHasManyJoins(info);
       newOptions["joins"].push(...joins);
     }
-    return newOptions;
+    return new Relation(this.model, newOptions);
   }
 
-  protected hasOneOrHasManyJoins(
-    this: Relation<unknown, ModelMeta>,
-    info: Info
-  ) {
+  protected hasOneOrHasManyJoins<T>(this: Relation<T, ModelMeta>, info: Info) {
     return [
       [
         info.model.tableName,
@@ -49,7 +61,7 @@ export class Association {
     ];
   }
 
-  protected belongsToJoins(this: Relation<unknown, ModelMeta>, info: Info) {
+  protected belongsToJoins<T>(this: Relation<T, ModelMeta>, info: Info) {
     return [
       [
         info.model.tableName,
@@ -60,10 +72,7 @@ export class Association {
     ];
   }
 
-  protected hasManyThroughJoins(
-    this: Relation<unknown, ModelMeta>,
-    info: Info
-  ) {
+  protected hasManyThroughJoins<T>(this: Relation<T, ModelMeta>, info: Info) {
     const { through, model, primaryKey, foreignKey, joinKey } = info;
     return [
       [
@@ -81,13 +90,20 @@ export class Association {
     ];
   }
 
-  protected addJoinsRaw(
-    this: Relation<unknown, ModelMeta>,
+  /**
+   * Adds a raw join clause to the query.
+   *
+   * @param query - The raw SQL query string.
+   * @param bindings - The bindings to be used in the query.
+   * @returns A new `Relation` instance with the added join clause.
+   */
+  joinsRaw<T, M extends ModelMeta>(
+    this: Relation<T, M>,
     query: string,
     ...bindings: any[]
-  ) {
+  ): Relation<T, M> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     newOptions["joinsRaw"].push([query, bindings]);
-    return newOptions;
+    return new Relation(this.model, newOptions);
   }
 }
