@@ -15,6 +15,6 @@ initAccelRecord({
   //     },
   //   },
 }).then(() => {
-  User.create({ email: `${Date.now()}@example.com` });
+  // User.create({ email: `${Date.now()}@example.com` });
   console.log(User.count());
 });
