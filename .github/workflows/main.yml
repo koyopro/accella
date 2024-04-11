@@ -33,3 +33,5 @@ jobs:
       - run: npm run generate:mysql
       - run: npm run test:mysql
       - run: npm run sample
+      - run: npm run generate:sqlite
+      - run: npm run test:sqlite
