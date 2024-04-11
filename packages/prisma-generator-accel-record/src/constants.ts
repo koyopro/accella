@@ -1,1 +1,1 @@
-export const GENERATOR_NAME = 'prisma-generator-accel-record'
+export const GENERATOR_NAME = "prisma-generator-accel-record";

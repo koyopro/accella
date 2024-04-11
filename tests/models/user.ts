@@ -1,5 +1,3 @@
 import { ApplicationRecord } from "./applicationRecord.js";
 
-export class UserModel extends ApplicationRecord {
-
-}
+export class UserModel extends ApplicationRecord {}
