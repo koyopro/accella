@@ -24,10 +24,10 @@ generatorHandler({
       path.join(outputDir, `_types.ts`),
       generateIndex(options)
     );
-    await writeFileSafely(
-      path.join(outputDir, `index.ts`),
-      `export * from "./_types.js";`
-    );
+    const indexFile = path.join(outputDir, `index.ts`);
+    if (!fs.existsSync(indexFile)) {
+      await writeFileSafely(indexFile, `export * from "./_types.js";\n`);
+    }
 
     await ensureApplicationRecord(options);
 
