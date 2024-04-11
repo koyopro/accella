@@ -32,6 +32,7 @@ const dbConfig = () => {
   } else {
     return {
       type: "sqlite",
+      // logLevel: "DEBUG",
       prismaDir: path.resolve(__dirname, "./prisma"),
       knexConfig: {
         client: "better-sqlite3",
