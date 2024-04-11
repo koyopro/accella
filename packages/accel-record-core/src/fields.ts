@@ -256,6 +256,7 @@ let dmmf: BaseDMMF;
 
 export const loadDmmf = async () => {
   const { Prisma } = await import("@prisma/client");
+  // @ts-ignore
   dmmf = Prisma.dmmf;
 };
 

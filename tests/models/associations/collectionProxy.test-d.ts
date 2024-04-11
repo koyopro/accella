@@ -7,13 +7,13 @@ describe("setter / getter", () => {
     const u = $user.build();
     expectTypeOf(u.posts.first()).toMatchTypeOf<PostModel | undefined>();
     assertType((u.posts = [Post.build({})]));
-    assertType((u.posts.push([Post.build({})])));
+    assertType(u.posts.push([Post.build({})]));
   });
 
   test("User#posts", () => {
     const u = $user.create();
     expectTypeOf(u.posts.first()).toMatchTypeOf<Post | undefined>();
     assertType((u.posts = [Post.build({})]));
-    assertType((u.posts.push([Post.build({})])));
+    assertType(u.posts.push([Post.build({})]));
   });
 });

@@ -1,5 +1,3 @@
 import { ApplicationRecord } from "./applicationRecord.js";
 
-export class CompanyModel extends ApplicationRecord {
-
-}
+export class CompanyModel extends ApplicationRecord {}

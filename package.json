@@ -5,10 +5,14 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "format": "prettier -w '{src,tests,packages}/**/*.ts'",
+    "lint": "prettier --check '{src,tests,packages}/**/*.ts'",
     "build": "npm run build --workspaces --if-present",
-    "test": "vitest",
-    "test:migrate": "DATABASE_URL=file:./test.db npx prisma migrate dev --schema=tests/prisma/schema.prisma",
-    "test:mysql:migrate": "npx prisma migrate dev --schema=tests/prisma_mysql/schema.prisma",
+    "generate:sqlite": "DATABASE_URL=file:./test.db npx prisma generate --schema=tests/prisma/schema.prisma",
+    "generate:mysql": "npx prisma generate --schema=tests/prisma_mysql/schema.prisma",
+    "migrate:sqlite": "DATABASE_URL=file:./test.db npx prisma migrate dev --schema=tests/prisma/schema.prisma",
+    "migrate:mysql": "npx prisma migrate dev --schema=tests/prisma_mysql/schema.prisma",
+    "test:sqlite": "vitest",
     "test:mysql": "DB_ENGINE=mysql vitest --typecheck",
     "sample": "tsc -p . && node dist/src/index.js"
   },
