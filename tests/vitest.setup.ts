@@ -46,7 +46,7 @@ const dbConfig = () => {
 };
 
 beforeAll(async () => {
-  initAccelRecord(dbConfig());
+  await initAccelRecord(dbConfig());
   await Migration.migrate();
 });
 
