@@ -7,7 +7,7 @@ Active Recordパターンを採用しており、インターフェースはRuby
 
 スキーマ管理とマイグレーションにはPrismaを利用しており、既存のPrismaスキーマをそのまま利用することもできます。
 
-MySQLとSQLiteをサポートしており、現在β版となっています。
+現在MySQLとSQLiteをサポートしており、将来的にPostgreSQLもサポート予定です。
 
 ## 特徴
 
