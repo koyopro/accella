@@ -780,6 +780,30 @@ export default {
 };
 ```
 
+## Nullable Values Handling
+
+Regarding nullable values, TypeScript, like JavaScript, has two options: undefined and null. \
+For Accel Record, there is no need to use null, and nullable values are consistently represented as undefined.
+This is mainly to avoid the complexity of mixing null and undefined. \
+While we understand that there are benefits to using undefined and null differently, we prioritize code readability and maintainability by avoiding the complexity of types.
+
+```ts
+import { User } from "./models/index.js";
+
+// Optional fields have undefined as their default value.
+const newUser = User.build({});
+newUser.age; // => undefined
+
+// You can also specify undefined to search for records with null values in the database.
+const user = User.findBy({ age: undefined })!;
+
+// Fields with null values in the database are treated as undefined.
+user.age; // => undefined
+
+// By specifying undefined for optional fields, you can update the value to null in the database.
+user.update({ age: undefined });
+```
+
 ## Future Planned Features
 
 - [accel-record-core] Validation

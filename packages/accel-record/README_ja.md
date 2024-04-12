@@ -781,6 +781,30 @@ export default {
 };
 ```
 
+## Nullableな値の扱いについて
+
+Nullableな値について、TypeScriptではJavaScriptと同様にundefinedとnullの2つが存在します。 \
+Accel Recordに関してはnullを利用する必要は無く、Nullableな値の表現はundefinedに統一して扱えるように設計しています。
+これは主にnullとundefinedの混在による複雑さを避けるためです。 \
+undefinedとnullを使い分けるメリットもあるとは理解しますが、それよりも型の複雑さを避けることでコードの可読性や保守性が保たれることを重視しています。
+
+```ts
+import { User } from "./models/index.js";
+
+// オプショナルなフィールドのデフォルト値はundefinedとなります。
+const newUser = User.build({});
+newUser.age; // => undefined
+
+// DB上でnullを持つレコードの検索にも、undefinedを指定することができます。
+const user = User.findBy({ age: undefined })!;
+
+// DB上でnullの値を持つフィールドはundefinedとして扱われます。
+user.age; // => undefined
+
+// オプショナルなフィールドにundefinedを指定することで、DB上の値をnullで更新することができます。
+user.update({ age: undefined });
+```
+
 ## 今後予定されている機能追加
 
 - [accel-record-core] バリデーション
