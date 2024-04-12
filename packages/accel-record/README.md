@@ -1,10 +1,12 @@
+Language: [English](https://github.com/koyopro/accella/blob/main/packages/accel-record/README.md) | [日本語](https://github.com/koyopro/accella/blob/main/packages/accel-record/README-ja.md)
+
 # Accel Record
 
 Accel Record is a type-safe and synchronous ORM for TypeScript. It adopts the Active Record pattern and is heavily influenced by Ruby on Rails' Active Record.
 
 It uses Prisma for schema management and migration, and you can also use existing Prisma schemas as is.
 
-It supports MySQL and SQLite and is currently in beta version.
+We currently support MySQL and SQLite, and plan to support PostgreSQL in the future.
 
 ## Features
 

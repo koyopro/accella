@@ -1,3 +1,5 @@
+Language: [English](https://github.com/koyopro/accella/blob/main/packages/accel-record/README.md) | [日本語](https://github.com/koyopro/accella/blob/main/packages/accel-record/README-ja.md)
+
 # Accel Record
 
 Accel Recordは、型安全で同期的な、TypeScript用のORMです。 \
@@ -5,7 +7,7 @@ Active Recordパターンを採用しており、インターフェースはRuby
 
 スキーマ管理とマイグレーションにはPrismaを利用しており、既存のPrismaスキーマをそのまま利用することもできます。
 
-MySQLとSQLiteをサポートしており、現在β版となっています。
+現在MySQLとSQLiteをサポートしており、将来的にPostgreSQLもサポート予定です。
 
 ## 特徴
 
