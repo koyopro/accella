@@ -1,4 +1,4 @@
-Language: [English](./README.md) | [日本語](./README-ja.md)
+Language: [English](https://github.com/koyopro/accella/blob/main/packages/accel-record/README.md) | [日本語](https://github.com/koyopro/accella/blob/main/packages/accel-record/README-ja.md)
 
 # Accel Record
 
