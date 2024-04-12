@@ -1,3 +1,5 @@
+Language: [English](./README.md) | [日本語](./README_ja.md)
+
 # Accel Record
 
 Accel Recordは、型安全で同期的な、TypeScript用のORMです。 \

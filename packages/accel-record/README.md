@@ -1,3 +1,5 @@
+Language: [English](./README.md) | [日本語](./README_ja.md)
+
 # Accel Record
 
 Accel Record is a type-safe and synchronous ORM for TypeScript. It adopts the Active Record pattern and is heavily influenced by Ruby on Rails' Active Record.
