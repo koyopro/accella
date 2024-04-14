@@ -34,3 +34,25 @@ test("presence", () => {
   expect(sample.isValid()).toBe(true);
   expect(sample.errors.isEmpty()).toBe(true);
 });
+
+test("length", () => {
+  const sample = $ValidateSample.build({ pattern: "a" });
+  expect(sample.isValid()).toBe(false);
+  expect(sample.errors.isEmpty()).toBe(false);
+  expect(sample.errors.get("pattern")).toEqual([
+    "is too short (minimum is 2 characters)",
+  ]);
+
+  sample.pattern = "too long";
+  expect(sample.isValid()).toBe(false);
+  expect(sample.errors.isEmpty()).toBe(false);
+  expect(sample.errors.get("pattern")).toEqual([
+    "is too long (maximum is 5 characters)",
+  ]);
+
+  sample.pattern = "value";
+
+  sample.validate();
+  expect(sample.isValid()).toBe(true);
+  expect(sample.errors.isEmpty()).toBe(true);
+});
