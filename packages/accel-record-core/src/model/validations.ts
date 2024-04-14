@@ -48,6 +48,6 @@ export class Validations {
   }
 
   validate() {
-    console.log("validate() is not implemented");
+    this.errors.clearAll();
   }
 }
