@@ -7,6 +7,7 @@ import { Connection } from "./connection.js";
 import { Fields } from "./fields.js";
 import { ModelMeta } from "./meta.js";
 import { Dirty } from "./model/dirty.js";
+import { Validations } from "./model/validations.js";
 import { Persistence } from "./persistence.js";
 import { Query } from "./query.js";
 import { Transaction } from "./transaction.js";
@@ -58,7 +59,8 @@ export class Model extends classIncludes(
   Fields,
   Persistence,
   Query,
-  Transaction
+  Transaction,
+  Validations
 ) {
   associations: Map<string, Association<Model, Model>> = new Map();
 

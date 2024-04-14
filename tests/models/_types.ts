@@ -11,6 +11,7 @@ import { SettingModel } from './setting.js'
 import { ProfileModel } from './profile.js'
 import { CompanyModel } from './company.js'
 import { EmployeeModel } from './employee.js'
+import { ValidateSampleModel } from './validateSample.js'
 import {
   registerModel,
   type Collection,
@@ -32,6 +33,7 @@ type Meta<T> = T extends typeof UserModel | UserModel ? UserMeta :
                T extends typeof ProfileModel | ProfileModel ? ProfileMeta :
                T extends typeof CompanyModel | CompanyModel ? CompanyMeta :
                T extends typeof EmployeeModel | EmployeeModel ? EmployeeMeta :
+               T extends typeof ValidateSampleModel | ValidateSampleModel ? ValidateSampleMeta :
                any;
 
 export namespace $Enums {
@@ -467,3 +469,51 @@ type EmployeeMeta = {
   };
 };
 registerModel(Employee);
+
+declare module "./validateSample" {
+  interface ValidateSampleModel {
+    id: number | undefined;
+    accepted: boolean | undefined;
+    pattern: string | undefined;
+    key: string | undefined;
+    count: number | undefined;
+  }
+}
+export interface NewValidateSample extends ValidateSampleModel {};
+export class ValidateSample extends ValidateSampleModel {};
+export interface ValidateSample extends ValidateSampleModel {
+  id: number;
+  accepted: boolean;
+  pattern: string;
+  key: string;
+  count: number;
+};
+type ValidateSampleCollection<T extends ValidateSampleModel> = Collection<T, ValidateSampleMeta> | Collection<ValidateSample, ValidateSampleMeta>;
+type ValidateSampleMeta = {
+  Base: ValidateSampleModel;
+  New: NewValidateSample;
+  Persisted: ValidateSample;
+  AssociationKey: never;
+  CreateInput: {
+    id?: number;
+    accepted: boolean;
+    pattern: string;
+    key: string;
+    count: number;
+  };
+  WhereInput: {
+    id?: number | number[] | Filter<number> | null;
+    accepted?: boolean | boolean[] | undefined | null;
+    pattern?: string | string[] | StringFilter | null;
+    key?: string | string[] | StringFilter | null;
+    count?: number | number[] | Filter<number> | null;
+  };
+  OrderInput: {
+    id?: SortOrder;
+    accepted?: SortOrder;
+    pattern?: SortOrder;
+    key?: SortOrder;
+    count?: SortOrder;
+  };
+};
+registerModel(ValidateSample);
