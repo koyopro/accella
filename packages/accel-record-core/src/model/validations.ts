@@ -24,6 +24,14 @@ export class Errors {
   }
 }
 
+export class Validator {
+  constructor(protected record: any) {}
+
+  get errors(): Errors {
+    return this.record.errors;
+  }
+}
+
 type ValidatesOptions = {
   format?: { with: RegExp };
   acceptance?: boolean;
@@ -46,6 +54,10 @@ export class Validations {
 
   validate() {
     this.errors.clearAll();
+  }
+
+  validatesWith(validator: any) {
+    validator.validate();
   }
 
   validates(attribute: keyof this & string, options: ValidatesOptions) {

@@ -97,3 +97,16 @@ test("custom", () => {
   expect(sample.isValid()).toBe(true);
   expect(sample.errors.isEmpty()).toBe(true);
 });
+
+test("validatesWith", () => {
+  const sample = $ValidateSample.build({ key: "xs" });
+  expect(sample.isValid()).toBe(false);
+  expect(sample.errors.isEmpty()).toBe(false);
+  expect(sample.errors.get("key")).toEqual(["should not be xs"]);
+
+  sample.key = "value";
+
+  sample.validate();
+  expect(sample.isValid()).toBe(true);
+  expect(sample.errors.isEmpty()).toBe(true);
+});
