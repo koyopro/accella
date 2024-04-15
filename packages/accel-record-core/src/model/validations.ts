@@ -1,14 +1,11 @@
 export class Errors {
-  errors = {};
+  private errors = {} as Record<string, string[]>;
 
-  add(attribute, error) {
-    if (!this.errors[attribute]) {
-      this.errors[attribute] = [];
-    }
-    this.errors[attribute].push(error);
+  add(attribute: string, error: string) {
+    (this.errors[attribute] ||= []).push(error);
   }
 
-  clear(attribute) {
+  clear(attribute: string) {
     if (this.errors[attribute]) {
       delete this.errors[attribute];
     }
@@ -18,20 +15,12 @@ export class Errors {
     this.errors = {};
   }
 
-  get(attribute) {
-    return this.errors[attribute];
-  }
-
-  has(attribute) {
-    return this.errors[attribute] !== undefined;
+  get(attribute: string) {
+    return this.errors[attribute] ?? [];
   }
 
   isEmpty() {
     return Object.keys(this.errors).length === 0;
-  }
-
-  isNotEmpty() {
-    return !this.isEmpty();
   }
 }
 
@@ -59,7 +48,7 @@ export class Validations {
     this.errors.clearAll();
   }
 
-  validates(attribute: keyof this, options: ValidatesOptions) {
+  validates(attribute: keyof this & string, options: ValidatesOptions) {
     const value = this[attribute] as any;
     if (options.acceptance) {
       if (!this[attribute]) {
