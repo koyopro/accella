@@ -26,7 +26,7 @@ test("presence", () => {
   const sample = $ValidateSample.build({ key: "\t \n" });
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.get("key")).toEqual(["can't be blank"]);
+  expect(sample.errors.get("key")).toContain("can't be blank");
 
   sample.key = "value";
 
@@ -77,6 +77,21 @@ test("format", () => {
   expect(sample.errors.get("pattern")).toEqual(["is invalid"]);
 
   sample.pattern = "value";
+
+  sample.validate();
+  expect(sample.isValid()).toBe(true);
+  expect(sample.errors.isEmpty()).toBe(true);
+});
+
+test("custom", () => {
+  const sample = $ValidateSample.build({ key: "Value" });
+  expect(sample.isValid()).toBe(false);
+  expect(sample.errors.isEmpty()).toBe(false);
+  expect(sample.errors.get("key")).toEqual([
+    "should start with a lowercase letter",
+  ]);
+
+  sample.key = "value";
 
   sample.validate();
   expect(sample.isValid()).toBe(true);
