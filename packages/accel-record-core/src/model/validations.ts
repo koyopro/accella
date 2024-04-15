@@ -36,6 +36,7 @@ export class Errors {
 }
 
 type ValidatesOptions = {
+  format?: { with: RegExp };
   acceptance?: boolean;
   presence?: boolean;
   length?: { minimum?: number; maximum?: number };
@@ -88,6 +89,11 @@ export class Validations {
     if (options.inclusion && value != undefined) {
       if (!options.inclusion.in.includes(value)) {
         this.errors.add(attribute, "is not included in the list");
+      }
+    }
+    if (options.format && value != undefined) {
+      if (!options.format.with.test(value)) {
+        this.errors.add(attribute, "is invalid");
       }
     }
   }

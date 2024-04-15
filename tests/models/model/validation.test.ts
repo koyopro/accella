@@ -43,7 +43,7 @@ test("length", () => {
     "is too short (minimum is 2 characters)",
   ]);
 
-  sample.pattern = "too long";
+  sample.pattern = "toolong";
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
   expect(sample.errors.get("pattern")).toEqual([
@@ -64,6 +64,19 @@ test("inclusion", () => {
   expect(sample.errors.get("size")).toEqual(["is not included in the list"]);
 
   sample.size = "small";
+
+  sample.validate();
+  expect(sample.isValid()).toBe(true);
+  expect(sample.errors.isEmpty()).toBe(true);
+});
+
+test("format", () => {
+  const sample = $ValidateSample.build({ pattern: "VALUE" });
+  expect(sample.isValid()).toBe(false);
+  expect(sample.errors.isEmpty()).toBe(false);
+  expect(sample.errors.get("pattern")).toEqual(["is invalid"]);
+
+  sample.pattern = "value";
 
   sample.validate();
   expect(sample.isValid()).toBe(true);
