@@ -56,3 +56,16 @@ test("length", () => {
   expect(sample.isValid()).toBe(true);
   expect(sample.errors.isEmpty()).toBe(true);
 });
+
+test("inclusion", () => {
+  const sample = $ValidateSample.build({ size: "invalid" });
+  expect(sample.isValid()).toBe(false);
+  expect(sample.errors.isEmpty()).toBe(false);
+  expect(sample.errors.get("size")).toEqual(["is not included in the list"]);
+
+  sample.size = "small";
+
+  sample.validate();
+  expect(sample.isValid()).toBe(true);
+  expect(sample.errors.isEmpty()).toBe(true);
+});

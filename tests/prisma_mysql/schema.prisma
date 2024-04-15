@@ -106,4 +106,5 @@ model ValidateSample {
   pattern  String
   key      String
   count    Int
+  size     String
 }

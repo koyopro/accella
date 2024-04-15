@@ -477,6 +477,7 @@ declare module "./validateSample" {
     pattern: string | undefined;
     key: string | undefined;
     count: number | undefined;
+    size: string | undefined;
   }
 }
 export interface NewValidateSample extends ValidateSampleModel {};
@@ -487,6 +488,7 @@ export interface ValidateSample extends ValidateSampleModel {
   pattern: string;
   key: string;
   count: number;
+  size: string;
 };
 type ValidateSampleCollection<T extends ValidateSampleModel> = Collection<T, ValidateSampleMeta> | Collection<ValidateSample, ValidateSampleMeta>;
 type ValidateSampleMeta = {
@@ -500,6 +502,7 @@ type ValidateSampleMeta = {
     pattern: string;
     key: string;
     count: number;
+    size: string;
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -507,6 +510,7 @@ type ValidateSampleMeta = {
     pattern?: string | string[] | StringFilter | null;
     key?: string | string[] | StringFilter | null;
     count?: number | number[] | Filter<number> | null;
+    size?: string | string[] | StringFilter | null;
   };
   OrderInput: {
     id?: SortOrder;
@@ -514,6 +518,7 @@ type ValidateSampleMeta = {
     pattern?: SortOrder;
     key?: SortOrder;
     count?: SortOrder;
+    size?: SortOrder;
   };
 };
 registerModel(ValidateSample);

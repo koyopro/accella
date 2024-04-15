@@ -34,6 +34,11 @@ export class ValidateSampleModel extends ApplicationRecord {
         );
       }
     }
+    if (options.inclusion && value != undefined) {
+      if (!options.inclusion.in.includes(value)) {
+        this.errors.add(attribute, "is not included in the list");
+      }
+    }
   }
 
   override validate() {
@@ -41,5 +46,6 @@ export class ValidateSampleModel extends ApplicationRecord {
     this.validates("accepted", { acceptance: true });
     this.validates("key", { presence: true });
     this.validates("pattern", { length: { minimum: 2, maximum: 5 } });
+    this.validates("size", { inclusion: { in: ["small", "medium", "large"] } });
   }
 }
