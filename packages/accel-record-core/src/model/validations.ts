@@ -1,5 +1,20 @@
+function toPascalCase(str: string): string {
+  return str
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join("");
+}
+
 export class Errors {
   private errors = {} as Record<string, string[]>;
+
+  fullMessages() {
+    return Object.entries(this.errors)
+      .map(([attribute, errors]) =>
+        errors.map((error) => `${toPascalCase(attribute)} ${error}`)
+      )
+      .flat();
+  }
 
   add(attribute: string, error: string) {
     (this.errors[attribute] ||= []).push(error);
