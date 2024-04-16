@@ -21,6 +21,30 @@ test("acceptence", () => {
   expect(sample.errors.isEmpty()).toBe(true);
 });
 
+test("acceptance for string", () => {
+  const sample = $ValidateSample.build();
+  {
+    sample.key = "1";
+    sample.validates("key", { acceptance: true });
+    expect(sample.errors.isEmpty()).toBe(true);
+  }
+  {
+    sample.key = "yes";
+    sample.validates("key", { acceptance: { accept: "yes" } });
+    expect(sample.errors.isEmpty()).toBe(true);
+  }
+  {
+    sample.key = "TRUE";
+    sample.validates("key", { acceptance: { accept: ["yes", "TRUE"] } });
+    expect(sample.errors.isEmpty()).toBe(true);
+  }
+  {
+    sample.key = "yes";
+    sample.validates("key", { acceptance: true });
+    expect(sample.errors.isEmpty()).toBe(false);
+  }
+});
+
 test("presence", () => {
   const sample = $ValidateSample.build({ key: "\t \n" });
   expect(sample.isValid()).toBe(false);

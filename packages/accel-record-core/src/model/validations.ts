@@ -62,7 +62,7 @@ type DefualtOptions = {
 
 type ValidatesOptions = {
   format?: { with: RegExp } & DefualtOptions;
-  acceptance?: boolean & DefualtOptions;
+  acceptance?: (boolean | { accept: any | any[] }) & DefualtOptions;
   presence?: boolean & DefualtOptions;
   length?: {
     minimum?: number & DefualtOptions;
@@ -99,7 +99,10 @@ export class Validations {
     for (const attribute of _attributes) {
       const value = this[attribute] as any;
       if (options.acceptance) {
-        if (!this[attribute]) {
+        const accept = (typeof options.acceptance === "object"
+          ? [options.acceptance.accept].flat()
+          : undefined) ?? [true, "1"];
+        if (!accept.includes(this[attribute] as any)) {
           this.errors.add(
             attribute,
             options.acceptance.message ?? "must be accepted"
