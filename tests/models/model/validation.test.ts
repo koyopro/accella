@@ -17,7 +17,6 @@ test("acceptence", () => {
 
   sample.accepted = true;
 
-  sample.validate();
   expect(sample.isValid()).toBe(true);
   expect(sample.errors.isEmpty()).toBe(true);
 });
@@ -30,7 +29,6 @@ test("presence", () => {
 
   sample.key = "value";
 
-  sample.validate();
   expect(sample.isValid()).toBe(true);
   expect(sample.errors.isEmpty()).toBe(true);
 });
@@ -52,7 +50,6 @@ test("length", () => {
 
   sample.pattern = "value";
 
-  sample.validate();
   expect(sample.isValid()).toBe(true);
   expect(sample.errors.isEmpty()).toBe(true);
 });
@@ -67,7 +64,6 @@ test("inclusion", () => {
 
   sample.size = "small";
 
-  sample.validate();
   expect(sample.isValid()).toBe(true);
   expect(sample.errors.isEmpty()).toBe(true);
 });
@@ -80,7 +76,6 @@ test("format", () => {
 
   sample.pattern = "value";
 
-  sample.validate();
   expect(sample.isValid()).toBe(true);
   expect(sample.errors.isEmpty()).toBe(true);
 });
@@ -95,7 +90,6 @@ test("custom", () => {
 
   sample.key = "value";
 
-  sample.validate();
   expect(sample.isValid()).toBe(true);
   expect(sample.errors.isEmpty()).toBe(true);
 });
@@ -108,7 +102,6 @@ test("validatesWith", () => {
 
   sample.key = "value";
 
-  sample.validate();
   expect(sample.isValid()).toBe(true);
   expect(sample.errors.isEmpty()).toBe(true);
 });
