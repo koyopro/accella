@@ -65,7 +65,7 @@ type ValidatesOptions = {
   acceptance?: (boolean | { accept: any | any[] }) & DefualtOptions;
   presence?: boolean & DefualtOptions;
   length?: {
-    minimum?: number & DefualtOptions;
+    minimum?: number;
     maximum?: number;
   } & DefualtOptions;
   inclusion?: { in: any[] } & DefualtOptions;
