@@ -13,7 +13,7 @@ test("acceptence", () => {
   const sample = $ValidateSample.build({ accepted: false });
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages()).toContain("Accepted must be accepted");
+  expect(sample.errors.fullMessages).toContain("Accepted must be accepted");
 
   sample.accepted = true;
 
@@ -26,7 +26,7 @@ test("presence", () => {
   const sample = $ValidateSample.build({ key: "\t \n" });
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages()).toContain("Key can't be blank");
+  expect(sample.errors.fullMessages).toContain("Key can't be blank");
 
   sample.key = "value";
 
@@ -39,14 +39,14 @@ test("length", () => {
   const sample = $ValidateSample.build({ pattern: "a" });
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages()).toContain(
+  expect(sample.errors.fullMessages).toContain(
     "Pattern is too short (minimum is 2 characters)"
   );
 
   sample.pattern = "toolong";
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages()).toContain(
+  expect(sample.errors.fullMessages).toContain(
     "Pattern is too long (maximum is 5 characters)"
   );
 
@@ -61,7 +61,7 @@ test("inclusion", () => {
   const sample = $ValidateSample.build({ size: "invalid" });
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages()).toContain(
+  expect(sample.errors.fullMessages).toContain(
     "Size is not included in the list"
   );
 
@@ -76,7 +76,7 @@ test("format", () => {
   const sample = $ValidateSample.build({ pattern: "VALUE" });
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages()).toContain("Pattern is invalid");
+  expect(sample.errors.fullMessages).toContain("Pattern is invalid");
 
   sample.pattern = "value";
 
@@ -89,7 +89,7 @@ test("custom", () => {
   const sample = $ValidateSample.build({ key: "Value" });
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages()).toContain(
+  expect(sample.errors.fullMessages).toContain(
     "Key should start with a lowercase letter"
   );
 
@@ -104,11 +104,24 @@ test("validatesWith", () => {
   const sample = $ValidateSample.build({ key: "xs" });
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages()).toContain("Key should not be xs");
+  expect(sample.errors.fullMessages).toContain("Key should not be xs");
 
   sample.key = "value";
 
   sample.validate();
   expect(sample.isValid()).toBe(true);
+  expect(sample.errors.isEmpty()).toBe(true);
+});
+
+test("errros", () => {
+  const sample = $ValidateSample.build();
+  expect(sample.errors.isEmpty()).toBe(true);
+  sample.errors.add("key", "is invalid");
+  expect(sample.errors.isEmpty()).toBe(false);
+  expect(sample.errors.get("key").length).toBe(1);
+  expect(sample.errors.get("key")[0].message).toBe("is invalid");
+  expect(sample.errors.get("key")[0].fullMessage).toBe("Key is invalid");
+  expect(sample.errors.fullMessages).toContain("Key is invalid");
+  sample.errors.clear("key");
   expect(sample.errors.isEmpty()).toBe(true);
 });

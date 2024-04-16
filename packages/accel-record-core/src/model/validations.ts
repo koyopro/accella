@@ -5,19 +5,28 @@ function toPascalCase(str: string): string {
     .join("");
 }
 
-export class Errors {
-  private errors = {} as Record<string, string[]>;
+export class Error {
+  constructor(
+    private attribute: string,
+    public message: string
+  ) {}
 
-  fullMessages() {
+  get fullMessage() {
+    return `${toPascalCase(this.attribute)} ${this.message}`;
+  }
+}
+
+export class Errors {
+  private errors = {} as Record<string, Error[]>;
+
+  get fullMessages() {
     return Object.entries(this.errors)
-      .map(([attribute, errors]) =>
-        errors.map((error) => `${toPascalCase(attribute)} ${error}`)
-      )
+      .map(([, errors]) => errors.map((error) => error.fullMessage))
       .flat();
   }
 
   add(attribute: string, error: string) {
-    (this.errors[attribute] ||= []).push(error);
+    (this.errors[attribute] ||= []).push(new Error(attribute, error));
   }
 
   clear(attribute: string) {
