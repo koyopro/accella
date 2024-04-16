@@ -15,6 +15,10 @@ export class Collection<T extends Model, S extends ModelMeta> extends Relation<
     super(model, association.whereAttributes(), cache);
   }
 
+  get length() {
+    return this.cache?.length ?? this.count();
+  }
+
   resetOptions() {
     for (const [key, value] of Object.entries(
       this.association.whereAttributes()

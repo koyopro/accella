@@ -1,3 +1,5 @@
+import { $post } from "../../factories/post";
+import { $user } from "../../factories/user";
 import { $ValidateSample } from "../../factories/validateSample";
 
 test("isValid()", () => {
@@ -76,6 +78,16 @@ test("length", () => {
 
   expect(sample.isValid()).toBe(true);
   expect(sample.errors.isEmpty()).toBe(true);
+});
+
+test("length for hasMany", () => {
+  const user = $user.create({});
+  user.posts = $post.buildList(5);
+  user.validates("posts", { length: { maximum: 4 } });
+
+  expect(user.errors.fullMessages).toContain(
+    "Posts is too long (maximum is 4 characters)"
+  );
 });
 
 test("inclusion", () => {
