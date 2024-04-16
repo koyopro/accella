@@ -1,3 +1,5 @@
+import { Collection } from "../associations/collectionProxy.js";
+
 function toPascalCase(str: string): string {
   return str
     .split("_")
@@ -154,6 +156,9 @@ export class Validations {
 const isBlank = (value: any) => {
   if (typeof value === "string") {
     return value.trim() === "";
+  }
+  if (Array.isArray(value) || value instanceof Collection) {
+    return value.length === 0;
   }
   return value == undefined;
 };

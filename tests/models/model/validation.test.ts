@@ -59,6 +59,13 @@ test("presence", () => {
   expect(sample.errors.isEmpty()).toBe(true);
 });
 
+test("presence for hasMany", () => {
+  const user = $user.create({});
+  user.validates("posts", { presence: true });
+
+  expect(user.errors.fullMessages).toContain("Posts can't be blank");
+});
+
 test("length", () => {
   const sample = $ValidateSample.build({ pattern: "a" });
   expect(sample.isValid()).toBe(false);
