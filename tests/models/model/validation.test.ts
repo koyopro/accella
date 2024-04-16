@@ -72,7 +72,9 @@ test("format", () => {
   const sample = $ValidateSample.build({ pattern: "VALUE" });
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages).toContain("Pattern is invalid");
+  expect(sample.errors.fullMessages).toContain(
+    "Pattern only allows lowercase letters"
+  );
 
   sample.pattern = "value";
 

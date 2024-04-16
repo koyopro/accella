@@ -19,7 +19,7 @@ export class ValidateSampleModel extends ApplicationRecord {
     this.validates("accepted", { acceptance: true });
     this.validates("pattern", {
       length: { minimum: 2, maximum: 5 },
-      format: { with: /^[a-z]+$/ },
+      format: { with: /^[a-z]+$/, message: "only allows lowercase letters" },
     });
     this.validates("size", { inclusion: { in: ["small", "medium", "large"] } });
 

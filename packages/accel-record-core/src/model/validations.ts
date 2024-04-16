@@ -56,12 +56,19 @@ export class Validator {
   }
 }
 
+type DefualtOptions = {
+  message?: string;
+};
+
 type ValidatesOptions = {
-  format?: { with: RegExp };
-  acceptance?: boolean;
-  presence?: boolean;
-  length?: { minimum?: number; maximum?: number };
-  inclusion?: { in: any[] };
+  format?: { with: RegExp } & DefualtOptions;
+  acceptance?: boolean & DefualtOptions;
+  presence?: boolean & DefualtOptions;
+  length?: {
+    minimum?: number & DefualtOptions;
+    maximum?: number;
+  } & DefualtOptions;
+  inclusion?: { in: any[] } & DefualtOptions;
 };
 
 export class Validations {
@@ -93,12 +100,18 @@ export class Validations {
       const value = this[attribute] as any;
       if (options.acceptance) {
         if (!this[attribute]) {
-          this.errors.add(attribute, "must be accepted");
+          this.errors.add(
+            attribute,
+            options.acceptance.message ?? "must be accepted"
+          );
         }
       }
       if (options.presence) {
         if (isBlank(this[attribute])) {
-          this.errors.add(attribute, "can't be blank");
+          this.errors.add(
+            attribute,
+            options.presence.message ?? "can't be blank"
+          );
         }
       }
       if (options.length && value != undefined) {
@@ -106,24 +119,29 @@ export class Validations {
         if (minimum && value.length < minimum) {
           this.errors.add(
             attribute,
-            `is too short (minimum is ${options.length.minimum} characters)`
+            options.length.message ??
+              `is too short (minimum is ${options.length.minimum} characters)`
           );
         }
         if (maximum && value.length > maximum) {
           this.errors.add(
             attribute,
-            `is too long (maximum is ${options.length.maximum} characters)`
+            options.length.message ??
+              `is too long (maximum is ${options.length.maximum} characters)`
           );
         }
       }
       if (options.inclusion && value != undefined) {
         if (!options.inclusion.in.includes(value)) {
-          this.errors.add(attribute, "is not included in the list");
+          this.errors.add(
+            attribute,
+            options.inclusion.message ?? "is not included in the list"
+          );
         }
       }
       if (options.format && value != undefined) {
         if (!options.format.with.test(value)) {
-          this.errors.add(attribute, "is invalid");
+          this.errors.add(attribute, options.format.message ?? "is invalid");
         }
       }
     }
