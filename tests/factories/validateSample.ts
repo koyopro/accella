@@ -6,6 +6,7 @@ export const ValidateSampleFactory = defineFactory(
   ({ seq }) => ({
     accepted: true,
     key: "small",
+    size: "medium",
   })
 );
 
