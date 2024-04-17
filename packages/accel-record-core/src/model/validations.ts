@@ -54,8 +54,8 @@ export class Validations {
     T extends Model,
     K extends keyof Meta<T>["CreateInput"] & keyof T & string,
   >(this: T, attribute: K | K[], options: ValidatesOptions) {
-    const _attributes = Array.isArray(attribute) ? attribute : [attribute];
-    for (const attribute of _attributes) {
+    const attributes = Array.isArray(attribute) ? attribute : [attribute];
+    for (const attribute of attributes) {
       const value = this[attribute] as any;
       if (options.acceptance) {
         new AcceptanceValidator(this, attribute, options.acceptance).validate();
