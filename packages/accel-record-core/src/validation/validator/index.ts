@@ -1,7 +1,8 @@
+import { Model } from "../../index.js";
 import { Errors } from "../errors.js";
 
-export abstract class Validator {
-  constructor(protected record: any) {}
+export abstract class Validator<T> {
+  constructor(protected record: T & Model) {}
 
   get errors(): Errors {
     return this.record.errors;

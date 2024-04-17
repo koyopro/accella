@@ -1,13 +1,14 @@
+import { Model } from "../../index.js";
 import { DefualtOptions, Validator } from "./index.js";
 
 export type InclusionOptions = {
   in: any[];
 } & DefualtOptions;
 
-export class InclusionValidator extends Validator {
+export class InclusionValidator<T extends Model> extends Validator<T> {
   constructor(
-    record: any,
-    private attribute: keyof typeof record & string,
+    record: T,
+    private attribute: keyof T & string,
     private options: InclusionOptions
   ) {
     super(record);

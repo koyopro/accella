@@ -1,3 +1,4 @@
+import { Model } from "../../index.js";
 import { DefualtOptions, Validator } from "./index.js";
 
 export type AcceptanceOptions = (
@@ -8,10 +9,10 @@ export type AcceptanceOptions = (
 ) &
   DefualtOptions;
 
-export class AcceptanceValidator extends Validator {
+export class AcceptanceValidator<T extends Model> extends Validator<T> {
   constructor(
-    record: any,
-    private attribute: keyof typeof record & string,
+    record: T,
+    private attribute: keyof T & string,
     private options: AcceptanceOptions
   ) {
     super(record);

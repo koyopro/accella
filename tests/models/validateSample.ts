@@ -1,11 +1,7 @@
 import { Validator } from "accel-record";
 import { ApplicationRecord } from "./applicationRecord.js";
 
-class MyValidator extends Validator {
-  constructor(record: { key: string | undefined }) {
-    super(record);
-  }
-
+class MyValidator extends Validator<{ key: string | undefined }> {
   validate() {
     if (this.record.key === "xs") {
       this.errors.add("key", "should not be xs");
