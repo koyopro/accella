@@ -74,6 +74,7 @@ export class Persistence {
    * @returns A boolean indicating whether the save operation was successful.
    */
   save<T extends Model>(this: T): this is Persisted<T> {
+    if (this.isInvalid()) return false;
     const ret = this.createOrUpdate();
     this.isNewRecord = false;
     this.saveAssociations();

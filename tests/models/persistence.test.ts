@@ -1,6 +1,7 @@
 import { Post, User } from ".";
 import { $post } from "../factories/post";
 import { $user } from "../factories/user";
+import { $ValidateSample } from "../factories/validateSample";
 
 describe("Persistence", () => {
   test("#save()", () => {
@@ -18,6 +19,13 @@ describe("Persistence", () => {
 
     u.isReadonly = true;
     expect(() => u.save()).toThrowError("Readonly record");
+  });
+
+  test("#save() with invalid record", () => {
+    const sample = $ValidateSample.build({ key: "" });
+    expect(sample.save()).toBe(false);
+    expect(sample.errors.fullMessages).toContain("Key can't be blank");
+    expect(sample.isPersisted()).toBe(false);
   });
 
   test("#update()", () => {

@@ -7,6 +7,8 @@ export const ValidateSampleFactory = defineFactory(
     accepted: true,
     key: "small",
     size: "medium",
+    pattern: "value",
+    count: 1,
   })
 );
 
