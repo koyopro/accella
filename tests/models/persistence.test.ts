@@ -28,6 +28,12 @@ describe("Persistence", () => {
     expect(sample.isPersisted()).toBe(false);
   });
 
+  test(".create() with invalid record", () => {
+    expect(() => {
+      $ValidateSample.create({ key: "" });
+    }).toThrowError("Failed to create");
+  });
+
   test("#update()", () => {
     const u = $user.build({ name: "hoge" });
     if (!u.update({ name: "fuga" })) {

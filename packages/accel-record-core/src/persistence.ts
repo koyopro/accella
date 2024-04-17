@@ -43,8 +43,11 @@ export class Persistence {
     input: Meta<T>["CreateInput"]
   ): InstanceType<T> {
     const instance = this.build(input);
-    instance.save();
-    return instance as InstanceType<T>;
+    if (instance.save()) {
+      return instance as InstanceType<T>;
+    } else {
+      throw new Error("Failed to create");
+    }
   }
 
   /**
