@@ -1,4 +1,6 @@
 import { Collection } from "../associations/collectionProxy.js";
+import { Model } from "../index.js";
+import { Meta } from "../meta.js";
 
 function toPascalCase(str: string): string {
   return str
@@ -93,10 +95,10 @@ export class Validations {
     validator.validate();
   }
 
-  validates<T extends keyof this & string>(
-    attribute: T | T[],
-    options: ValidatesOptions
-  ) {
+  validates<
+    T extends Model,
+    K extends keyof Meta<T>["CreateInput"] & keyof T & string,
+  >(this: T, attribute: K | K[], options: ValidatesOptions) {
     const _attributes = Array.isArray(attribute) ? attribute : [attribute];
     for (const attribute of _attributes) {
       const value = this[attribute] as any;
