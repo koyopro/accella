@@ -13,6 +13,7 @@ import {
   InclusionOptions,
   InclusionValidator,
 } from "../validation/validator/inclusion.js";
+import { Validator } from "../validation/validator/index.js";
 import {
   LengthOptions,
   LengthValidator,
@@ -51,7 +52,7 @@ export class Validations {
     // override this method
   }
 
-  validatesWith(validator: any) {
+  validatesWith(validator: Validator<unknown>) {
     validator.validate();
   }
 
