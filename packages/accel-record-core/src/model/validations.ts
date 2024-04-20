@@ -34,7 +34,8 @@ export class Validations {
   errors = new Errors();
 
   isValid() {
-    this.validate();
+    this.errors.clearAll();
+    this.validateAttributes();
     return this.errors.isEmpty();
   }
 
@@ -43,7 +44,11 @@ export class Validations {
   }
 
   validate() {
-    this.errors.clearAll();
+    return this.isValid();
+  }
+
+  validateAttributes() {
+    // override this method
   }
 
   validatesWith(validator: any) {

@@ -10,8 +10,7 @@ class MyValidator extends Validator<{ key: string | undefined }> {
 }
 
 export class ValidateSampleModel extends ApplicationRecord {
-  validate() {
-    super.validate();
+  override validateAttributes() {
     this.validates("accepted", { acceptance: true });
     this.validates("pattern", {
       length: { minimum: 2, maximum: 5 },
