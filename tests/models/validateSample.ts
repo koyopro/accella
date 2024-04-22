@@ -19,6 +19,7 @@ export class ValidateSampleModel extends ApplicationRecord {
     this.validates("size", { inclusion: { in: ["small", "medium", "large"] } });
 
     this.validates(["key", "size"], { presence: true });
+    this.validates("key", { uniqueness: true });
 
     if (this.key && !/^[a-z]$/.test(this.key[0])) {
       this.errors.add("key", "should start with a lowercase letter");

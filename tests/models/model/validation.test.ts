@@ -146,6 +146,36 @@ test("format", () => {
   expect(sample.errors.isEmpty()).toBe(true);
 });
 
+test("uniqueness", () => {
+  const sample = $ValidateSample.create({ key: "value" });
+  expect(sample.isValid()).toBe(true);
+
+  const sample2 = $ValidateSample.build({ key: "value" });
+  expect(sample2.isValid()).toBe(false);
+  expect(sample2.errors.isEmpty()).toBe(false);
+  expect(sample2.errors.fullMessages).toContain("Key has already been taken");
+
+  sample2.key = "value2";
+
+  expect(sample2.isValid()).toBe(true);
+  expect(sample2.errors.isEmpty()).toBe(true);
+});
+
+test("uniqueness by scope", () => {
+  $ValidateSample.create({ pattern: "abc", size: "small" });
+  const sample = $ValidateSample.build({ pattern: "abc" });
+
+  sample.size = "medium";
+  sample.validates("pattern", { uniqueness: { scope: ["size"] } });
+  expect(sample.errors.isEmpty()).toBe(true);
+
+  sample.size = "small";
+  sample.validates("pattern", { uniqueness: { scope: ["size"] } });
+  expect(sample.errors.fullMessages).toEqual([
+    "Pattern has already been taken",
+  ]);
+});
+
 test("custom", () => {
   const sample = $ValidateSample.build({ key: "Value" });
   expect(sample.isValid()).toBe(false);

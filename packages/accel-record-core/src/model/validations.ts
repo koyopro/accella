@@ -25,13 +25,18 @@ import {
   PresenceOptions,
   PresenceValidator,
 } from "../validation/validator/presence.js";
+import {
+  UniquenessValidator,
+  UniqunessOptions,
+} from "../validation/validator/uniqueness.js";
 
-type ValidatesOptions = {
+type ValidatesOptions<T> = {
   acceptance?: AcceptanceOptions;
   presence?: PresenceOptions;
   length?: LengthOptions;
   inclusion?: InclusionOptions;
   format?: FormatOptions;
+  uniqueness?: UniqunessOptions<T>;
 };
 
 export class Validations {
@@ -81,7 +86,7 @@ export class Validations {
   validates<
     T extends Model,
     K extends keyof Meta<T>["CreateInput"] & keyof T & string,
-  >(this: T, attribute: K | K[], options: ValidatesOptions) {
+  >(this: T, attribute: K | K[], options: ValidatesOptions<T>) {
     const attributes = Array.isArray(attribute) ? attribute : [attribute];
     for (const attribute of attributes as (keyof T & string)[]) {
       const value = this[attribute] as any;
@@ -99,6 +104,9 @@ export class Validations {
       }
       if (options.format && value != undefined) {
         new FormatValidator(this, attribute, options.format).validate();
+      }
+      if (options.uniqueness) {
+        new UniquenessValidator(this, attribute, options.uniqueness).validate();
       }
     }
   }
