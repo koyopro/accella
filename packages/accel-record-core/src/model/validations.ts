@@ -39,10 +39,19 @@ type ValidatesOptions<T> = {
   uniqueness?: UniqunessOptions<T>;
 };
 
+/**
+ * Represents a class that provides validation functionality for models.
+ *
+ * This class is intended to be inherited by the Model class.
+ */
 export class Validations {
   errors = new Errors();
 
-  isValid<T extends Model>(this: T) {
+  /**
+   * Checks if the model is valid by performing attribute and association validations.
+   * @returns A boolean indicating whether the model is valid or not.
+   */
+  isValid<T extends Model>(this: T): boolean {
     this.errors.clearAll();
     this.validateAttributes();
     let result = this.errors.isEmpty();
@@ -67,26 +76,47 @@ export class Validations {
     return result;
   }
 
-  isInvalid<T extends Model>(this: T) {
+  /**
+   * Checks if the model is invalid by negating the result of the `isValid` method.
+   * @returns A boolean indicating whether the model is invalid or not.
+   */
+  isInvalid<T extends Model>(this: T): boolean {
     return !this.isValid();
   }
 
-  validate<T extends Model>(this: T) {
+  /**
+   * Validates the model by calling the `isValid` method.
+   * @returns A boolean indicating whether the model is valid or not.
+   */
+  validate<T extends Model>(this: T): boolean {
     return this.isValid();
   }
 
-  validateAttributes() {
+  /**
+   * Validates the attributes of the model.
+   * This method can be overridden in derived classes to provide custom attribute validations.
+   */
+  validateAttributes(): void {
     // override this method
   }
 
-  validatesWith(validator: Validator<unknown>) {
+  /**
+   * Performs validation using the specified validator.
+   * @param validator - The validator to use for validation.
+   */
+  validatesWith(validator: Validator<unknown>): void {
     validator.validate();
   }
 
+  /**
+   * Performs validations on the specified attribute(s) of the model.
+   * @param attribute - The attribute(s) to validate.
+   * @param options - The validation options.
+   */
   validates<
     T extends Model,
     K extends keyof Meta<T>["CreateInput"] & keyof T & string,
-  >(this: T, attribute: K | K[], options: ValidatesOptions<T>) {
+  >(this: T, attribute: K | K[], options: ValidatesOptions<T>): void {
     const attributes = Array.isArray(attribute) ? attribute : [attribute];
     for (const attribute of attributes as (keyof T & string)[]) {
       const value = this[attribute] as any;
