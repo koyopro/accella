@@ -40,6 +40,10 @@ export class Collection<T extends Model, S extends ModelMeta> extends Relation<
     return this;
   }
 
+  isValid(): boolean | undefined {
+    return this.cache?.every((r) => r.isValid());
+  }
+
   persist() {
     this.association.persist(this.cache || []);
     return this;

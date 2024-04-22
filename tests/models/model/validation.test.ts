@@ -97,6 +97,17 @@ test("length for hasMany", () => {
   );
 });
 
+test("validate associations", () => {
+  const user = $user.build({});
+  const post = $post.build({ title: "" });
+  user.posts = [post];
+
+  expect(user.save()).toBe(false);
+  expect(user.isValid()).toBe(false);
+
+  expect(user.errors.fullMessages).toContain("Posts is invalid");
+});
+
 test("inclusion", () => {
   const sample = $ValidateSample.build({ size: "invalid" });
   expect(sample.isValid()).toBe(false);

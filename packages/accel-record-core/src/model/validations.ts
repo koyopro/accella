@@ -1,3 +1,6 @@
+import { Collection } from "../associations/collectionProxy.js";
+import { HasManyAssociation } from "../associations/hasManyAssociation.js";
+import { HasOneAssociation } from "../associations/hasOneAssociation.js";
 import { Model } from "../index.js";
 import { Meta } from "../meta.js";
 import { Errors } from "../validation/errors.js";
@@ -34,17 +37,36 @@ type ValidatesOptions = {
 export class Validations {
   errors = new Errors();
 
-  isValid() {
+  isValid<T extends Model>(this: T) {
     this.errors.clearAll();
     this.validateAttributes();
-    return this.errors.isEmpty();
+    let result = this.errors.isEmpty();
+    for (const [key, association] of this.associations) {
+      if (association instanceof HasOneAssociation) {
+        if (association.isValid() === false) {
+          result = false;
+          this.errors.add(key, "is invalid");
+        }
+      }
+      if (
+        association instanceof HasManyAssociation &&
+        this[key as keyof T] instanceof Collection
+      ) {
+        const value = this[key as keyof T];
+        if (value instanceof Collection && value.isValid() === false) {
+          result = false;
+          this.errors.add(key, "is invalid");
+        }
+      }
+    }
+    return result;
   }
 
-  isInvalid() {
+  isInvalid<T extends Model>(this: T) {
     return !this.isValid();
   }
 
-  validate() {
+  validate<T extends Model>(this: T) {
     return this.isValid();
   }
 
