@@ -23,8 +23,8 @@ export { Migration } from "./migration.js";
 export { Relation } from "./relation/index.js";
 export { DatabaseCleaner } from "./testUtils.js";
 export { Rollback } from "./transaction.js";
-export { Validator } from "./validation/validator/index.js";
 export { Errors } from "./validation/errors.js";
+export { Validator } from "./validation/validator/index.js";
 
 export type Meta<T> = ReturnType<typeof meta<T>>;
 

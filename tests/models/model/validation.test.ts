@@ -1,4 +1,5 @@
 import { $post } from "../../factories/post";
+import { $setting } from "../../factories/setting";
 import { $user } from "../../factories/user";
 import { $ValidateSample } from "../../factories/validateSample";
 
@@ -100,12 +101,21 @@ test("length for hasMany", () => {
 test("validate associations", () => {
   const user = $user.build({});
   const post = $post.build({ title: "" });
+  const setting = $setting.build({ threshold: -1 });
+  user.setting = setting;
   user.posts = [post];
 
   expect(user.save()).toBe(false);
   expect(user.isValid()).toBe(false);
 
-  expect(user.errors.fullMessages).toContain("Posts is invalid");
+  expect(user.errors.fullMessages).toEqual([
+    "Posts is invalid",
+    "Setting is invalid",
+  ]);
+  expect(post.errors.fullMessages).toEqual(["Title can't be blank"]);
+  expect(setting.errors.fullMessages).toEqual([
+    "Threshold must be greater than or equal to 0",
+  ]);
 });
 
 test("inclusion", () => {
