@@ -915,7 +915,8 @@ user.update({ age: undefined });
 - [accel-record-core] PostgreSQL Support
 - [accel-record-core] Support for Composite IDs
 - [accel-record-core] Expansion of Query Interface
+- [accel-record-core] Internationalization (I18n)
 - [accel-record-factory] Trait
 - [prisma-generator-accel-record] Generation of Factories for each Model
 
-Related: [Accel Record Roadmap · Issue #1 · koyopro/accella](https://github.com/koyopro/accella/issues/1)
+Related: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
