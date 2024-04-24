@@ -1,9 +1,9 @@
-import { User } from "../models/index.js";
 import { defineFactory } from "accel-record-factory";
+import { User } from "../models/index.js";
 
-export const UserFactory = defineFactory(User, ({ seq }) => ({
+export const UserFactory = defineFactory(User, {
   name: "hoge",
-  email: `user${seq}@email.com`,
-}));
+  email: (seq) => `user${seq}@email.com`,
+});
 
 export { UserFactory as $user };

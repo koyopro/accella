@@ -1,25 +1,36 @@
-import { Model } from "accel-record-core";
+import { Meta, Model } from "accel-record-core";
 
-type BuildParams<T extends typeof Model> = Parameters<typeof Model.build<T>>[0];
+type Functionable<T> = {
+  [K in keyof T]: T[K] | ((seq?: number) => T[K]);
+};
+type FunctionableUnion<D> = D extends infer T
+  ? Functionable<Extract<D, T>>
+  : never;
+
+export type BuildParams<T extends typeof Model> = Partial<
+  FunctionableUnion<Meta<T>["CreateInput"]>
+>;
 
 export const defineFactory = <T extends typeof Model>(
   model: T,
   defaults: BuildParams<T> | ((opt: { seq: number }) => BuildParams<T>)
 ) => {
   let seq = 0;
-  const devalueValues = () => {
-    if (typeof defaults == "function") {
-      return defaults({ seq: ++seq });
-    } else {
-      return defaults;
+  const getValues = (params: BuildParams<T>) => {
+    const _defaults =
+      typeof defaults === "function" ? defaults({ seq: ++seq }) : defaults;
+    const ret = {} as any;
+    for (const [key, value] of Object.entries({ ..._defaults, ...params })) {
+      ret[key] = typeof value === "function" ? value(++seq) : value;
     }
+    return ret;
   };
   return {
     create(params: BuildParams<T> = {}): ReturnType<typeof Model.create<T>> {
-      return model.create({ ...devalueValues(), ...params } as any);
+      return model.create(getValues(params));
     },
     build(params: BuildParams<T> = {}): ReturnType<typeof Model.build<T>> {
-      return model.build({ ...devalueValues(), ...params });
+      return model.build(getValues(params));
     },
     createList(count: number, params: BuildParams<T> = {}) {
       return Array.from({ length: count }, () =>
