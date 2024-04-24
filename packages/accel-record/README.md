@@ -782,6 +782,107 @@ export default {
 };
 ```
 
+## Validation
+
+### Sample Validation
+
+Here is an example of validation for a model.
+
+```ts
+// src/models/user.ts
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class UserModel extends ApplicationRecord {
+  override validateAttributes() {
+    this.validates("firstName", { presence: true });
+  }
+}
+```
+
+```ts
+import { User } from "./models/index.js";
+
+const user = User.build({ firstName: "" });
+user.isValid(); // => false
+user.errors.fullMessages(); // => ["FirstName can't be blank"]
+
+user.firstName = "John";
+user.isValid(); // => true
+```
+
+### Validation Execution Timing
+
+When using the `save`, `update`, and `create` methods, validation is automatically executed, and the saving process is only performed if there are no errors.
+
+```ts
+import { User } from "./models/index.js";
+
+// When a validation error occurs, save and update will return false.
+const newUser = User.build({ firstName: "" });
+newUser.save(); // => false
+newUser.errors.fullMessages(); // => ["FirstName can't be blank"]
+
+const user = User.first()!;
+user.update({ firstName: "" }); // => false
+newUser.errors.fullMessages(); // => ["FirstName can't be blank"]
+
+// When a validation error occurs, create will throw an exception.
+User.create({ firstName: "" }); // => Error: Failed to create
+```
+
+### Validation Definition
+
+You can define validations by overriding the `validateAttributes` method of the BaseModel.
+
+```ts
+// prisma/schema.prisma
+model ValidateSample {
+  id       Int     @id @default(autoincrement())
+  accepted Boolean
+  pattern  String
+  key      String
+  count    Int
+  size     String
+}
+```
+
+```ts
+// ./models/validateSample.ts
+import { Validator } from "accel-record";
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class ValidateSampleModel extends ApplicationRecord {
+  // Override the validateAttributes method to define validations.
+  override validateAttributes() {
+    // Common validations can be easily defined using validation helpers.
+    this.validates("accepted", { acceptance: true });
+    this.validates("pattern", {
+      length: { minimum: 2, maximum: 5 },
+      format: { with: /^[a-z]+$/, message: "only allows lowercase letters" },
+    });
+    this.validates("size", { inclusion: { in: ["small", "medium", "large"] } });
+    this.validates(["key", "size"], { presence: true });
+    this.validates("key", { uniqueness: true });
+
+    // If you want to perform custom validation logic, use the errors.add method to add error messages.
+    if (this.key && !/^[a-z]$/.test(this.key[0])) {
+      this.errors.add("key", "should start with a lowercase letter");
+    }
+    // Example of using a custom validator
+    this.validatesWith(new MyValidator(this));
+  }
+}
+
+// Custom validators inherit from Validator and implement the validate method.
+class MyValidator extends Validator<{ key: string | undefined }> {
+  validate() {
+    if (this.record.key === "xs") {
+      this.errors.add("key", "should not be xs");
+    }
+  }
+}
+```
+
 ## Nullable Values Handling
 
 Regarding nullable values, TypeScript, like JavaScript, has two options: undefined and null. \
@@ -808,14 +909,14 @@ user.update({ age: undefined });
 
 ## Future Planned Features
 
-- [accel-record-core] Validation
 - [accel-record-core] Scopes
 - [accel-record-core] Bulk Insert
 - [accel-record-core] Nested Transactions
 - [accel-record-core] PostgreSQL Support
 - [accel-record-core] Support for Composite IDs
 - [accel-record-core] Expansion of Query Interface
+- [accel-record-core] Internationalization (I18n)
 - [accel-record-factory] Trait
 - [prisma-generator-accel-record] Generation of Factories for each Model
 
-Related: [Accel Record Roadmap · Issue #1 · koyopro/accella](https://github.com/koyopro/accella/issues/1)
+Related: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)

@@ -26,5 +26,10 @@ export const defineFactory = <T extends typeof Model>(
         this.create({ ...defaults, ...params })
       );
     },
+    buildList(count: number, params: BuildParams<T> = {}) {
+      return Array.from({ length: count }, () =>
+        this.build({ ...defaults, ...params })
+      );
+    },
   };
 };

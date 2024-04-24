@@ -94,3 +94,12 @@ model Employee {
   companyId Int     @map("company_id")
   company   Company @relation(fields: [companyId], references: [id])
 }
+
+model ValidateSample {
+  id       Int     @id @default(autoincrement())
+  accepted Boolean
+  pattern  String
+  key      String
+  count    Int
+  size     String
+}

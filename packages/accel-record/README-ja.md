@@ -783,6 +783,107 @@ export default {
 };
 ```
 
+## バリデーション
+
+### バリデーションのサンプル
+
+モデルに対するバリデーションのサンプルを記載します。
+
+```ts
+// src/models/user.ts
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class UserModel extends ApplicationRecord {
+  override validateAttributes() {
+    this.validates("firstName", { presence: true });
+  }
+}
+```
+
+```ts
+import { User } from "./models/index.js";
+
+const user = User.build({ firstName: "" });
+user.isValid(); // => false
+user.errors.fullMessages(); // => ["FirstName can't be blank"]
+
+user.firstName = "John";
+user.isValid(); // => true
+```
+
+### バリデーションの実行タイミング
+
+save, update, craeteメソッドを利用する場合、バリデーションが自動的に実行され、エラーが無い場合のみ保存処理が行われます。
+
+```ts
+import { User } from "./models/index.js";
+
+// バリデーションエラーが発生した場合、saveやupdateはfalseを返します。
+const newUser = User.build({ firstName: "" });
+newUser.save(); // => false
+newUser.errors.fullMessages(); // => ["FirstName can't be blank"]
+
+const user = User.first()!;
+user.update({ firstName: "" }); // => false
+newUser.errors.fullMessages(); // => ["FirstName can't be blank"]
+
+// バリデーションエラーが発生した場合、createでは例外がスローされます。
+User.create({ firstName: "" }); // => Error: Failed to create
+```
+
+### バリデーションの定義
+
+BaseModelの `validateAttributes`メソッドをオーバーライドすることで、バリデーションを定義することができます。
+
+```ts
+// prisma/schema.prisma
+model ValidateSample {
+  id       Int     @id @default(autoincrement())
+  accepted Boolean
+  pattern  String
+  key      String
+  count    Int
+  size     String
+}
+```
+
+```ts
+// ./models/validateSample.ts
+import { Validator } from "accel-record";
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class ValidateSampleModel extends ApplicationRecord {
+  // validateAttributesメソッドをオーバーライドして、バリデーションを定義します。
+  override validateAttributes() {
+    // よく使われるバリデーションは、バリデーションヘルパーを利用して簡単に記述ができます。
+    this.validates("accepted", { acceptance: true });
+    this.validates("pattern", {
+      length: { minimum: 2, maximum: 5 },
+      format: { with: /^[a-z]+$/, message: "only allows lowercase letters" },
+    });
+    this.validates("size", { inclusion: { in: ["small", "medium", "large"] } });
+    this.validates(["key", "size"], { presence: true });
+    this.validates("key", { uniqueness: true });
+
+    // 独自のロジックでバリデーションを行う場合は、 errros.add メソッドを利用してエラーメッセージを追加します。
+    if (this.key && !/^[a-z]$/.test(this.key[0])) {
+      this.errors.add("key", "should start with a lowercase letter");
+    }
+    // カスタムバリデータの利用例
+    this.validatesWith(new MyValidator(this));
+  }
+}
+
+// カスタムバリデータは、Validatorを継承してvalidateメソッドを実装します。
+class MyValidator extends Validator<{ key: string | undefined }> {
+  validate() {
+    if (this.record.key === "xs") {
+      this.errors.add("key", "should not be xs");
+    }
+  }
+}
+```
+
 ## Nullableな値の扱いについて
 
 Nullableな値について、TypeScriptではJavaScriptと同様にundefinedとnullの2つが存在します。 \
@@ -809,14 +910,14 @@ user.update({ age: undefined });
 
 ## 今後予定されている機能追加
 
-- [accel-record-core] バリデーション
 - [accel-record-core] スコープ
 - [accel-record-core] Bulk Insert
 - [accel-record-core] トランザクションのネスト
 - [accel-record-core] PostgreSQLのサポート
 - [accel-record-core] 複合IDの対応
 - [accel-record-core] クエリインターフェースの拡充
+- [accel-record-core] 国際化(I18n)
 - [accel-record-factory] trait
 - [prisma-generator-accel-record] 各モデル用Factoryの生成
 
-関連：[Accel Record Roadmap · Issue #1 · koyopro/accella](https://github.com/koyopro/accella/issues/1)
+関連: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)

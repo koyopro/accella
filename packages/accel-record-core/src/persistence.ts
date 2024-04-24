@@ -32,19 +32,23 @@ export class Persistence {
   }
 
   /**
-   * Creates a new instance of the model using the provided input, saves it, and returns the instance.
+   * Creates a new instance of the model and saves it to the database.
    *
    * @template T - The type of the model.
-   * @param input - The input data used to create the model instance.
-   * @returns The created instance of the model.
+   * @param input - The input data for creating the instance.
+   * @returns The created instance.
+   * @throws Error if the instance fails to save.
    */
   static create<T extends typeof Model>(
     this: T,
     input: Meta<T>["CreateInput"]
   ): InstanceType<T> {
     const instance = this.build(input);
-    instance.save();
-    return instance as InstanceType<T>;
+    if (instance.save()) {
+      return instance as InstanceType<T>;
+    } else {
+      throw new Error("Failed to create");
+    }
   }
 
   /**
@@ -74,6 +78,7 @@ export class Persistence {
    * @returns A boolean indicating whether the save operation was successful.
    */
   save<T extends Model>(this: T): this is Persisted<T> {
+    if (this.isInvalid()) return false;
     const ret = this.createOrUpdate();
     this.isNewRecord = false;
     this.saveAssociations();

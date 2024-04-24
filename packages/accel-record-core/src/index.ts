@@ -7,6 +7,7 @@ import { Connection } from "./connection.js";
 import { Fields } from "./fields.js";
 import { ModelMeta } from "./meta.js";
 import { Dirty } from "./model/dirty.js";
+import { Validations } from "./model/validations.js";
 import { Persistence } from "./persistence.js";
 import { Query } from "./query.js";
 import { Transaction } from "./transaction.js";
@@ -22,6 +23,8 @@ export { Migration } from "./migration.js";
 export { Relation } from "./relation/index.js";
 export { DatabaseCleaner } from "./testUtils.js";
 export { Rollback } from "./transaction.js";
+export { Errors } from "./validation/errors.js";
+export { Validator } from "./validation/validator/index.js";
 
 export type Meta<T> = ReturnType<typeof meta<T>>;
 
@@ -58,7 +61,8 @@ export class Model extends classIncludes(
   Fields,
   Persistence,
   Query,
-  Transaction
+  Transaction,
+  Validations
 ) {
   associations: Map<string, Association<Model, Model>> = new Map();
 

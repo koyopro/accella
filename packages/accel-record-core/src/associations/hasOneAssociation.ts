@@ -27,6 +27,10 @@ export class HasOneAssociation<
     this.isLoaded = true;
   }
 
+  isValid() {
+    return this.target?.isValid();
+  }
+
   persist() {
     if (!this.target) return;
     if (!this.ownersPrimary) return;
