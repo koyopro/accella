@@ -1,9 +1,9 @@
 diff --git packages/accel-record-core/package.json packages/accel-record-core/package.json
-index 2f13478..0cf903f 100644
+index e4c8aaa..0f317ab 100644
 --- packages/accel-record-core/package.json
 +++ packages/accel-record-core/package.json
 @@ -3,8 +3,8 @@
-   "version": "0.2.0",
+   "version": "1.1.0",
    "description": "",
    "type": "module",
 -  "main": "dist/index.js",
@@ -11,5 +11,18 @@ index 2f13478..0cf903f 100644
 +  "main": "src/index.ts",
 +  "types": "src/index.ts",
    "scripts": {
-     "test": "echo \"Error: no test specified\" && exit 1"
+     "build": "tsc && cd src/ && find . -name '*js' -print0 | cpio -pd0 ../dist/"
    },
+diff --git packages/accel-record-factory/package.json packages/accel-record-factory/package.json
+index ec3dfa9..03dfd7f 100644
+--- packages/accel-record-factory/package.json
++++ packages/accel-record-factory/package.json
+@@ -3,7 +3,7 @@
+   "version": "1.1.0",
+   "description": "",
+   "type": "module",
+-  "main": "dist/index.js",
++  "main": "index.ts",
+   "types": "index.ts",
+   "scripts": {
+     "build": "tsc"
