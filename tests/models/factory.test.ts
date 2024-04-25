@@ -1,10 +1,10 @@
 import { $user } from "../factories/user";
 
 test("traits", () => {
-  const admin = $user.build({}, "admin");
+  const admin = $user.build({ name: "foo" }, "admin");
   expect(admin.name).toBe("admin");
 
-  const john = $user.create({}, "john");
+  const john = $user.create({ age: 10 }, "john");
   expect(john.name).toBe("John");
   expect(john.age).toBe(20);
 
