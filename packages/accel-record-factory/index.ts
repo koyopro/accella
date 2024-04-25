@@ -11,38 +11,55 @@ export type BuildParams<T extends typeof Model> = Partial<
   FunctionableUnion<Meta<T>["CreateInput"]>
 >;
 
-export const defineFactory = <T extends typeof Model>(
+export const defineFactory = <
+  T extends typeof Model,
+  S extends { [key: string]: BuildParams<T> },
+>(
   model: T,
-  defaults: BuildParams<T> | ((opt: { seq: number }) => BuildParams<T>)
+  defaults: BuildParams<T> | ((opt: { seq: number }) => BuildParams<T>),
+  options?: {
+    traits?: S;
+  }
 ) => {
   let seq = 0;
+  type Trait = keyof S;
   const callIfFunc = (arg: any) =>
     typeof arg === "function" ? arg(++seq) : arg;
-  const getValues = (params: BuildParams<T>) => {
-    const ret = {} as any;
-    for (const [key, value] of Object.entries({
+  const getValues = (params: BuildParams<T>, traits: Trait[]) => {
+    const data = {
       ...callIfFunc(defaults),
       ...params,
-    })) {
+    };
+    for (const trait of traits) {
+      Object.assign(data, options?.traits?.[trait]);
+    }
+    const ret = {} as any;
+    for (const [key, value] of Object.entries(data)) {
       ret[key] = callIfFunc(value);
     }
     return ret;
   };
   return {
-    create(params: BuildParams<T> = {}): ReturnType<typeof Model.create<T>> {
-      return model.create(getValues(params));
+    create(
+      params: BuildParams<T> = {},
+      ...traits: Trait[]
+    ): ReturnType<typeof Model.create<T>> {
+      return model.create(getValues(params, traits));
     },
-    build(params: BuildParams<T> = {}): ReturnType<typeof Model.build<T>> {
-      return model.build(getValues(params));
+    build(
+      params: BuildParams<T> = {},
+      ...traits: Trait[]
+    ): ReturnType<typeof Model.build<T>> {
+      return model.build(getValues(params, traits));
     },
-    createList(count: number, params: BuildParams<T> = {}) {
+    createList(count: number, params: BuildParams<T> = {}, ...traits: Trait[]) {
       return Array.from({ length: count }, () =>
-        this.create({ ...defaults, ...params })
+        this.create({ ...defaults, ...params }, ...traits)
       );
     },
-    buildList(count: number, params: BuildParams<T> = {}) {
+    buildList(count: number, params: BuildParams<T> = {}, ...traits: Trait[]) {
       return Array.from({ length: count }, () =>
-        this.build({ ...defaults, ...params })
+        this.build({ ...defaults, ...params }, ...traits)
       );
     },
   };
