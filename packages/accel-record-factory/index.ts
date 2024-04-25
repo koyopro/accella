@@ -16,12 +16,15 @@ export const defineFactory = <T extends typeof Model>(
   defaults: BuildParams<T> | ((opt: { seq: number }) => BuildParams<T>)
 ) => {
   let seq = 0;
+  const callIfFunc = (arg: any) =>
+    typeof arg === "function" ? arg(++seq) : arg;
   const getValues = (params: BuildParams<T>) => {
-    const _defaults =
-      typeof defaults === "function" ? defaults({ seq: ++seq }) : defaults;
     const ret = {} as any;
-    for (const [key, value] of Object.entries({ ..._defaults, ...params })) {
-      ret[key] = typeof value === "function" ? value(++seq) : value;
+    for (const [key, value] of Object.entries({
+      ...callIfFunc(defaults),
+      ...params,
+    })) {
+      ret[key] = callIfFunc(value);
     }
     return ret;
   };
