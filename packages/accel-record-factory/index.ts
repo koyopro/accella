@@ -11,14 +11,16 @@ export type BuildParams<T extends typeof Model> = Partial<
   FunctionableUnion<Meta<T>["CreateInput"]>
 >;
 
+type BuildParamsCallable<T extends typeof Model> =
+  | BuildParams<T>
+  | ((opt: { seq: number }) => BuildParams<T>);
+
 export const defineFactory = <
   T extends typeof Model,
-  S extends {
-    [key: string]: BuildParams<T> | ((opt: { seq: number }) => BuildParams<T>);
-  },
+  S extends { [key: string]: BuildParamsCallable<T> },
 >(
   model: T,
-  defaults: BuildParams<T> | ((opt: { seq: number }) => BuildParams<T>),
+  defaults: BuildParamsCallable<T>,
   options?: {
     traits?: S;
   }
