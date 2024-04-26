@@ -26,13 +26,11 @@ export const defineFactory = <
   const callIfFunc = (arg: any) =>
     typeof arg === "function" ? arg(++seq) : arg;
   const getValues = (params: BuildParams<T>, traits: Trait[]) => {
-    const data = {
-      ...callIfFunc(defaults),
-      ...params,
-    };
+    const data = { ...callIfFunc(defaults) };
     for (const trait of traits) {
       Object.assign(data, options?.traits?.[trait]);
     }
+    Object.assign(data, params);
     const ret = {} as any;
     for (const [key, value] of Object.entries(data)) {
       ret[key] = callIfFunc(value);
@@ -54,13 +52,11 @@ export const defineFactory = <
     },
     createList(count: number, params: BuildParams<T> = {}, ...traits: Trait[]) {
       return Array.from({ length: count }, () =>
-        this.create({ ...defaults, ...params }, ...traits)
+        this.create(params, ...traits)
       );
     },
     buildList(count: number, params: BuildParams<T> = {}, ...traits: Trait[]) {
-      return Array.from({ length: count }, () =>
-        this.build({ ...defaults, ...params }, ...traits)
-      );
+      return Array.from({ length: count }, () => this.build(params, ...traits));
     },
   };
 };
