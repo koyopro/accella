@@ -13,7 +13,9 @@ export type BuildParams<T extends typeof Model> = Partial<
 
 export const defineFactory = <
   T extends typeof Model,
-  S extends { [key: string]: BuildParams<T> },
+  S extends {
+    [key: string]: BuildParams<T> | ((opt: { seq: number }) => BuildParams<T>);
+  },
 >(
   model: T,
   defaults: BuildParams<T> | ((opt: { seq: number }) => BuildParams<T>),
@@ -28,7 +30,7 @@ export const defineFactory = <
   const getValues = (params: BuildParams<T>, traits: Trait[]) => {
     const data = { ...callIfFunc(defaults) };
     for (const trait of traits) {
-      Object.assign(data, options?.traits?.[trait]);
+      Object.assign(data, callIfFunc(options?.traits?.[trait]));
     }
     Object.assign(data, params);
     const ret = {} as any;

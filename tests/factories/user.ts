@@ -13,10 +13,10 @@ export const UserFactory = defineFactory(
       admin: {
         name: "admin",
       },
-      john: {
+      john: () => ({
         name: "John",
         age: 20,
-      },
+      }),
       withSetting: {
         setting: () => $setting.build(),
       },
