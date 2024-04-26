@@ -42,14 +42,12 @@ generatorHandler({
 
     const factoryDir = options.generator.config.factoryPath;
     if (typeof factoryDir === "string") {
+      const prefix = factoryDir.startsWith("/")
+        ? ""
+        : path.dirname(options.schemaPath);
       for (const model of options.dmmf.datamodel.models) {
         const fileName = `${toCamelCase(model.name)}.ts`;
-        const filePath = path.join(
-          options.schemaPath,
-          "..",
-          factoryDir,
-          fileName
-        );
+        const filePath = path.join(prefix, factoryDir, fileName);
         if (fs.existsSync(filePath)) continue;
         await writeFileSafely(filePath, generateFactory(model));
         // logger.info(`added: ${fileName}`);
