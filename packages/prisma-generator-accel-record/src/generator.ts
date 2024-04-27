@@ -49,7 +49,13 @@ generatorHandler({
         const fileName = `${toCamelCase(model.name)}.ts`;
         const filePath = path.join(prefix, factoryDir, fileName);
         if (fs.existsSync(filePath)) continue;
-        await writeFileSafely(filePath, generateFactory(model));
+        const relative = path
+          .relative(path.dirname(filePath), indexFile)
+          .replace(/.ts$/, ".js");
+        await writeFileSafely(
+          filePath,
+          generateFactory(model, { pathToIndex: relative })
+        );
         // logger.info(`added: ${fileName}`);
       }
     }

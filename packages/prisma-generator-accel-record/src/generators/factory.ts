@@ -1,8 +1,11 @@
 import { DMMF } from "@prisma/generator-helper";
 
-export const generateFactory = (model: DMMF.Model) => {
+export const generateFactory = (
+  model: DMMF.Model,
+  params: { pathToIndex: string }
+) => {
   return `import { defineFactory } from "accel-record-factory";
-import { ${model.name} } from "../models/index.js";
+import { ${model.name} } from "${params.pathToIndex}";
 
 export const ${model.name}Factory = defineFactory(${model.name}, {
   ${model.fields
