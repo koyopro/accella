@@ -32,32 +32,43 @@ generatorHandler({
 
     await ensureApplicationRecord(options);
 
-    for (const model of options.dmmf.datamodel.models) {
-      const fileName = `${toCamelCase(model.name)}.ts`;
-      const filePath = path.join(outputDir, fileName);
-      if (fs.existsSync(filePath)) continue;
-      await writeFileSafely(filePath, generateModel(model));
-      // logger.info(`added: ${fileName}`);
-    }
+    await generateModels(options, outputDir);
 
-    const factoryDir = options.generator.config.factoryPath;
-    if (typeof factoryDir === "string") {
-      const prefix = factoryDir.startsWith("/")
-        ? ""
-        : path.dirname(options.schemaPath);
-      for (const model of options.dmmf.datamodel.models) {
-        const fileName = `${toCamelCase(model.name)}.ts`;
-        const filePath = path.join(prefix, factoryDir, fileName);
-        if (fs.existsSync(filePath)) continue;
-        const relative = path
-          .relative(path.dirname(filePath), indexFile)
-          .replace(/.ts$/, ".js");
-        await writeFileSafely(
-          filePath,
-          generateFactory(model, { pathToIndex: relative })
-        );
-        // logger.info(`added: ${fileName}`);
-      }
-    }
+    await generateFactories(options, indexFile);
   },
 });
+
+const generateModels = async (options: GeneratorOptions, outputDir: string) => {
+  for (const model of options.dmmf.datamodel.models) {
+    const fileName = `${toCamelCase(model.name)}.ts`;
+    const filePath = path.join(outputDir, fileName);
+    if (fs.existsSync(filePath)) continue;
+    await writeFileSafely(filePath, generateModel(model));
+    // logger.info(`added: ${fileName}`);
+  }
+};
+
+const generateFactories = async (
+  options: GeneratorOptions,
+  indexFile: string
+) => {
+  const factoryDir = options.generator.config.factoryPath;
+  if (typeof factoryDir === "string") {
+    const prefix = factoryDir.startsWith("/")
+      ? ""
+      : path.dirname(options.schemaPath);
+    for (const model of options.dmmf.datamodel.models) {
+      const fileName = `${toCamelCase(model.name)}.ts`;
+      const filePath = path.join(prefix, factoryDir, fileName);
+      if (fs.existsSync(filePath)) continue;
+      const relative = path
+        .relative(path.dirname(filePath), indexFile)
+        .replace(/.ts$/, ".js");
+      await writeFileSafely(
+        filePath,
+        generateFactory(model, { pathToIndex: relative })
+      );
+      // logger.info(`added: ${fileName}`);
+    }
+  }
+};
