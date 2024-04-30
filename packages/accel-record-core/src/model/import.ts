@@ -2,9 +2,24 @@ import { exec } from "../database.js";
 import { Meta, Model } from "../index.js";
 
 export class Import {
-  static import<T extends typeof Model>(this: T, records: Meta<T>["Base"][]) {
-    // @ts-ignore
-    const params = records.map((record) => record.makeInsertParams());
+  static import<T extends typeof Model>(
+    this: T,
+    records: Meta<T>["Base"][],
+    options: { validate?: boolean | "throw" } = {}
+  ) {
+    const params = records
+      .map((record) => {
+        if (options.validate === false) return this.makeInsertParams(record);
+        const isValid = record.isValid();
+        if (options.validate === "throw" && !isValid)
+          throw new Error("Validation failed");
+        return isValid ? this.makeInsertParams(record) : undefined;
+      })
+      .filter(Boolean);
     exec(this.queryBuilder.insert(params));
+  }
+
+  private static makeInsertParams(record: any) {
+    return record.makeInsertParams();
   }
 }
