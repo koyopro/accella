@@ -11,6 +11,23 @@ test(".import", () => {
   expect(User.count()).toBe(2);
 });
 
+test(".import with onDuplicateKeyUpdate", () => {
+  const user = $user.create({ email: "foo@example.com", name: "foo", age: 10 });
+  const users = [
+    $user.build({ email: "foo@example.com", name: "foo2", age: 20 }), // conflict
+    $user.build({ email: "bar@example.com", name: "bar", age: 30 }), // new
+  ];
+  expect(() => User.import(users)).toThrow();
+
+  User.import(users, { onDuplicateKeyUpdate: ["name"] });
+  user.reload();
+  expect(user.name).toBe("foo2"); // should be updated
+  expect(user.age).toBe(10); // should not be updated
+
+  User.import(users, { onDuplicateKeyUpdate: true });
+  expect(user.reload().age).toBe(20); // should be updated
+});
+
 test(".import with validation error", () => {
   const records = [
     $ValidateSample.build({}), // valid

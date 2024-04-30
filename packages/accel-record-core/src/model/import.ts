@@ -5,7 +5,10 @@ export class Import {
   static import<T extends typeof Model>(
     this: T,
     records: Meta<T>["Base"][],
-    options: { validate?: boolean | "throw" } = {}
+    options: {
+      validate?: boolean | "throw";
+      onDuplicateKeyUpdate?: true | (keyof Meta<T>["OrderInput"])[];
+    } = {}
   ) {
     const params = records
       .map((record) => {
@@ -16,7 +19,13 @@ export class Import {
         return isValid ? this.makeInsertParams(record) : undefined;
       })
       .filter(Boolean);
-    exec(this.queryBuilder.insert(params));
+    let q = this.queryBuilder.insert(params);
+    if (options.onDuplicateKeyUpdate) {
+      const columns = options.onDuplicateKeyUpdate;
+      if (columns === true) q = q.onConflict().merge();
+      else q = q.onConflict().merge(columns);
+    }
+    exec(q);
   }
 
   private static makeInsertParams(record: any) {
