@@ -7,6 +7,7 @@ import { Connection } from "./connection.js";
 import { Fields } from "./fields.js";
 import { ModelMeta } from "./meta.js";
 import { Dirty } from "./model/dirty.js";
+import { Import } from "./model/import.js";
 import { Validations } from "./model/validations.js";
 import { Persistence } from "./persistence.js";
 import { Query } from "./query.js";
@@ -59,6 +60,7 @@ export class Model extends classIncludes(
   Connection,
   Dirty,
   Fields,
+  Import,
   Persistence,
   Query,
   Transaction,
