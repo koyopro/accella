@@ -8,8 +8,9 @@ type ImportOptions<T extends typeof Model> = {
   conflictTarget?: (keyof Meta<T>["OrderInput"])[];
 };
 
-type ImportResult = {
+type ImportResult<T extends typeof Model> = {
   numInserts: number;
+  failedInstances: Meta<T>["Base"][];
 };
 
 export class Import {
@@ -17,17 +18,21 @@ export class Import {
     this: T,
     records: Meta<T>["Base"][] | Meta<T>["CreateInput"][],
     options: ImportOptions<T> = {}
-  ): ImportResult {
+  ): ImportResult<T> {
     const _records = records.map((r) =>
       r instanceof Model ? r : this.build(r)
     );
+    const failedInstances: Meta<T>["Base"][] = [];
     const params = _records
       .map((record) => {
-        if (options.validate === false) return this.makeInsertParams(record);
-        const isValid = record.isValid();
-        if (options.validate === "throw" && !isValid)
+        if (options.validate === false || record.isValid()) {
+          return this.makeInsertParams(record);
+        }
+        if (options.validate === "throw") {
           throw new Error("Validation failed");
-        return isValid ? this.makeInsertParams(record) : undefined;
+        }
+        failedInstances.push(record);
+        return undefined;
       })
       .filter(Boolean);
     let q = this.queryBuilder.insert(params);
@@ -35,6 +40,7 @@ export class Import {
     const info = exec(q);
     return {
       numInserts: info.affectedRows ?? info.changes,
+      failedInstances,
     };
   }
 

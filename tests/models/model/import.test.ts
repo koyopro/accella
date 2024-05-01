@@ -57,6 +57,7 @@ test(".import with validation error", () => {
   ];
   const result = ValidateSample.import(records);
   expect(result.numInserts).toBe(1);
+  expect(result.failedInstances.length).toBe(1);
   expect(ValidateSample.count()).toBe(1);
 });
 
@@ -67,6 +68,7 @@ test(".import without validation", () => {
   ];
   const result = ValidateSample.import(records, { validate: false });
   expect(result.numInserts).toBe(2);
+  expect(result.failedInstances.length).toBe(0);
   expect(ValidateSample.count()).toBe(2);
 });
 
