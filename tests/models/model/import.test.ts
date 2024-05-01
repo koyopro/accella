@@ -11,6 +11,13 @@ test(".import", () => {
   expect(User.count()).toBe(2);
 });
 
+test(".import with Array of Hash", () => {
+  const users = [{ email: "foo@example.com" }, { email: "bar@example.com" }];
+  User.import(users);
+  expect(User.count()).toBe(2);
+  expect(User.first()?.email).toBe("foo@example.com");
+});
+
 test(".import with onDuplicateKeyUpdate", () => {
   const user = $user.create({ email: "foo@example.com", name: "foo", age: 10 });
   const users = [
