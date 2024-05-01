@@ -26,12 +26,26 @@ test(".import with onDuplicateKeyUpdate", () => {
   ];
   expect(() => User.import(users)).toThrow();
 
-  User.import(users, { onDuplicateKeyUpdate: ["name"] });
+  if (User.connection.adapterName === "mysql") {
+    User.import(users, { onDuplicateKeyUpdate: ["name"] });
+  } else {
+    User.import(users, {
+      onDuplicateKeyUpdate: ["name"],
+      conflictTarget: ["email"],
+    });
+  }
   user.reload();
   expect(user.name).toBe("foo2"); // should be updated
   expect(user.age).toBe(10); // should not be updated
 
-  User.import(users, { onDuplicateKeyUpdate: true });
+  if (User.connection.adapterName === "mysql") {
+    User.import(users, { onDuplicateKeyUpdate: true });
+  } else {
+    User.import(users, {
+      onDuplicateKeyUpdate: true,
+      conflictTarget: ["email"],
+    });
+  }
   expect(user.reload().age).toBe(20); // should be updated
 });
 

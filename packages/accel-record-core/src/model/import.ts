@@ -8,6 +8,7 @@ export class Import {
     options: {
       validate?: boolean | "throw";
       onDuplicateKeyUpdate?: true | (keyof Meta<T>["OrderInput"])[];
+      conflictTarget?: (keyof Meta<T>["OrderInput"])[];
     } = {}
   ) {
     const _records = records.map((r) =>
@@ -25,12 +26,15 @@ export class Import {
     let q = this.queryBuilder.insert(params);
     if (options.onDuplicateKeyUpdate) {
       const attributes = options.onDuplicateKeyUpdate;
-      if (attributes === true) q = q.onConflict().merge();
+      const q1 = Array.isArray(options.conflictTarget)
+        ? q.onConflict(options.conflictTarget)
+        : q.onConflict();
+      if (attributes === true) q = q1.merge();
       else {
         const columns = attributes.map(
           (a) => this.attributeToColumn(a as string)!
         );
-        q = q.onConflict().merge(columns);
+        q = q1.merge(columns);
       }
     }
     exec(q);
