@@ -7,8 +7,9 @@ test(".import", () => {
     $user.build({ email: "foo@example.com" }),
     $user.build({ email: "bar@example.com" }),
   ];
-  User.import(users);
+  const result = User.import(users);
   expect(User.count()).toBe(2);
+  expect(result.numInserts).toBe(2);
 });
 
 test(".import with Array of Hash", () => {
@@ -54,7 +55,8 @@ test(".import with validation error", () => {
     $ValidateSample.build({}), // valid
     $ValidateSample.build({ key: "xs" }), // invalid
   ];
-  ValidateSample.import(records);
+  const result = ValidateSample.import(records);
+  expect(result.numInserts).toBe(1);
   expect(ValidateSample.count()).toBe(1);
 });
 
@@ -63,7 +65,8 @@ test(".import without validation", () => {
     $ValidateSample.build({}), // valid
     $ValidateSample.build({ key: "xs" }), // invalid
   ];
-  ValidateSample.import(records, { validate: false });
+  const result = ValidateSample.import(records, { validate: false });
+  expect(result.numInserts).toBe(2);
   expect(ValidateSample.count()).toBe(2);
 });
 

@@ -8,12 +8,16 @@ type ImportOptions<T extends typeof Model> = {
   conflictTarget?: (keyof Meta<T>["OrderInput"])[];
 };
 
+type ImportResult = {
+  numInserts: number;
+};
+
 export class Import {
   static import<T extends typeof Model>(
     this: T,
     records: Meta<T>["Base"][] | Meta<T>["CreateInput"][],
     options: ImportOptions<T> = {}
-  ) {
+  ): ImportResult {
     const _records = records.map((r) =>
       r instanceof Model ? r : this.build(r)
     );
@@ -28,7 +32,10 @@ export class Import {
       .filter(Boolean);
     let q = this.queryBuilder.insert(params);
     q = this.addOnConflictMerge<T>(options, q);
-    exec(q);
+    const info = exec(q);
+    return {
+      numInserts: info.affectedRows ?? info.changes,
+    };
   }
 
   private static addOnConflictMerge<T extends typeof Model>(
