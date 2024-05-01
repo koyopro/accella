@@ -21,9 +21,14 @@ export class Import {
       .filter(Boolean);
     let q = this.queryBuilder.insert(params);
     if (options.onDuplicateKeyUpdate) {
-      const columns = options.onDuplicateKeyUpdate;
-      if (columns === true) q = q.onConflict().merge();
-      else q = q.onConflict().merge(columns);
+      const attributes = options.onDuplicateKeyUpdate;
+      if (attributes === true) q = q.onConflict().merge();
+      else {
+        const columns = attributes.map(
+          (a) => this.attributeToColumn(a as string)!
+        );
+        q = q.onConflict().merge(columns);
+      }
     }
     exec(q);
   }
