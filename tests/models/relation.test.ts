@@ -225,9 +225,10 @@ describe("Relation", () => {
     const u = $user.create({ name: "foo" });
     Post.create({ title: "post1", authorId: u.id });
 
+    const column = User.attributeToColumn("name")!;
     const post = Post.all()
       .joins("author")
-      .where("User.name = ?", "foo")
+      .where(`User.${column} = ?`, "foo")
       .first();
     expect(post?.title).toBe("post1");
   });
