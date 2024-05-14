@@ -782,6 +782,37 @@ export default {
 };
 ```
 
+### Model Factory
+
+To generate test records, you can use a Factory.  
+Please refer to [accel-record-factory](https://github.com/koyopro/accella/blob/main/packages/accel-record-factory/README.md) for more details.
+
+```ts
+// tests/factories/user.ts
+
+import { defineFactory } from "accel-record-factory";
+import { User } from "../../src/models/index.js";
+
+export const UserFactory = defineFactory(User, {
+  firstName: "John",
+  lastName: "Doe",
+  age: 20,
+});
+
+export { UserFactory as $User };
+```
+
+```ts
+// tests/user.test.ts
+
+import { $User } from "./factories/user";
+
+const newUser = $User.build();
+newUser.firstName; // => "John"
+newUser.lastName; // => "Doe"
+newUser.age; // => 20
+```
+
 ## Validation
 
 ### Sample Validation
@@ -916,7 +947,5 @@ user.update({ age: undefined });
 - [accel-record-core] Support for Composite IDs
 - [accel-record-core] Expansion of Query Interface
 - [accel-record-core] Internationalization (I18n)
-- [accel-record-factory] Trait
-- [prisma-generator-accel-record] Generation of Factories for each Model
 
 Related: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)

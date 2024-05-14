@@ -783,6 +783,37 @@ export default {
 };
 ```
 
+### モデルのFactory
+
+テスト用のレコードを生成するために、Factoryを利用することができます。  
+詳細は[accel-record-factory](https://github.com/koyopro/accella/blob/main/packages/accel-record-factory/README-ja.md)を参照してください。
+
+```ts
+// tests/factories/user.ts
+
+import { defineFactory } from "accel-record-factory";
+import { User } from "../../src/models/index.js";
+
+export const UserFactory = defineFactory(User, {
+  firstName: "John",
+  lastName: "Doe",
+  age: 20,
+});
+
+export { UserFactory as $User };
+```
+
+```ts
+// tests/user.test.ts
+
+import { $User } from "./factories/user";
+
+const newUser = $User.build();
+newUser.firstName; // => "John"
+newUser.lastName; // => "Doe"
+newUser.age; // => 20
+```
+
 ## バリデーション
 
 ### バリデーションのサンプル
@@ -917,7 +948,5 @@ user.update({ age: undefined });
 - [accel-record-core] 複合IDの対応
 - [accel-record-core] クエリインターフェースの拡充
 - [accel-record-core] 国際化(I18n)
-- [accel-record-factory] trait
-- [prisma-generator-accel-record] 各モデル用Factoryの生成
 
 関連: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)

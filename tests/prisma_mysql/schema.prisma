@@ -3,8 +3,9 @@ generator client {
 }
 
 generator custom_generator {
-  provider = "node node_modules/prisma-generator-accel-record"
-  output   = "../models"
+  provider    = "node node_modules/prisma-generator-accel-record"
+  output      = "../models"
+  factoryPath = "../factories"
 }
 
 datasource db {
