@@ -2,7 +2,7 @@ Language: [English](https://github.com/koyopro/accella/blob/main/packages/accel-
 
 # Accel Record Factory
 
-Accel Record用のファクトリーライブラリです。
+This is a factory library for Accel Record.
 
 ## Getting Started
 
@@ -10,7 +10,7 @@ Accel Record用のファクトリーライブラリです。
 npm install -D accel-record-factory
 ```
 
-`prisma/schema.prisma` へ `prisma-generator-accel-record` の設定を追加します。
+Add the configuration for `prisma-generator-accel-record` to `prisma/schema.prisma`.
 
 ```prisma
 generator client {
@@ -21,17 +21,17 @@ generator client {
 generator accelRecord {
   provider    = "prisma-generator-accel-record"
   output      = "../src/models"
-  factoryPath = "../tests/factories" // ファクトリーファイルの出力先を追加
+  factoryPath = "../tests/factories" // Add the output destination for factory files
 }
 ```
 
-`prisma/schema.prisma` を変更したら、以下のコマンドを実行してください。
+After modifying `prisma/schema.prisma`, run the following command:
 
 ```bash
 npx prisma generate
 ```
 
-例えば以下のようにUserモデルを定義した場合、
+For example, if you define a User model like this:
 
 ```ts
 // prisma/schema.prisma
@@ -43,7 +43,7 @@ model User {
 }
 ```
 
-以下のようなファクトリーファイルが自動生成されます。
+The following factory file will be automatically generated:
 
 ```ts
 // tests/factories/user.ts
@@ -60,7 +60,7 @@ export const UserFactory = defineFactory(User, {
 export { UserFactory as $User };
 ```
 
-ファクトリーをインポートして使用することができます。
+You can import and use the factory:
 
 ```ts
 // tests/user.test.ts
@@ -76,11 +76,11 @@ const user = $User.create({
 });
 ```
 
-## 使い方
+## Usage
 
-### デフォルト値の設定
+### Setting Default Values
 
-defineFactoryの第二引数にデフォルト値を設定することができます。
+You can set default values by passing them as the second argument to defineFactory.
 
 ```ts
 // tests/factories/user.ts
@@ -89,7 +89,7 @@ import { defineFactory } from "accel-record-factory";
 import { User } from "../../src/models/index.js";
 
 export const UserFactory = defineFactory(User, {
-  firstName: "John", // デフォルト値を設定
+  firstName: "John", // Set default value
   lastName: "Doe",
   age: 20,
 });
@@ -108,9 +108,9 @@ newUser.lastName; // => "Doe"
 newUser.age; // => 20
 ```
 
-### 連番の利用
+### Using Sequential Numbers
 
-defineFactoryでデフォルト値を設定する際に、関数を指定することで連番を利用することができます。
+When setting default values with defineFactory, you can use a function to utilize sequential numbers.
 
 ```ts
 // tests/factories/user.ts
@@ -119,7 +119,7 @@ import { defineFactory } from "accel-record-factory";
 import { User } from "../../src/models/index.js";
 
 export const UserFactory = defineFactory(User, {
-  firstName: (seq) => `User${seq}`, // 連番を利用する関数を指定
+  firstName: (seq) => `User${seq}`, // Specify a function to use sequential numbers
 });
 
 export { UserFactory as $User };
@@ -137,9 +137,9 @@ const user2 = $User.build();
 user2.firstName; // => "User2"
 ```
 
-### 関連の生成
+### Generating Associations
 
-デフォルト値に関数を指定することで、関連を持つモデルを生成することができます。
+By specifying a function for the default value, you can generate models with associations.
 
 ```ts
 // prisma/schema.prisma
@@ -148,7 +148,7 @@ model User {
   firstName String
   lastName  String
   age       Int?
-  setting   Setting? // 関連を持つモデル
+  setting   Setting? // Associated model
 }
 
 model Setting {
@@ -166,7 +166,7 @@ import { defineFactory } from "accel-record-factory";
 import { User, Setting } from "../../src/models/index.js";
 
 export const UserFactory = defineFactory(User, {
-  setting: () => Setting.build({ notify: true }), // 関連を生成する関数を指定
+  setting: () => Setting.build({ notify: true }), // Specify a function to generate the association
 });
 
 export { UserFactory as $User };
@@ -183,7 +183,7 @@ user.setting.notify; // => true
 
 ### Traits
 
-defineFactoryの第三引数にtraitsを指定することで、複数種類のデフォルト値を設定することができます。
+By specifying traits as the third argument to defineFactory, you can set multiple default values.
 
 ```ts
 // tests/factories/user.ts
@@ -199,7 +199,7 @@ export const UserFactory = defineFactory(
   },
   {
     traits: {
-      // trait名を指定
+      // Specify the trait name
       foo: {
         firstName: "Foo",
         lastName: "Bar",
@@ -220,7 +220,7 @@ const john = $User.build({});
 john.firstName; // => "John"
 john.lastName; // => "Doe"
 
-const foo = $User.build({}, "foo"); // traitを使用する
+const foo = $User.build({}, "foo"); // Use the trait
 foo.firstName; // => "Foo"
 foo.lastName; // => "Bar"
 ```
