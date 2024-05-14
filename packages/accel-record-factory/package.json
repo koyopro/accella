@@ -21,6 +21,7 @@
     "accel-record"
   ],
   "files": [
+    "README.md",
     "dist",
     "index.ts"
   ],
