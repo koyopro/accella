@@ -71,7 +71,6 @@ export const initAccelRecord = async (config: Config) => {
   _config = config;
   _config.logLevel ??= "WARN";
 
-  stopRpcClient();
   _rpcClient = SyncRpc(path.resolve(__dirname, "./worker.cjs"), {
     knexConfig: getKnexConfig(config),
   });
