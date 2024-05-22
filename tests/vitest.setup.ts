@@ -11,7 +11,7 @@ import "./models/index.js";
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const dbConfig = () => {
+export const dbConfig = () => {
   if (process.env.DB_ENGINE == "mysql") {
     return {
       type: "mysql",
