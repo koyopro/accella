@@ -102,12 +102,8 @@ type UserMeta = {
     email?: string | string[] | StringFilter | null;
     name?: string | string[] | StringFilter | null;
     age?: number | number[] | Filter<number> | null;
-    posts?: Post | Post[];
-    setting?: Setting | Setting[];
-    teams?: UserTeam | UserTeam[];
     createdAt?: Date | Date[] | Filter<Date> | null;
     updatedAt?: Date | Date[] | Filter<Date> | null;
-    Profile?: Profile | Profile[];
   };
   OrderInput: {
     id?: SortOrder;
@@ -150,7 +146,6 @@ type TeamMeta = {
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
-    users?: UserTeam | UserTeam[];
   };
   OrderInput: {
     id?: SortOrder;
@@ -248,7 +243,6 @@ type PostMeta = {
     published?: boolean | boolean[] | undefined | null;
     author?: User | User[];
     authorId?: number | number[] | Filter<number> | null;
-    tags?: PostTag | PostTag[];
   };
   OrderInput: {
     id?: SortOrder;
@@ -290,7 +284,6 @@ type PostTagMeta = {
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
-    posts?: Post | Post[];
   };
   OrderInput: {
     id?: SortOrder;
@@ -435,7 +428,6 @@ type CompanyMeta = {
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
-    employees?: Employee | Employee[];
   };
   OrderInput: {
     id?: SortOrder;
