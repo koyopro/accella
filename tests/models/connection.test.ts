@@ -8,9 +8,11 @@ test("execute", () => {
     name: "hoge",
     posts: [$post.build({ title: "title1" })],
   });
-  Model.connection.execute("update User set name = 'fuga' where _id = ?", [
-    u.id,
-  ]);
+  const nameCol = User.attributeToColumn("name")!;
+  Model.connection.execute(
+    `update User set ${nameCol} = 'fuga' where _id = ?`,
+    [u.id]
+  );
   expect(u.reload().name).toBe("fuga");
 
   const r = Model.connection.execute(
@@ -29,19 +31,20 @@ test("knex builder", async () => {
     name: "hoge",
     posts: [$post.build({ title: "title1" })],
   });
+  const column = User.attributeToColumn("name")!;
   {
-    const r = User.queryBuilder.select("name").groupBy("name").execute();
+    const r = User.queryBuilder.select(column).groupBy(column).execute();
     // const r = Model.client.select("name").from("User").groupBy("name").execute();
-    expect(r[0].name).toBe("hoge");
+    expect(r[0][column]).toBe("hoge");
   }
   {
     const knex = Model.connection.knex;
     const r = knex
-      .select("name", knex.raw("SUM(_id) as s"))
+      .select(column, knex.raw("SUM(_id) as s"))
       .from("User")
       .groupBy("_id")
       .execute();
-    expect(r[0].name).toBe(u.name);
+    expect(r[0][column]).toBe(u.name);
     expect(Number(r[0].s)).toBe(u.id);
   }
 });

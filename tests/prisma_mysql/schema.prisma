@@ -16,7 +16,7 @@ datasource db {
 model User {
   id        Int        @id @default(autoincrement()) @map("_id")
   email     String     @unique
-  name      String?
+  name      String?    @map("user_name")
   age       Int?
   posts     Post[]
   setting   Setting?
