@@ -70,7 +70,8 @@ export class Where {
   private getAssocationWhere<T, M extends ModelMeta>(
     this: Relation<T, M>,
     key: Extract<keyof M["WhereInput"], string>,
-    value: any
+    value: any,
+    op: string = "in"
   ) {
     const field = this.model.findField(key);
     if (field?.relationName == undefined) return;
@@ -89,7 +90,7 @@ export class Where {
 
     return Object.entries(where).map(([column, values]) => [
       column,
-      "in",
+      op,
       values,
     ]);
   }
@@ -107,8 +108,20 @@ export class Where {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key in input) {
       const column = this.model.attributeToColumn(key);
-      if (!column) throw new Error(`Attribute not found: ${key}`);
-      if (input[key] != null && typeof input[key] === "object") {
+      if (!column) {
+        const associationWheres = this.getAssocationWhere(
+          key,
+          input[key],
+          "not in"
+        );
+        if (associationWheres) {
+          for (const where of associationWheres) {
+            newOptions["wheres"].push(where);
+          }
+        } else {
+          throw new Error(`Attribute not found: ${key}`);
+        }
+      } else if (input[key] != null && typeof input[key] === "object") {
         for (const operator in input[key]) {
           if (operator === "in") {
             newOptions["wheres"].push([column, "not in", input[key][operator]]);
