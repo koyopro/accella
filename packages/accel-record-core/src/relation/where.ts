@@ -41,8 +41,16 @@ export class Where {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key in input) {
       const column = this.model.attributeToColumn(key);
-      if (!column) throw new Error(`Attribute not found: ${key}`);
-      if (Array.isArray(input[key])) {
+      if (!column) {
+        const associationWheres = this.getAssocationWhere(key, input[key]);
+        if (associationWheres) {
+          for (const where of associationWheres) {
+            newOptions["wheres"].push(where);
+          }
+        } else {
+          throw new Error(`Attribute not found: ${key}`);
+        }
+      } else if (Array.isArray(input[key])) {
         newOptions["wheres"].push([column, "in", input[key]]);
       } else if (input[key] != null && typeof input[key] === "object") {
         for (const operator in input[key]) {
@@ -57,6 +65,33 @@ export class Where {
       }
     }
     return new Relation(this.model, newOptions);
+  }
+
+  private getAssocationWhere<T, M extends ModelMeta>(
+    this: Relation<T, M>,
+    key: Extract<keyof M["WhereInput"], string>,
+    value: any
+  ) {
+    const field = this.model.findField(key);
+    if (field?.relationName == undefined) return;
+
+    const where: any = {};
+
+    const records = [value].flat();
+    for (let i = 0; i < field.foreignKeys.length; i++) {
+      const column = this.model.attributeToColumn(field.foreignKeys[i]);
+      if (!column) return;
+
+      for (const record of records) {
+        (where[column] ||= []).push(record[field.primaryKeys[i]]);
+      }
+    }
+
+    return Object.entries(where).map(([column, values]) => [
+      column,
+      "in",
+      values,
+    ]);
   }
 
   /**

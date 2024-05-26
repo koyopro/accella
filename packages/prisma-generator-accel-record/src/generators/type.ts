@@ -163,13 +163,16 @@ declare module "accel-record" {
       .join("");
     const whereInputs =
       model.fields
-        .filter(reject)
         .filter(
-          (field) => field.relationName == undefined && field.type != "Json"
+          (field) =>
+            (field.relationFromFields?.length ?? 0) > 0 || field.type != "Json"
         )
         .map((field) => {
           const type = field.typeName;
           const filter = getFilterType(type);
+          if (field.relationName) {
+            return `\n    ${field.name}?: ${field.type} | ${field.type}[];`;
+          }
           return `\n    ${field.name}?: ${type} | ${type}[] | ${filter} | null;`;
         })
         .join("") + "\n  ";

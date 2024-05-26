@@ -134,6 +134,15 @@ describe("Relation", () => {
     ).toHaveLength(2);
   });
 
+  test("#where() with association", () => {
+    const users = $user.createList(2);
+    Post.create({ title: "post1", authorId: users[0].id });
+    Post.create({ title: "post2", authorId: users[0].id });
+    Post.create({ title: "post3", authorId: users[1].id });
+    expect(Post.all().where({ author: users[0] }).count()).toBe(2);
+    expect(Post.all().where({ author: users }).count()).toBe(3);
+  });
+
   test("#whereNot()", () => {
     $user.create({ name: "hoge", age: 20 });
     $user.create({ name: "fuga", age: 30 });
