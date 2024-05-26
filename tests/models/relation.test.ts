@@ -136,9 +136,8 @@ describe("Relation", () => {
 
   test("#where() with association", () => {
     const users = $user.createList(2);
-    Post.create({ title: "post1", authorId: users[0].id });
-    Post.create({ title: "post2", authorId: users[0].id });
-    Post.create({ title: "post3", authorId: users[1].id });
+    $post.createList(2, { author: users[0] });
+    $post.createList(1, { author: users[1] });
     expect(Post.all().where({ author: users[0] }).count()).toBe(2);
     expect(Post.all().where({ author: users }).count()).toBe(3);
   });
@@ -163,10 +162,9 @@ describe("Relation", () => {
 
   test("#whereNot() with association", () => {
     const users = $user.createList(2);
-    Post.create({ title: "post1", authorId: users[0].id });
-    Post.create({ title: "post2", authorId: users[0].id });
-    Post.create({ title: "post3", authorId: users[1].id });
-    expect(Post.all().whereNot({ author: users[1] }).count()).toBe(2);
+    $post.createList(2, { author: users[0] });
+    $post.createList(1, { author: users[1] });
+    expect(Post.all().whereNot({ author: users[0] }).count()).toBe(1);
     expect(Post.all().whereNot({ author: users }).count()).toBe(0);
   });
 
