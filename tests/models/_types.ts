@@ -185,7 +185,9 @@ type UserTeamMeta = {
     assignedBy: string;
   } & ({ user: User } | { userId: number }) & ({ team: Team } | { teamId: number });
   WhereInput: {
+    user?: User | User[];
     userId?: number | number[] | Filter<number> | null;
+    team?: Team | Team[];
     teamId?: number | number[] | Filter<number> | null;
     assignedAt?: Date | Date[] | Filter<Date> | null;
     assignedBy?: string | string[] | StringFilter | null;
@@ -239,6 +241,7 @@ type PostMeta = {
     title?: string | string[] | StringFilter | null;
     content?: string | string[] | StringFilter | null;
     published?: boolean | boolean[] | undefined | null;
+    author?: User | User[];
     authorId?: number | number[] | Filter<number> | null;
   };
   OrderInput: {
@@ -321,6 +324,7 @@ type SettingMeta = {
   } & ({ user: User } | { userId: number });
   WhereInput: {
     settingId?: number | number[] | Filter<number> | null;
+    user?: User | User[];
     userId?: number | number[] | Filter<number> | null;
     threshold?: number | number[] | Filter<number> | null;
     createdAt?: Date | Date[] | Filter<Date> | null;
@@ -372,6 +376,7 @@ type ProfileMeta = {
   } & ({ user: User } | { userId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
+    user?: User | User[];
     userId?: number | number[] | Filter<number> | null;
     bio?: string | string[] | StringFilter | null;
     point?: number | number[] | Filter<number> | null;
@@ -461,6 +466,7 @@ type EmployeeMeta = {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
     companyId?: number | number[] | Filter<number> | null;
+    company?: Company | Company[];
   };
   OrderInput: {
     id?: SortOrder;

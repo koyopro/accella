@@ -161,18 +161,6 @@ declare module "accel-record" {
         return ` & ({ ${f.name}: ${f.type} } | { ${foreignKeys} })`;
       })
       .join("");
-    const whereInputs =
-      model.fields
-        .filter(reject)
-        .filter(
-          (field) => field.relationName == undefined && field.type != "Json"
-        )
-        .map((field) => {
-          const type = field.typeName;
-          const filter = getFilterType(type);
-          return `\n    ${field.name}?: ${type} | ${type}[] | ${filter} | null;`;
-        })
-        .join("") + "\n  ";
     const orderInputs =
       model.fields
         .filter(reject)
@@ -197,7 +185,7 @@ type ${model.meta} = {
   CreateInput: {
 ${columns}
   }${associationColumns};
-  WhereInput: {${whereInputs}};
+  WhereInput: {${whereInputs(model)}};
   OrderInput: {${orderInputs}};
 };
 registerModel(${model.persistedModel});
@@ -297,3 +285,22 @@ const columnDefines = (model: ModelWrapper) =>
       };`;
     })
     .join("\n");
+
+const whereInputs = (model: ModelWrapper) =>
+  model.fields
+    .filter(
+      (field) =>
+        field.relationName == undefined ||
+        (field.relationFromFields?.length ?? 0) > 0
+    )
+    .filter((field) => field.type != "Json")
+    .map((field) => {
+      const type = field.typeName;
+      const filter = getFilterType(type);
+      if (field.relationName) {
+        if (field.name == "posts") console.log(field);
+        return `\n    ${field.name}?: ${field.type} | ${field.type}[];`;
+      }
+      return `\n    ${field.name}?: ${type} | ${type}[] | ${filter} | null;`;
+    })
+    .join("") + "\n  ";

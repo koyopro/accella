@@ -134,6 +134,15 @@ describe("Relation", () => {
     ).toHaveLength(2);
   });
 
+  test("#where() with association", () => {
+    const users = $user.createList(2);
+    $post.createList(2, { author: users[0] });
+    $post.createList(1, { author: users[1] });
+    expect(Post.all().where({ author: users[0] }).count()).toBe(2);
+    expect(Post.all().where({ author: users }).count()).toBe(3);
+    expect(Post.all().where({ author: [] }).count()).toBe(0);
+  });
+
   test("#whereNot()", () => {
     $user.create({ name: "hoge", age: 20 });
     $user.create({ name: "fuga", age: 30 });
@@ -150,6 +159,15 @@ describe("Relation", () => {
     ).toBe("fuga");
     expect(User.all().whereNot({ age: undefined }).first()?.name).toBe("hoge");
     expect(User.all().whereNot({ age: null }).first()?.name).toBe("hoge");
+  });
+
+  test("#whereNot() with association", () => {
+    const users = $user.createList(2);
+    $post.createList(2, { author: users[0] });
+    $post.createList(1, { author: users[1] });
+    expect(Post.all().whereNot({ author: users[0] }).count()).toBe(1);
+    expect(Post.all().whereNot({ author: users }).count()).toBe(0);
+    expect(Post.all().whereNot({ author: [] }).count()).toBe(3);
   });
 
   test("#whereRaw()", () => {
