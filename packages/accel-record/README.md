@@ -883,6 +883,22 @@ class MyValidator extends Validator<{ key: string | undefined }> {
 }
 ```
 
+## Bulk Insert
+
+Bulk Insert is a feature that allows you to insert multiple records into the database at once. \
+In Accel Record, you can use the `import()` method to perform Bulk Insert.
+
+```ts
+import { User } from "./models/index.js";
+
+const users = [
+  User.build({ firstName: "Foo", lastName: "Bar", age: 20 }),
+  User.build({ firstName: "John", lastName: "Doe", age: 30 }),
+];
+
+User.import(users, { onDuplicateKeyUpdate: ["firstName"], validate: "throw" });
+```
+
 ## Nullable Values Handling
 
 Regarding nullable values, TypeScript, like JavaScript, has two options: undefined and null. \
@@ -910,7 +926,6 @@ user.update({ age: undefined });
 ## Future Planned Features
 
 - [accel-record-core] Scopes
-- [accel-record-core] Bulk Insert
 - [accel-record-core] Nested Transactions
 - [accel-record-core] PostgreSQL Support
 - [accel-record-core] Support for Composite IDs

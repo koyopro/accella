@@ -884,6 +884,22 @@ class MyValidator extends Validator<{ key: string | undefined }> {
 }
 ```
 
+## Bulk Insert
+
+Bulk Insertは、一度に複数のレコードをデータベースに挿入する機能です。 \
+Accel Recordでは、`import()` メソッドを利用してBulk Insertを行うことができます。
+
+```ts
+import { User } from "./models/index.js";
+
+const users = [
+  User.build({ firstName: "Foo", lastName: "Bar", age: 20 }),
+  User.build({ firstName: "John", lastName: "Doe", age: 30 }),
+];
+
+User.import(users, { onDuplicateKeyUpdate: ["firstName"], validate: "throw" });
+```
+
 ## Nullableな値の扱いについて
 
 Nullableな値について、TypeScriptではJavaScriptと同様にundefinedとnullの2つが存在します。 \
@@ -911,7 +927,6 @@ user.update({ age: undefined });
 ## 今後予定されている機能追加
 
 - [accel-record-core] スコープ
-- [accel-record-core] Bulk Insert
 - [accel-record-core] トランザクションのネスト
 - [accel-record-core] PostgreSQLのサポート
 - [accel-record-core] 複合IDの対応
