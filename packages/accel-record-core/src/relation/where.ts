@@ -82,9 +82,10 @@ export class Where {
     for (let i = 0; i < field.foreignKeys.length; i++) {
       const column = this.model.attributeToColumn(field.foreignKeys[i]);
       if (!column) return;
+      where[column] ||= [];
 
       for (const record of records) {
-        (where[column] ||= []).push(record[field.primaryKeys[i]]);
+        where[column].push(record[field.primaryKeys[i]]);
       }
     }
 

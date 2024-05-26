@@ -140,6 +140,7 @@ describe("Relation", () => {
     $post.createList(1, { author: users[1] });
     expect(Post.all().where({ author: users[0] }).count()).toBe(2);
     expect(Post.all().where({ author: users }).count()).toBe(3);
+    expect(Post.all().where({ author: [] }).count()).toBe(0);
   });
 
   test("#whereNot()", () => {
@@ -166,6 +167,7 @@ describe("Relation", () => {
     $post.createList(1, { author: users[1] });
     expect(Post.all().whereNot({ author: users[0] }).count()).toBe(1);
     expect(Post.all().whereNot({ author: users }).count()).toBe(0);
+    expect(Post.all().whereNot({ author: [] }).count()).toBe(3);
   });
 
   test("#whereRaw()", () => {
