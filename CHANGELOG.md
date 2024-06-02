@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/koyopro/accella/compare/1.3.0...1.4.0) (2024-06-03)
+
+### Features
+
+- Serialization ([#7](https://github.com/koyopro/accella/pull/7))
+- Make it possible to pass associations to the 'where' condition. ([#6](https://github.com/koyopro/accella/pull/6))
+
 # [1.3.0](https://github.com/koyopro/accella/compare/1.2.0...1.3.0) (2024-05-27)
 
 ### Features
