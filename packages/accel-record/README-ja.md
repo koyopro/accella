@@ -915,6 +915,46 @@ class MyValidator extends Validator<{ key: string | undefined }> {
 }
 ```
 
+## Serialization
+
+`toHash`メソッドや`toHashArray`メソッドを利用することで、モデルのデータをプレーンなオブジェクトに変換することができます。
+
+```ts
+import { User } from "./models/index.js";
+
+const userHash = User.first()!.toHash({
+  only: ["firstName", "lastName"],
+  include: { posts: { only: ["title"] } },
+});
+console.log(userHash);
+// => { firstName: "John", lastName: "Doe", posts: [{ title: "Hello" }] }
+
+const usersHashArray = User.all().toHashArray({
+  only: ["firstName", "lastName"],
+});
+console.log(usersHashArray);
+// => [{ firstName: "John", lastName: "Doe" }, { firstName: "Alice", lastName: "Smith" }]
+```
+
+`toJson`メソッドを利用することで、モデルのデータをJSON文字列に変換することができます。
+
+```ts
+import { User } from "./models/index.js";
+
+const userJson = User.first()!.toHah({
+  only: ["firstName", "lastName"],
+  include: { posts: { only: ["title"] } },
+});
+console.log(userJson);
+// => {"firstName":"John","lastName":"Doe","posts":[{"title":"Hello"}]}
+
+const usersJson = User.all().toHashArray({
+  only: ["firstName", "lastName"],
+});
+console.log(usersJson);
+// => [{"firstName":"John","lastName":"Doe"},{"firstName":"Alice","lastName":"Smith"}]
+```
+
 ## Bulk Insert
 
 Bulk Insertは、一度に複数のレコードをデータベースに挿入する機能です。 \
