@@ -1,5 +1,6 @@
 import { Model } from "../index.js";
 import { type ModelMeta } from "../meta.js";
+import { ToHashOptions, ToHashResult } from "../model/serialization.js";
 import { classIncludes } from "../utils.js";
 import { Association } from "./association.js";
 import { RelationBase } from "./base.js";
@@ -39,6 +40,34 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
    */
   toArray(): T[] {
     return (this.cache ||= this.load());
+  }
+
+  /**
+   * Converts the relation to an array of hash objects.
+   *
+   * @param options - The options for the conversion.
+   * @returns An array of hash objects.
+   */
+  toHashArray<O extends ToHashOptions<T>>(
+    options?: O
+  ): T extends Model ? ToHashResult<T, O>[] : never;
+  toHashArray(options = {}): Record<string, any>[] {
+    return this.toArray().map((row) =>
+      row instanceof Model ? row.toHash(options) : {}
+    );
+  }
+
+  /**
+   * Converts the relation to a JSON string representation.
+   *
+   * @param options - The options for the conversion.
+   * @returns A JSON string representation of the relation.
+   */
+  toJson<O extends ToHashOptions<T>>(
+    options?: O
+  ): T extends Model ? string : never;
+  toJson(options = {}): string {
+    return JSON.stringify(this.toHashArray(options));
   }
 
   /**

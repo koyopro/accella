@@ -914,6 +914,46 @@ class MyValidator extends Validator<{ key: string | undefined }> {
 }
 ```
 
+## Serialization
+
+By using the `toHash` and `toHashArray` methods, you can convert the model's data into plain objects.
+
+```ts
+import { User } from "./models/index.js";
+
+const userHash = User.first()!.toHash({
+  only: ["firstName", "lastName"],
+  include: { posts: { only: ["title"] } },
+});
+console.log(userHash);
+// => { firstName: "John", lastName: "Doe", posts: [{ title: "Hello" }] }
+
+const usersHashArray = User.all().toHashArray({
+  only: ["firstName", "lastName"],
+});
+console.log(usersHashArray);
+// => [{ firstName: "John", lastName: "Doe" }, { firstName: "Alice", lastName: "Smith" }]
+```
+
+By using the `toJson` method, you can convert the model's data into a JSON string.
+
+```ts
+import { User } from "./models/index.js";
+
+const userJson = User.first()!.toHah({
+  only: ["firstName", "lastName"],
+  include: { posts: { only: ["title"] } },
+});
+console.log(userJson);
+// => {"firstName":"John","lastName":"Doe","posts":[{"title":"Hello"}]}
+
+const usersJson = User.all().toHashArray({
+  only: ["firstName", "lastName"],
+});
+console.log(usersJson);
+// => [{"firstName":"John","lastName":"Doe"},{"firstName":"Alice","lastName":"Smith"}]
+```
+
 ## Bulk Insert
 
 Bulk Insert is a feature that allows you to insert multiple records into the database at once. \
