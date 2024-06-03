@@ -34,6 +34,11 @@ export class Transaction {
     execSQL({ sql: "ROLLBACK;", bindings: [] });
   }
 
+  /**
+   * Starts a nestable transaction.
+   * If the transaction count is 0, it begins a new transaction using the `BEGIN;` SQL statement.
+   * If the transaction count is greater than 0, it creates a savepoint using the `SAVEPOINT` SQL statement.
+   */
   static startNestableTransaction() {
     if (this.transactionCount == 0) {
       execSQL({ sql: "BEGIN;", bindings: [] });
@@ -46,6 +51,10 @@ export class Transaction {
     this.transactionCount++;
   }
 
+  /**
+   * Rolls back the current nestable transaction.
+   * Decrements the transaction count and rolls back to the appropriate savepoint or performs a full rollback if no savepoints remain.
+   */
   static rollbackNestableTransaction() {
     this.transactionCount--;
     if (this.transactionCount == 0) {
@@ -58,6 +67,10 @@ export class Transaction {
     }
   }
 
+  /**
+   * Decrements the transaction count and attempts to commit the nestable transaction.
+   * If the transaction count reaches 0, the transaction is committed.
+   */
   static tryCommitNestableTransaction() {
     this.transactionCount--;
     if (this.transactionCount == 0) {
@@ -66,9 +79,10 @@ export class Transaction {
   }
 
   /**
-   * Executes a transaction by invoking the provided callback function.
-   * If an exception of type `Rollback` is thrown within the callback, the transaction will be rolled back.
-   * Otherwise, the transaction will be committed.
+   * Executes a transaction by starting a nestable transaction, executing the provided callback,
+   * and then attempting to commit the transaction.
+   * If an error occurs during the callback execution, the transaction is rolled back.
+   *
    * @param callback - The callback function to be executed within the transaction.
    */
   static transaction(callback: () => void) {
