@@ -44,4 +44,23 @@ describe("nested Transaction", () => {
     }); // rollbacked
     expect(User.count()).toBe(0);
   });
+
+  test("with Error", () => {
+    try {
+      Model.transaction(() => {
+        $user.create({ name: "hoge" });
+        expect(User.count()).toBe(1);
+
+        Model.transaction(() => {
+          $user.create({ name: "fuga" });
+          expect(User.count()).toBe(2);
+          throw new Error();
+        });
+        // It will not reach here
+        assert(false);
+      }); // rollbacked
+    } catch (e) {
+      expect(User.count()).toBe(0);
+    }
+  });
 });

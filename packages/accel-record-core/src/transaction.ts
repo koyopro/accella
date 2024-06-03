@@ -76,8 +76,8 @@ export class Transaction {
     try {
       callback();
     } catch (e) {
+      this.rollbackNestableTransaction();
       if (e instanceof Rollback) {
-        this.rollbackNestableTransaction();
         return;
       } else {
         throw e;
