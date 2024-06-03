@@ -2,10 +2,10 @@ import { Model } from "./index.js";
 
 export class DatabaseCleaner {
   static start() {
-    Model.startTransaction();
+    Model.startNestableTransaction();
   }
 
   static clean() {
-    Model.rollbackTransaction();
+    Model.rollbackNestableTransaction();
   }
 }
