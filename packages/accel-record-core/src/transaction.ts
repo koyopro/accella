@@ -12,6 +12,7 @@ export class Rollback extends Error {
  * This class is intended to be inherited by the Model class.
  */
 export class Transaction {
+  static transactionStack: number[] = [];
   /**
    * Starts a new transaction.
    */
@@ -40,17 +41,34 @@ export class Transaction {
    * @param callback - The callback function to be executed within the transaction.
    */
   static transaction(callback: () => void) {
-    this.startTransaction();
+    const latest = this.transactionStack[this.transactionStack.length - 1] ?? 0;
+    this.transactionStack.push(latest + 1);
+    if (latest == 0) {
+      execSQL({ sql: "BEGIN;", bindings: [] });
+    } else {
+      execSQL({ sql: `SAVEPOINT accel_record_${latest};`, bindings: [] });
+    }
     try {
       callback();
     } catch (e) {
       if (e instanceof Rollback) {
-        this.rollbackTransaction();
+        if (latest == 0) {
+          execSQL({ sql: "ROLLBACK;", bindings: [] });
+        } else {
+          execSQL({
+            sql: `ROLLBACK TO SAVEPOINT accel_record_${latest};`,
+            bindings: [],
+          });
+        }
+        this.transactionStack.pop();
         return;
       } else {
         throw e;
       }
     }
-    this.commitTransaction();
+    if (latest == 0) {
+      this.commitTransaction();
+    }
+    this.transactionStack.pop();
   }
 }
