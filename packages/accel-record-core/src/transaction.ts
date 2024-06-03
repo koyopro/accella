@@ -12,7 +12,7 @@ export class Rollback extends Error {
  * This class is intended to be inherited by the Model class.
  */
 export class Transaction {
-  static transactionStack: number[] = [];
+  protected static transactionCount: number = 0;
   /**
    * Starts a new transaction.
    */
@@ -34,6 +34,37 @@ export class Transaction {
     execSQL({ sql: "ROLLBACK;", bindings: [] });
   }
 
+  static startNestableTransaction() {
+    if (this.transactionCount == 0) {
+      execSQL({ sql: "BEGIN;", bindings: [] });
+    } else {
+      execSQL({
+        sql: `SAVEPOINT accel_record_${this.transactionCount};`,
+        bindings: [],
+      });
+    }
+    this.transactionCount++;
+  }
+
+  static rollbackNestableTransaction() {
+    this.transactionCount--;
+    if (this.transactionCount == 0) {
+      execSQL({ sql: "ROLLBACK;", bindings: [] });
+    } else {
+      execSQL({
+        sql: `ROLLBACK TO SAVEPOINT accel_record_${this.transactionCount};`,
+        bindings: [],
+      });
+    }
+  }
+
+  static tryCommitNestableTransaction() {
+    this.transactionCount--;
+    if (this.transactionCount == 0) {
+      execSQL({ sql: "COMMIT;", bindings: [] });
+    }
+  }
+
   /**
    * Executes a transaction by invoking the provided callback function.
    * If an exception of type `Rollback` is thrown within the callback, the transaction will be rolled back.
@@ -41,34 +72,17 @@ export class Transaction {
    * @param callback - The callback function to be executed within the transaction.
    */
   static transaction(callback: () => void) {
-    const latest = this.transactionStack[this.transactionStack.length - 1] ?? 0;
-    this.transactionStack.push(latest + 1);
-    if (latest == 0) {
-      execSQL({ sql: "BEGIN;", bindings: [] });
-    } else {
-      execSQL({ sql: `SAVEPOINT accel_record_${latest};`, bindings: [] });
-    }
+    this.startNestableTransaction();
     try {
       callback();
     } catch (e) {
       if (e instanceof Rollback) {
-        if (latest == 0) {
-          execSQL({ sql: "ROLLBACK;", bindings: [] });
-        } else {
-          execSQL({
-            sql: `ROLLBACK TO SAVEPOINT accel_record_${latest};`,
-            bindings: [],
-          });
-        }
-        this.transactionStack.pop();
+        this.rollbackNestableTransaction();
         return;
       } else {
         throw e;
       }
     }
-    if (latest == 0) {
-      this.commitTransaction();
-    }
-    this.transactionStack.pop();
+    this.tryCommitNestableTransaction();
   }
 }
