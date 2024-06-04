@@ -964,11 +964,14 @@ Accel Recordでは、`import()` メソッドを利用してBulk Insertを行う�
 import { User } from "./models/index.js";
 
 const users = [
-  User.build({ firstName: "Foo", lastName: "Bar", age: 20 }),
-  User.build({ firstName: "John", lastName: "Doe", age: 30 }),
+  User.build({ id: 1, firstName: "Foo", lastName: "Bar" }),
+  User.build({ id: 2, firstName: "John", lastName: "Doe" }),
 ];
 
-User.import(users, { onDuplicateKeyUpdate: ["firstName"], validate: "throw" });
+User.import(users, {
+  onDuplicateKeyUpdate: ["firstName", "lastName"],
+  validate: "throw",
+});
 ```
 
 ## Nullableな値の扱いについて
