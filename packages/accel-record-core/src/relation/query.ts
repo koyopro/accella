@@ -82,6 +82,18 @@ export class Query {
   isEmpty<T>(this: Relation<T, ModelMeta>): boolean {
     return !this.exists();
   }
+  updateAll<T, M extends ModelMeta>(
+    this: Relation<T, M>,
+    attributes: Partial<M["Column"]>
+  ) {
+    const params: any = {};
+    for (const key in attributes) {
+      const column = this.model.attributeToColumn(key);
+      if (column) params[column] = attributes[key] ?? null;
+      else throw new Error(`Unknown attribute: ${key} for ${this.model.name}`);
+    }
+    exec(this.query().update(params));
+  }
   /**
    * Deletes all records associated with the current relation.
    */
