@@ -182,6 +182,7 @@ type ${model.meta} = {
   New: ${model.newModel};
   Persisted: ${model.persistedModel};
   AssociationKey: ${associationKey(model)};
+  Column: {${columnMeta(model)}};
   CreateInput: {
 ${columns}
   }${associationColumns};
@@ -285,6 +286,17 @@ const columnDefines = (model: ModelWrapper) =>
       };`;
     })
     .join("\n");
+
+const columnMeta = (model: ModelWrapper) =>
+  model.fields
+    .filter((f) => !f.relationName && f.type != "Json")
+    .map(
+      (field) =>
+        `\n    ${field.name}: ${field.typeName}${field.isList ? "[]" : ""}${
+          field.isRequired ? "" : " | undefined"
+        };`
+    )
+    .join("") + "\n  ";
 
 const whereInputs = (model: ModelWrapper) =>
   model.fields
