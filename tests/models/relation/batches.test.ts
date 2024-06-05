@@ -30,7 +30,7 @@ test("#findInBatches() without batchSize", () => {
     $user.create({ name });
   }
   const results: User[][] = [];
-  for (const records of User.all().findInBatches({})) {
+  for (const records of User.all().findInBatches()) {
     results.push(records);
   }
   expect(results.length).toBe(1);
