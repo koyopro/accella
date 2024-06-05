@@ -89,6 +89,11 @@ export class Query {
   isEmpty<T>(this: Relation<T, ModelMeta>): boolean {
     return !this.exists();
   }
+  /**
+   * Updates all records in the relation with the specified attributes.
+   *
+   * @param {Partial<M["Column"]>} attributes - The attributes to update.
+   */
   updateAll<T, M extends ModelMeta>(
     this: Relation<T, M>,
     attributes: Partial<M["Column"]>
