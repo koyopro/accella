@@ -158,8 +158,6 @@ export class Query {
   /**
    * Selects specific attributes from the model or persisted data.
    *
-   * @typeparam F - The type of the attributes to select.
-   * @typeparam R - The resulting type after selecting the attributes.
    * @param attributes - The attributes to select.
    * @returns A new relation with the selected attributes.
    */
