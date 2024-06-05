@@ -6,9 +6,9 @@ test("#findEach()", () => {
     $user.create({ name });
   }
   const results: User[] = [];
-  User.all().findEach({ batchSize: 2 }, (record) => {
+  for (const record of User.all().findEach({ batchSize: 2 })) {
     results.push(record);
-  });
+  }
   expect(results.map((u) => u.name)).toEqual(["foo", "bar", "baz"]);
 });
 
@@ -17,9 +17,9 @@ test("#findInBatches()", () => {
     $user.create({ name });
   }
   const results: User[][] = [];
-  User.all().findInBatches({ batchSize: 2 }, (records) => {
+  for (const records of User.all().findInBatches({ batchSize: 2 })) {
     results.push(records);
-  });
+  }
   expect(results.length).toBe(2);
   expect(results[0].map((u) => u.name)).toEqual(["foo", "bar"]);
   expect(results[1].map((u) => u.name)).toEqual(["baz"]);
@@ -30,9 +30,9 @@ test("#findInBatches() without batchSize", () => {
     $user.create({ name });
   }
   const results: User[][] = [];
-  User.all().findInBatches({}, (records) => {
+  for (const records of User.all().findInBatches({})) {
     results.push(records);
-  });
+  }
   expect(results.length).toBe(1);
   expect(results[0].map((u) => u.name)).toEqual(["foo", "bar", "baz"]);
 });

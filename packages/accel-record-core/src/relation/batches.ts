@@ -4,27 +4,49 @@ import { Relation } from "./index.js";
 export class Batches {
   findEach<T, M extends ModelMeta>(
     this: Relation<T, M>,
-    options: { batchSize?: number },
-    callback: (record: T) => void
+    options: { batchSize?: number }
   ) {
-    this.findInBatches(options, (records) => {
-      for (const record of records) {
-        callback(record);
-      }
-    });
+    return {
+      [Symbol.iterator]: () => {
+        const limit = options.batchSize ?? 1000;
+        let offset = 0;
+        let count = 0;
+        let cache: T[] = [];
+        return {
+          next: () => {
+            if (cache.length <= count) {
+              cache = this.limit(limit).offset(offset).load();
+              count = 0;
+              offset += limit;
+            }
+            return {
+              done: cache.length == 0,
+              value: cache[count++],
+            };
+          },
+        };
+      },
+    };
   }
   findInBatches<T, M extends ModelMeta>(
     this: Relation<T, M>,
-    options: { batchSize?: number },
-    callback: (records: T[]) => void
+    options: { batchSize?: number }
   ) {
-    const limit = options.batchSize ?? 1000;
-    let offset = 0;
-    while (true) {
-      const records = this.limit(limit).offset(offset).load();
-      if (records.length == 0) break;
-      callback(records);
-      offset += limit;
-    }
+    return {
+      [Symbol.iterator]: () => {
+        const limit = options.batchSize ?? 1000;
+        let offset = 0;
+        return {
+          next: () => {
+            const records = this.limit(limit).offset(offset).load();
+            offset += limit;
+            return {
+              done: records.length == 0,
+              value: records,
+            };
+          },
+        };
+      },
+    };
   }
 }
