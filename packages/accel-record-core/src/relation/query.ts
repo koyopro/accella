@@ -26,10 +26,17 @@ export class Query {
    * @returns The first element, or undefined if the relation is empty.
    */
   first<T, M extends ModelMeta>(this: Relation<T, M>): T | undefined;
-  first<T, M extends ModelMeta>(this: Relation<T, M>, limit: number = 1): any {
+  first<T, M extends ModelMeta>(this: Relation<T, M>, limit?: number): any {
+    const queryLimit = limit ?? 1;
+    const newOptions = { ...this.options, limit: queryLimit };
+    if (this.options.orders.length == 0) {
+      for (const key of this.model.primaryKeys) {
+        newOptions.orders.push([key, "asc"]);
+      }
+    }
     const array =
-      this.cache?.slice(0, limit) ??
-      new Relation<T, M>(this.model, { ...this.options, limit }).load();
+      this.cache?.slice(0, queryLimit) ??
+      new Relation<T, M>(this.model, newOptions).load();
     return limit ? array : array[0];
   }
   /**
