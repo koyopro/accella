@@ -2,6 +2,17 @@ import { ModelMeta } from "../meta.js";
 import { Relation } from "./index.js";
 
 export class Batches {
+  findEach<T, M extends ModelMeta>(
+    this: Relation<T, M>,
+    options: { batchSize?: number },
+    callback: (record: T) => void
+  ) {
+    this.findInBatches(options, (records) => {
+      for (const record of records) {
+        callback(record);
+      }
+    });
+  }
   findInBatches<T, M extends ModelMeta>(
     this: Relation<T, M>,
     options: { batchSize?: number },

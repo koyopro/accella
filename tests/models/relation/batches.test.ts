@@ -1,6 +1,17 @@
 import { $user } from "../../factories/user";
 import { User } from "../index";
 
+test("#findEach()", () => {
+  for (const name of ["foo", "bar", "baz"]) {
+    $user.create({ name });
+  }
+  const results: User[] = [];
+  User.all().findEach({ batchSize: 2 }, (record) => {
+    results.push(record);
+  });
+  expect(results.map((u) => u.name)).toEqual(["foo", "bar", "baz"]);
+});
+
 test("#findInBatches()", () => {
   for (const name of ["foo", "bar", "baz"]) {
     $user.create({ name });
