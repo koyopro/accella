@@ -7,6 +7,12 @@ test("#first()", () => {
   expect(User.all().first()?.name).toBe("hoge");
 });
 
+test("#last()", () => {
+  $user.create({ name: "hoge" });
+  $user.create({ name: "fuga" });
+  expect(User.all().last()?.name).toBe("fuga");
+});
+
 test("#offset()", () => {
   $user.create({ name: "hoge" });
   $user.create({ name: "fuga" });

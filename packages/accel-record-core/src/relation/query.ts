@@ -40,6 +40,31 @@ export class Query {
     return limit ? array : array[0];
   }
   /**
+   * Retrieves the last n elements.
+   *
+   * @param [limit] - The maximum number of elements to retrieve.
+   * @returns An array of elements.
+   */
+  last<T, M extends ModelMeta>(this: Relation<T, M>, limit: number): T[];
+  /**
+   * Returns the last element.
+   * @returns The last element, or undefined if the relation is empty.
+   */
+  last<T, M extends ModelMeta>(this: Relation<T, M>): T | undefined;
+  last<T, M extends ModelMeta>(this: Relation<T, M>, limit?: number): any {
+    const queryLimit = limit ?? 1;
+    const newOptions = { ...this.options, limit: queryLimit };
+    if (this.options.orders.length == 0) {
+      for (const key of this.model.primaryKeys) {
+        newOptions.orders.push([key, "desc"]);
+      }
+    }
+    const array =
+      this.cache?.slice(0, queryLimit) ??
+      new Relation<T, M>(this.model, newOptions).load();
+    return limit ? array : array[0];
+  }
+  /**
    * Sets the offset for the query result.
    *
    * @param offset - The number of rows to skip from the beginning of the result set.
