@@ -4,13 +4,55 @@ import { User } from "../_types";
 test("#first()", () => {
   $user.create({ name: "hoge" });
   $user.create({ name: "fuga" });
+  $user.create({ name: "piyo" });
   expect(User.all().first()?.name).toBe("hoge");
+
+  expect(
+    User.all()
+      .first(2)
+      .map((u) => u.name)
+  ).toEqual(["hoge", "fuga"]);
+});
+
+test("#first() with order", () => {
+  $user.create({ name: "hoge" });
+  $user.create({ name: "fuga" });
+  $user.create({ name: "piyo" });
+  expect(User.all().order("name").first()?.name).toBe("fuga");
+
+  expect(
+    User.all()
+      .order("name")
+      .first(2)
+      .map((u) => u.name)
+  ).toEqual(["fuga", "hoge"]);
 });
 
 test("#last()", () => {
   $user.create({ name: "hoge" });
   $user.create({ name: "fuga" });
-  expect(User.all().last()?.name).toBe("fuga");
+  $user.create({ name: "piyo" });
+  expect(User.all().last()?.name).toBe("piyo");
+
+  expect(
+    User.all()
+      .last(2)
+      .map((u) => u.name)
+  ).toEqual(["piyo", "fuga"]);
+});
+
+test("#last() with order", () => {
+  $user.create({ name: "hoge" });
+  $user.create({ name: "fuga" });
+  $user.create({ name: "piyo" });
+  expect(User.all().order("name").last()?.name).toBe("piyo");
+
+  expect(
+    User.all()
+      .order("name")
+      .last(2)
+      .map((u) => u.name)
+  ).toEqual(["piyo", "hoge"]);
 });
 
 test("#offset()", () => {

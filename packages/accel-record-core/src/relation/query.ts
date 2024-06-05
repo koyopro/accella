@@ -34,9 +34,7 @@ export class Query {
         newOptions.orders.push([key, "asc"]);
       }
     }
-    const array =
-      this.cache?.slice(0, queryLimit) ??
-      new Relation<T, M>(this.model, newOptions).load();
+    const array = new Relation<T, M>(this.model, newOptions).load();
     return limit ? array : array[0];
   }
   /**
@@ -58,10 +56,13 @@ export class Query {
       for (const key of this.model.primaryKeys) {
         newOptions.orders.push([key, "desc"]);
       }
+    } else {
+      newOptions.orders = this.options.orders.map(([key, direction]) => [
+        key,
+        direction == "asc" ? "desc" : "asc",
+      ]);
     }
-    const array =
-      this.cache?.slice(0, queryLimit) ??
-      new Relation<T, M>(this.model, newOptions).load();
+    const array = new Relation<T, M>(this.model, newOptions).load();
     return limit ? array : array[0];
   }
   /**
