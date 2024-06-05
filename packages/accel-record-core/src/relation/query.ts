@@ -15,15 +15,22 @@ export class Query {
     return this;
   }
   /**
-   * Returns the first element of the relation.
-   * @returns The first element of the relation, or undefined if the relation is empty.
+   * Retrieves the first n elements.
+   *
+   * @param [limit] - The maximum number of elements to retrieve.
+   * @returns An array of elements.
    */
-  first<T, M extends ModelMeta>(this: Relation<T, M>): T | undefined {
-    if (this.cache) return this.cache[0];
-    return new Relation<T, M>(this.model, {
-      ...this.options,
-      limit: 1,
-    }).load()[0];
+  first<T, M extends ModelMeta>(this: Relation<T, M>, limit: number): T[];
+  /**
+   * Returns the first element.
+   * @returns The first element, or undefined if the relation is empty.
+   */
+  first<T, M extends ModelMeta>(this: Relation<T, M>): T | undefined;
+  first<T, M extends ModelMeta>(this: Relation<T, M>, limit: number = 1): any {
+    const array =
+      this.cache?.slice(0, limit) ??
+      new Relation<T, M>(this.model, { ...this.options, limit }).load();
+    return limit ? array : array[0];
   }
   /**
    * Sets the offset for the query result.
