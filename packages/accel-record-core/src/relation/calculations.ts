@@ -1,7 +1,6 @@
 import { exec } from "../database.js";
 import { ModelMeta } from "../meta.js";
 import { Relation } from "./index.js";
-import { Query } from "./query.js";
 
 /**
  * A class that provides various calculations on a relation.
@@ -18,21 +17,6 @@ export class Calculations {
       this.query().count(`${this.model.tableName}.${this.model.primaryKeys[0]}`)
     );
     return Number(Object.values(res[0])[0]);
-  }
-
-  /**
-   * Retrieves the values of a specified attribute from the records in the relation.
-   *
-   * If you want to retrieve multiple values, use {@link Query.select | the select() method}.
-   *
-   * @param attribute - The attribute to retrieve from the records.
-   * @returns An array containing the values of the specified attribute from the records.
-   */
-  pluck<T, M extends ModelMeta, F extends keyof M["Column"]>(
-    this: Relation<T, M>,
-    attribute: F
-  ): M["Persisted"][F][] {
-    return this.select(attribute).map((r) => r[attribute] as any);
   }
 
   /**

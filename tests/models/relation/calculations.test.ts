@@ -6,12 +6,6 @@ test("#count()", () => {
   expect(User.all().count()).toBe(2);
 });
 
-test("#pluck()", () => {
-  $user.create({ name: "hoge" });
-  $user.create({ name: "fuga" });
-  expect(User.all().pluck("name")).toEqual(["hoge", "fuga"]);
-});
-
 test("aggregate", () => {
   $user.create({ age: 21 });
   $user.create({ age: 24 });

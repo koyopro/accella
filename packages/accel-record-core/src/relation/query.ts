@@ -156,7 +156,7 @@ export class Query {
   }
 
   /**
-   * Selects specific attributes from the model or persisted data.
+   * Selects specific attributes from the model's persisted data.
    *
    * @param attributes - The attributes to select.
    * @returns A new relation with the selected attributes.
@@ -175,5 +175,20 @@ export class Query {
       ...this.options,
       select: [...this.options.select, ...(attributes as string[])],
     });
+  }
+
+  /**
+   * Retrieves the values of a specified attribute from the records in the relation.
+   *
+   * If you want to specify multiple attributes, use {@link select | the select() method}.
+   *
+   * @param attribute - The attribute to retrieve from the records.
+   * @returns An array containing the values of the specified attribute from the records.
+   */
+  pluck<T, M extends ModelMeta, F extends keyof M["Column"]>(
+    this: Relation<T, M>,
+    attribute: F
+  ): M["Persisted"][F][] {
+    return this.select(attribute).map((r) => r[attribute] as any);
   }
 }

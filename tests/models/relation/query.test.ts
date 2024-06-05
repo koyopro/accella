@@ -118,3 +118,9 @@ test("#destroyAll()", () => {
   User.where({ age: 30 }).destroyAll();
   expect(User.all().count()).toBe(2);
 });
+
+test("#pluck()", () => {
+  $user.create({ name: "hoge" });
+  $user.create({ name: "fuga" });
+  expect(User.all().pluck("name")).toEqual(["hoge", "fuga"]);
+});

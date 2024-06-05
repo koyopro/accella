@@ -7,3 +7,10 @@ test("updateAll", () => {
   // @ts-expect-error
   User.where({ name: "bar" }).updateAll({ setting: $setting.create() });
 });
+
+test("#pluck()", () => {
+  expectTypeOf(User.all().pluck("id")).toMatchTypeOf<number[]>();
+  expectTypeOf(User.all().pluck("name")).toMatchTypeOf<
+    (string | undefined)[]
+  >();
+});
