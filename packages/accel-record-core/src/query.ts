@@ -110,11 +110,43 @@ export class Query {
   }
 
   /**
+   * Retrieves the first n records of the model.
+   * @returns The first record of the model.
+   */
+  static first<T extends typeof Model>(
+    this: T,
+    limit: number
+  ): InstanceType<T>[];
+  /**
    * Retrieves the first record of the model.
    * @returns The first record of the model.
    */
-  static first<T extends typeof Model>(this: T) {
-    return this.all().first();
+  static first<T extends typeof Model>(this: T): InstanceType<T> | undefined;
+  static first<T extends typeof Model>(
+    this: T,
+    limit?: number
+  ): InstanceType<T> | InstanceType<T>[] | undefined {
+    return limit ? this.all().first(limit) : this.all().first();
+  }
+
+  /**
+   * Retrieves the last n records of the model.
+   * @returns The last record of the model.
+   */
+  static last<T extends typeof Model>(
+    this: T,
+    limit: number
+  ): InstanceType<T>[];
+  /**
+   * Retrieves the last record of the model.
+   * @returns The last record of the model.
+   */
+  static last<T extends typeof Model>(this: T): InstanceType<T> | undefined;
+  static last<T extends typeof Model>(
+    this: T,
+    limit?: number
+  ): InstanceType<T> | InstanceType<T>[] | undefined {
+    return limit ? this.all().last(limit) : this.all().last();
   }
 
   /**

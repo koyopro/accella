@@ -7,6 +7,16 @@ describe("Query", () => {
     expect(User.first()).toBeUndefined();
     $user.create();
     expect(User.first()).not.toBeUndefined();
+
+    expect(User.first(1)).toHaveLength(1);
+  });
+
+  test(".last()", () => {
+    expect(User.last()).toBeUndefined();
+    for (const name of ["hoge", "fuga", "piyo"]) $user.create({ name });
+    expect(User.last()?.name).toBe("piyo");
+
+    expect(User.last(2).map((u) => u.name)).toEqual(["piyo", "fuga"]);
   });
 
   test("findOrCreateBy", () => {
