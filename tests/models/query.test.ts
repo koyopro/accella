@@ -156,6 +156,13 @@ describe("Query", () => {
     expect(User.average("age")).toBe(22.5);
   });
 
+  test("pluck", () => {
+    $user.create({ name: "hoge" });
+    $user.create({ name: "fuga" });
+
+    expect(User.pluck("name")).toEqual(["hoge", "fuga"]);
+  });
+
   test("select", () => {
     $user.create({ name: "hoge" });
 

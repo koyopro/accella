@@ -110,6 +110,22 @@ export class Query {
   }
 
   /**
+   * Retrieves the specified attribute values from all persisted instances of the model.
+   *
+   * If you want to specify multiple attributes, use {@link select | the select() method}.
+   *
+   * @param attribute - The attribute key to retrieve.
+   * @returns An array of attribute values from all persisted instances of the model.
+   */
+  static pluck<
+    T extends typeof Model,
+    M extends Meta<T>,
+    F extends keyof M["Column"],
+  >(this: T, attribute: F): M["Persisted"][F][] {
+    return this.all().pluck(attribute as any);
+  }
+
+  /**
    * Retrieves the first n records of the model.
    * @returns The first record of the model.
    */
