@@ -196,4 +196,28 @@ describe("Query", () => {
       .count();
     expect(cnt).toBe(1);
   });
+
+  test("#findEach()", () => {
+    for (const name of ["foo", "bar", "baz"]) {
+      $user.create({ name });
+    }
+    const results: User[] = [];
+    for (const record of User.findEach({ batchSize: 2 })) {
+      results.push(record);
+    }
+    expect(results.map((u) => u.name)).toEqual(["foo", "bar", "baz"]);
+  });
+
+  test("#findInBatches()", () => {
+    for (const name of ["foo", "bar", "baz"]) {
+      $user.create({ name });
+    }
+    const results: User[][] = [];
+    for (const records of User.findInBatches({ batchSize: 2 })) {
+      results.push(records);
+    }
+    expect(results.length).toBe(2);
+    expect(results[0].map((u) => u.name)).toEqual(["foo", "bar"]);
+    expect(results[1].map((u) => u.name)).toEqual(["baz"]);
+  });
 });

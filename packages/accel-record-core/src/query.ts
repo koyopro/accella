@@ -366,4 +366,30 @@ export class Query {
   ) {
     return this.all().average(attribute);
   }
+
+  /**
+   * Iterates over the records in batches, loading a specified number of records at a time.
+   *
+   * @param options.batchSize - The number of records to load in each batch. Defaults to 1000.
+   * @returns - An iterator object that allows iterating over the model in batches.
+   */
+  static findEach<T extends typeof Model>(
+    this: T,
+    options?: { batchSize?: number }
+  ) {
+    return this.all().findEach(options);
+  }
+
+  /**
+   * Iterates over the records in batches, allowing you to process a large number of records in smaller chunks.
+   *
+   * @param options.batchSize - The size of each batch. Defaults to 1000 if not provided.
+   * @returns An iterator object that provides the records in batches.
+   */
+  static findInBatches<T extends typeof Model>(
+    this: T,
+    options?: { batchSize?: number }
+  ) {
+    return this.all().findInBatches(options);
+  }
 }
