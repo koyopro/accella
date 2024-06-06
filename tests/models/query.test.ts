@@ -64,6 +64,15 @@ describe("Query", () => {
     }
   });
 
+  test("updateAll", () => {
+    $user.createList(2, {});
+    expect(User.where({ name: "baz" }).count()).toBe(0);
+
+    User.updateAll({ name: "baz", age: undefined });
+
+    expect(User.where({ name: "baz" }).count()).toBe(2);
+  });
+
   test(".exists()", () => {
     expect(User.exists()).toBe(false);
     $user.create();

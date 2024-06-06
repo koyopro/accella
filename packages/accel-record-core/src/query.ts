@@ -166,6 +166,18 @@ export class Query {
   }
 
   /**
+   * Updates all records in the model's table with the specified attributes.
+   *
+   * @param attributes - The attributes to update the records with.
+   */
+  static updateAll<T extends typeof Model>(
+    this: T,
+    attributes: Partial<Meta<T>["Column"]>
+  ) {
+    return this.all().updateAll(attributes);
+  }
+
+  /**
    * Checks if any records exist for the model.
    * @returns `true` if records exist, `false` otherwise.
    */
