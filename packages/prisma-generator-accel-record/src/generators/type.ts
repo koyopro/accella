@@ -111,7 +111,6 @@ export const generateTypes = (options: GeneratorOptions) => {
   registerModel,
   type Collection,
   type Filter,
-  type SortOrder,
   type StringFilter,
 } from "accel-record";
 
@@ -161,12 +160,6 @@ declare module "accel-record" {
         return ` & ({ ${f.name}: ${f.type} } | { ${foreignKeys} })`;
       })
       .join("");
-    const orderInputs =
-      model.fields
-        .filter(reject)
-        .filter((field) => field.relationName == undefined)
-        .map((field) => `\n    ${field.name}?: SortOrder;`)
-        .join("") + "\n  ";
     data += `
 declare module "./${model.fileName}" {
   interface ${model.baseModel} {
@@ -187,7 +180,6 @@ type ${model.meta} = {
 ${columns}
   }${associationColumns};
   WhereInput: {${whereInputs(model)}};
-  OrderInput: {${orderInputs}};
 };
 registerModel(${model.persistedModel});
 `;

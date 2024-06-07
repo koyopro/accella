@@ -1,4 +1,4 @@
-import { Meta, Model, SortOrder } from "./index.js";
+import { Meta, Model } from "./index.js";
 
 export type { Meta };
 export type Persisted<T> = Meta<T>["Persisted"];
@@ -12,5 +12,4 @@ export type ModelMeta = {
   Column: Record<string, any>;
   WhereInput: Record<string, any>;
   CreateInput: Record<string, any>;
-  OrderInput: Record<string, SortOrder>;
 };

@@ -32,8 +32,6 @@ export type Meta<T> = ReturnType<typeof meta<T>>;
 
 export declare function meta<T>(model: T): ModelMeta;
 
-export type SortOrder = "asc" | "desc";
-
 export type Filter<T> = {
   in?: T[];
   "<"?: T;

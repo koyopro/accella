@@ -16,7 +16,6 @@ import {
   registerModel,
   type Collection,
   type Filter,
-  type SortOrder,
   type StringFilter,
 } from "accel-record";
 
@@ -113,14 +112,6 @@ type UserMeta = {
     createdAt?: Date | Date[] | Filter<Date> | null;
     updatedAt?: Date | Date[] | Filter<Date> | null;
   };
-  OrderInput: {
-    id?: SortOrder;
-    email?: SortOrder;
-    name?: SortOrder;
-    age?: SortOrder;
-    createdAt?: SortOrder;
-    updatedAt?: SortOrder;
-  };
 };
 registerModel(User);
 
@@ -158,10 +149,6 @@ type TeamMeta = {
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
-  };
-  OrderInput: {
-    id?: SortOrder;
-    name?: SortOrder;
   };
 };
 registerModel(Team);
@@ -209,12 +196,6 @@ type UserTeamMeta = {
     teamId?: number | number[] | Filter<number> | null;
     assignedAt?: Date | Date[] | Filter<Date> | null;
     assignedBy?: string | string[] | StringFilter | null;
-  };
-  OrderInput: {
-    userId?: SortOrder;
-    teamId?: SortOrder;
-    assignedAt?: SortOrder;
-    assignedBy?: SortOrder;
   };
 };
 registerModel(UserTeam);
@@ -269,13 +250,6 @@ type PostMeta = {
     author?: User | User[];
     authorId?: number | number[] | Filter<number> | null;
   };
-  OrderInput: {
-    id?: SortOrder;
-    title?: SortOrder;
-    content?: SortOrder;
-    published?: SortOrder;
-    authorId?: SortOrder;
-  };
 };
 registerModel(Post);
 
@@ -313,10 +287,6 @@ type PostTagMeta = {
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
-  };
-  OrderInput: {
-    id?: SortOrder;
-    name?: SortOrder;
   };
 };
 registerModel(PostTag);
@@ -363,13 +333,6 @@ type SettingMeta = {
     userId?: number | number[] | Filter<number> | null;
     threshold?: number | number[] | Filter<number> | null;
     createdAt?: Date | Date[] | Filter<Date> | null;
-  };
-  OrderInput: {
-    settingId?: SortOrder;
-    userId?: SortOrder;
-    threshold?: SortOrder;
-    createdAt?: SortOrder;
-    data?: SortOrder;
   };
 };
 registerModel(Setting);
@@ -430,16 +393,6 @@ type ProfileMeta = {
     uuid?: string | string[] | StringFilter | null;
     cuid?: string | string[] | StringFilter | null;
   };
-  OrderInput: {
-    id?: SortOrder;
-    userId?: SortOrder;
-    bio?: SortOrder;
-    point?: SortOrder;
-    enabled?: SortOrder;
-    role?: SortOrder;
-    uuid?: SortOrder;
-    cuid?: SortOrder;
-  };
 };
 registerModel(Profile);
 
@@ -477,10 +430,6 @@ type CompanyMeta = {
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
-  };
-  OrderInput: {
-    id?: SortOrder;
-    name?: SortOrder;
   };
 };
 registerModel(Company);
@@ -521,11 +470,6 @@ type EmployeeMeta = {
     name?: string | string[] | StringFilter | null;
     companyId?: number | number[] | Filter<number> | null;
     company?: Company | Company[];
-  };
-  OrderInput: {
-    id?: SortOrder;
-    name?: SortOrder;
-    companyId?: SortOrder;
   };
 };
 registerModel(Employee);
@@ -579,14 +523,6 @@ type ValidateSampleMeta = {
     key?: string | string[] | StringFilter | null;
     count?: number | number[] | Filter<number> | null;
     size?: string | string[] | StringFilter | null;
-  };
-  OrderInput: {
-    id?: SortOrder;
-    accepted?: SortOrder;
-    pattern?: SortOrder;
-    key?: SortOrder;
-    count?: SortOrder;
-    size?: SortOrder;
   };
 };
 registerModel(ValidateSample);
