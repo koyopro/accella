@@ -51,7 +51,7 @@ type ToHashMethods<
 
 export type ToHashResult<T, O extends ToHashOptions<T>> = {
   [K in undefined extends O["only"]
-    ? Exclude<keyof Meta<T>["OrderInput"], ToUnion<O["except"]>>
+    ? Exclude<keyof Meta<T>["Column"], ToUnion<O["except"]>>
     : ToUnion<O["only"]>]: T[Extract<K, keyof T>];
 } & ToHashInclude<O, T> &
   ToHashMethods<O, T>;
@@ -67,8 +67,8 @@ type NoArgMethods<T> = {
 }[keyof T];
 
 export type ToHashOptions<T> = {
-  only?: (keyof Meta<T>["OrderInput"])[];
-  except?: (keyof Meta<T>["OrderInput"])[];
+  only?: (keyof Meta<T>["Column"])[];
+  except?: (keyof Meta<T>["Column"])[];
   methods?: NoArgMethods<T>[];
   include?: Meta<T>["AssociationKey"] | ToHashIncludeOption<T>;
 };

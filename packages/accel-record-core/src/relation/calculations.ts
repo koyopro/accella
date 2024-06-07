@@ -27,7 +27,7 @@ export class Calculations {
    */
   minimum<T, M extends ModelMeta>(
     this: Relation<T, M>,
-    attribute: keyof M["OrderInput"]
+    attribute: keyof M["Column"]
   ) {
     const res = exec(
       this.query().min(this.model.attributeToColumn(attribute as string))
@@ -43,7 +43,7 @@ export class Calculations {
    */
   maximum<T, M extends ModelMeta>(
     this: Relation<T, M>,
-    attribute: keyof M["OrderInput"]
+    attribute: keyof M["Column"]
   ) {
     const res = exec(
       this.query().max(this.model.attributeToColumn(attribute as string))
@@ -59,7 +59,7 @@ export class Calculations {
    */
   average<T, M extends ModelMeta>(
     this: Relation<T, M>,
-    attribute: keyof M["OrderInput"]
+    attribute: keyof M["Column"]
   ) {
     const res = exec(
       this.query().avg(this.model.attributeToColumn(attribute as string))

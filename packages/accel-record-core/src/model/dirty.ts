@@ -27,7 +27,7 @@ export class Dirty {
    */
   isAttributeChanged<T extends Model>(
     this: T,
-    attribute: keyof Meta<T>["OrderInput"]
+    attribute: keyof Meta<T>["Column"]
   ): boolean {
     return (
       this[attribute as keyof T] !== this.originalValues[attribute as string]
@@ -42,7 +42,7 @@ export class Dirty {
    */
   isChanged<T extends Model>(
     this: T,
-    attribute?: keyof Meta<T>["OrderInput"]
+    attribute?: keyof Meta<T>["Column"]
   ): boolean {
     if (attribute) {
       return this.isAttributeChanged(attribute);

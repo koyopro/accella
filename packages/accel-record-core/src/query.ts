@@ -97,10 +97,7 @@ export class Query {
    * @param columns - The columns to select.
    * @returns A `Relation` object representing the query result with the selected columns.
    */
-  static select<
-    T extends typeof Model,
-    F extends (keyof Meta<T>["OrderInput"])[],
-  >(
+  static select<T extends typeof Model, F extends (keyof Meta<T>["Column"])[]>(
     this: T,
     ...attributes: F
     // @ts-ignore
@@ -209,7 +206,7 @@ export class Query {
    */
   static order<T extends typeof Model>(
     this: T,
-    attribute: keyof Meta<T>["OrderInput"],
+    attribute: keyof Meta<T>["Column"],
     direction?: "asc" | "desc"
   ): Relation<InstanceType<T>, Meta<T>> {
     return this.all().order(attribute, direction);
@@ -338,7 +335,7 @@ export class Query {
    */
   static maximum<T extends typeof Model>(
     this: T,
-    attribute: keyof Meta<T>["OrderInput"]
+    attribute: keyof Meta<T>["Column"]
   ) {
     return this.all().maximum(attribute);
   }
@@ -350,7 +347,7 @@ export class Query {
    */
   static minimum<T extends typeof Model>(
     this: T,
-    attribute: keyof Meta<T>["OrderInput"]
+    attribute: keyof Meta<T>["Column"]
   ) {
     return this.all().minimum(attribute);
   }
@@ -362,7 +359,7 @@ export class Query {
    */
   static average<T extends typeof Model>(
     this: T,
-    attribute: keyof Meta<T>["OrderInput"]
+    attribute: keyof Meta<T>["Column"]
   ) {
     return this.all().average(attribute);
   }

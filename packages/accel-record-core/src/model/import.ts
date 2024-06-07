@@ -19,14 +19,14 @@ type ImportOptions<T extends typeof Model> = {
    * - If not provided or set to `true`, existing records will be updated.
    * - If set to an array of keys, only the specified keys will be updated.
    */
-  onDuplicateKeyUpdate?: true | (keyof Meta<T>["OrderInput"])[];
+  onDuplicateKeyUpdate?: true | (keyof Meta<T>["Column"])[];
 
   /**
    * Specifies the conflict target for resolving conflicts when a duplicate key is encountered.
    * - If not provided, the entire record will be considered as the conflict target.
    * - If set to an array of keys, only the specified keys will be considered as the conflict target.
    */
-  conflictTarget?: (keyof Meta<T>["OrderInput"])[];
+  conflictTarget?: (keyof Meta<T>["Column"])[];
 };
 
 type ImportResult<T extends typeof Model> = {

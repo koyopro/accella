@@ -3,7 +3,7 @@ import { Validator } from "./index.js";
 
 export type UniqunessOptions<T> =
   | boolean
-  | { scope: (keyof Meta<T>["OrderInput"] & string)[] };
+  | { scope: (keyof Meta<T>["Column"] & string)[] };
 
 export class UniquenessValidator<T extends Model> extends Validator<T> {
   constructor(

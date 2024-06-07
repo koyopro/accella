@@ -98,7 +98,7 @@ export class Query {
    */
   order<T, M extends ModelMeta>(
     this: Relation<T, M>,
-    attribute: keyof M["OrderInput"],
+    attribute: keyof M["Column"],
     direction: "asc" | "desc" = "asc"
   ): Relation<T, M> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
@@ -164,7 +164,7 @@ export class Query {
   select<
     T,
     M extends ModelMeta,
-    F extends (keyof M["OrderInput"])[],
+    F extends (keyof M["Column"])[],
     // @ts-ignore
     R extends { [K in F[number]]: M["Persisted"][K] },
   >(
