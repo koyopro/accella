@@ -4,6 +4,7 @@ import { ToHashOptions, ToHashResult } from "../model/serialization.js";
 import { classIncludes } from "../utils.js";
 import { Association } from "./association.js";
 import { RelationBase } from "./base.js";
+import { Batches } from "./batches.js";
 import { Calculations } from "./calculations.js";
 import { Options, getDefaultOptions } from "./options.js";
 import { Query } from "./query.js";
@@ -14,6 +15,7 @@ export { Options } from "./options.js";
 // @ts-ignore
 export class Relation<T, M extends ModelMeta> extends classIncludes(
   Association,
+  Batches,
   Calculations,
   Query,
   RelationBase,

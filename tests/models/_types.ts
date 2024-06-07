@@ -85,6 +85,14 @@ type UserMeta = {
   New: NewUser;
   Persisted: User;
   AssociationKey: 'posts' | 'setting' | 'teams' | 'Profile';
+  Column: {
+    id: number;
+    email: string;
+    name: string | undefined;
+    age: number | undefined;
+    createdAt: Date;
+    updatedAt: Date;
+  };
   CreateInput: {
     id?: number;
     email: string;
@@ -138,6 +146,10 @@ type TeamMeta = {
   New: NewTeam;
   Persisted: Team;
   AssociationKey: 'users';
+  Column: {
+    id: number;
+    name: string;
+  };
   CreateInput: {
     id?: number;
     name: string;
@@ -180,6 +192,12 @@ type UserTeamMeta = {
   New: NewUserTeam;
   Persisted: UserTeam;
   AssociationKey: 'user' | 'team';
+  Column: {
+    userId: number;
+    teamId: number;
+    assignedAt: Date;
+    assignedBy: string;
+  };
   CreateInput: {
     assignedAt?: Date;
     assignedBy: string;
@@ -229,6 +247,13 @@ type PostMeta = {
   New: NewPost;
   Persisted: Post;
   AssociationKey: 'author' | 'tags';
+  Column: {
+    id: number;
+    title: string;
+    content: string | undefined;
+    published: boolean;
+    authorId: number;
+  };
   CreateInput: {
     id?: number;
     title: string;
@@ -276,6 +301,10 @@ type PostTagMeta = {
   New: NewPostTag;
   Persisted: PostTag;
   AssociationKey: 'posts';
+  Column: {
+    id: number;
+    name: string;
+  };
   CreateInput: {
     id?: number;
     name: string;
@@ -316,6 +345,12 @@ type SettingMeta = {
   New: NewSetting;
   Persisted: Setting;
   AssociationKey: 'user';
+  Column: {
+    settingId: number;
+    userId: number;
+    threshold: number | undefined;
+    createdAt: Date;
+  };
   CreateInput: {
     settingId?: number;
     threshold?: number;
@@ -365,6 +400,16 @@ type ProfileMeta = {
   New: NewProfile;
   Persisted: Profile;
   AssociationKey: 'user';
+  Column: {
+    id: number;
+    userId: number;
+    bio: string | undefined;
+    point: number;
+    enabled: boolean;
+    role: Role;
+    uuid: string;
+    cuid: string;
+  };
   CreateInput: {
     id?: number;
     bio?: string;
@@ -420,6 +465,10 @@ type CompanyMeta = {
   New: NewCompany;
   Persisted: Company;
   AssociationKey: 'employees';
+  Column: {
+    id: number;
+    name: string;
+  };
   CreateInput: {
     id?: number;
     name: string;
@@ -458,6 +507,11 @@ type EmployeeMeta = {
   New: NewEmployee;
   Persisted: Employee;
   AssociationKey: 'company';
+  Column: {
+    id: number;
+    name: string;
+    companyId: number;
+  };
   CreateInput: {
     id?: number;
     name: string;
@@ -502,6 +556,14 @@ type ValidateSampleMeta = {
   New: NewValidateSample;
   Persisted: ValidateSample;
   AssociationKey: never;
+  Column: {
+    id: number;
+    accepted: boolean;
+    pattern: string;
+    key: string;
+    count: number;
+    size: string;
+  };
   CreateInput: {
     id?: number;
     accepted: boolean;

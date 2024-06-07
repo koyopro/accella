@@ -7,6 +7,16 @@ describe("Query", () => {
     expect(User.first()).toBeUndefined();
     $user.create();
     expect(User.first()).not.toBeUndefined();
+
+    expect(User.first(1)).toHaveLength(1);
+  });
+
+  test(".last()", () => {
+    expect(User.last()).toBeUndefined();
+    for (const name of ["hoge", "fuga", "piyo"]) $user.create({ name });
+    expect(User.last()?.name).toBe("piyo");
+
+    expect(User.last(2).map((u) => u.name)).toEqual(["piyo", "fuga"]);
   });
 
   test("findOrCreateBy", () => {
@@ -52,6 +62,15 @@ describe("Query", () => {
       u.save();
       expect(User.count()).toBe(1);
     }
+  });
+
+  test("updateAll", () => {
+    $user.createList(2, {});
+    expect(User.where({ name: "baz" }).count()).toBe(0);
+
+    User.updateAll({ name: "baz", age: undefined });
+
+    expect(User.where({ name: "baz" }).count()).toBe(2);
   });
 
   test(".exists()", () => {
@@ -146,6 +165,13 @@ describe("Query", () => {
     expect(User.average("age")).toBe(22.5);
   });
 
+  test("pluck", () => {
+    $user.create({ name: "hoge" });
+    $user.create({ name: "fuga" });
+
+    expect(User.pluck("name")).toEqual(["hoge", "fuga"]);
+  });
+
   test("select", () => {
     $user.create({ name: "hoge" });
 
@@ -169,5 +195,29 @@ describe("Query", () => {
       .where("Post.title = ?", "title1")
       .count();
     expect(cnt).toBe(1);
+  });
+
+  test("#findEach()", () => {
+    for (const name of ["foo", "bar", "baz"]) {
+      $user.create({ name });
+    }
+    const results: User[] = [];
+    for (const record of User.findEach({ batchSize: 2 })) {
+      results.push(record);
+    }
+    expect(results.map((u) => u.name)).toEqual(["foo", "bar", "baz"]);
+  });
+
+  test("#findInBatches()", () => {
+    for (const name of ["foo", "bar", "baz"]) {
+      $user.create({ name });
+    }
+    const results: User[][] = [];
+    for (const records of User.findInBatches({ batchSize: 2 })) {
+      results.push(records);
+    }
+    expect(results.length).toBe(2);
+    expect(results[0].map((u) => u.name)).toEqual(["foo", "bar"]);
+    expect(results[1].map((u) => u.name)).toEqual(["baz"]);
   });
 });

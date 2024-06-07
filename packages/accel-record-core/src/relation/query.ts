@@ -15,15 +15,55 @@ export class Query {
     return this;
   }
   /**
-   * Returns the first element of the relation.
-   * @returns The first element of the relation, or undefined if the relation is empty.
+   * Retrieves the first n elements.
+   *
+   * @param [limit] - The maximum number of elements to retrieve.
+   * @returns An array of elements.
    */
-  first<T, M extends ModelMeta>(this: Relation<T, M>): T | undefined {
-    if (this.cache) return this.cache[0];
-    return new Relation<T, M>(this.model, {
-      ...this.options,
-      limit: 1,
-    }).load()[0];
+  first<T, M extends ModelMeta>(this: Relation<T, M>, limit: number): T[];
+  /**
+   * Returns the first element.
+   * @returns The first element, or undefined if the relation is empty.
+   */
+  first<T, M extends ModelMeta>(this: Relation<T, M>): T | undefined;
+  first<T, M extends ModelMeta>(this: Relation<T, M>, limit?: number): any {
+    const queryLimit = limit ?? 1;
+    const newOptions = { ...this.options, limit: queryLimit };
+    if (this.options.orders.length == 0) {
+      for (const key of this.model.primaryKeys) {
+        newOptions.orders.push([key, "asc"]);
+      }
+    }
+    const array = new Relation<T, M>(this.model, newOptions).load();
+    return limit ? array : array[0];
+  }
+  /**
+   * Retrieves the last n elements.
+   *
+   * @param [limit] - The maximum number of elements to retrieve.
+   * @returns An array of elements.
+   */
+  last<T, M extends ModelMeta>(this: Relation<T, M>, limit: number): T[];
+  /**
+   * Returns the last element.
+   * @returns The last element, or undefined if the relation is empty.
+   */
+  last<T, M extends ModelMeta>(this: Relation<T, M>): T | undefined;
+  last<T, M extends ModelMeta>(this: Relation<T, M>, limit?: number): any {
+    const queryLimit = limit ?? 1;
+    const newOptions = { ...this.options, limit: queryLimit };
+    if (this.options.orders.length == 0) {
+      for (const key of this.model.primaryKeys) {
+        newOptions.orders.push([key, "desc"]);
+      }
+    } else {
+      newOptions.orders = this.options.orders.map(([key, direction]) => [
+        key,
+        direction == "asc" ? "desc" : "asc",
+      ]);
+    }
+    const array = new Relation<T, M>(this.model, newOptions).load();
+    return limit ? array : array[0];
   }
   /**
    * Sets the offset for the query result.
@@ -83,6 +123,23 @@ export class Query {
     return !this.exists();
   }
   /**
+   * Updates all records in the relation with the specified attributes.
+   *
+   * @param {Partial<M["Column"]>} attributes - The attributes to update.
+   */
+  updateAll<T, M extends ModelMeta>(
+    this: Relation<T, M>,
+    attributes: Partial<M["Column"]>
+  ) {
+    const params: any = {};
+    for (const key in attributes) {
+      const column = this.model.attributeToColumn(key);
+      if (column) params[column] = attributes[key] ?? null;
+      else throw new Error(`Unknown attribute: ${key} for ${this.model.name}`);
+    }
+    exec(this.query().update(params));
+  }
+  /**
    * Deletes all records associated with the current relation.
    */
   deleteAll<T>(this: Relation<T, ModelMeta>) {
@@ -99,10 +156,8 @@ export class Query {
   }
 
   /**
-   * Selects specific attributes from the model or persisted data.
+   * Selects specific attributes from the model's persisted data.
    *
-   * @typeparam F - The type of the attributes to select.
-   * @typeparam R - The resulting type after selecting the attributes.
    * @param attributes - The attributes to select.
    * @returns A new relation with the selected attributes.
    */
@@ -120,5 +175,20 @@ export class Query {
       ...this.options,
       select: [...this.options.select, ...(attributes as string[])],
     });
+  }
+
+  /**
+   * Retrieves the values of a specified attribute from the records in the relation.
+   *
+   * If you want to specify multiple attributes, use {@link select | the select() method}.
+   *
+   * @param attribute - The attribute to retrieve from the records.
+   * @returns An array containing the values of the specified attribute from the records.
+   */
+  pluck<T, M extends ModelMeta, F extends keyof M["Column"]>(
+    this: Relation<T, M>,
+    attribute: F
+  ): M["Persisted"][F][] {
+    return this.select(attribute).map((r) => r[attribute] as any);
   }
 }

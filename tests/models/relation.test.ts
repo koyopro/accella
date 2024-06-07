@@ -20,52 +20,6 @@ describe("Relation", () => {
     expect(names).toEqual(["hoge", "fuga"]);
   });
 
-  test("#first()", () => {
-    $user.create({ name: "hoge" });
-    $user.create({ name: "fuga" });
-    expect(User.all().first()?.name).toBe("hoge");
-  });
-
-  test("#count()", () => {
-    $user.createList(2);
-    expect(User.all().count()).toBe(2);
-  });
-
-  test("#exists()", () => {
-    expect(User.all().exists()).toBe(false);
-    $user.create();
-    expect(User.all().exists()).toBe(true);
-  });
-
-  test("#isEmpty()", () => {
-    expect(User.all().isEmpty()).toBe(true);
-    $user.create();
-    expect(User.all().isEmpty()).toBe(false);
-  });
-
-  test("#limit()", () => {
-    $user.create({ name: "hoge" });
-    $user.create({ name: "fuga" });
-    const users = User.all().limit(1).toArray();
-    expect(users).toHaveLength(1);
-    expect(users[0].name).toBe("hoge");
-  });
-
-  test("#offset()", () => {
-    $user.create({ name: "hoge" });
-    $user.create({ name: "fuga" });
-    const users = User.all().offset(1).limit(1).toArray();
-    expect(users).toHaveLength(1);
-    expect(users[0].name).toBe("fuga");
-  });
-
-  test("#order()", () => {
-    $user.create({ name: "fuga" });
-    $user.create({ name: "hoge" });
-    expect(User.all().order("name").first()?.name).toBe("fuga");
-    expect(User.all().order("name", "desc").first()?.name).toBe("hoge");
-  });
-
   test("#where()", () => {
     $user.create({ name: "hoge", age: 20 });
     $user.create({ name: "fuga", age: 30 });
@@ -178,22 +132,6 @@ describe("Relation", () => {
     expect(User.all().where("age IS NOT NULL").first()?.name).toBe("hoge");
   });
 
-  test("#deleteAll()", () => {
-    $user.createList(2, { age: 20 });
-    $user.createList(2, { age: 30 });
-    expect(User.all().count()).toBe(4);
-    User.where({ age: 30 }).deleteAll();
-    expect(User.all().count()).toBe(2);
-  });
-
-  test("#destroyAll()", () => {
-    $user.createList(2, { age: 20 });
-    $user.createList(2, { age: 30 });
-    expect(User.all().count()).toBe(4);
-    User.where({ age: 30 }).destroyAll();
-    expect(User.all().count()).toBe(2);
-  });
-
   test("includes", () => {
     const u = $user.create();
     Post.create({ title: "post1", authorId: u.id });
@@ -206,15 +144,6 @@ describe("Relation", () => {
     expect(author.posts.toArray()[0].title).toBe("post1");
     expect(author.posts.toArray()[1].title).toBe("post2");
     expect(User.connection.queryCount).toBe(beforeCount);
-  });
-
-  test("aggregate", () => {
-    $user.create({ age: 21 });
-    $user.create({ age: 24 });
-
-    expect(User.all().minimum("age")).toBe(21);
-    expect(User.all().maximum("age")).toBe(24);
-    expect(User.all().average("age")).toBe(22.5);
   });
 
   test("select", () => {

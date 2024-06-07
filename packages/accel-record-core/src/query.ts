@@ -110,11 +110,71 @@ export class Query {
   }
 
   /**
+   * Retrieves the specified attribute values from all persisted instances of the model.
+   *
+   * If you want to specify multiple attributes, use {@link select | the select() method}.
+   *
+   * @param attribute - The attribute key to retrieve.
+   * @returns An array of attribute values from all persisted instances of the model.
+   */
+  static pluck<
+    T extends typeof Model,
+    M extends Meta<T>,
+    F extends keyof M["Column"],
+  >(this: T, attribute: F): M["Persisted"][F][] {
+    return this.all().pluck(attribute as any);
+  }
+
+  /**
+   * Retrieves the first n records of the model.
+   * @returns The first record of the model.
+   */
+  static first<T extends typeof Model>(
+    this: T,
+    limit: number
+  ): InstanceType<T>[];
+  /**
    * Retrieves the first record of the model.
    * @returns The first record of the model.
    */
-  static first<T extends typeof Model>(this: T) {
-    return this.all().first();
+  static first<T extends typeof Model>(this: T): InstanceType<T> | undefined;
+  static first<T extends typeof Model>(
+    this: T,
+    limit?: number
+  ): InstanceType<T> | InstanceType<T>[] | undefined {
+    return limit ? this.all().first(limit) : this.all().first();
+  }
+
+  /**
+   * Retrieves the last n records of the model.
+   * @returns The last record of the model.
+   */
+  static last<T extends typeof Model>(
+    this: T,
+    limit: number
+  ): InstanceType<T>[];
+  /**
+   * Retrieves the last record of the model.
+   * @returns The last record of the model.
+   */
+  static last<T extends typeof Model>(this: T): InstanceType<T> | undefined;
+  static last<T extends typeof Model>(
+    this: T,
+    limit?: number
+  ): InstanceType<T> | InstanceType<T>[] | undefined {
+    return limit ? this.all().last(limit) : this.all().last();
+  }
+
+  /**
+   * Updates all records in the model's table with the specified attributes.
+   *
+   * @param attributes - The attributes to update the records with.
+   */
+  static updateAll<T extends typeof Model>(
+    this: T,
+    attributes: Partial<Meta<T>["Column"]>
+  ) {
+    return this.all().updateAll(attributes);
   }
 
   /**
@@ -305,5 +365,31 @@ export class Query {
     attribute: keyof Meta<T>["OrderInput"]
   ) {
     return this.all().average(attribute);
+  }
+
+  /**
+   * Iterates over the records in batches, loading a specified number of records at a time.
+   *
+   * @param options.batchSize - The number of records to load in each batch. Defaults to 1000.
+   * @returns - An iterator object that allows iterating over the model in batches.
+   */
+  static findEach<T extends typeof Model>(
+    this: T,
+    options?: { batchSize?: number }
+  ) {
+    return this.all().findEach(options);
+  }
+
+  /**
+   * Iterates over the records in batches, allowing you to process a large number of records in smaller chunks.
+   *
+   * @param options.batchSize - The size of each batch. Defaults to 1000 if not provided.
+   * @returns An iterator object that provides the records in batches.
+   */
+  static findInBatches<T extends typeof Model>(
+    this: T,
+    options?: { batchSize?: number }
+  ) {
+    return this.all().findInBatches(options);
   }
 }
