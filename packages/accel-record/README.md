@@ -973,6 +973,29 @@ User.import(users, {
 });
 ```
 
+## Transactions
+
+You can use the `Model.transaction()` method to utilize transactions. By throwing a `Rollback` exception, you can rollback the transaction, and transactions can be nested.
+
+```ts
+import { User } from "./models/index.js";
+
+User.transaction(() => {
+  User.create({});
+  console.log(User.count()); // => 1
+
+  User.transaction(() => {
+    User.create({});
+    console.log(User.count()); // => 2
+
+    // The inner transaction is rolled back by throwing a Rollback
+    throw new Rollback();
+  });
+  // The outer transaction is committed
+});
+console.log(User.count()); // => 1
+```
+
 ## Nullable Values Handling
 
 Regarding nullable values, TypeScript, like JavaScript, has two options: undefined and null. \
@@ -1000,7 +1023,6 @@ user.update({ age: undefined });
 ## Future Planned Features
 
 - [accel-record-core] Scopes
-- [accel-record-core] Nested Transactions
 - [accel-record-core] PostgreSQL Support
 - [accel-record-core] Support for Composite IDs
 - [accel-record-core] Expansion of Query Interface
