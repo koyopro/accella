@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/koyopro/accella/compare/1.4.0...1.5.0) (2024-06-10)
+
+### Features
+
+- Nested transaction ([#8](https://github.com/koyopro/accella/pull/8), [#11](https://github.com/koyopro/accella/pull/11))
+- Adding query interface (first, last, pluck, findEach, updateAll) ([#9](https://github.com/koyopro/accella/pull/9))
+
 # [1.4.0](https://github.com/koyopro/accella/compare/1.3.0...1.4.0) (2024-06-03)
 
 ### Features
