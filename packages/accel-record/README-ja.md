@@ -974,6 +974,29 @@ User.import(users, {
 });
 ```
 
+## トランザクション
+
+`Model.transaction()` メソッドでトランザクションを利用できます。`Rollback` を例外として投げることでトランザクションをロールバックすることができ、トランザクションはネストすることができます。
+
+```ts
+import { User } from "./models/index.js";
+
+User.transaction(() => {
+  User.create({});
+  console.log(User.count()); // => 1
+
+  User.transaction(() => {
+    User.create({});
+    console.log(User.count()); // => 2
+
+    // Rollback の throw により内側のトランザクションはロールバックされます
+    throw new Rollback();
+  });
+  // 外側のトランザクションはコミットされます
+});
+console.log(User.count()); // => 1
+```
+
 ## Nullableな値の扱いについて
 
 Nullableな値について、TypeScriptではJavaScriptと同様にundefinedとnullの2つが存在します。 \
@@ -1001,7 +1024,6 @@ user.update({ age: undefined });
 ## 今後予定されている機能追加
 
 - [accel-record-core] スコープ
-- [accel-record-core] トランザクションのネスト
 - [accel-record-core] PostgreSQLのサポート
 - [accel-record-core] 複合IDの対応
 - [accel-record-core] クエリインターフェースの拡充
