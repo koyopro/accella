@@ -1,4 +1,4 @@
-import { Model, Rollback } from "accel-record-core";
+import { Model, Rollback } from "accel-record";
 import { $user } from "../factories/user";
 import { User } from "./index.js";
 
@@ -11,11 +11,25 @@ describe("Transaction", () => {
     });
     expect(User.all().toArray()).toHaveLength(0);
   });
+
+  test(".transaction() with Promise", async () => {
+    const result = await Model.transaction(async () => {
+      return "ok";
+    });
+    expect(result).toBe("ok");
+  });
+
+  test(".transaction() with Rollback in Promise", async () => {
+    const result = await Model.transaction(async () => {
+      throw new Rollback();
+    });
+    expect(result).toBe(undefined);
+  });
 });
 
 describe("nested Transaction", () => {
   test("commited, rollbacked ", () => {
-    Model.transaction(() => {
+    const result = Model.transaction(() => {
       $user.create({ name: "hoge" });
       expect(User.count()).toBe(1);
 
@@ -25,12 +39,15 @@ describe("nested Transaction", () => {
         throw new Rollback();
       });
       expect(User.count()).toBe(1);
+
+      return true;
     }); // commited
+    expect(result).toBe(true);
     expect(User.count()).toBe(1);
   });
 
   test("rollbacked, rollbacked", () => {
-    Model.transaction(() => {
+    const result = Model.transaction(() => {
       $user.create({ name: "hoge" });
       expect(User.count()).toBe(1);
 
@@ -42,6 +59,7 @@ describe("nested Transaction", () => {
       expect(User.count()).toBe(1);
       throw new Rollback();
     }); // rollbacked
+    expect(result).toBe(undefined);
     expect(User.count()).toBe(0);
   });
 

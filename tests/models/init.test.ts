@@ -1,4 +1,4 @@
-import { Model, initAccelRecord } from "accel-record-core";
+import { Model, initAccelRecord } from "accel-record";
 import { dbConfig } from "../vitest.setup";
 
 describe("initAccelRecord", () => {

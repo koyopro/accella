@@ -979,6 +979,7 @@ User.import(users, {
 `Model.transaction()` メソッドでトランザクションを利用できます。`Rollback` を例外として投げることでトランザクションをロールバックすることができ、トランザクションはネストすることができます。
 
 ```ts
+import { Rollback } from "accel-record";
 import { User } from "./models/index.js";
 
 User.transaction(() => {
