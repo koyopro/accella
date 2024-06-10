@@ -978,6 +978,7 @@ User.import(users, {
 You can use the `Model.transaction()` method to utilize transactions. By throwing a `Rollback` exception, you can rollback the transaction, and transactions can be nested.
 
 ```ts
+import { Rollback } from "accel-record";
 import { User } from "./models/index.js";
 
 User.transaction(() => {
