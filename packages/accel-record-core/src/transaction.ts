@@ -86,6 +86,7 @@ export class Transaction {
    * @param callback - The callback function to be executed within the transaction.
    * @returns The return value of the callback function. If the transaction is rolled back, `undefined` is returned.
    */
+  static transaction<F extends () => never>(callback: F): undefined;
   static transaction<F extends () => Promise<any>>(
     callback: F
   ): Promise<Awaited<ReturnType<F>> | undefined>;
