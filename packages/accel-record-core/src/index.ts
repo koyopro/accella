@@ -8,6 +8,7 @@ import { Fields } from "./fields.js";
 import { ModelMeta } from "./meta.js";
 import { Dirty } from "./model/dirty.js";
 import { Import } from "./model/import.js";
+import { Naming } from "./model/naming.js";
 import { Serialization } from "./model/serialization.js";
 import { Validations } from "./model/validations.js";
 import { Persistence } from "./persistence.js";
@@ -60,6 +61,7 @@ export class Model extends classIncludes(
   Dirty,
   Fields,
   Import,
+  Naming,
   Persistence,
   Query,
   Serialization,
