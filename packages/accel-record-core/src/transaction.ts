@@ -86,9 +86,32 @@ export class Transaction {
    * @param callback - The callback function to be executed within the transaction.
    * @returns The return value of the callback function. If the transaction is rolled back, `undefined` is returned.
    */
+  static transaction<F extends () => Promise<any>>(
+    callback: F
+  ): Promise<Awaited<ReturnType<F>> | undefined>;
   static transaction<F extends () => any>(
     callback: F
-  ): ReturnType<F> | undefined {
+  ): ReturnType<F> | undefined;
+  static transaction<F extends () => any>(callback: F): any {
+    if (callback.constructor.name === "AsyncFunction") {
+      return new Promise(async (resolve, reject) => {
+        let result = undefined;
+        this.startNestableTransaction();
+        try {
+          result = await callback();
+        } catch (e) {
+          this.rollbackNestableTransaction();
+          if (e instanceof Rollback) {
+            resolve(undefined);
+          } else {
+            reject(e);
+          }
+          return;
+        }
+        this.tryCommitNestableTransaction();
+        resolve(result);
+      });
+    }
     let result = undefined;
     this.startNestableTransaction();
     try {

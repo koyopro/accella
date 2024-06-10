@@ -11,6 +11,20 @@ describe("Transaction", () => {
     });
     expect(User.all().toArray()).toHaveLength(0);
   });
+
+  test(".transaction() with Promise", async () => {
+    const result = await Model.transaction(async () => {
+      return "ok";
+    });
+    expect(result).toBe("ok");
+  });
+
+  test(".transaction() with Rollback in Promise", async () => {
+    const result = await Model.transaction(async () => {
+      throw new Rollback();
+    });
+    expect(result).toBe(undefined);
+  });
 });
 
 describe("nested Transaction", () => {
