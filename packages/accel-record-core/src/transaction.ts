@@ -84,19 +84,24 @@ export class Transaction {
    * If an error occurs during the callback execution, the transaction is rolled back.
    *
    * @param callback - The callback function to be executed within the transaction.
+   * @returns The return value of the callback function. If the transaction is rolled back, `undefined` is returned.
    */
-  static transaction(callback: () => void) {
+  static transaction<F extends () => any>(
+    callback: F
+  ): ReturnType<F> | undefined {
+    let result = undefined;
     this.startNestableTransaction();
     try {
-      callback();
+      result = callback();
     } catch (e) {
       this.rollbackNestableTransaction();
       if (e instanceof Rollback) {
-        return;
+        return undefined;
       } else {
         throw e;
       }
     }
     this.tryCommitNestableTransaction();
+    return result;
   }
 }
