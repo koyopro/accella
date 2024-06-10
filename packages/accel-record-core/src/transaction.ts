@@ -94,23 +94,7 @@ export class Transaction {
   ): ReturnType<F> | undefined;
   static transaction<F extends () => any>(callback: F): any {
     if (callback.constructor.name === "AsyncFunction") {
-      return new Promise(async (resolve, reject) => {
-        let result = undefined;
-        this.startNestableTransaction();
-        try {
-          result = await callback();
-        } catch (e) {
-          this.rollbackNestableTransaction();
-          if (e instanceof Rollback) {
-            resolve(undefined);
-          } else {
-            reject(e);
-          }
-          return;
-        }
-        this.tryCommitNestableTransaction();
-        resolve(result);
-      });
+      return this.transactionAsync(callback);
     }
     let result = undefined;
     this.startNestableTransaction();
@@ -126,5 +110,27 @@ export class Transaction {
     }
     this.tryCommitNestableTransaction();
     return result;
+  }
+
+  protected static transactionAsync<F extends () => Promise<any>>(
+    callback: F
+  ): Promise<Awaited<ReturnType<F>> | undefined> {
+    return new Promise(async (resolve, reject) => {
+      let result = undefined;
+      this.startNestableTransaction();
+      try {
+        result = await callback();
+      } catch (e) {
+        this.rollbackNestableTransaction();
+        if (e instanceof Rollback) {
+          resolve(undefined);
+        } else {
+          reject(e);
+        }
+        return;
+      }
+      this.tryCommitNestableTransaction();
+      resolve(result);
+    });
   }
 }
