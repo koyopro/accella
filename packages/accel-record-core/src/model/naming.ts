@@ -13,10 +13,22 @@ export class Naming {
       },
     };
   }
+
+  static humanAttributeName(attr: string) {
+    const name = toPascalCase(attr);
+    const key = `accelrecord.attributes.${toSnakeCase(this.name)}.${toSnakeCase(attr)}`;
+    return i18n?.t(key, name) ?? name;
+  }
 }
 
 const toSnakeCase = (str: string) => {
   return str.replace(/[A-Z]/g, (s) => "_" + s.toLowerCase()).replace(/^_/, "");
+};
+
+const toPascalCase = (str: string) => {
+  return str
+    .replace(/_./g, (s) => s[0].toUpperCase())
+    .replace(/^./, (s) => s.toUpperCase());
 };
 
 export const loadI18n = async () => {
