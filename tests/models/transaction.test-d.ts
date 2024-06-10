@@ -1,4 +1,4 @@
-import { Model } from "accel-record-core";
+import { Model } from "accel-record";
 
 describe("Transaction", () => {
   test(".transaction()", () => {

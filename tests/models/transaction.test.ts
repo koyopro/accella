@@ -1,4 +1,4 @@
-import { Model, Rollback } from "accel-record-core";
+import { Model, Rollback } from "accel-record";
 import { $user } from "../factories/user";
 import { User } from "./index.js";
 
