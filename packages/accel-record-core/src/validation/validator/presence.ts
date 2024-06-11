@@ -2,7 +2,7 @@ import { Collection } from "../../associations/collectionProxy.js";
 import { Model } from "../../index.js";
 import { DefualtOptions, Validator } from "./index.js";
 
-export type PresenceOptions = boolean & DefualtOptions;
+export type PresenceOptions = boolean | DefualtOptions;
 
 export class PresenceValidator<T extends Model> extends Validator<T> {
   constructor(
@@ -14,7 +14,9 @@ export class PresenceValidator<T extends Model> extends Validator<T> {
   }
   validate() {
     if (this.options && isBlank(this.record[this.attribute])) {
-      this.errors.add(this.attribute, this.options.message ?? "can't be blank");
+      const message =
+        typeof this.options === "object" ? this.options.message : undefined;
+      this.errors.add(this.attribute, message ?? "can't be blank");
     }
   }
 }

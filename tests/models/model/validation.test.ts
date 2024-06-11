@@ -62,9 +62,9 @@ test("presence", () => {
 
 test("presence for hasMany", () => {
   const user = $user.create({});
-  user.validates("posts", { presence: true });
+  user.validates("posts", { presence: { message: "can't be empty" } });
 
-  expect(user.errors.fullMessages).toContain("Posts can't be blank");
+  expect(user.errors.fullMessages).toContain("Posts can't be empty");
 });
 
 test("length", () => {
