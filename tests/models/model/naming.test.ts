@@ -27,6 +27,11 @@ describe("with i18n", () => {
                   name: "名前",
                 },
               },
+              errors: {
+                messages: {
+                  blank: "を入力してください",
+                },
+              },
             },
           },
         },
@@ -51,7 +56,7 @@ describe("with i18n", () => {
 
   test("error message", () => {
     const user = User.build({});
-    user.validates("name", { presence: { message: "を入力してください" } });
+    user.validates("name", { presence: true });
 
     expect(user.errors.fullMessages).toContain("名前 を入力してください");
   });

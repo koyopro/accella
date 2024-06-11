@@ -1,4 +1,9 @@
 import { Model } from "../index.js";
+import { i18n } from "../model/naming.js";
+
+const defaultMessages: Record<string, string | undefined> = {
+  blank: "can't be blank",
+};
 
 /**
  * Represents an error object.
@@ -21,11 +26,27 @@ export class Error {
    */
   get fullMessage() {
     const attrName = this.baseModel.humanAttributeName(this.attribute);
-    return `${attrName} ${this.message}`;
+    return `${attrName} ${this.translatedMessage}`;
   }
 
   private get baseModel() {
     return this.base.constructor as typeof Model;
+  }
+
+  private get translatedMessage() {
+    const model = this.base.constructor.name;
+    const keys = [
+      `accelrecord.errors.models.${model}.attributes.${this.attribute}.${this.message}`,
+      `accelrecord.errors.models.${model}.${this.message}`,
+      "accelrecord.errors.messages.blank",
+      `errors.attributes.${this.attribute}.${this.message}`,
+      `errors.messages.${this.message}`,
+    ];
+    for (const key of keys) {
+      const message = i18n?.t(key, "");
+      if (message) return message;
+    }
+    return defaultMessages[this.message] || this.message;
   }
 }
 

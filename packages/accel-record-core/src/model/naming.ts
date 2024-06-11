@@ -1,7 +1,7 @@
 type i18n = {
   t: (key: string, name: string) => string | undefined;
 };
-let i18n: i18n | undefined = undefined;
+export let i18n: i18n | undefined = undefined;
 
 export class Naming {
   static get modelName() {
