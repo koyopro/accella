@@ -48,4 +48,11 @@ describe("with i18n", () => {
     expect(User.humanAttributeName("name")).toBe("名前");
     expect(Setting.humanAttributeName("user")).toBe("User");
   });
+
+  test("error message", () => {
+    const user = User.build({});
+    user.validates("name", { presence: { message: "を入力してください" } });
+
+    expect(user.errors.fullMessages).toContain("名前 を入力してください");
+  });
 });

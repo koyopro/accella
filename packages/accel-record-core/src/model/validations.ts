@@ -45,7 +45,11 @@ type ValidatesOptions<T> = {
  * This class is intended to be inherited by the Model class.
  */
 export class Validations {
-  errors = new Errors();
+  private _errors: Errors | undefined;
+
+  get errors() {
+    return (this._errors ||= new Errors(this as any));
+  }
 
   /**
    * Checks if the model is valid by performing attribute and association validations.

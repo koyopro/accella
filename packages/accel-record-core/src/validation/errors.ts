@@ -1,3 +1,5 @@
+import { Model } from "../index.js";
+
 /**
  * Represents an error object.
  */
@@ -8,6 +10,7 @@ export class Error {
    * @param message - The error message.
    */
   constructor(
+    private base: Model,
     public attribute: string,
     public message: string
   ) {}
@@ -17,7 +20,12 @@ export class Error {
    * @returns The full error message.
    */
   get fullMessage() {
-    return `${toPascalCase(this.attribute)} ${this.message}`;
+    const attrName = this.baseModel.humanAttributeName(this.attribute);
+    return `${attrName} ${this.message}`;
+  }
+
+  private get baseModel() {
+    return this.base.constructor as typeof Model;
   }
 }
 
@@ -26,6 +34,8 @@ export class Error {
  */
 export class Errors {
   private errors = {} as Record<string, Error[]>;
+
+  constructor(private base: Model) {}
 
   /**
    * Gets the full error messages.
@@ -43,7 +53,9 @@ export class Errors {
    * @param error - The error message.
    */
   add(attribute: string, error: string) {
-    (this.errors[attribute] ||= []).push(new Error(attribute, error));
+    (this.errors[attribute] ||= []).push(
+      new Error(this.base, attribute, error)
+    );
   }
 
   /**
