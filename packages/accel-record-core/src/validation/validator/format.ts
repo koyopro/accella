@@ -15,7 +15,7 @@ export class FormatValidator<T extends Model> extends Validator<T> {
   }
   validate() {
     if (!this.options.with.test(this.record[this.attribute] as any)) {
-      this.errors.add(this.attribute, this.options.message ?? "is invalid");
+      this.errors.add(this.attribute, this.options.message ?? "invalid");
     }
   }
 }
