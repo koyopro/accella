@@ -22,10 +22,7 @@ export class AcceptanceValidator<T extends Model> extends Validator<T> {
       ? [this.options.accept].flat()
       : undefined) ?? [true, "1"];
     if (!accept.includes(this.record[this.attribute] as any)) {
-      this.errors.add(
-        this.attribute,
-        this.options.message ?? "must be accepted"
-      );
+      this.errors.add(this.attribute, this.options.message ?? "accepted");
     }
   }
 }

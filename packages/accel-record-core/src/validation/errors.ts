@@ -3,6 +3,7 @@ import { i18n } from "../model/naming.js";
 
 const defaultMessages: Record<string, string | undefined> = {
   blank: "can't be blank",
+  accepted: "must be accepted",
 };
 
 /**
