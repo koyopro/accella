@@ -74,7 +74,7 @@ describe("error message", () => {
   const setupI18n = async (config: any) => {
     config["accelrecord"] ||= {};
     config.accelrecord.attributes = {
-      user: {
+      User: {
         name: "名前",
       },
     };

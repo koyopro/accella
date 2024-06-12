@@ -6,24 +6,19 @@ export let i18n: i18n | undefined = undefined;
 export class Naming {
   static get modelName() {
     const default_ = this.name;
-    const key = `accelrecord.models.${toSnakeCase(default_)}`;
+    const key = `accelrecord.models.${this.name}`;
     return {
       get human() {
-        return i18n?.t(key, default_) ?? default_;
+        return i18n?.t(key, "") || default_;
       },
     };
   }
 
   static humanAttributeName(attribute: string) {
-    const default_ = toPascalCase(attribute);
-    const key = `accelrecord.attributes.${toSnakeCase(this.name)}.${toSnakeCase(attribute)}`;
-    return i18n?.t(key, default_) ?? default_;
+    const key = `accelrecord.attributes.${this.name}.${attribute}`;
+    return i18n?.t(key, "") || toPascalCase(attribute);
   }
 }
-
-const toSnakeCase = (str: string) => {
-  return str.replace(/[A-Z]/g, (s) => "_" + s.toLowerCase()).replace(/^_/, "");
-};
 
 const toPascalCase = (str: string) => {
   return str

@@ -20,10 +20,10 @@ describe("with i18n", () => {
           translation: {
             accelrecord: {
               models: {
-                user: "ユーザー",
+                User: "ユーザー",
               },
               attributes: {
-                user: {
+                User: {
                   name: "名前",
                 },
               },
