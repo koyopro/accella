@@ -5,6 +5,7 @@ const defaultMessages: Record<string, string | undefined> = {
   blank: "can't be blank",
   accepted: "must be accepted",
   invalid: "is invalid",
+  inclusion: "is not included in the list",
 };
 
 /**

@@ -15,10 +15,7 @@ export class InclusionValidator<T extends Model> extends Validator<T> {
   }
   validate() {
     if (!this.options.in.includes(this.record[this.attribute])) {
-      this.errors.add(
-        this.attribute,
-        this.options.message ?? "is not included in the list"
-      );
+      this.errors.add(this.attribute, this.options.message ?? "inclusion");
     }
   }
 }
