@@ -11,39 +11,24 @@ describe("error message", () => {
   test("default", () =>
     expect(subject()).toBe("Size is not included in the list"));
 
-  describe("with errors.messages.inclusion", () => {
-    beforeEach(async () => {
-      await setupI18n({
-        errors: {
-          messages: {
-            inclusion: "はリストに含まれていません",
-          },
-        },
-      });
-    });
-    test("should be translated", () =>
-      expect(subject()).toBe("サイズ はリストに含まれていません"));
-  });
-
-  const setupI18n = async (config: any) => {
-    config["accelrecord"] ||= {};
-    config.accelrecord.attributes = {
-      ValidateSample: {
-        size: "サイズ",
-      },
+  describe("with i18n", () => {
+    const addTranslation = (key: string, value: string) => {
+      i18next.addResource("ja", "translation", key, value);
     };
-    await i18next.init({
-      lng: "ja",
-      resources: {
-        ja: {
-          translation: config,
-        },
-      },
-    });
-  };
 
-  afterEach(async () => {
-    // reset
-    await i18next.init({ resources: {} });
+    beforeEach(async () => {
+      await i18next.init({ lng: "ja" });
+      addTranslation("accelrecord.attributes.ValidateSample.size", "サイズ");
+    });
+
+    afterEach(async () => {
+      // reset
+      await i18next.init({ resources: {} });
+    });
+
+    test("with accelrecord.errors.messages.accepted", () => {
+      addTranslation("errors.messages.inclusion", "はリストに含まれていません");
+      expect(subject()).toBe("サイズ はリストに含まれていません");
+    });
   });
 });

@@ -10,39 +10,27 @@ describe("error message", () => {
 
   test("default", () => expect(subject()).toBe("Pattern is invalid"));
 
-  describe("with errors.messages.accepted", () => {
-    beforeEach(async () => {
-      await setupI18n({
-        errors: {
-          messages: {
-            invalid: "は不正です",
-          },
-        },
-      });
-    });
-    test("should be translated", () =>
-      expect(subject()).toBe("パターン は不正です"));
-  });
-
-  const setupI18n = async (config: any) => {
-    config["accelrecord"] ||= {};
-    config.accelrecord.attributes = {
-      ValidateSample: {
-        pattern: "パターン",
-      },
+  describe("with i18n", () => {
+    const addTranslation = (key: string, value: string) => {
+      i18next.addResource("ja", "translation", key, value);
     };
-    await i18next.init({
-      lng: "ja",
-      resources: {
-        ja: {
-          translation: config,
-        },
-      },
-    });
-  };
 
-  afterEach(async () => {
-    // reset
-    await i18next.init({ resources: {} });
+    beforeEach(async () => {
+      await i18next.init({ lng: "ja" });
+      addTranslation(
+        "accelrecord.attributes.ValidateSample.pattern",
+        "パターン"
+      );
+    });
+
+    afterEach(async () => {
+      // reset
+      await i18next.init({ resources: {} });
+    });
+
+    test("with accelrecord.errors.messages.accepted", () => {
+      addTranslation("errors.messages.invalid", "は不正です");
+      expect(subject()).toBe("パターン は不正です");
+    });
   });
 });

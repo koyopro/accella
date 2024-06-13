@@ -10,39 +10,24 @@ describe("error message", () => {
 
   test("default", () => expect(subject()).toBe("Accepted must be accepted"));
 
-  describe("with errors.messages.accepted", () => {
-    beforeEach(async () => {
-      await setupI18n({
-        errors: {
-          messages: {
-            accepted: "をチェックしてください",
-          },
-        },
-      });
-    });
-    test("should be translated", () =>
-      expect(subject()).toBe("許可 をチェックしてください"));
-  });
-
-  const setupI18n = async (config: any) => {
-    config["accelrecord"] ||= {};
-    config.accelrecord.attributes = {
-      ValidateSample: {
-        accepted: "許可",
-      },
+  describe("with i18n", () => {
+    const addTranslation = (key: string, value: string) => {
+      i18next.addResource("ja", "translation", key, value);
     };
-    await i18next.init({
-      lng: "ja",
-      resources: {
-        ja: {
-          translation: config,
-        },
-      },
-    });
-  };
 
-  afterEach(async () => {
-    // reset
-    await i18next.init({ resources: {} });
+    beforeEach(async () => {
+      await i18next.init({ lng: "ja" });
+      addTranslation("accelrecord.attributes.ValidateSample.accepted", "許可");
+    });
+
+    afterEach(async () => {
+      // reset
+      await i18next.init({ resources: {} });
+    });
+
+    test("with accelrecord.errors.messages.accepted", () => {
+      addTranslation("errors.messages.accepted", "をチェックしてください");
+      expect(subject()).toBe("許可 をチェックしてください");
+    });
   });
 });

@@ -10,86 +10,50 @@ describe("error message", () => {
 
   test("default", () => expect(subject()).toBe("Name can't be blank"));
 
-  describe("with accelrecord.errors.messages.blank", () => {
-    beforeEach(async () => {
-      await setupI18n({
-        accelrecord: { errors: { messages: { blank: "を入力してください" } } },
-      });
-    });
-    test("case 1", () => expect(subject()).toBe("名前 を入力してください"));
-  });
-
-  describe("with accelrecord.errors.models.User.blank", () => {
-    beforeEach(async () => {
-      await setupI18n({
-        accelrecord: {
-          errors: { models: { User: { blank: "を入力してください" } } },
-        },
-      });
-    });
-    test("case 2", () => expect(subject()).toBe("名前 を入力してください"));
-  });
-
-  describe("with accelrecord.errors.models.User.attributes.name.blank", () => {
-    beforeEach(async () => {
-      await setupI18n({
-        accelrecord: {
-          errors: {
-            models: {
-              User: { attributes: { name: { blank: "を入力してください" } } },
-            },
-          },
-        },
-      });
-    });
-    test("case 3", () => expect(subject()).toBe("名前 を入力してください"));
-  });
-
-  describe("with errors.attributes.name.blank", () => {
-    beforeEach(async () => {
-      await setupI18n({
-        errors: {
-          attributes: {
-            name: { blank: "を入力してください" },
-          },
-        },
-      });
-    });
-    test("case 4", () => expect(subject()).toBe("名前 を入力してください"));
-  });
-
-  describe("with errors.messages.blank", () => {
-    beforeEach(async () => {
-      await setupI18n({
-        errors: {
-          messages: {
-            blank: "を入力してください",
-          },
-        },
-      });
-    });
-    test("case 5", () => expect(subject()).toBe("名前 を入力してください"));
-  });
-
-  const setupI18n = async (config: any) => {
-    config["accelrecord"] ||= {};
-    config.accelrecord.attributes = {
-      User: {
-        name: "名前",
-      },
+  describe("with i18n", () => {
+    const addTranslation = (key: string, value: string) => {
+      i18next.addResource("ja", "translation", key, value);
     };
-    await i18next.init({
-      lng: "ja",
-      resources: {
-        ja: {
-          translation: config,
-        },
-      },
-    });
-  };
 
-  afterEach(async () => {
-    // reset
-    await i18next.init({ resources: {} });
+    beforeEach(async () => {
+      await i18next.init({ lng: "ja" });
+      addTranslation("accelrecord.attributes.User.name", "名前");
+    });
+
+    afterEach(async () => {
+      // reset
+      await i18next.init({ resources: {} });
+    });
+
+    test("with accelrecord.errors.messages.blank", () => {
+      addTranslation("accelrecord.errors.messages.blank", "を入力してください");
+      expect(subject()).toBe("名前 を入力してください");
+    });
+
+    test("with accelrecord.errors.models.User.blank", () => {
+      addTranslation(
+        "accelrecord.errors.models.User.blank",
+        "を入力してください"
+      );
+      expect(subject()).toBe("名前 を入力してください");
+    });
+
+    test("with accelrecord.errors.models.User.attributes.name.blank", () => {
+      addTranslation(
+        "accelrecord.errors.models.User.attributes.name.blank",
+        "を入力してください"
+      );
+      expect(subject()).toBe("名前 を入力してください");
+    });
+
+    test("with errors.attributes.name.blank", () => {
+      addTranslation("errors.attributes.name.blank", "を入力してください");
+      expect(subject()).toBe("名前 を入力してください");
+    });
+
+    test("with errors.messages.blank", () => {
+      addTranslation("errors.messages.blank", "を入力してください");
+      expect(subject()).toBe("名前 を入力してください");
+    });
   });
 });
