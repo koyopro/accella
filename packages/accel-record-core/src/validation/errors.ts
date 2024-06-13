@@ -124,10 +124,3 @@ export class Errors {
     return Object.keys(this.errors).length === 0;
   }
 }
-
-function toPascalCase(str: string): string {
-  return str
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join("");
-}
