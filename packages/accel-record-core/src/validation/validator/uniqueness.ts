@@ -26,7 +26,7 @@ export class UniquenessValidator<T extends Model> extends Validator<T> {
       .where({ [this.attribute]: this.record[this.attribute] })
       .first();
     if (found?.equals(this.record) === false) {
-      this.errors.add(this.attribute, "has already been taken");
+      this.errors.add(this.attribute, "taken");
     }
   }
 }
