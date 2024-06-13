@@ -1,5 +1,5 @@
 import { Setting, User } from "..";
-import { addTranslation, withI18n } from "../../contexts/i18n";
+import { withI18n } from "../../contexts/i18n";
 
 test("modelName.human", () => {
   expect(User.modelName.human).toBe("User");
@@ -25,7 +25,6 @@ describe("with i18n", () => {
   });
 
   test("error message", () => {
-    addTranslation("errors.messages.blank", "を入力してください");
     const user = User.build({});
     user.validates("name", { presence: true });
 

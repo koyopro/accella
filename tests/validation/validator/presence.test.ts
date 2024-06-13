@@ -14,33 +14,32 @@ describe("error message", () => {
     withI18n();
 
     test("with accelrecord.errors.messages.blank", () => {
-      addTranslation("accelrecord.errors.messages.blank", "を入力してください");
-      expect(subject()).toBe("名前 を入力してください");
+      addTranslation("accelrecord.errors.messages.blank", "を入れてください");
+      expect(subject()).toBe("名前 を入れてください");
     });
 
     test("with accelrecord.errors.models.User.blank", () => {
       addTranslation(
         "accelrecord.errors.models.User.blank",
-        "を入力してください"
+        "を入れてください"
       );
-      expect(subject()).toBe("名前 を入力してください");
+      expect(subject()).toBe("名前 を入れてください");
     });
 
     test("with accelrecord.errors.models.User.attributes.name.blank", () => {
       addTranslation(
         "accelrecord.errors.models.User.attributes.name.blank",
-        "を入力してください"
+        "を入れてください"
       );
-      expect(subject()).toBe("名前 を入力してください");
+      expect(subject()).toBe("名前 を入れてください");
     });
 
     test("with errors.attributes.name.blank", () => {
-      addTranslation("errors.attributes.name.blank", "を入力してください");
-      expect(subject()).toBe("名前 を入力してください");
+      addTranslation("errors.attributes.name.blank", "を入れてください");
+      expect(subject()).toBe("名前 を入れてください");
     });
 
-    test("with errors.messages.blank", () => {
-      addTranslation("errors.messages.blank", "を入力してください");
+    test("should be translated", () => {
       expect(subject()).toBe("名前 を入力してください");
     });
   });

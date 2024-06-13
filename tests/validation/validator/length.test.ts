@@ -1,4 +1,4 @@
-import { addTranslation, withI18n } from "../../contexts/i18n";
+import { withI18n } from "../../contexts/i18n";
 import { $ValidateSample } from "../../factories/validateSample";
 
 describe("error message", () => {
@@ -18,15 +18,7 @@ describe("error message", () => {
   describe("with i18n", () => {
     withI18n();
 
-    test("with accelrecord.errors.messages.tooShort", () => {
-      addTranslation(
-        "errors.messages.tooShort",
-        "は短すぎます(%{count}文字以上)"
-      );
-      addTranslation(
-        "errors.messages.tooLong",
-        "は長すぎます(%{count}文字以下)"
-      );
+    test("should be translated", () => {
       expect(subject()).toEqual([
         "パターン は短すぎます(2文字以上)",
         "キー は長すぎます(5文字以下)",

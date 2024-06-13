@@ -5,17 +5,30 @@ export const addTranslation = (key: string, value: string) => {
 };
 
 export const withI18n = () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await i18next.init({ lng: "ja" });
-    addTranslation("accelrecord.models.User", "ユーザー");
-    addTranslation("accelrecord.attributes.User.name", "名前");
-    addTranslation("accelrecord.attributes.ValidateSample.accepted", "許可");
-    addTranslation("accelrecord.attributes.ValidateSample.pattern", "パターン");
-    addTranslation("accelrecord.attributes.ValidateSample.size", "サイズ");
-    addTranslation("accelrecord.attributes.ValidateSample.key", "キー");
+    const translations = {
+      "accelrecord.models.User": "ユーザー",
+      "accelrecord.attributes.User.name": "名前",
+      "accelrecord.attributes.ValidateSample.accepted": "許可",
+      "accelrecord.attributes.ValidateSample.pattern": "パターン",
+      "accelrecord.attributes.ValidateSample.size": "サイズ",
+      "accelrecord.attributes.ValidateSample.key": "キー",
+
+      "errors.messages.blank": "を入力してください",
+      "errors.messages.accepted": "をチェックしてください",
+      "errors.messages.invalid": "は不正です",
+      "errors.messages.inclusion": "はリストに含まれていません",
+      "errors.messages.tooShort": "は短すぎます(%{count}文字以上)",
+      "errors.messages.tooLong": "は長すぎます(%{count}文字以下)",
+      "errors.messages.taken": "は既に使用されています",
+    };
+    Object.entries(translations).forEach(([key, value]) =>
+      addTranslation(key, value)
+    );
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     // reset
     await i18next.init({ resources: {} });
   });

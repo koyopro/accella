@@ -1,4 +1,4 @@
-import { addTranslation, withI18n } from "../../contexts/i18n";
+import { withI18n } from "../../contexts/i18n";
 import { $ValidateSample } from "../../factories/validateSample";
 
 describe("error message", () => {
@@ -13,8 +13,7 @@ describe("error message", () => {
   describe("with i18n", () => {
     withI18n();
 
-    test("with accelrecord.errors.messages.accepted", () => {
-      addTranslation("errors.messages.invalid", "は不正です");
+    test("should be translated", () => {
       expect(subject()).toBe("パターン は不正です");
     });
   });
