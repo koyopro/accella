@@ -32,16 +32,12 @@ export class Error {
    * @returns The full error message.
    */
   get fullMessage() {
-    const attrName = this.baseModel.humanAttributeName(this.attribute);
+    const attrName = this.base.class().humanAttributeName(this.attribute);
     let message = this.translatedMessage;
     if (this.options.count) {
       message = message.replace("%{count}", this.options.count.toString());
     }
     return `${attrName} ${message}`;
-  }
-
-  private get baseModel() {
-    return this.base.constructor as typeof Model;
   }
 
   private get translatedMessage() {
