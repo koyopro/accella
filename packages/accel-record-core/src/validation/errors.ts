@@ -6,6 +6,8 @@ const defaultMessages: Record<string, string | undefined> = {
   accepted: "must be accepted",
   invalid: "is invalid",
   inclusion: "is not included in the list",
+  tooShort: `is too short (minimum is %{count} characters)`,
+  tooLong: `is too long (maximum is %{count} characters)`,
 };
 
 /**
@@ -20,7 +22,8 @@ export class Error {
   constructor(
     private base: Model,
     public attribute: string,
-    public message: string
+    public message: string,
+    private options: { count?: number } = {}
   ) {}
 
   /**
@@ -29,7 +32,11 @@ export class Error {
    */
   get fullMessage() {
     const attrName = this.baseModel.humanAttributeName(this.attribute);
-    return `${attrName} ${this.translatedMessage}`;
+    let message = this.translatedMessage;
+    if (this.options.count) {
+      message = message.replace("%{count}", this.options.count.toString());
+    }
+    return `${attrName} ${message}`;
   }
 
   private get baseModel() {
@@ -76,9 +83,9 @@ export class Errors {
    * @param attribute - The attribute associated with the error.
    * @param error - The error message.
    */
-  add(attribute: string, error: string) {
+  add(attribute: string, error: string, options?: { count: number }) {
     (this.errors[attribute] ||= []).push(
-      new Error(this.base, attribute, error)
+      new Error(this.base, attribute, error, options)
     );
   }
 
