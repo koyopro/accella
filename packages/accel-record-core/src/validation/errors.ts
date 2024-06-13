@@ -6,8 +6,8 @@ const defaultMessages: Record<string, string | undefined> = {
   accepted: "must be accepted",
   invalid: "is invalid",
   inclusion: "is not included in the list",
-  tooShort: `is too short (minimum is %{count} characters)`,
-  tooLong: `is too long (maximum is %{count} characters)`,
+  tooShort: "is too short (minimum is %{count} characters)",
+  tooLong: "is too long (maximum is %{count} characters)",
   taken: "has already been taken",
 };
 
