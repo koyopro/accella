@@ -1,4 +1,4 @@
-import i18next from "i18next";
+import { addTranslation, withI18n } from "../../contexts/i18n";
 import { $ValidateSample } from "../../factories/validateSample";
 
 describe("error message", () => {
@@ -12,19 +12,7 @@ describe("error message", () => {
     expect(subject()).toBe("Size is not included in the list"));
 
   describe("with i18n", () => {
-    const addTranslation = (key: string, value: string) => {
-      i18next.addResource("ja", "translation", key, value);
-    };
-
-    beforeEach(async () => {
-      await i18next.init({ lng: "ja" });
-      addTranslation("accelrecord.attributes.ValidateSample.size", "サイズ");
-    });
-
-    afterEach(async () => {
-      // reset
-      await i18next.init({ resources: {} });
-    });
+    withI18n();
 
     test("with accelrecord.errors.messages.accepted", () => {
       addTranslation("errors.messages.inclusion", "はリストに含まれていません");

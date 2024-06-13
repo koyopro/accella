@@ -1,4 +1,4 @@
-import i18next from "i18next";
+import { addTranslation, withI18n } from "../../contexts/i18n";
 import { User } from "../../models";
 
 describe("error message", () => {
@@ -11,19 +11,7 @@ describe("error message", () => {
   test("default", () => expect(subject()).toBe("Name can't be blank"));
 
   describe("with i18n", () => {
-    const addTranslation = (key: string, value: string) => {
-      i18next.addResource("ja", "translation", key, value);
-    };
-
-    beforeEach(async () => {
-      await i18next.init({ lng: "ja" });
-      addTranslation("accelrecord.attributes.User.name", "名前");
-    });
-
-    afterEach(async () => {
-      // reset
-      await i18next.init({ resources: {} });
-    });
+    withI18n();
 
     test("with accelrecord.errors.messages.blank", () => {
       addTranslation("accelrecord.errors.messages.blank", "を入力してください");

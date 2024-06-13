@@ -1,5 +1,5 @@
-import i18next from "i18next";
 import { Setting, User } from "..";
+import { addTranslation, withI18n } from "../../contexts/i18n";
 
 test("modelName.human", () => {
   expect(User.modelName.human).toBe("User");
@@ -12,37 +12,7 @@ test("humanAttributeName", () => {
 });
 
 describe("with i18n", () => {
-  beforeAll(async () => {
-    await i18next.init({
-      lng: "ja",
-      resources: {
-        ja: {
-          translation: {
-            accelrecord: {
-              models: {
-                User: "ユーザー",
-              },
-              attributes: {
-                User: {
-                  name: "名前",
-                },
-              },
-              errors: {
-                messages: {
-                  blank: "を入力してください",
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-  });
-
-  afterAll(async () => {
-    // reset
-    await i18next.init({ resources: {} });
-  });
+  withI18n();
 
   test("modelName.human", () => {
     expect(User.modelName.human).toBe("ユーザー");
@@ -55,6 +25,7 @@ describe("with i18n", () => {
   });
 
   test("error message", () => {
+    addTranslation("errors.messages.blank", "を入力してください");
     const user = User.build({});
     user.validates("name", { presence: true });
 
