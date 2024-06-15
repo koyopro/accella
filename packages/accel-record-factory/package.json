@@ -3,7 +3,7 @@
   "version": "1.5.0",
   "description": "",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "index.ts",
   "types": "index.ts",
   "scripts": {
     "build": "tsc"
