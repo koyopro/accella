@@ -84,6 +84,7 @@ model Profile {
   // createdAt DateTime @default(dbgenerated("CURRENT_TIMESTAMP(3)"))
   uuid    String  @default(uuid())
   cuid    String  @default(cuid())
+  data    Json    @default("[]")
 
   @@map("profiles")
 }

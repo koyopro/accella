@@ -348,6 +348,7 @@ declare module "./profile" {
     role: Role;
     uuid: string;
     cuid: string;
+    data: ProfileModel["data"]
   }
 }
 export interface NewProfile extends ProfileModel {};
@@ -381,6 +382,7 @@ type ProfileMeta = {
     role?: Role;
     uuid?: string;
     cuid?: string;
+    data?: ProfileModel["data"];
   } & ({ user: User } | { userId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
