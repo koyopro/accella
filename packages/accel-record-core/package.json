@@ -3,8 +3,8 @@
   "version": "1.5.0",
   "description": "",
   "type": "module",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc && cd src/ && find . -name '*js' -print0 | cpio -pd0 ../dist/"
   },

@@ -3,10 +3,6 @@ import { $user } from "../factories/user";
 import { Post, User } from "./index";
 
 describe("User#tojson()", () => {
-  test.only("", () => {
-    const u = $user.create({ name: "hoge" });
-    u.fuga();
-  });
   test(".build()", () => {
     const u = User.build({ name: "hoge" });
     expect(u).toBeInstanceOf(User);
