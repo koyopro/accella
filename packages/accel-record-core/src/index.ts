@@ -3,6 +3,7 @@ import { Collection } from "./associations/collectionProxy.js";
 import { HasManyAssociation } from "./associations/hasManyAssociation.js";
 import { HasOneAssociation } from "./associations/hasOneAssociation.js";
 import { AttributeAssignment } from "./attributeAssignment.js";
+import { Callbacks } from "./callbacks.js";
 import { Connection } from "./connection.js";
 import { Fields } from "./fields.js";
 import { ModelMeta } from "./meta.js";
@@ -27,6 +28,7 @@ export { DatabaseCleaner } from "./testUtils.js";
 export { Rollback } from "./transaction.js";
 export { Errors } from "./validation/errors.js";
 export { Validator } from "./validation/validator/index.js";
+export { before, after } from "./callbacks.js";
 
 export type Meta<T> = ReturnType<typeof meta<T>>;
 
@@ -53,48 +55,10 @@ export const registerModel = (model: any) => {
   Models[model.name] = model;
 };
 
-const befores = ["validation", "create", "save", "update", "destroy"] as const;
-const afters = [
-  "validation",
-  "create",
-  "save",
-  "update",
-  "destroy",
-  "commit",
-  "rollback",
-] as const;
-
-const hashOfArray = <T extends readonly string[]>(
-  array: T
-): Record<T[number], Function[]> => {
-  const ret = {} as any;
-  for (const item of array) {
-    ret[item] = [];
-  }
-  return ret;
-};
-
-export const before = (method: (typeof befores)[number]) => {
-  return function (originalMethod: (...args: any[]) => any, context: any) {
-    context.addInitializer(function (this: Model) {
-      this.callbacks.before[method].push(originalMethod);
-    });
-    return originalMethod;
-  };
-};
-
-export const after = (method: (typeof afters)[number]) => {
-  return function (originalMethod: (...args: any[]) => any, context: any) {
-    context.addInitializer(function (this: Model) {
-      this.callbacks.after[method].push(originalMethod);
-    });
-    return originalMethod;
-  };
-};
-
 // @ts-ignore
 export class Model extends classIncludes(
   AttributeAssignment,
+  Callbacks,
   Connection,
   Dirty,
   Fields,
@@ -106,11 +70,6 @@ export class Model extends classIncludes(
   Validations
 ) {
   associations: Map<string, Association<Model, Model>> = new Map();
-
-  callbacks = {
-    before: hashOfArray(befores),
-    after: hashOfArray(afters),
-  };
 
   /**
    * Checks if the current instance is equal to another instance of the same type.

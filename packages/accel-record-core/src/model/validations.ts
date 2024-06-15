@@ -52,6 +52,7 @@ export class Validations {
    * @returns A boolean indicating whether the model is valid or not.
    */
   isValid<T extends Model>(this: T): boolean {
+    this.runBeforeCallbacks("validation");
     this.errors.clearAll();
     this.validateAttributes();
     let result = this.errors.isEmpty();
@@ -73,6 +74,7 @@ export class Validations {
         }
       }
     }
+    this.runAfterCallbacks("validation");
     return result;
   }
 
