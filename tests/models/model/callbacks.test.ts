@@ -24,7 +24,8 @@ test("create callbacks", () => {
 
 test("update callbacks", () => {
   const profile = $Profile.create({ user: $user.create() });
-  profile.update({ data: [] });
+  profile.data = [];
+  profile.update({ bio: "updated" });
   expect(profile.data).toEqual([
     "beforeValidation",
     "afterValidation",
