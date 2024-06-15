@@ -93,6 +93,7 @@ model Company {
   id        Int        @id @default(autoincrement()) @map("_id")
   name      String
   employees Employee[]
+  data      Json       @default("[]")
 }
 
 model Employee {

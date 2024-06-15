@@ -404,6 +404,7 @@ declare module "./company" {
     name: string | undefined;
     get employees(): EmployeeCollection<EmployeeModel>;
     set employees(value: EmployeeModel[]);
+    data: CompanyModel["data"]
   }
 }
 export interface NewCompany extends CompanyModel {};
@@ -428,6 +429,7 @@ type CompanyMeta = {
     id?: number;
     name: string;
     employees?: EmployeeModel[];
+    data?: CompanyModel["data"];
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
