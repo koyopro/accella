@@ -1,13 +1,13 @@
 import { Model } from "./index.js";
 
-export const befores = [
+const methodsForBeforeCallback = [
   "validation",
   "create",
   "save",
   "update",
   "destroy",
 ] as const;
-export const afters = [
+const methodsForAfterCallback = [
   "validation",
   "create",
   "save",
@@ -16,7 +16,8 @@ export const afters = [
   "commit",
   "rollback",
 ] as const;
-export const hashOfArray = <T extends readonly string[]>(
+
+const makeHashOfArray = <T extends readonly string[]>(
   array: T
 ): Record<T[number], Function[]> => {
   const ret = {} as any;
@@ -26,7 +27,7 @@ export const hashOfArray = <T extends readonly string[]>(
   return ret;
 };
 
-export const before = (method: (typeof befores)[number]) => {
+export const before = (method: (typeof methodsForBeforeCallback)[number]) => {
   return function (originalMethod: (...args: any[]) => any, context: any) {
     context.addInitializer(function (this: Model) {
       this.callbacks.before[method].push(originalMethod);
@@ -35,7 +36,7 @@ export const before = (method: (typeof befores)[number]) => {
   };
 };
 
-export const after = (method: (typeof afters)[number]) => {
+export const after = (method: (typeof methodsForAfterCallback)[number]) => {
   return function (originalMethod: (...args: any[]) => any, context: any) {
     context.addInitializer(function (this: Model) {
       this.callbacks.after[method].push(originalMethod);
@@ -46,17 +47,21 @@ export const after = (method: (typeof afters)[number]) => {
 
 export class Callbacks {
   callbacks = {
-    before: hashOfArray(befores),
-    after: hashOfArray(afters),
+    before: makeHashOfArray(methodsForBeforeCallback),
+    after: makeHashOfArray(methodsForAfterCallback),
   };
 
-  runBeforeCallbacks(method: (typeof befores)[number]) {
+  protected runBeforeCallbacks(
+    method: (typeof methodsForBeforeCallback)[number]
+  ) {
     for (const cb of this.callbacks.before[method]) {
       cb.call(this);
     }
   }
 
-  runAfterCallbacks(method: (typeof afters)[number]) {
+  protected runAfterCallbacks(
+    method: (typeof methodsForAfterCallback)[number]
+  ) {
     for (const cb of this.callbacks.after[method]) {
       cb.call(this);
     }
