@@ -3,6 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { loadDmmf } from "./fields.js";
 import { Model } from "./index.js";
+import { loadI18n } from "./model/naming.js";
 // @ts-ignore
 import SyncRpc from "./sync-rpc/index.cjs";
 
@@ -75,6 +76,7 @@ export const initAccelRecord = async (config: Config) => {
     knexConfig: getKnexConfig(config),
   });
   await loadDmmf();
+  await loadI18n();
 
   Model.queryBuilder.constructor.prototype.execute = function () {
     return exec(this);

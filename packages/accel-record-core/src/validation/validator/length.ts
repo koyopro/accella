@@ -17,18 +17,14 @@ export class LengthValidator<T extends Model> extends Validator<T> {
   validate() {
     const value = this.record[this.attribute] as any;
     if (this.options.minimum && value.length < this.options.minimum) {
-      this.errors.add(
-        this.attribute,
-        this.options.message ??
-          `is too short (minimum is ${this.options.minimum} characters)`
-      );
+      this.errors.add(this.attribute, this.options.message ?? "tooShort", {
+        count: this.options.minimum,
+      });
     }
     if (this.options.maximum && value.length > this.options.maximum) {
-      this.errors.add(
-        this.attribute,
-        this.options.message ??
-          `is too long (maximum is ${this.options.maximum} characters)`
-      );
+      this.errors.add(this.attribute, this.options.message ?? "tooLong", {
+        count: this.options.maximum,
+      });
     }
   }
 }

@@ -1,3 +1,16 @@
+import { Model } from "../index.js";
+import { i18n } from "../model/naming.js";
+
+const defaultMessages: Record<string, string | undefined> = {
+  blank: "can't be blank",
+  accepted: "must be accepted",
+  invalid: "is invalid",
+  inclusion: "is not included in the list",
+  tooShort: "is too short (minimum is %{count} characters)",
+  tooLong: "is too long (maximum is %{count} characters)",
+  taken: "has already been taken",
+};
+
 /**
  * Represents an error object.
  */
@@ -8,8 +21,10 @@ export class Error {
    * @param message - The error message.
    */
   constructor(
+    private base: Model,
     public attribute: string,
-    public message: string
+    public message: string,
+    private options: { count?: number } = {}
   ) {}
 
   /**
@@ -17,7 +32,28 @@ export class Error {
    * @returns The full error message.
    */
   get fullMessage() {
-    return `${toPascalCase(this.attribute)} ${this.message}`;
+    const attrName = this.base.class().humanAttributeName(this.attribute);
+    let message = this.translatedMessage;
+    if (this.options.count) {
+      message = message.replace("%{count}", this.options.count.toString());
+    }
+    return `${attrName} ${message}`;
+  }
+
+  private get translatedMessage() {
+    const model = this.base.constructor.name;
+    const keys = [
+      `accelrecord.errors.models.${model}.attributes.${this.attribute}.${this.message}`,
+      `accelrecord.errors.models.${model}.${this.message}`,
+      "accelrecord.errors.messages.blank",
+      `errors.attributes.${this.attribute}.${this.message}`,
+      `errors.messages.${this.message}`,
+    ];
+    for (const key of keys) {
+      const message = i18n?.t(key, "");
+      if (message) return message;
+    }
+    return defaultMessages[this.message] || this.message;
   }
 }
 
@@ -26,6 +62,8 @@ export class Error {
  */
 export class Errors {
   private errors = {} as Record<string, Error[]>;
+
+  constructor(private base: Model) {}
 
   /**
    * Gets the full error messages.
@@ -42,8 +80,10 @@ export class Errors {
    * @param attribute - The attribute associated with the error.
    * @param error - The error message.
    */
-  add(attribute: string, error: string) {
-    (this.errors[attribute] ||= []).push(new Error(attribute, error));
+  add(attribute: string, error: string, options?: { count: number }) {
+    (this.errors[attribute] ||= []).push(
+      new Error(this.base, attribute, error, options)
+    );
   }
 
   /**
@@ -79,11 +119,4 @@ export class Errors {
   isEmpty() {
     return Object.keys(this.errors).length === 0;
   }
-}
-
-function toPascalCase(str: string): string {
-  return str
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join("");
 }

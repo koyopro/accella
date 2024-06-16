@@ -998,6 +998,129 @@ User.transaction(() => {
 console.log(User.count()); // => 1
 ```
 
+## 国際化(I18n)
+
+[`i18next`](https://www.i18next.com) を利用した国際化機能を提供しています。
+
+`Model.model_name.human`メソッドと`Model.human_attribute_name(attribute)`メソッドを使うことで、モデル名と属性名の翻訳を参照できます。
+
+```ts
+import i18next from "i18next";
+import { User } from "./models/index.js";
+
+i18next
+  .init({
+    lng: "ja",
+    resources: {
+      ja: {
+        translation: {
+          accelrecord: {
+            models: {
+              User: "ユーザー",
+            },
+            attributes: {
+              User: {
+                firstName: "名",
+                lastName: "姓",
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  .then(() => {
+    console.log(User.modelName.human); // => "ユーザー"
+    console.log(User.humanAttributeName("firstName")); // => "名"
+  });
+```
+
+### エラーメッセージの翻訳
+
+バリデーションエラーメッセージも翻訳に対応しており、以下からエラーメッセージを参照します。
+
+```
+accelrecord.errors.models.[ModelName].attributes.[attribute].[messageKey]
+accelrecord.errors.models.[ModelName].[messageKey]
+accelrecord.errors.messages.[messageKey]
+errors.attributes.[attribute].[messageKey]
+errors.messages.[messageKey]
+```
+
+```ts
+import { ApplicationRecord } from "./applicationRecord.js";
+
+class UserModel extends ApplicationRecord {
+  override validateAttributes() {
+    this.validates("firstName", { presence: true });
+  }
+}
+```
+
+上のUserModelの例では、`'blank'`というメッセージキーの翻訳がエラーメッセージに利用されます。
+
+この例では、以下のキーを順に探し、最初に見つかったキーが利用されます。
+
+```
+accelrecord.errors.models.User.attributes.name.blank
+accelrecord.errors.models.User.blank
+accelrecord.errors.messages.blank
+errors.attributes.name.blank
+errors.messages.blank
+```
+
+```ts
+import i18next from "i18next";
+import { User } from "./models/index.js";
+
+i18next
+  .init({
+    lng: "ja",
+    resources: {
+      ja: {
+        translation: {
+          accelrecord: {
+            models: {
+              User: "ユーザー",
+            },
+            attributes: {
+              User: {
+                firstName: "名",
+                lastName: "姓",
+              },
+            },
+            errors: {
+              messages: {
+                blank: "を入力してください",
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  .then(() => {
+    const user = User.build({});
+    user.validate();
+    console.log(User.errors.fullMessages);
+    // => ["名 を入力してください"]
+  });
+```
+
+各バリデーションに対応するメッセージキーは以下の通りです。
+
+| バリデーション | オプション | メッセージキー | 式展開 |
+| -------------- | ---------- | -------------- | ------ |
+| acceptance     | -          | 'accepted'     | -      |
+| presence       | -          | 'blank'        | -      |
+| length         | 'minimum'  | 'tooShort'     | count  |
+| length         | 'maximum'  | 'tooLong'      | count  |
+| uniqueness     | -          | 'taken'        | -      |
+| format         | -          | 'invalid'      | -      |
+| inclusion      | -          | 'inclusion'    | -      |
+
+式展開が `count` になっているものは、エラーメッセージに `%{count}` を含むときにその部分がオプションで指定された値に置き換えられます。
+
 ## Nullableな値の扱いについて
 
 Nullableな値について、TypeScriptではJavaScriptと同様にundefinedとnullの2つが存在します。 \
@@ -1028,6 +1151,5 @@ user.update({ age: undefined });
 - [accel-record-core] PostgreSQLのサポート
 - [accel-record-core] 複合IDの対応
 - [accel-record-core] クエリインターフェースの拡充
-- [accel-record-core] 国際化(I18n)
 
 関連: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
