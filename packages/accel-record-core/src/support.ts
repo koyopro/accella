@@ -16,7 +16,7 @@ Array.prototype.toHash = function <T, K extends PropertyKey, V>(
   this: Array<T>,
   callback: (item: T) => [K, V]
 ): Record<K, V> {
-  const ret = {} as any;
+  const ret = {} as Record<K, V>;
   for (const item of this) {
     const [key, value] = callback(item);
     ret[key] = value;
