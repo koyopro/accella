@@ -16,6 +16,26 @@ We currently support MySQL and SQLite, and plan to support PostgreSQL in the fut
 - Synchronous API
 - Support for MySQL and SQLite
 
+## Table of Contents
+
+- [Usage](#usage)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Examples](#examples)
+- [Model Types](#model-types)
+- [Prisma Schema and Field Types](#prisma-schema-and-field-types)
+- [Type of Json Field](#type-of-json-field)
+- [Associations](#associations)
+- [Query Interface](#query-interface)
+- [Testing](#testing)
+- [Validation](#validation)
+- [Serialization](#serialization)
+- [Bulk Insert](#bulk-insert)
+- [Transactions](#transactions)
+- [Internationalization (I18n)](#internationalization-i18n)
+- [Nullable Values Handling](#nullable-values-handling)
+- [Future Planned Features](#future-planned-features)
+
 ## Usage
 
 For example, if you define a User model like this:

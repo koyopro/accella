@@ -17,6 +17,26 @@ Active Recordパターンを採用しており、インターフェースはRuby
 - 同期的なAPI
 - MySQL, SQLiteのサポート
 
+## 目次
+
+- [利用例](#利用例)
+- [Installation](#installation)
+- [Quick Start](#quick-Start)
+- [Examples](#examples)
+- [モデルの型](#モデルの型)
+- [Prismaスキーマとフィールドの型](#prismaスキーマとフィールドの型)
+- [Jsonフィールドの型](#jsonフィールドの型)
+- [関連付け](#関連付け)
+- [クエリインターフェース](#クエリインターフェース)
+- [テスト](#テスト)
+- [バリデーション](#バリデーション)
+- [Serialization](#serialization)
+- [Bulk Insert](#bulk-Insert)
+- [トランザクション](#トランザクション)
+- [国際化(I18n)](#国際化i18n)
+- [Nullableな値の扱いについて](#nullableな値の扱いについて)
+- [今後予定されている機能追加](#今後予定されている機能追加)
+
 ## 利用例
 
 例えば以下のようにUserモデルを定義した場合、
