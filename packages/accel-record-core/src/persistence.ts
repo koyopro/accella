@@ -79,10 +79,12 @@ export class Persistence {
    */
   save<T extends Model>(this: T): this is Persisted<T> {
     if (this.isInvalid()) return false;
+    this.runBeforeCallbacks("save");
     const ret = this.createOrUpdate();
     this.isNewRecord = false;
     this.saveAssociations();
     this.storeOriginalValues();
+    this.runAfterCallbacks("save");
     return ret;
   }
 
@@ -119,6 +121,7 @@ export class Persistence {
    */
   destroy<T extends Model>(this: T): boolean {
     if (this.isReadonly) throw new Error("Readonly record");
+    this.runBeforeCallbacks("destroy");
     for (const [key, association] of this.associations.entries()) {
       if (association instanceof HasOneAssociation) {
         association.destroy();
@@ -133,6 +136,7 @@ export class Persistence {
     this.deleteRecord();
     this.isDestroyed = true;
     this.isReadonly = true;
+    this.runAfterCallbacks("destroy");
     return true;
   }
 
@@ -154,9 +158,11 @@ export class Persistence {
    */
   protected updateRecord<T extends Model>(this: T): boolean {
     if (this.isChanged()) {
+      this.runBeforeCallbacks("update");
       const data = this.makeUpdateParams();
       exec(this.queryBuilder.where(this.primaryKeysCondition()).update(data));
       this.retriveUpdatedAt(data);
+      this.runAfterCallbacks("update");
     }
     return true;
   }
@@ -203,6 +209,7 @@ export class Persistence {
    * @returns A boolean indicating whether the record was successfully created.
    */
   protected createRecord<T extends Model>(this: T): boolean {
+    this.runBeforeCallbacks("create");
     const data = this.makeInsertParams();
     let q = this.queryBuilder;
     if (Model.connection.returningUsable()) {
@@ -210,6 +217,7 @@ export class Persistence {
     }
     const returning = exec(q.insert(data)) as Record<keyof T, any>[];
     this.retriveInsertedAttributes(returning[0] ?? {});
+    this.runAfterCallbacks("create");
     return true;
   }
 
