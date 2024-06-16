@@ -1150,5 +1150,6 @@ user.update({ age: undefined });
 - [accel-record-core] PostgreSQL Support
 - [accel-record-core] Support for Composite IDs
 - [accel-record-core] Expansion of Query Interface
+- [accel-record-core] Callbacks
 
 Related: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)

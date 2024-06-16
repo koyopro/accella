@@ -1151,5 +1151,6 @@ user.update({ age: undefined });
 - [accel-record-core] PostgreSQLのサポート
 - [accel-record-core] 複合IDの対応
 - [accel-record-core] クエリインターフェースの拡充
+- [accel-record-core] コールバック
 
 関連: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
