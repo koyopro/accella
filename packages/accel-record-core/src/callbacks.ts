@@ -13,8 +13,6 @@ const methodsForAfterCallback = [
   "save",
   "update",
   "destroy",
-  "commit",
-  "rollback",
 ] as const;
 
 const makeHashOfArray = <T extends readonly string[]>(
