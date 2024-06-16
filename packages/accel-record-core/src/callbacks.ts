@@ -15,16 +15,6 @@ const methodsForAfterCallback = [
   "destroy",
 ] as const;
 
-const makeHashOfArray = <T extends readonly string[]>(
-  array: T
-): Record<T[number], Function[]> => {
-  const ret = {} as any;
-  for (const item of array) {
-    ret[item] = [];
-  }
-  return ret;
-};
-
 /**
  * The `before` decorator registers a callback function to be executed before the specified method is called.
  *
@@ -63,8 +53,8 @@ export class Callbacks {
    * An object that stores the callbacks.
    */
   callbacks = {
-    before: makeHashOfArray(methodsForBeforeCallback),
-    after: makeHashOfArray(methodsForAfterCallback),
+    before: methodsForBeforeCallback.toHash((m) => [m, [] as Function[]]),
+    after: methodsForAfterCallback.toHash((m) => [m, [] as Function[]]),
   };
 
   /**
