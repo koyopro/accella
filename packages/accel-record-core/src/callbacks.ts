@@ -25,6 +25,11 @@ const makeHashOfArray = <T extends readonly string[]>(
   return ret;
 };
 
+/**
+ * The `before` decorator registers a callback function to be executed before the specified method is called.
+ *
+ * @param method - The name of the method to add the callback to.
+ */
 export const before = (method: (typeof methodsForBeforeCallback)[number]) => {
   return function (originalMethod: (...args: any[]) => any, context: any) {
     context.addInitializer(function (this: Model) {
@@ -34,6 +39,11 @@ export const before = (method: (typeof methodsForBeforeCallback)[number]) => {
   };
 };
 
+/**
+ * The `after` decorator registers a callback function to be executed after the specified method is called.
+ *
+ * @param method - The name of the method to add the callback to.
+ */
 export const after = (method: (typeof methodsForAfterCallback)[number]) => {
   return function (originalMethod: (...args: any[]) => any, context: any) {
     context.addInitializer(function (this: Model) {
@@ -43,12 +53,24 @@ export const after = (method: (typeof methodsForAfterCallback)[number]) => {
   };
 };
 
+/**
+ * Represents a class that manages callbacks.
+ *
+ * This class is intended to be inherited by the Model class.
+ */
 export class Callbacks {
+  /**
+   * An object that stores the callbacks.
+   */
   callbacks = {
     before: makeHashOfArray(methodsForBeforeCallback),
     after: makeHashOfArray(methodsForAfterCallback),
   };
 
+  /**
+   * Runs the before callbacks for a given method.
+   * @param method - The method for which to run the before callbacks.
+   */
   protected runBeforeCallbacks(
     method: (typeof methodsForBeforeCallback)[number]
   ) {
@@ -57,6 +79,10 @@ export class Callbacks {
     }
   }
 
+  /**
+   * Runs the after callbacks for a given method.
+   * @param method - The method for which to run the after callbacks.
+   */
   protected runAfterCallbacks(
     method: (typeof methodsForAfterCallback)[number]
   ) {
