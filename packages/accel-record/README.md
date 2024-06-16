@@ -997,6 +997,129 @@ User.transaction(() => {
 console.log(User.count()); // => 1
 ```
 
+## Internationalization (I18n)
+
+We provide internationalization functionality using [`i18next`](https://www.i18next.com).
+
+You can reference the translation of model names and attribute names by using the `Model.model_name.human` method and the `Model.human_attribute_name(attribute)` method.
+
+```ts
+import i18next from "i18next";
+import { User } from "./models/index.js";
+
+i18next
+  .init({
+    lng: "en",
+    resources: {
+      en: {
+        translation: {
+          accelrecord: {
+            models: {
+              User: "User",
+            },
+            attributes: {
+              User: {
+                firstName: "First Name",
+                lastName: "Last Name",
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  .then(() => {
+    console.log(User.modelName.human); // => "User"
+    console.log(User.humanAttributeName("firstName")); // => "First Name"
+  });
+```
+
+### Translation of Error Messages
+
+Validation error messages are also translatable and can be referenced using the following keys:
+
+```
+accelrecord.errors.models.[ModelName].attributes.[attribute].[messageKey]
+accelrecord.errors.models.[ModelName].[messageKey]
+accelrecord.errors.messages.[messageKey]
+errors.attributes.[attribute].[messageKey]
+errors.messages.[messageKey]
+```
+
+```ts
+import { ApplicationRecord } from "./applicationRecord.js";
+
+class UserModel extends ApplicationRecord {
+  override validateAttributes() {
+    this.validates("firstName", { presence: true });
+  }
+}
+```
+
+In the example above, the translation of the message key `'blank'` will be used for the error message.
+
+In this example, the following keys will be searched in order, and the first key found will be used:
+
+```
+accelrecord.errors.models.User.attributes.name.blank
+accelrecord.errors.models.User.blank
+accelrecord.errors.messages.blank
+errors.attributes.name.blank
+errors.messages.blank
+```
+
+```ts
+import i18next from "i18next";
+import { User } from "./models/index.js";
+
+i18next
+  .init({
+    lng: "en",
+    resources: {
+      en: {
+        translation: {
+          accelrecord: {
+            models: {
+              User: "User",
+            },
+            attributes: {
+              User: {
+                firstName: "First Name",
+                lastName: "Last Name",
+              },
+            },
+            errors: {
+              messages: {
+                blank: "can't be blank",
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  .then(() => {
+    const user = User.build({});
+    user.validate();
+    console.log(User.errors.fullMessages);
+    // => ["First Name can't be blank"]
+  });
+```
+
+The message keys corresponding to each validation are as follows:
+
+| Validation | Option    | Message Key | Interpolation |
+| ---------- | --------- | ----------- | ------------- |
+| acceptance | -         | 'accepted'  | -             |
+| presence   | -         | 'blank'     | -             |
+| length     | 'minimum' | 'tooShort'  | count         |
+| length     | 'maximum' | 'tooLong'   | count         |
+| uniqueness | -         | 'taken'     | -             |
+| format     | -         | 'invalid'   | -             |
+| inclusion  | -         | 'inclusion' | -             |
+
+For those with interpolation set to `count`, that part will be replaced with the value specified in the option when the error message contains `%{count}`.
+
 ## Nullable Values Handling
 
 Regarding nullable values, TypeScript, like JavaScript, has two options: undefined and null. \
@@ -1027,6 +1150,5 @@ user.update({ age: undefined });
 - [accel-record-core] PostgreSQL Support
 - [accel-record-core] Support for Composite IDs
 - [accel-record-core] Expansion of Query Interface
-- [accel-record-core] Internationalization (I18n)
 
 Related: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
