@@ -1,3 +1,4 @@
+import "./support.js";
 import { Association } from "./associations/association.js";
 import { Collection } from "./associations/collectionProxy.js";
 import { HasManyAssociation } from "./associations/hasManyAssociation.js";
