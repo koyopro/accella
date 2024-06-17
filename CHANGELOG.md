@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/koyopro/accella/compare/1.5.0...1.6.0) (2024-06-18)
+
+### Features
+
+- Internationalization (I18n) ([#13](https://github.com/koyopro/accella/pull/13))
+- Transaction improvement (returning the result of the callback, supporting asynchronous callbacks) ([#12](https://github.com/koyopro/accella/pull/12))
+
 # [1.5.0](https://github.com/koyopro/accella/compare/1.4.0...1.5.0) (2024-06-10)
 
 ### Features
