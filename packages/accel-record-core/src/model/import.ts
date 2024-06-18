@@ -51,6 +51,7 @@ export class Import {
     records: Meta<T>["Base"][] | Meta<T>["CreateInput"][],
     options: ImportOptions<T> = {}
   ): ImportResult<T> {
+    const _this = this as T & typeof Import;
     const _records = records.map((r) =>
       r instanceof Model ? r : this.build(r)
     );
@@ -58,7 +59,7 @@ export class Import {
     const params = _records
       .map((record) => {
         if (options.validate === false || record.isValid()) {
-          return this.makeInsertParams(record);
+          return _this.makeInsertParams(record);
         }
         if (options.validate === "throw") {
           throw new Error("Validation failed");
@@ -68,7 +69,7 @@ export class Import {
       })
       .filter(Boolean);
     let q = this.queryBuilder.insert(params);
-    q = this.addOnConflictMerge<T>(options, q);
+    q = _this.addOnConflictMerge<T>(options, q);
     const info = exec(q);
     return {
       numInserts: info.affectedRows ?? info.changes,

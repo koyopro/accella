@@ -54,7 +54,6 @@ export const registerModel = (model: any) => {
   Models[model.name] = model;
 };
 
-// @ts-ignore
 export class Model extends classIncludes(
   AttributeAssignment,
   Connection,
