@@ -33,6 +33,10 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     this.model = model;
     this.queryBuilder = model.queryBuilder;
     this.options = Object.assign(getDefaultOptions(), options) as Options;
+    // modelのstaticメソッド一覧を取得
+    for (const f of Object.getOwnPropertyNames(Object.getPrototypeOf(model))) {
+      if (model[f].isAccelRecordScope) this[f] = model[f];
+    }
   }
   /**
    * Converts the relation to an array of type T.
