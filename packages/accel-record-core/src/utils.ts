@@ -44,3 +44,18 @@ const assign = (target: object, source: object, key: string) => {
     Object.defineProperty(target, key, desc);
   }
 };
+
+export const getMethods = <T extends object>(obj: T): (keyof T)[] => {
+  const getOwnMethods = (obj: object) =>
+    Object.entries(Object.getOwnPropertyDescriptors(obj))
+      .filter(
+        ([name, { value }]) =>
+          typeof value === "function" && name !== "constructor"
+      )
+      .map(([name]) => name as keyof T);
+  const _getMethods = (o: object, methods: (keyof T)[]): (keyof T)[] =>
+    o === Object.prototype
+      ? methods
+      : _getMethods(Object.getPrototypeOf(o), methods.concat(getOwnMethods(o)));
+  return _getMethods(obj, []);
+};

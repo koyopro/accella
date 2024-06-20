@@ -1,7 +1,7 @@
 import { Model } from "../index.js";
 import { type ModelMeta } from "../meta.js";
 import { ToHashOptions, ToHashResult } from "../model/serialization.js";
-import { classIncludes } from "../utils.js";
+import { classIncludes, getMethods } from "../utils.js";
 import { Association } from "./association.js";
 import { RelationBase } from "./base.js";
 import { Batches } from "./batches.js";
@@ -33,9 +33,11 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     this.model = model;
     this.queryBuilder = model.queryBuilder;
     this.options = Object.assign(getDefaultOptions(), options) as Options;
-    // modelのstaticメソッド一覧を取得
-    for (const f of Object.getOwnPropertyNames(Object.getPrototypeOf(model))) {
-      if (model[f].isAccelRecordScope) this[f] = model[f];
+    for (const f of getMethods(model)) {
+      const method = model[f] as any;
+      if (method.isAccelRecordScope) {
+        (this as any)[f] = method;
+      }
     }
   }
   /**
