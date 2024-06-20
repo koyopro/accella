@@ -1,12 +1,12 @@
 import { Collection, Model } from "../index.js";
 import { type ModelMeta } from "../meta.js";
 import { ToHashOptions, ToHashResult } from "../model/serialization.js";
-import { Mix } from "../utils.js";
+import { getStaticProperties, Mix } from "../utils.js";
 import { Association } from "./association.js";
 import { RelationBase } from "./base.js";
 import { Batches } from "./batches.js";
 import { Calculations } from "./calculations.js";
-import { Options, getDefaultOptions } from "./options.js";
+import { getDefaultOptions, Options } from "./options.js";
 import { Query } from "./query.js";
 import { Where } from "./where.js";
 
@@ -34,6 +34,12 @@ export class Relation<T, M extends ModelMeta> extends Mix(
     super();
     this.model = model;
     this.options = Object.assign(getDefaultOptions(), options) as Options;
+    for (const [f, _] of getStaticProperties(model)) {
+      const method = model[f as keyof typeof model] as any;
+      if (method?.isAccelRecordScope) {
+        (this as any)[f] = method;
+      }
+    }
   }
   /**
    * Converts the relation to an array of type T.
