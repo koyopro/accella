@@ -6,6 +6,7 @@ import { Association } from "./association.js";
 import { RelationBase } from "./base.js";
 import { Batches } from "./batches.js";
 import { Calculations } from "./calculations.js";
+import { Merge } from "./merge.js";
 import { Options, getDefaultOptions } from "./options.js";
 import { Query } from "./query.js";
 import { Where } from "./where.js";
@@ -17,6 +18,7 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
   Association,
   Batches,
   Calculations,
+  Merge,
   Query,
   RelationBase,
   Where
@@ -36,7 +38,7 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
     for (const f of getMethods(model)) {
       const method = model[f] as any;
       if (method.isAccelRecordScope) {
-        (this as any)[f] = method;
+        (this as any)[f] = (...args: any[]) => this.merge(method(...args));
       }
     }
   }

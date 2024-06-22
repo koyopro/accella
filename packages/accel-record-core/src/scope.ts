@@ -1,4 +1,6 @@
-export function scope(method, context) {
-  method.isAccelRecordScope = true;
+import { Relation } from "./relation/index.js";
+
+export function scope(method: (...args: any[]) => Relation<any, any>) {
+  (method as any).isAccelRecordScope = true;
   return method;
 }
