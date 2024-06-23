@@ -1,5 +1,7 @@
 import { DMMF, GeneratorOptions } from "@prisma/generator-helper";
+import { Project } from "ts-morph";
 import { toCamelCase } from "./index.js";
+import path from "path";
 
 const getFilterType = (type: string) => {
   switch (type) {
@@ -106,7 +108,45 @@ class ModelWrapper {
   }
 }
 
+const relationMethods = (options: GeneratorOptions) => {
+  const project = new Project({
+    tsConfigFilePath: path.join(process.cwd(), "tsconfig.json"),
+  });
+  const outputDir = options.generator.output?.value!;
+  const methods = {} as Record<string, ModelWrapper[]>;
+  for (const _model of options.dmmf.datamodel.models) {
+    const model = new ModelWrapper(_model, options.dmmf.datamodel);
+    const filePath = path.join(outputDir, `${toCamelCase(_model.name)}.ts`);
+    try {
+      project
+        .getSourceFile(filePath)
+        ?.getClass(model.baseModel)
+        ?.getStaticMethods()
+        .forEach((m) => {
+          if (m.getDecorator("scope")) {
+            (methods[m.getName()] ||= []).push(model);
+          }
+        });
+    } catch (e) {
+      // file not found.
+      break;
+    }
+  }
+  return (
+    Object.entries(methods)
+      .map(([name, models]) => {
+        const ts = models.map(
+          (m) =>
+            `T extends ${m.persistedModel} ? typeof ${m.baseModel}['${name}'] : `
+        );
+        return `\n    ${name}: (${ts.join("")}never);`;
+      })
+      .join("") + "\n  "
+  );
+};
+
 export const generateTypes = (options: GeneratorOptions) => {
+  const methods = relationMethods(options);
   let data = `import {
   registerModel,
   type Collection,
@@ -117,10 +157,7 @@ export const generateTypes = (options: GeneratorOptions) => {
 declare module "accel-record" {
   function meta<T>(model: T): Meta<T>;
 
-  interface Relation<T, M> {
-    john: (M extends UserMeta ? typeof UserModel['john'] : never)
-    adults: (M extends UserMeta ? typeof UserModel['adults'] : never)
-  }
+  interface Relation<T, M> {${methods}}
 }
 
 `;
