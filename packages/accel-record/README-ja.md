@@ -939,6 +939,7 @@ class MyValidator extends Validator<{ key: string | undefined }> {
 
 `before`, `after` デコレータを利用してモデルにコールバックを定義することで、バリデーションや保存の前後に処理を挟むことができます。
 コールバックの対象は `validation`, `save`, `create`, `update`, `destroy` となります。
+(TypeScript 5.0 で実装された Stage 3 のデコレータが動作する環境で利用できます)
 
 ```ts
 // ./models/callbackSample.ts

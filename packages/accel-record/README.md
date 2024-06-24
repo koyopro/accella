@@ -938,6 +938,7 @@ class MyValidator extends Validator<{ key: string | undefined }> {
 
 By using the `before` and `after` decorators, you can define callbacks in your models to perform actions before or after validation or saving records.
 The targets for callbacks are `validation`, `save`, `create`, `update`, and `destroy`.
+The feature is available in environments where Stage 3 decorators, implemented in TypeScript 5.0, are supported.
 
 ```ts
 // ./models/callbackSample.ts
