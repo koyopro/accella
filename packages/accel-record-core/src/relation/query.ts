@@ -1,7 +1,7 @@
 import { exec } from "../database.js";
 import { Model } from "../index.js";
 import { ModelMeta } from "../meta.js";
-import { Relation } from "./index.js";
+import { Relation, Relations } from "./index.js";
 
 /**
  * Provides the query methods for relations.
@@ -97,6 +97,11 @@ export class Query {
    * @returns A new Relation instance with the specified ordering applied.
    */
   order<T, M extends ModelMeta>(
+    this: Relations<T, M>,
+    attribute: keyof M["Column"],
+    direction?: "asc" | "desc"
+  ): Relation<T, M>;
+  order<T, M extends ModelMeta>(
     this: Relation<T, M>,
     attribute: keyof M["Column"],
     direction: "asc" | "desc" = "asc"
@@ -127,6 +132,10 @@ export class Query {
    *
    * @param {Partial<M["Column"]>} attributes - The attributes to update.
    */
+  updateAll<T, M extends ModelMeta>(
+    this: Relations<T, M>,
+    attributes: Partial<M["Column"]>
+  ): void;
   updateAll<T, M extends ModelMeta>(
     this: Relation<T, M>,
     attributes: Partial<M["Column"]>
@@ -168,6 +177,16 @@ export class Query {
     // @ts-ignore
     R extends { [K in F[number]]: M["Persisted"][K] },
   >(
+    this: Relations<T, M>,
+    ...attributes: F
+  ): Relation<T extends Model ? R : T & R, M>;
+  select<
+    T,
+    M extends ModelMeta,
+    F extends (keyof M["Column"])[],
+    // @ts-ignore
+    R extends { [K in F[number]]: M["Persisted"][K] },
+  >(
     this: Relation<T, M>,
     ...attributes: F
   ): Relation<T extends Model ? R : T & R, M> {
@@ -186,7 +205,7 @@ export class Query {
    * @returns An array containing the values of the specified attribute from the records.
    */
   pluck<T, M extends ModelMeta, F extends keyof M["Column"]>(
-    this: Relation<T, M>,
+    this: Relations<T, M>,
     attribute: F
   ): M["Persisted"][F][] {
     return this.select(attribute).map((r) => r[attribute] as any);
