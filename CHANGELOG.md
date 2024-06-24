@@ -1,3 +1,9 @@
+# [1.7.0](https://github.com/koyopro/accella/compare/1.6.0...1.7.0) (2024-06-25)
+
+### Features
+
+- Callbacks ([#16](https://github.com/koyopro/accella/pull/16))
+
 # [1.6.0](https://github.com/koyopro/accella/compare/1.5.0...1.6.0) (2024-06-18)
 
 ### Features
