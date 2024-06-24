@@ -1,8 +1,10 @@
+import "./support.js";
 import { Association } from "./associations/association.js";
 import { Collection } from "./associations/collectionProxy.js";
 import { HasManyAssociation } from "./associations/hasManyAssociation.js";
 import { HasOneAssociation } from "./associations/hasOneAssociation.js";
 import { AttributeAssignment } from "./attributeAssignment.js";
+import { Callbacks } from "./callbacks.js";
 import { Connection } from "./connection.js";
 import { Fields } from "./fields.js";
 import { ModelMeta } from "./meta.js";
@@ -28,6 +30,7 @@ export { DatabaseCleaner } from "./testUtils.js";
 export { Rollback } from "./transaction.js";
 export { Errors } from "./validation/errors.js";
 export { Validator } from "./validation/validator/index.js";
+export { before, after } from "./callbacks.js";
 
 export type Meta<T> = ReturnType<typeof meta<T>>;
 
@@ -57,6 +60,7 @@ export const registerModel = (model: any) => {
 // @ts-ignore
 export class Model extends classIncludes(
   AttributeAssignment,
+  Callbacks,
   Connection,
   Dirty,
   Fields,

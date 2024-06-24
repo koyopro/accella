@@ -935,6 +935,29 @@ class MyValidator extends Validator<{ key: string | undefined }> {
 }
 ```
 
+## コールバック
+
+`before`, `after` デコレータを利用してモデルにコールバックを定義することで、バリデーションや保存の前後に処理を挟むことができます。
+コールバックの対象は `validation`, `save`, `create`, `update`, `destroy` となります。
+(TypeScript 5.0 で実装された Stage 3 のデコレータが動作する環境で利用できます)
+
+```ts
+// ./models/callbackSample.ts
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class CallbackSampleModel extends ApplicationRecord {
+  @before("save")
+  beforeSave() {
+    // this method is called before save
+  }
+
+  @after("create")
+  afterCreate() {
+    // this method is called after create
+  }
+}
+```
+
 ## Serialization
 
 `toHash`メソッドや`toHashArray`メソッドを利用することで、モデルのデータをプレーンなオブジェクトに変換することができます。
@@ -1168,9 +1191,9 @@ user.update({ age: undefined });
 ## 今後予定されている機能追加
 
 - [accel-record-core] スコープ
+- [accel-record-core] Authentication
 - [accel-record-core] PostgreSQLのサポート
 - [accel-record-core] 複合IDの対応
 - [accel-record-core] クエリインターフェースの拡充
-- [accel-record-core] コールバック
 
 関連: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)

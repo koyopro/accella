@@ -934,6 +934,29 @@ class MyValidator extends Validator<{ key: string | undefined }> {
 }
 ```
 
+## Callbacks
+
+By using the `before` and `after` decorators, you can define callbacks in your models to perform actions before or after validation or saving records.
+The targets for callbacks are `validation`, `save`, `create`, `update`, and `destroy`.
+The feature is available in environments where Stage 3 decorators, implemented in TypeScript 5.0, are supported.
+
+```ts
+// ./models/callbackSample.ts
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class CallbackSampleModel extends ApplicationRecord {
+  @before("save")
+  beforeSave() {
+    // this method is called before save
+  }
+
+  @after("create")
+  afterCreate() {
+    // this method is called after create
+  }
+}
+```
+
 ## Serialization
 
 By using the `toHash` and `toHashArray` methods, you can convert the model's data into plain objects.
@@ -1167,9 +1190,9 @@ user.update({ age: undefined });
 ## Future Planned Features
 
 - [accel-record-core] Scopes
+- [accel-record-core] Authentication
 - [accel-record-core] PostgreSQL Support
 - [accel-record-core] Support for Composite IDs
 - [accel-record-core] Expansion of Query Interface
-- [accel-record-core] Callbacks
 
 Related: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
