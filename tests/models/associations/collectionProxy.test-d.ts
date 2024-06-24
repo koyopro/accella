@@ -17,6 +17,32 @@ describe("setter / getter", () => {
     assertType(u.posts.push([Post.build({})]));
   });
 
+  test("Relation methods from NewUser#posts", () => {
+    const u = $user.build();
+    // @ts-expect-error
+    u.posts.first();
+    // @ts-expect-error
+    u.posts.where({ id: 1 }).toArray();
+    // @ts-expect-error
+    u.posts.order("id").toArray();
+    // @ts-expect-error
+    u.posts.joins("tags").toArray();
+    // @ts-expect-error
+    u.posts.includes("tags").toArray();
+    // @ts-expect-error
+    u.posts.minimum("id");
+    // @ts-expect-error
+    u.posts.maximum("id");
+    // @ts-expect-error
+    u.posts.average("id");
+    // @ts-expect-error
+    u.posts.updateAll({ id: 1 });
+    // @ts-expect-error
+    u.posts.select("id").toArray();
+    // @ts-expect-error
+    u.posts.pluck("id");
+  });
+
   test("Relation methods", () => {
     const u = $user.create();
     expectTypeOf(u.posts.where({ id: 1 }).toArray()).toMatchTypeOf<Post[]>();
