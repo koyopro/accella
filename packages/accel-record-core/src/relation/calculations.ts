@@ -1,6 +1,6 @@
 import { exec } from "../database.js";
 import { ModelMeta } from "../meta.js";
-import { Relation } from "./index.js";
+import { Relation, Relations } from "./index.js";
 
 /**
  * A class that provides various calculations on a relation.
@@ -26,6 +26,10 @@ export class Calculations {
    * @returns The minimum value of the specified attribute.
    */
   minimum<T, M extends ModelMeta>(
+    this: Relations<T, M>,
+    attribute: keyof M["Column"]
+  ): number;
+  minimum<T, M extends ModelMeta>(
     this: Relation<T, M>,
     attribute: keyof M["Column"]
   ) {
@@ -42,6 +46,10 @@ export class Calculations {
    * @returns The maximum value of the specified attribute.
    */
   maximum<T, M extends ModelMeta>(
+    this: Relations<T, M>,
+    attribute: keyof M["Column"]
+  ): number;
+  maximum<T, M extends ModelMeta>(
     this: Relation<T, M>,
     attribute: keyof M["Column"]
   ) {
@@ -57,6 +65,10 @@ export class Calculations {
    * @param attribute - The attribute to calculate the average for.
    * @returns The average value of the specified attribute.
    */
+  average<T, M extends ModelMeta>(
+    this: Relations<T, M>,
+    attribute: keyof M["Column"]
+  ): number;
   average<T, M extends ModelMeta>(
     this: Relation<T, M>,
     attribute: keyof M["Column"]

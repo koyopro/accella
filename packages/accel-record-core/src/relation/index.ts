@@ -1,4 +1,4 @@
-import { Model } from "../index.js";
+import { Collection, Model } from "../index.js";
 import { type ModelMeta } from "../meta.js";
 import { ToHashOptions, ToHashResult } from "../model/serialization.js";
 import { classIncludes } from "../utils.js";
@@ -11,6 +11,10 @@ import { Query } from "./query.js";
 import { Where } from "./where.js";
 
 export { Options } from "./options.js";
+
+export type Relations<T, M extends ModelMeta> =
+  | Relation<T, M>
+  | Collection<T extends Model ? T : any, M>;
 
 // @ts-ignore
 export class Relation<T, M extends ModelMeta> extends classIncludes(

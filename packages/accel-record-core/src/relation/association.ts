@@ -1,6 +1,6 @@
 import { Association as Info } from "../fields.js";
 import { ModelMeta } from "../meta.js";
-import { Relation } from "./index.js";
+import { Relation, Relations } from "./index.js";
 
 /**
  * Provides the association methods for relations.
@@ -14,6 +14,10 @@ export class Association {
    * @param input - The association keys to include.
    * @returns A new `Relation` instance with the specified associations included.
    */
+  includes<T, M extends ModelMeta>(
+    this: Relations<T, M>,
+    ...input: M["AssociationKey"][]
+  ): Relation<T, M>;
   includes<T, M extends ModelMeta>(
     this: Relation<T, M>,
     ...input: M["AssociationKey"][]
@@ -33,6 +37,10 @@ export class Association {
    * @param input - The association keys to join.
    * @returns A new `Relation` instance with the added join conditions.
    */
+  joins<T, M extends ModelMeta>(
+    this: Relations<T, M>,
+    ...input: M["AssociationKey"][]
+  ): Relation<T, M>;
   joins<T, M extends ModelMeta>(
     this: Relation<T, M>,
     ...input: M["AssociationKey"][]

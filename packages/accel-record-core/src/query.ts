@@ -170,7 +170,7 @@ export class Query {
   static updateAll<T extends typeof Model>(
     this: T,
     attributes: Partial<Meta<T>["Column"]>
-  ) {
+  ): void {
     return this.all().updateAll(attributes);
   }
 
@@ -336,7 +336,7 @@ export class Query {
   static maximum<T extends typeof Model>(
     this: T,
     attribute: keyof Meta<T>["Column"]
-  ) {
+  ): number {
     return this.all().maximum(attribute);
   }
 
@@ -348,7 +348,7 @@ export class Query {
   static minimum<T extends typeof Model>(
     this: T,
     attribute: keyof Meta<T>["Column"]
-  ) {
+  ): number {
     return this.all().minimum(attribute);
   }
 
@@ -360,7 +360,7 @@ export class Query {
   static average<T extends typeof Model>(
     this: T,
     attribute: keyof Meta<T>["Column"]
-  ) {
+  ): number {
     return this.all().average(attribute);
   }
 

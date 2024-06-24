@@ -1,5 +1,6 @@
 import { Relation } from "../index.js";
 import { ModelMeta } from "../meta.js";
+import { Relations } from "./index.js";
 
 /**
  * Provides the *where* related methods for relations.
@@ -14,7 +15,7 @@ export class Where {
    * @returns A new instance of the Relation class with the WHERE clause added.
    */
   where<T, M extends ModelMeta>(
-    this: Relation<T, M>,
+    this: Relations<T, M>,
     input: M["WhereInput"]
   ): Relation<T, M>;
   /**
@@ -25,7 +26,7 @@ export class Where {
    * @returns A new instance of the Relation class with the WHERE clause added.
    */
   where<T, M extends ModelMeta>(
-    this: Relation<T, M>,
+    this: Relations<T, M>,
     query: string,
     ...bindings: any[]
   ): Relation<T, M>;
@@ -102,6 +103,10 @@ export class Where {
    * @param input - The input object specifying the "where not" condition.
    * @returns A new instance of the Relation class with the added "where not" condition.
    */
+  whereNot<T, M extends ModelMeta>(
+    this: Relations<T, M>,
+    input: M["WhereInput"]
+  ): Relation<T, M>;
   whereNot<T, M extends ModelMeta>(
     this: Relation<T, M>,
     input: M["WhereInput"]
