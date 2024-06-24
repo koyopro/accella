@@ -29,6 +29,7 @@ We currently support MySQL and SQLite, and plan to support PostgreSQL in the fut
 - [Query Interface](#query-interface)
 - [Testing](#testing)
 - [Validation](#validation)
+- [Callbacks](#callbacks)
 - [Serialization](#serialization)
 - [Bulk Insert](#bulk-insert)
 - [Transactions](#transactions)
