@@ -30,14 +30,12 @@ export const classIncludes = <T extends (new (...args: any) => any)[]>(
     }
   };
   for (let arg of args) {
-    for (let key of Object.getOwnPropertyNames(arg)) {
-      if (["length", "name", "prototype"].includes(key)) continue;
-      assign(newClass, arg, key);
-    }
-    for (let key of Object.getOwnPropertyNames(arg.prototype)) {
-      if (["constructor"].includes(key)) continue;
-      assign(newClass.prototype, arg.prototype, key);
-    }
+    getStaticProperties(arg).forEach((klass, key) => {
+      assign(newClass, klass, key);
+    });
+    getInstanceMethods(arg).forEach((proto, key) => {
+      assign(newClass.prototype, proto, key);
+    });
   }
   return newClass;
 };
@@ -47,4 +45,46 @@ const assign = (target: object, source: object, key: string) => {
   if (desc) {
     Object.defineProperty(target, key, desc);
   }
+};
+
+const getInstanceMethods = <T>(arg: new (...args: any[]) => T) => {
+  const properties = new Map<string, any>();
+  let currentProto = arg.prototype;
+
+  while (currentProto && currentProto !== Object.prototype) {
+    Object.getOwnPropertyNames(currentProto).forEach((prop) => {
+      const descriptor = Object.getOwnPropertyDescriptor(currentProto, prop);
+      if (prop != "constructor" && descriptor) {
+        properties.set(prop, currentProto);
+      }
+    });
+    currentProto = Object.getPrototypeOf(currentProto);
+  }
+
+  return properties;
+};
+
+const getStaticProperties = <T extends Function>(cls: T) => {
+  const properties = new Map<string, any>();
+  let currentCls = cls;
+
+  while (currentCls) {
+    Object.getOwnPropertyNames(currentCls).forEach((prop) => {
+      if (
+        prop !== "constructor" &&
+        prop !== "prototype" &&
+        prop !== "length" &&
+        prop !== "name"
+      ) {
+        properties.set(prop, currentCls);
+      }
+    });
+
+    currentCls = Object.getPrototypeOf(currentCls);
+    if (currentCls === Function.prototype) {
+      break;
+    }
+  }
+
+  return properties;
 };

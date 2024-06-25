@@ -32,7 +32,7 @@ export { Errors } from "./validation/errors.js";
 export { Validator } from "./validation/validator/index.js";
 export { before, after } from "./callbacks.js";
 
-export { classIncludes as mixin };
+export { classIncludes as Mix };
 
 export type Meta<T> = ReturnType<typeof meta<T>>;
 
