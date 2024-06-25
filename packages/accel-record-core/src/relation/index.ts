@@ -16,7 +16,6 @@ export type Relations<T, M extends ModelMeta> =
   | Relation<T, M>
   | Collection<T extends Model ? T : any, M>;
 
-// @ts-ignore
 export class Relation<T, M extends ModelMeta> extends classIncludes(
   Association,
   Batches,
