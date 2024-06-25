@@ -12,7 +12,6 @@ import { Where } from "./where.js";
 
 export { Options } from "./options.js";
 
-// @ts-ignore
 export class Relation<T, M extends ModelMeta> extends classIncludes(
   Association,
   Batches,

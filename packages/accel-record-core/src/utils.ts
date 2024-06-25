@@ -1,3 +1,7 @@
+type WithoutConstructor<T> = {
+  [P in keyof T]: T[P];
+};
+
 type InstanceTypeIntersection<T extends any[]> = T extends [
   infer Head extends abstract new (...args: any) => any,
   ...infer Tail extends (abstract new (...args: any) => any)[],
@@ -9,7 +13,7 @@ type ObjectIntersection<T extends any[]> = T extends [
   infer Head extends abstract new (...args: any) => any,
   ...infer Tail extends (abstract new (...args: any) => any)[],
 ]
-  ? Head & ObjectIntersection<Tail>
+  ? WithoutConstructor<Head> & ObjectIntersection<Tail>
   : {};
 
 export const classIncludes = <T extends (new (...args: any) => any)[]>(
