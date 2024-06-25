@@ -21,6 +21,9 @@ test("hasSecurePassword()", () => {
 
   User.findBy({ name: "david" })?.authenticate("notright"); //=> false
   User.findBy({ name: "david" })?.authenticate("mUc3m00RsqyRe"); //=> user
+
+  // @ts-expect-error
+  user.hoge;
 });
 
 test("hasSecurePassword() with validations: false", () => {
@@ -29,7 +32,6 @@ test("hasSecurePassword() with validations: false", () => {
     hasSecurePassword({ validations: false })
   ) {}
   const user = new NoValidationsUser();
-  // @ts-ignore
   user.passwordConfirmation = "nomatch";
   expect(user.isValid()).toBe(true);
 });
@@ -40,9 +42,6 @@ test("hasSecurePassword() with custom attribute", () => {
     hasSecurePassword({ attribute: "recovery" })
   ) {}
   const user = new CustomAttributeUser();
-  // @ts-ignore
-  user.recovery = "mUc3m00RsqyRe";
-  // @ts-ignore
-  user.recoveryConfirmation = "mUc3m00RsqyRe";
+  user.recovery = user.recoveryConfirmation = "mUc3m00RsqyRe";
   expect(user.isValid()).toBe(true);
 });
