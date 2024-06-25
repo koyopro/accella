@@ -31,6 +31,7 @@ export { Rollback } from "./transaction.js";
 export { Errors } from "./validation/errors.js";
 export { Validator } from "./validation/validator/index.js";
 export { before, after } from "./callbacks.js";
+export { hasSecurePassword } from "./model/securePassword.js";
 
 export { classIncludes as Mix };
 
