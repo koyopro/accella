@@ -16,8 +16,8 @@ export const ensureApplicationRecord = async (options: GeneratorOptions) => {
 const generateApplicationRecord = () => {
   return `import { Model } from "accel-record";
 
-export abstract class ApplicationRecord extends Model {
-  // Implement abstract methods
+export class ApplicationRecord extends Model {
+  // Implement methods
 }
 `;
 };

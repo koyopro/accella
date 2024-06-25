@@ -32,6 +32,8 @@ export { Errors } from "./validation/errors.js";
 export { Validator } from "./validation/validator/index.js";
 export { before, after } from "./callbacks.js";
 
+export { classIncludes as mixin };
+
 export type Meta<T> = ReturnType<typeof meta<T>>;
 
 export declare function meta<T>(model: T): ModelMeta;
