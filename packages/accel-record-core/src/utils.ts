@@ -42,7 +42,19 @@ export const classIncludes = <T extends (new (...args: any) => any)[]>(
 
 const assign = (target: object, source: object, key: string) => {
   const desc = Object.getOwnPropertyDescriptor(source, key);
-  if (desc) {
+  const targetDesc = Object.getOwnPropertyDescriptor(target, key);
+  if (
+    typeof targetDesc?.value == "function" &&
+    typeof desc?.value == "function"
+  ) {
+    // already has a method, so we need to wrap it
+    Object.defineProperty(target, key, {
+      value: function (this: any, ...args: any[]) {
+        targetDesc.value.apply(this, args);
+        desc.value.apply(this, args);
+      },
+    });
+  } else if (desc) {
     Object.defineProperty(target, key, desc);
   }
 };
