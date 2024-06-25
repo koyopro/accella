@@ -1,5 +1,7 @@
+import { hasSecurePassword, Mix } from "accel-record-core";
 import { User } from "..";
 import { $user } from "../../factories/user";
+import { ApplicationRecord } from "../applicationRecord";
 
 test("hasSecurePassword()", () => {
   const user = $user.build({ name: "david" });
@@ -19,4 +21,28 @@ test("hasSecurePassword()", () => {
 
   User.findBy({ name: "david" })?.authenticate("notright"); //=> false
   User.findBy({ name: "david" })?.authenticate("mUc3m00RsqyRe"); //=> user
+});
+
+test("hasSecurePassword() with validations: false", () => {
+  class NoValidationsUser extends Mix(
+    ApplicationRecord,
+    hasSecurePassword({ validations: false })
+  ) {}
+  const user = new NoValidationsUser();
+  // @ts-ignore
+  user.passwordConfirmation = "nomatch";
+  expect(user.isValid()).toBe(true);
+});
+
+test("hasSecurePassword() with custom attribute", () => {
+  class CustomAttributeUser extends Mix(
+    ApplicationRecord,
+    hasSecurePassword({ attribute: "recovery" })
+  ) {}
+  const user = new CustomAttributeUser();
+  // @ts-ignore
+  user.recovery = "mUc3m00RsqyRe";
+  // @ts-ignore
+  user.recoveryConfirmation = "mUc3m00RsqyRe";
+  expect(user.isValid()).toBe(true);
 });
