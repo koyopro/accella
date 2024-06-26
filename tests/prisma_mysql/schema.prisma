@@ -14,16 +14,17 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement()) @map("_id")
-  email     String     @unique
-  name      String?    @map("user_name")
-  age       Int?
-  posts     Post[]
-  setting   Setting?
-  teams     UserTeam[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  Profile   Profile?
+  id             Int        @id @default(autoincrement()) @map("_id")
+  email          String     @unique
+  passwordDigest String?
+  name           String?    @map("user_name")
+  age            Int?
+  posts          Post[]
+  setting        Setting?
+  teams          UserTeam[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  Profile        Profile?
 }
 
 model Team {
