@@ -1,10 +1,11 @@
 import { Model } from "../index.js";
+import { compareSync, genSaltSync, hashSync } from "bcrypt-ts";
 
 type SecurePassword<T extends string> = {
   new (): {
     [K in T | `${T}Confirmation`]: string | undefined;
   } & {
-    authenticate<M extends Model>(this: M, password: string): false | M;
+    authenticate<M extends Model>(this: M, password: string): boolean;
     validateAttributes(): void;
   };
 };
@@ -27,20 +28,15 @@ export function hasSecurePassword<T extends string = "password">(
       return this._password;
     }
     set [attribute](value: string | undefined) {
+      (this as any)[`${attribute}Digest`] =
+        value == undefined ? undefined : hashSync(value, genSaltSync());
       this._password = value;
     }
     set [confirmAttribute](value: string) {
       this._passwordConfirmation = value;
     }
-    authenticate<T extends Model & SecurePassword>(
-      this: T,
-      password: string
-    ): false | T {
-      if (password === this._password) {
-        return this;
-      } else {
-        return false;
-      }
+    authenticate<T extends Model & SecurePassword>(this: T, password: string) {
+      return compareSync(password, (this as any)[`${attribute}Digest`]);
     }
     validateAttributes<T extends Model & SecurePassword>(this: T) {
       if (!validations) return;
