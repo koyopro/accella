@@ -125,15 +125,13 @@ const relationMethods = (options: GeneratorOptions) => {
       );
       ts.forEachChild(sourceFile, (node) => {
         if (ts.isClassDeclaration(node)) {
-          const className = node.name?.getText();
-          if (className === model.baseModel) {
+          if (node.name?.getText() === model.baseModel) {
             ts.forEachChild(node, (childNode) => {
               if (ts.isMethodDeclaration(childNode)) {
                 const decorators = getDecorators(childNode);
                 if (decorators) {
                   decorators.forEach((decorator) => {
-                    const decoratorName = decorator.expression.getText();
-                    if (decoratorName === "scope") {
+                    if (decorator.expression.getText() === "scope") {
                       (methods[childNode.name.getText()] ||= []).push(model);
                     }
                   });
