@@ -1,7 +1,8 @@
 import { DMMF, GeneratorOptions } from "@prisma/generator-helper";
-import { Project } from "ts-morph";
-import { toCamelCase } from "./index.js";
+import fs from "fs";
 import path from "path";
+import ts, { getDecorators } from "typescript";
+import { toCamelCase } from "./index.js";
 
 const getFilterType = (type: string) => {
   switch (type) {
@@ -109,24 +110,39 @@ class ModelWrapper {
 }
 
 const relationMethods = (options: GeneratorOptions) => {
-  const project = new Project({
-    tsConfigFilePath: path.join(process.cwd(), "tsconfig.json"),
-  });
   const outputDir = options.generator.output?.value!;
   const methods = {} as Record<string, ModelWrapper[]>;
   for (const _model of options.dmmf.datamodel.models) {
     const model = new ModelWrapper(_model, options.dmmf.datamodel);
     const filePath = path.join(outputDir, `${toCamelCase(_model.name)}.ts`);
     try {
-      project
-        .getSourceFile(filePath)
-        ?.getClass(model.baseModel)
-        ?.getStaticMethods()
-        .forEach((m) => {
-          if (m.getDecorator("scope")) {
-            (methods[m.getName()] ||= []).push(model);
+      const sourceCode = fs.readFileSync(filePath, "utf-8");
+      const sourceFile = ts.createSourceFile(
+        filePath,
+        sourceCode,
+        ts.ScriptTarget.Latest,
+        true
+      );
+      ts.forEachChild(sourceFile, (node) => {
+        if (ts.isClassDeclaration(node)) {
+          const className = node.name?.getText();
+          if (className === model.baseModel) {
+            ts.forEachChild(node, (childNode) => {
+              if (ts.isMethodDeclaration(childNode)) {
+                const decorators = getDecorators(childNode);
+                if (decorators) {
+                  decorators.forEach((decorator) => {
+                    const decoratorName = decorator.expression.getText();
+                    if (decoratorName === "scope") {
+                      (methods[childNode.name.getText()] ||= []).push(model);
+                    }
+                  });
+                }
+              }
+            });
           }
-        });
+        }
+      });
     } catch (e) {
       // file not found.
       break;
