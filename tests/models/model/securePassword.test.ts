@@ -12,15 +12,18 @@ test("hasSecurePassword()", () => {
   expect(user.save()).toBe(false); // confirmation doesn't match
   user.passwordConfirmation = "mUc3m00RsqyRe";
   expect(user.save()).toBe(true);
+
+  expect(user.passwordDigest).not.toBeUndefined();
   // user.recovery_password = "42password"
   // user.recovery_password_digest                              #=> "$2a$04$iOfhwahFymCs5weB3BNH/uXkTG65HR.qpW.bNhEjFP3ftli3o5DQC"
   // user.save                                                  #=> true
 
   expect(user.authenticate("notright")).toBe(false);
-  expect(user.authenticate("mUc3m00RsqyRe")).toBe(user);
+  expect(user.authenticate("mUc3m00RsqyRe")).toBe(true);
 
-  User.findBy({ name: "david" })?.authenticate("notright"); //=> false
-  User.findBy({ name: "david" })?.authenticate("mUc3m00RsqyRe"); //=> user
+  const u = User.find(user.id!);
+  expect(u.authenticate("notright")).toBe(false);
+  expect(u.authenticate("mUc3m00RsqyRe")).toBe(true);
 
   // @ts-expect-error
   user.hoge;
