@@ -28,15 +28,21 @@ export function hasSecurePassword<T extends string = "password">(
       return this._password;
     }
     set [attribute](value: string | undefined) {
-      (this as any)[`${attribute}Digest`] =
+      this.digest =
         value == undefined ? undefined : hashSync(value, genSaltSync());
       this._password = value;
     }
     set [confirmAttribute](value: string) {
       this._passwordConfirmation = value;
     }
+    private get digest() {
+      return (this as any)[`${attribute}Digest`] as string | undefined;
+    }
+    private set digest(value: string | undefined) {
+      (this as any)[`${attribute}Digest`] = value;
+    }
     authenticate<T extends Model & SecurePassword>(this: T, password: string) {
-      return compareSync(password, (this as any)[`${attribute}Digest`]);
+      return this.digest ? compareSync(password, this.digest) : false;
     }
     validateAttributes<T extends Model & SecurePassword>(this: T) {
       if (!validations) return;
