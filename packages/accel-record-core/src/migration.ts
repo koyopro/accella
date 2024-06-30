@@ -2,7 +2,11 @@ import crypto from "crypto";
 import fs from "fs";
 import Knex from "knex";
 import path from "path";
-import { getConfig, getKnex, getKnexConfig } from "./database.js";
+import { getConfig, getKnex } from "./database.js";
+import { Migrator } from "./migration/migrator.js";
+import { MySQLMigrator } from "./migration/mysqlMigrator.js";
+import { PostgresqlMigrator } from "./migration/postgresqlMigrator.js";
+import { SqliteMigrator } from "./migration/sqliteMigrator.js";
 
 const logsTable = "_prisma_migrations";
 
@@ -11,46 +15,27 @@ export class Migration {
   logsMap: Map<any, any>;
 
   static async migrate() {
+    const migrator = this.newMigrator();
     if (process.env.NODE_ENV == "test") {
-      await this.ensureDatabaseExists();
+      await migrator.ensureDatabaseExists();
     }
-    return await new this().applyAllPendingMigrations();
+    return await new this(migrator).applyAllPendingMigrations();
   }
 
-  static async ensureDatabaseExists() {
-    const config = getConfig();
-    if (config.type == "mysql") {
-      const parse = () => {
-        const knexConfig = getKnexConfig(config);
-        if (typeof knexConfig?.connection == "string") {
-          const u = new URL(knexConfig.connection);
-          const database = u.pathname.replace("/", "");
-          u.pathname = "";
-          const newConfig = { ...knexConfig, connection: u.toString() };
-          return [database, newConfig];
-        } else if (knexConfig) {
-          // @ts-ignore
-          const { database, ...rest } = knexConfig.connection;
-          const newConfig = { ...knexConfig, connection: rest };
-          return [database, newConfig];
-        } else {
-          throw new Error("Invalid knexConfig");
-        }
-      };
-      const [database, newConfig] = parse();
-      const knex = Knex(newConfig);
-      const exists = await knex.raw(`SHOW DATABASES LIKE "${database}";`);
-      if (exists[0].length == 0) {
-        console.log(`Creating database \`${database}\``);
-        await knex.raw(`CREATE DATABASE ${database};`);
-      }
-      knex.destroy();
-    } else {
-      // when using sqlite, the database file is created automatically
+  static newMigrator() {
+    switch (getConfig().type) {
+      case "mysql":
+        return new MySQLMigrator();
+      case "pg":
+        return new PostgresqlMigrator();
+      case "sqlite":
+        return new SqliteMigrator();
+      default:
+        throw new Error("Invalid type");
     }
   }
 
-  constructor() {
+  constructor(protected migrator: Migrator) {
     this.knex = getKnex();
     this.logsMap = new Map();
   }
@@ -70,7 +55,7 @@ export class Migration {
   }
 
   async applyAllPendingMigrations() {
-    await this.createLogsTableIfNotExists();
+    await this.migrator.createLogsTableIfNotExists();
     await this.resetLogsMap();
     let applyCount = 0;
     for (const dir of fs.readdirSync(this.migrationsPath)) {
@@ -124,35 +109,8 @@ export class Migration {
   protected isPending(dir: string) {
     return !this.logsMap.get(dir);
   }
-
-  protected async createLogsTableIfNotExists() {
-    return this.knex.raw(this.type == "mysql" ? MYSQL_DDL : SQLITE_DDL);
-  }
 }
 
 const sha256hash = (buffer: Buffer) => {
   return crypto.createHash("sha256").update(buffer).digest("hex");
 };
-
-const MYSQL_DDL = `CREATE TABLE IF NOT EXISTS \`_prisma_migrations\` (
-  \`id\` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  \`checksum\` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  \`finished_at\` datetime(3) DEFAULT NULL,
-  \`migration_name\` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  \`logs\` text COLLATE utf8mb4_unicode_ci,
-  \`rolled_back_at\` datetime(3) DEFAULT NULL,
-  \`started_at\` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  \`applied_steps_count\` int unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (\`id\`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`;
-
-const SQLITE_DDL = `CREATE TABLE IF NOT EXISTS "_prisma_migrations" (
-    "id"                    TEXT PRIMARY KEY NOT NULL,
-    "checksum"              TEXT NOT NULL,
-    "finished_at"           DATETIME,
-    "migration_name"        TEXT NOT NULL,
-    "logs"                  TEXT,
-    "rolled_back_at"        DATETIME,
-    "started_at"            DATETIME NOT NULL DEFAULT current_timestamp,
-    "applied_steps_count"   INTEGER UNSIGNED NOT NULL DEFAULT 0
-);`;

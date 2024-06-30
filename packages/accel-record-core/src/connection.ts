@@ -26,7 +26,7 @@ export class Connection {
        * Checks if the database adapter supports returning clause.
        */
       returningUsable: () => {
-        return ["sqlite"].includes(getConfig().type);
+        return ["sqlite", "pg"].includes(getConfig().type);
       },
 
       /**
