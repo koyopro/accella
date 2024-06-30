@@ -60,7 +60,8 @@ describe("Columns", () => {
     expect(
       Profile.where({ role: ["ADMIN", "MEMBER"] })
         .order("role")
-        .count()
-    ).toBe(1);
+        .first()
+        ?.equals(p)
+    ).toBe(true);
   });
 });
