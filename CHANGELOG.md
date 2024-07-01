@@ -1,3 +1,13 @@
+# [1.8.0](https://github.com/koyopro/accella/compare/1.7.0...1.8.0) (2024-07-02)
+
+### Features
+
+- PostgreSQL Support ([#18](https://github.com/koyopro/accella/pull/18))
+
+### Bug Fixes
+
+- Modify the type of Relation's methods for Collection. ([#17](https://github.com/koyopro/accella/pull/17))
+
 # [1.7.0](https://github.com/koyopro/accella/compare/1.6.0...1.7.0) (2024-06-25)
 
 ### Features
