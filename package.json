@@ -10,10 +10,13 @@
     "build": "npm run build --workspaces --if-present",
     "generate:sqlite": "DATABASE_URL=file:./test.db npx prisma generate --schema=tests/prisma/schema.prisma",
     "generate:mysql": "npx prisma generate --schema=tests/prisma_mysql/schema.prisma",
+    "generate:pg": "npx prisma generate --schema=tests/prisma_pg/schema.prisma",
     "migrate:sqlite": "DATABASE_URL=file:./test.db npx prisma migrate dev --schema=tests/prisma/schema.prisma",
     "migrate:mysql": "npx prisma migrate dev --schema=tests/prisma_mysql/schema.prisma",
+    "migrate:pg": "npx prisma migrate dev --schema=tests/prisma_pg/schema.prisma",
     "test:sqlite": "vitest",
     "test:mysql": "DB_ENGINE=mysql vitest --typecheck",
+    "test:pg": "DB_ENGINE=pg vitest --typecheck",
     "sample": "tsc -p . && node dist/src/index.js"
   },
   "repository": {
@@ -38,6 +41,7 @@
     "better-sqlite3": "^9.4.1",
     "i18next": "^23.11.5",
     "mysql2": "^3.9.8",
+    "pg": "^8.12.0",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
     "vite": "^5.3.1",

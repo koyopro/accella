@@ -1,6 +1,7 @@
 import { $user } from "../../factories/user.js";
 import { $ValidateSample } from "../../factories/validateSample.js";
 import { User, ValidateSample } from "../index.js";
+import { UserModel } from "../user.js";
 
 test(".import", () => {
   const users = [
@@ -19,35 +20,41 @@ test(".import with Array of Hash", () => {
   expect(User.first()?.email).toBe("foo@example.com");
 });
 
-test(".import with onDuplicateKeyUpdate", () => {
-  const user = $user.create({ email: "foo@example.com", name: "foo", age: 10 });
-  const users = [
-    $user.build({ email: "foo@example.com", name: "foo2", age: 20 }), // conflict
-    $user.build({ email: "bar@example.com", name: "bar", age: 30 }), // new
-  ];
-  expect(() => User.import(users)).toThrow();
+describe(".import with onDuplicateKeyUpdate", () => {
+  let user: User;
+  let users: UserModel[];
 
-  if (User.connection.adapterName === "mysql") {
-    User.import(users, { onDuplicateKeyUpdate: ["name"] });
-  } else {
-    User.import(users, {
-      onDuplicateKeyUpdate: ["name"],
-      conflictTarget: ["email"],
-    });
-  }
-  user.reload();
-  expect(user.name).toBe("foo2"); // should be updated
-  expect(user.age).toBe(10); // should not be updated
+  beforeEach(() => {
+    user = $user.create({ email: "foo@example.com", name: "foo", age: 10 });
+    users = [
+      $user.build({ email: "foo@example.com", name: "foo2", age: 20 }), // conflict
+      $user.build({ email: "bar@example.com", name: "bar", age: 30 }), // new
+    ];
+  });
 
-  if (User.connection.adapterName === "mysql") {
-    User.import(users, { onDuplicateKeyUpdate: true });
-  } else {
-    User.import(users, {
-      onDuplicateKeyUpdate: true,
-      conflictTarget: ["email"],
-    });
-  }
-  expect(user.reload().age).toBe(20); // should be updated
+  test("when error", () => {
+    expect(() => User.import(users)).toThrow();
+  });
+
+  test("when valid", () => {
+    const subject = (onDuplicateKeyUpdate: true | ["name"]) => {
+      if (User.connection.adapterName === "mysql") {
+        User.import(users, { onDuplicateKeyUpdate: onDuplicateKeyUpdate });
+      } else {
+        User.import(users, {
+          onDuplicateKeyUpdate: onDuplicateKeyUpdate,
+          conflictTarget: ["email"],
+        });
+      }
+    };
+    subject(["name"]);
+    user.reload();
+    expect(user.name).toBe("foo2"); // should be updated
+    expect(user.age).toBe(10); // should not be updated
+
+    subject(true);
+    expect(user.reload().age).toBe(20); // should be updated
+  });
 });
 
 test(".import with validation error", () => {

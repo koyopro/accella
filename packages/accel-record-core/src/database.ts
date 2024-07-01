@@ -30,7 +30,12 @@ export type Logger = typeof defaultLogger;
 export const getKnexConfig = (config: Config) => {
   if (config.knexConfig) return config.knexConfig;
   if (config.datasourceUrl) {
-    const client = config.type == "mysql" ? "mysql2" : "better-sqlite3";
+    const client =
+      config.type == "mysql"
+        ? "mysql2"
+        : config.type == "pg"
+          ? "pg"
+          : "better-sqlite3";
     return { client, connection: config.datasourceUrl };
   }
 };
@@ -58,12 +63,55 @@ export const LogLevel = [
 export type LogLevel = (typeof LogLevel)[number];
 
 export interface Config {
-  type: "mysql" | "sqlite";
+  type: "mysql" | "sqlite" | "pg";
   logLevel?: LogLevel;
   logger?: Logger;
+  /**
+   * For sqlite, it's the path to the database file.
+   * For mysql and pg, it's the connection string.
+   * If knexConfig is set, this will be ignored.
+   *
+   * @example
+   * ```
+   * sqlite: path.resolve(__dirname, `./prisma/test${process.env.VITEST_POOL_ID}.db`)
+   * mysql: `mysql://myuser:password@localhost:3306/test_database${process.env.VITEST_POOL_ID}`
+   * pg: `postgresql://myuser:password@localhost:5432/test_database${process.env.VITEST_POOL_ID}`
+   * ```
+   */
   datasourceUrl?: string;
+  /**
+   * If knexConfig is set, it will be used to create the knex instance.
+   * If not set, it will be generated from type and datasourceUrl.
+   * @see https://knexjs.org/guide/#configuration-options
+   * @example
+   * ```
+   * {
+   *   client: "mysql2",
+   *   connection: {
+   *     host: "localhost",
+   *     port: 3306,
+   *     user: "root",
+   *     password: "",
+   *     database: `accel_test${process.env.VITEST_POOL_ID}`,
+   *   }
+   * }
+   * ```
+   */
   knexConfig?: Knex.Knex.Config;
+  /**
+   * The path to the prisma directory.
+   * This is necessary for performing database migration before running tests.
+   *
+   * @example
+   * ```
+   * path.resolve(__dirname, "./prisma")
+   * ```
+   */
   prismaDir?: string;
+  /**
+   * A function to transform the SQL before executing.
+   */
+  sqlTransformer?: (sql: string) => string;
 }
 let _config: Config = { type: "sqlite" };
 let _rpcClient: any;
@@ -108,6 +156,7 @@ export const execSQL = (params: {
   bindings: readonly any[];
   logLevel?: LogLevel;
 }): any => {
+  params.sql = _config.sqlTransformer?.(params.sql) ?? params.sql;
   const { sql, bindings } = params;
   const startTime = Date.now();
   if (!_rpcClient || !_config) {
@@ -122,6 +171,13 @@ export const execSQL = (params: {
     bindings
   );
   _queryCount++;
+  if (_config.type == "pg") {
+    if (ret.command == "SELECT" || ret.rows.length > 0) {
+      return ret.rows;
+    } else {
+      return ret;
+    }
+  }
   return _config.type == "mysql" ? ret[0] : ret;
 };
 

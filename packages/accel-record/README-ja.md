@@ -7,7 +7,7 @@ Active Recordパターンを採用しており、インターフェースはRuby
 
 スキーマ管理とマイグレーションにはPrismaを利用しており、既存のPrismaスキーマをそのまま利用することもできます。
 
-現在MySQLとSQLiteをサポートしており、将来的にPostgreSQLもサポート予定です。
+MySQL, PostgreSQL, SQLiteでの利用が可能です。
 
 ## 特徴
 
@@ -15,7 +15,7 @@ Active Recordパターンを採用しており、インターフェースはRuby
 - 型安全なクラス
 - Native ESM
 - 同期的なAPI
-- MySQL, SQLiteのサポート
+- MySQL, PostgreSQL, SQLiteのサポート
 
 ## 目次
 
@@ -117,6 +117,12 @@ console.log(user.fullName); // => "John Doe"
 
      ```
      npm install mysql2
+     ```
+
+   - for **PostgreSQL**
+
+     ```
+     npm install pg
      ```
 
    - for **SQLite**
@@ -1193,7 +1199,6 @@ user.update({ age: undefined });
 
 - [accel-record-core] スコープ
 - [accel-record-core] Authentication
-- [accel-record-core] PostgreSQLのサポート
 - [accel-record-core] 複合IDの対応
 - [accel-record-core] クエリインターフェースの拡充
 

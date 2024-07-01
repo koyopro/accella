@@ -9,10 +9,10 @@ test("execute", () => {
     posts: [$post.build({ title: "title1" })],
   });
   const nameCol = User.attributeToColumn("name")!;
-  Model.connection.execute(
-    `update User set ${nameCol} = 'fuga' where _id = ?`,
-    [u.id]
-  );
+  Model.connection.execute(`update User set ${nameCol} = ? where _id = ?`, [
+    "fuga",
+    u.id,
+  ]);
   expect(u.reload().name).toBe("fuga");
 
   const r = Model.connection.execute(
@@ -23,7 +23,7 @@ test("execute", () => {
      where Post.title = ?`,
     ["title1"]
   );
-  expect(r[0].cnt).toBe(1);
+  expect(Number(r[0].cnt)).toBe(1);
 });
 
 test("knex builder", async () => {

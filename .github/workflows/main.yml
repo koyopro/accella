@@ -15,6 +15,14 @@ jobs:
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=10
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_USER: test
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
 
     strategy:
       matrix:
@@ -35,3 +43,5 @@ jobs:
       - run: npm run sample
       - run: npm run generate:sqlite
       - run: npm run test:sqlite
+      - run: npm run generate:pg
+      - run: npm run test:pg

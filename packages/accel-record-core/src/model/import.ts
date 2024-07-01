@@ -71,7 +71,7 @@ export class Import {
     q = this.addOnConflictMerge<T>(options, q);
     const info = exec(q);
     return {
-      numInserts: info.affectedRows ?? info.changes,
+      numInserts: info.affectedRows ?? info.changes ?? info.rowCount ?? 0,
       failedInstances,
     };
   }

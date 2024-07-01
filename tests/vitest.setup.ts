@@ -29,6 +29,32 @@ export const dbConfig = () => {
         },
       },
     } as const;
+  } else if (process.env.DB_ENGINE == "pg") {
+    return {
+      type: "pg",
+      // logLevel: "DEBUG",
+      prismaDir: path.resolve(__dirname, "./prisma_pg"),
+      datasourceUrl: `postgresql://test:password@localhost:5432/accel_test${process.env.VITEST_POOL_ID}`,
+      // knexConfig: {
+      //   client: "pg",
+      //   connection: {
+      //     host: "localhost",
+      //     port: 5432,
+      //     user: "test",
+      //     password: "password",
+      //     database: `accel_test${process.env.VITEST_POOL_ID}`,
+      //   },
+      // },
+      sqlTransformer: (sql: string) => {
+        for (const table of ["Setting", "User", "Post", "PostTag"]) {
+          sql = sql.replace(
+            new RegExp(`(\\s|[^"])(${table})(\\s|\\.)`, "g"),
+            `$1"$2"$3`
+          );
+        }
+        return sql;
+      },
+    } as const;
   } else {
     return {
       type: "sqlite",
