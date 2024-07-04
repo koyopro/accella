@@ -26,7 +26,6 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
   Where
 ) {
   protected counter = 0;
-  protected queryBuilder: any;
   protected options: Options;
   constructor(
     protected model: typeof Model,
@@ -35,7 +34,6 @@ export class Relation<T, M extends ModelMeta> extends classIncludes(
   ) {
     super();
     this.model = model;
-    this.queryBuilder = model.queryBuilder;
     this.options = Object.assign(getDefaultOptions(), options) as Options;
   }
   /**

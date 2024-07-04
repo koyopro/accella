@@ -1,3 +1,4 @@
+import { Knex } from "knex";
 import { exec } from "../database.js";
 import { Models } from "../index.js";
 import { ModelMeta } from "../meta.js";
@@ -33,8 +34,16 @@ export class RelationBase {
       return obj;
     });
   }
+  /**
+   * Returns the query builder instance with all the specified where conditions and other options applied.
+   * @returns The query builder instance.
+   */
+  get queryBuilder(): Knex.QueryBuilder {
+    return (this as any).query();
+  }
+
   protected query<T>(this: Relation<T, ModelMeta>) {
-    let q = this.queryBuilder.clone();
+    let q = this.model.queryBuilder.clone() as any;
     for (const join of this.options.joins) {
       q = q.join(...join);
     }

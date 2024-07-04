@@ -243,4 +243,16 @@ describe("Relation", () => {
       .count();
     expect(cnt).toBe(1);
   });
+
+  test("queryBuilder", () => {
+    $user.create({ name: "hoge", age: 20 });
+    $user.create({ name: "fuga", age: 30 });
+
+    const column = User.attributeToColumn("name")!;
+    const r = User.where({ age: 20 })
+      .queryBuilder.select(column)
+      .groupBy(column)
+      .execute();
+    expect(r.length).toBe(1);
+  });
 });
