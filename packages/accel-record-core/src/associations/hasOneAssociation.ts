@@ -21,8 +21,12 @@ export class HasOneAssociation<
       this.target?.destroy();
       this.target = undefined;
     } else {
+      const prev = this.target;
       this.target = record;
-      this.persist();
+      if (this.ownersPrimary && !this.persist()) {
+        this.target = prev;
+        return;
+      }
     }
     this.isLoaded = true;
   }
@@ -31,12 +35,16 @@ export class HasOneAssociation<
     return this.target?.isValid();
   }
 
-  persist() {
-    if (!this.target) return;
-    if (!this.ownersPrimary) return;
+  /**
+   * Persists the associated target record by setting the foreign key value and saving the target record.
+   * @returns {boolean} A boolean indicating whether the persistence was successful.
+   */
+  persist(): boolean {
+    if (!this.target) return false;
+    if (!this.ownersPrimary) return false;
     this.target[this.info.foreignKey as keyof T] = this.ownersPrimary as any;
-    if (!this.target.isNewRecord && !this.target.isChanged()) return;
-    this.target.save();
+    if (!this.target.isNewRecord && !this.target.isChanged()) return true;
+    return this.target.save();
   }
 
   delete() {

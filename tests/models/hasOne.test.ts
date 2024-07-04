@@ -34,6 +34,17 @@ describe("hasOne", () => {
     expect(User.find(user.id).setting?.threshold).toBeCloseTo(0.5);
   });
 
+  test("hasOne set with validation error", () => {
+    expect(Setting.count()).toBe(0);
+    const user = $user.create();
+    const setting = $setting.build({ threshold: -1 });
+    user.setting = setting;
+    expect(setting.isValid()).toBe(false);
+    expect(Setting.count()).toBe(0);
+    expect(User.find(user.id).setting).toBeUndefined();
+    expect(user.setting).toBeUndefined();
+  });
+
   test("set in build", () => {
     expect(Setting.count()).toBe(0);
     const user = $user.create({ setting: $setting.build({ threshold: 0.5 }) });
