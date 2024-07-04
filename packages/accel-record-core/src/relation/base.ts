@@ -58,6 +58,9 @@ export class RelationBase {
     for (const [query, bindings] of this.options.whereRaws) {
       q = q.whereRaw(query, bindings);
     }
+    for (const where of this.options.orWheres) {
+      q = q.orWhere(...where);
+    }
     if (this.options.limit) q = q.limit(this.options.limit);
     if (this.options.offset) q = q.offset(this.options.offset);
     for (const [column, direction] of this.options.orders ?? []) {

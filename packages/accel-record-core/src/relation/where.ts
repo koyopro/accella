@@ -162,6 +162,39 @@ export class Where {
     newOptions["whereRaws"].push([query, bindings]);
     return new Relation(this.model, newOptions);
   }
+
+  /**
+   * Combines the current relation with another relation using the OR operator.
+   *
+   * @param relation - The relation to combine with the current relation.
+   * @returns A new relation that represents the combined result.
+   */
+  or<T, M extends ModelMeta>(
+    this: Relation<T, M>,
+    relation: Relation<T, M>
+  ): Relation<T, M>;
+  /**
+   * Adds a condition to the current relation using the OR operator.
+   *
+   * @param input - An object representing the WHERE clause.
+   * @returns A new relation with the added condition.
+   */
+  or<T, M extends ModelMeta>(
+    this: Relation<T, M>,
+    input: M["WhereInput"]
+  ): Relation<T, M>;
+  or<T, M extends ModelMeta>(
+    this: Relation<T, M>,
+    relationOrInput: Relation<T, M> | M["WhereInput"]
+  ): Relation<T, M> {
+    const relation: any =
+      relationOrInput instanceof Relation
+        ? relationOrInput
+        : new Relation(this.model, {}).where(relationOrInput);
+    const newOptions = JSON.parse(JSON.stringify(this.options));
+    newOptions["orWheres"].push(relation.options.wheres);
+    return new Relation(this.model, newOptions);
+  }
 }
 
 const makeWhere = (key: string, operator: string, value: string) => {
