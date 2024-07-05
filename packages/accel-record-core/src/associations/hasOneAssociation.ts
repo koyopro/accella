@@ -1,4 +1,4 @@
-import { Model, Models } from "../index.js";
+import { Model, Models, Rollback } from "../index.js";
 import { Association } from "./association.js";
 
 export class HasOneAssociation<
@@ -17,13 +17,21 @@ export class HasOneAssociation<
   }
 
   setter(record: T | undefined) {
+    if (this.ownersPrimary) this.reader();
     if (!record) {
       this.target?.destroy();
       this.target = undefined;
-    } else {
+    } else if (!this.target?.equals(record)) {
       const prev = this.target;
-      this.target = record;
-      if (this.ownersPrimary && !this.persist()) {
+      const success = Model.transaction(() => {
+        this.target?.destroy();
+        this.target = record;
+        if (this.ownersPrimary && !this.persist()) {
+          throw new Rollback();
+        }
+        return true;
+      });
+      if (!success) {
         this.target = prev;
         return;
       }

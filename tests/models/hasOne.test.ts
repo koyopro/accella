@@ -67,6 +67,30 @@ describe("hasOne", () => {
     expect(Setting.count()).toBe(0);
   });
 
+  test("set to other", () => {
+    const user = $user.create({ setting: $setting.build({ threshold: 0.5 }) });
+    expect(Setting.count()).toBe(1);
+
+    {
+      const settingId = user.setting?.settingId!;
+      user.setting = $setting.build({ threshold: 1.0 });
+
+      // Old setting should be deleted
+      expect(Setting.count()).toBe(1);
+      expect(Setting.findBy({ settingId })).toBeUndefined();
+      expect(user.setting?.settingId).not.toEqual(settingId);
+    }
+    {
+      // with Validation Error, should not be replace
+      const settingId = user.setting?.settingId!;
+      const setting = $setting.build({ threshold: -1 });
+      user.setting = setting;
+
+      expect(Setting.findBy({ settingId })!.equals(user.setting!)).toBeTruthy();
+      expect(user.setting?.settingId).toEqual(settingId);
+    }
+  });
+
   test("includes", () => {
     $setting.create({ user: $user.create() });
     $setting.create({ user: $user.create() });
