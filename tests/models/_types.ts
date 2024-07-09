@@ -98,6 +98,8 @@ type UserMeta = {
     id?: number;
     email: string;
     passwordDigest?: string;
+    password?: string;
+    passwordConfirmation?: string;
     name?: string;
     age?: number;
     posts?: PostModel[];

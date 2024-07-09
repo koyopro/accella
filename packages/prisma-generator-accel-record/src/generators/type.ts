@@ -147,6 +147,13 @@ declare module "accel-record" {
           field.type == "Json"
             ? `${model.baseModel}["${field.name}"]`
             : `${field.typeName}${field.isList ? "[]" : ""}`;
+        if (field.name.endsWith("Digest") && field.type == "String") {
+          return [
+            `    ${field.name}${optional ? "?" : ""}: string;`,
+            `    ${field.name.replace("Digest", "")}?: string;`,
+            `    ${field.name.replace("Digest", "Confirmation")}?: string;`,
+          ].join("\n");
+        }
         return `    ${field.name}${optional ? "?" : ""}: ${valType};`;
       })
       .join("\n");
