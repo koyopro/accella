@@ -46,6 +46,11 @@ export function hasSecurePassword<T extends string = "password">(
     }
     validateAttributes<T extends Model & SecurePassword>(this: T) {
       if (!validations) return;
+      if (
+        this._password == undefined &&
+        this._passwordConfirmation == undefined
+      )
+        return;
       this.validates(attribute as any, { presence: true });
       if (this._password !== this._passwordConfirmation) {
         this.errors.add(confirmAttribute, `does not match ${attribute}`);
