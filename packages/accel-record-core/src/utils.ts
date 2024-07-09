@@ -43,16 +43,20 @@ export const classIncludes = <T extends (new (...args: any) => any)[]>(
   return newClass;
 };
 
-const assign = (target: object, source: object, key: string) => {
-  const desc = Object.getOwnPropertyDescriptor(source, key);
-
-  let targetDesc = Object.getOwnPropertyDescriptor(target, key);
-  let proto = Object.getPrototypeOf(target);
-
-  while (!targetDesc && proto && proto !== Object.prototype) {
-    targetDesc = Object.getOwnPropertyDescriptor(proto, key);
+const findMethod = (target: object, key: string) => {
+  let proto = target;
+  while (proto && proto !== Object.prototype) {
+    const desc = Object.getOwnPropertyDescriptor(proto, key);
+    if (desc) return desc;
     proto = Object.getPrototypeOf(proto);
   }
+  return undefined;
+};
+
+const assign = (target: object, source: object, key: string) => {
+  const desc = Object.getOwnPropertyDescriptor(source, key);
+  const targetDesc = findMethod(target, key);
+
   if (
     typeof targetDesc?.value == "function" &&
     typeof desc?.value == "function"
