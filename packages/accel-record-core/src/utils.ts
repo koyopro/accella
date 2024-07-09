@@ -19,21 +19,24 @@ type ObjectIntersection<T extends any[]> = T extends [
 export const classIncludes = <T extends (new (...args: any) => any)[]>(
   ...args: T
 ): { new (): InstanceTypeIntersection<T> } & ObjectIntersection<T> => {
-  const newClass: any = class {
+  const BaseClass = args[0];
+  const klassList = args.slice(1);
+  const newClass: any = class extends BaseClass {
     constructor() {
-      for (const arg of args) {
-        const obj = new arg();
+      super();
+      for (const klass of klassList) {
+        const obj = new klass();
         for (const key of Object.getOwnPropertyNames(obj)) {
           assign(this, obj, key);
         }
       }
     }
   };
-  for (let arg of args) {
-    getStaticProperties(arg).forEach((klass, key) => {
+  for (let klass of klassList) {
+    getStaticProperties(klass).forEach((klass, key) => {
       assign(newClass, klass, key);
     });
-    getInstanceMethods(arg).forEach((proto, key) => {
+    getInstanceMethods(klass).forEach((proto, key) => {
       assign(newClass.prototype, proto, key);
     });
   }
