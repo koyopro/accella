@@ -8,6 +8,7 @@ test("toHash", () => {
     name: string | undefined;
     age: number | undefined;
     email: string;
+    passwordDigest: string | undefined;
     createdAt: Date;
     updatedAt: Date;
   }>();
@@ -18,7 +19,7 @@ test("toHash", () => {
   }>();
 
   expectTypeOf(
-    u.toHash({ except: ["createdAt", "updatedAt", "email"] })
+    u.toHash({ except: ["createdAt", "updatedAt", "email", "passwordDigest"] })
   ).toEqualTypeOf<{
     id: number;
     name: string | undefined;

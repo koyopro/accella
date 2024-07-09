@@ -7,6 +7,7 @@ test("Relation#toHashArray()", () => {
     name: string | undefined;
     age: number | undefined;
     email: string;
+    passwordDigest: string | undefined;
     createdAt: Date;
     updatedAt: Date;
   }>();
