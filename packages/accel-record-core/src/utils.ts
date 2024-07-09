@@ -45,7 +45,14 @@ export const classIncludes = <T extends (new (...args: any) => any)[]>(
 
 const assign = (target: object, source: object, key: string) => {
   const desc = Object.getOwnPropertyDescriptor(source, key);
-  const targetDesc = Object.getOwnPropertyDescriptor(target, key);
+
+  let targetDesc = Object.getOwnPropertyDescriptor(target, key);
+  let proto = Object.getPrototypeOf(target);
+
+  while (!targetDesc && proto && proto !== Object.prototype) {
+    targetDesc = Object.getOwnPropertyDescriptor(proto, key);
+    proto = Object.getPrototypeOf(proto);
+  }
   if (
     typeof targetDesc?.value == "function" &&
     typeof desc?.value == "function"

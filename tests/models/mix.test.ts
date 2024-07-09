@@ -40,11 +40,13 @@ test("mix", () => {
   const ab = new AB();
   expect(ab.a).toBe("a");
   expect(ab.aa).toBe("aa");
+  expect(ab instanceof A).toBe(true);
 
   const abc = new ABC();
   expect(abc.a).toBe("a");
   expect(abc.c).toBe("c");
   expect(abc.aa).toBe("aa");
+  expect(abc instanceof A).toBe(true);
 
   ab.validate();
   expect(ab.errors).toEqual(["a"]);
