@@ -65,7 +65,7 @@ const assign = (target: object, source: object, key: string) => {
     Object.defineProperty(target, key, {
       value: function (this: any, ...args: any[]) {
         targetDesc.value.apply(this, args);
-        desc.value.apply(this, args);
+        return desc.value.apply(this, args);
       },
     });
   } else if (desc) {

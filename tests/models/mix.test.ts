@@ -12,6 +12,8 @@ class A {
 
   validate() {
     this.errors.push("a");
+
+    return false;
   }
 }
 
@@ -26,6 +28,8 @@ class C {
 
   validate<T extends A>(this: T) {
     this.errors.push("c");
+
+    return true;
   }
 }
 
@@ -48,8 +52,8 @@ test("mix", () => {
   expect(abc.aa).toBe("aa");
   expect(abc instanceof A).toBe(true);
 
-  ab.validate();
+  expect(ab.validate()).toBe(false);
   expect(ab.errors).toEqual(["a"]);
-  abc.validate();
+  expect(abc.validate()).toBe(true);
   expect(abc.errors).toEqual(["a", "c"]);
 });
