@@ -16,7 +16,7 @@ import { Validations } from "./model/validations.js";
 import { Persistence } from "./persistence.js";
 import { Query } from "./query.js";
 import { Transaction } from "./transaction.js";
-import { classIncludes } from "./utils.js";
+import { Mix } from "./utils.js";
 
 export { Collection } from "./associations/collectionProxy.js";
 export {
@@ -33,7 +33,7 @@ export { Validator } from "./validation/validator/index.js";
 export { before, after } from "./callbacks.js";
 export { hasSecurePassword } from "./model/securePassword.js";
 
-export { classIncludes as Mix };
+export { Mix };
 
 export type Meta<T> = ReturnType<typeof meta<T>>;
 
@@ -60,7 +60,7 @@ export const registerModel = (model: any) => {
   Models[model.name] = model;
 };
 
-export class Model extends classIncludes(
+export class Model extends Mix(
   AttributeAssignment,
   Callbacks,
   Connection,

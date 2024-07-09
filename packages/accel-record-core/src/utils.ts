@@ -16,27 +16,51 @@ type ObjectIntersection<T extends any[]> = T extends [
   ? WithoutConstructor<Head> & ObjectIntersection<Tail>
   : {};
 
-export const classIncludes = <T extends (new (...args: any) => any)[]>(
-  ...args: T
+/**
+ * Combines multiple classes into a new class that includes the properties and methods of all the classes.
+ *
+ * The first argument becomes the base class, and the properties and methods of the subsequent classes are inherited by the new class.
+ * If there are methods with the same name, the method of the base class is called first, followed by the methods of the subsequent classes, and the last result is returned.
+ *
+ * @param classes - The classes to be combined.
+ * @returns A new class that includes the properties and methods of all the input classes.
+ * @example
+ * class A {
+ *   static a = 1;
+ *   methodA() {
+ *    return 2;
+ *   }
+ * }
+ * class B {
+ *   b = 3;
+ * }
+ * class C extends Mix(A, B) {}
+ * C.a; // 1
+ * const c = new C();
+ * c.methodA(); // 2
+ * c.b; // 3
+ */
+export const Mix = <T extends (new (...args: any) => any)[]>(
+  ...classes: T
 ): { new (): InstanceTypeIntersection<T> } & ObjectIntersection<T> => {
-  const BaseClass = args[0];
-  const klassList = args.slice(1);
+  const BaseClass = classes[0];
+  const classList = classes.slice(1);
   const newClass: any = class extends BaseClass {
     constructor() {
       super();
-      for (const klass of klassList) {
-        const obj = new klass();
+      for (const cls of classList) {
+        const obj = new cls();
         for (const key of Object.getOwnPropertyNames(obj)) {
           assign(this, obj, key);
         }
       }
     }
   };
-  for (let klass of klassList) {
-    getStaticProperties(klass).forEach((klass, key) => {
+  for (let cls of classList) {
+    getStaticProperties(cls).forEach((klass, key) => {
       assign(newClass, klass, key);
     });
-    getInstanceMethods(klass).forEach((proto, key) => {
+    getInstanceMethods(cls).forEach((proto, key) => {
       assign(newClass.prototype, proto, key);
     });
   }
