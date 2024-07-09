@@ -1,15 +1,38 @@
 import { Model } from "../index.js";
 import { compareSync, genSaltSync, hashSync } from "bcrypt-ts";
 
+/**
+ * Represents a secure password type.
+ * @template T - The type of the password.
+ */
 type SecurePassword<T extends string> = {
   new (): {
     [K in T | `${T}Confirmation`]: string | undefined;
   } & {
+    /**
+     * Authenticates the model instance by comparing the provided password with the stored digest.
+     * Returns true if the password matches the digest, false otherwise.
+     * @param password - The password to compare with the stored digest.
+     * @returns A boolean indicating whether the password matches the stored digest.
+     */
     authenticate<M extends Model>(this: M, password: string): boolean;
+
+    /**
+     * Validates the attributes of the secure password.
+     */
     validateAttributes(): void;
   };
 };
 
+/**
+ * Creates a class that represents a secure password.
+ * @param options.attribute - The name of the password attribute. Default is "password".
+ * @param options.validations - Indicates whether to perform validations. Default is true.
+ * @returns The class representing a secure password.
+ *
+ * @example hasSecurePassword()
+ * @example hasSecurePassword({ attribute: "recovery", validations: false })
+ */
 export function hasSecurePassword<T extends string = "password">(
   options: {
     attribute?: T;
