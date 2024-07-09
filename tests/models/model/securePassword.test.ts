@@ -20,7 +20,7 @@ test("hasSecurePassword()", () => {
   expect(user.save()).toBe(true);
   expect(user.errors.fullMessages).toEqual([]);
 
-  expect(user.passwordDigest).not.toBeUndefined();
+  expect(user.passwordDigest).not.toBeFalsy();
 
   expect(user.authenticate("invalid")).toBe(false);
   expect(user.authenticate("xBOHdowK5e2YjQ1s")).toBe(true);
@@ -31,6 +31,16 @@ test("hasSecurePassword()", () => {
 
   // @ts-expect-error
   user.hoge;
+});
+
+test("hasSecurePassword() on create", () => {
+  const password = "xBOHdowK5e2YjQ1s";
+  const user = $user.build({
+    password: password,
+    passwordConfirmation: password,
+  });
+  expect(user.passwordDigest).not.toBeUndefined();
+  expect(user.save()).toBe(true);
 });
 
 test("hasSecurePassword() with validations: false", () => {
