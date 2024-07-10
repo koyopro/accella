@@ -4,25 +4,33 @@ import { compareSync, genSaltSync, hashSync } from "bcrypt-ts";
 /**
  * Represents a secure password type.
  * @template T - The type of the password.
+ *
+ * This type includes dynamically named methods based on the password attribute name:
+ * - `[K in T | `${T}Confirmation`]`: Accessors for the password and its confirmation.
+ * - `[K in `authenticate${Capitalize<T>}`]`: A method to authenticate the password. This method
+ *   compares the provided password with the stored digest and returns true if they match.
+ *   Example usage for a password attribute named "password": `instance.authenticatePassword("yourPassword")`.
+ *
+ * If T is "password", an additional method `authenticate(password: string): boolean` is included.
  */
 type SecurePassword<T extends string> = {
   new (): {
     [K in T | `${T}Confirmation`]: string | undefined;
   } & {
-    /**
-     * Authenticates the model instance by comparing the provided password with the stored digest.
-     * Returns true if the password matches the digest, false otherwise.
-     * @param password - The password to compare with the stored digest.
-     * @returns A boolean indicating whether the password matches the stored digest.
-     */
     [K in `authenticate${Capitalize<T>}`]: (password: string) => boolean;
-  } & (T extends "password" ? { authenticate(password: string): boolean } : {});
+  } & (T extends "password"
+      ? {
+          /**
+           * Authenticates the model instance by comparing the provided password with the stored digest.
+           * Returns true if the password matches the digest, false otherwise.
+           * @param password - The password to compare with the stored digest.
+           * @returns A boolean indicating whether the password matches the stored digest.
+           */
+          authenticate(password: string): boolean;
+        }
+      : {});
 };
 
-// 一文字目を大文字に変換する
-const toPascalCase = (str: string) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
 /**
  * Creates a class that represents a secure password.
  * @param options.attribute - The name of the password attribute. Default is "password".
@@ -45,6 +53,10 @@ export function hasSecurePassword<T extends string = "password">(
   const _attribute = `_${attribute}`;
   const _cofirmAttribute = `_${confirmAttribute}`;
   const authenticate = `authenticate${toPascalCase(attribute)}`;
+
+  // Create an alias for authenticate only when the attribute is "password"
+  const authenticateAlias =
+    attribute == "password" ? "authenticate" : "__authenticate";
   // @ts-ignore
   return class SecurePassword {
     get [attribute]() {
@@ -68,8 +80,8 @@ export function hasSecurePassword<T extends string = "password">(
       const digest = _get(this, `${attribute}Digest`) as string | undefined;
       return digest ? compareSync(password, digest) : false;
     }
-    authenticate(this: any, password: string) {
-      return this.authenticatePassword(password);
+    [authenticateAlias](this: any, password: string) {
+      return this[authenticate](password);
     }
     validateAttributes<T extends Model & SecurePassword>(this: T) {
       if (!validations) return;
@@ -86,3 +98,6 @@ export function hasSecurePassword<T extends string = "password">(
 
 const _get = (obj: any, key: string) => obj[key];
 const _set = (obj: any, key: string, value: any) => (obj[key] = value);
+
+const toPascalCase = (str: string) =>
+  str.replace(/(^|_)[a-z]/g, (match) => match.at(-1)!.toUpperCase());
