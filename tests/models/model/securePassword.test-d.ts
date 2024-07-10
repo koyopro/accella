@@ -8,6 +8,9 @@ test("hasSecurePassword()", () => {
   user.passwordConfirmation = "";
   expectTypeOf(user.authenticate("")).toBeBoolean();
   expectTypeOf(user.authenticatePassword("")).toBeBoolean();
+
+  // @ts-expect-error
+  user.hoge;
 });
 
 test("hasSecurePassword() with custom attribute", () => {
