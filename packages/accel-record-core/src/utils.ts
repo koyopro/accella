@@ -91,6 +91,9 @@ const assign = (target: object, source: object, key: string) => {
         targetDesc.value.apply(this, args);
         return desc.value.apply(this, args);
       },
+      enumerable: targetDesc.enumerable,
+      writable: true,
+      configurable: true,
     });
   } else if (desc) {
     Object.defineProperty(target, key, desc);

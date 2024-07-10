@@ -15,15 +15,14 @@ type SecurePassword<T extends string> = {
      * @param password - The password to compare with the stored digest.
      * @returns A boolean indicating whether the password matches the stored digest.
      */
-    authenticate<M extends Model>(this: M, password: string): boolean;
-
-    /**
-     * Validates the attributes of the secure password.
-     */
-    validateAttributes(): void;
-  };
+    [K in `authenticate${Capitalize<T>}`]: (password: string) => boolean;
+  } & (T extends "password" ? { authenticate(password: string): boolean } : {});
 };
 
+// 一文字目を大文字に変換する
+const toPascalCase = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
 /**
  * Creates a class that represents a secure password.
  * @param options.attribute - The name of the password attribute. Default is "password".
@@ -40,44 +39,50 @@ export function hasSecurePassword<T extends string = "password">(
   } = {}
 ): SecurePassword<T> {
   const attribute = options.attribute ?? "password";
-  const confirmAttribute = `${attribute}Confirmation`;
   const validations = options.validations ?? true;
+
+  const confirmAttribute = `${attribute}Confirmation`;
+  const _attribute = `_${attribute}`;
+  const _cofirmAttribute = `_${confirmAttribute}`;
+  const authenticate = `authenticate${toPascalCase(attribute)}`;
   // @ts-ignore
   return class SecurePassword {
-    private _password: string | undefined;
-    private _passwordConfirmation: string | undefined;
-
     get [attribute]() {
-      return this._password;
+      return _get(this, _attribute);
     }
     set [attribute](value: string | undefined) {
-      this.digest =
-        value == undefined ? undefined : hashSync(value, genSaltSync());
-      this._password = value;
+      const newDigest = value ? hashSync(value, genSaltSync()) : undefined;
+      _set(this, `${attribute}Digest`, newDigest);
+      _set(this, _attribute, value);
     }
     set [confirmAttribute](value: string) {
-      this._passwordConfirmation = value;
+      _set(this, _cofirmAttribute, value);
     }
-    private get digest() {
-      return (this as any)[`${attribute}Digest`] as string | undefined;
+    get [confirmAttribute]() {
+      return _get(this, _cofirmAttribute);
     }
-    private set digest(value: string | undefined) {
-      (this as any)[`${attribute}Digest`] = value;
+    [authenticate]<T extends Model & SecurePassword>(
+      this: T,
+      password: string
+    ) {
+      const digest = _get(this, `${attribute}Digest`) as string | undefined;
+      return digest ? compareSync(password, digest) : false;
     }
-    authenticate<T extends Model & SecurePassword>(this: T, password: string) {
-      return this.digest ? compareSync(password, this.digest) : false;
+    authenticate(this: any, password: string) {
+      return this.authenticatePassword(password);
     }
     validateAttributes<T extends Model & SecurePassword>(this: T) {
       if (!validations) return;
-      if (
-        this._password == undefined &&
-        this._passwordConfirmation == undefined
-      )
-        return;
+      const password = _get(this, _attribute);
+      const confirm = _get(this, _cofirmAttribute);
+      if (password == undefined && confirm == undefined) return;
       this.validates(attribute as any, { presence: true });
-      if (this._password !== this._passwordConfirmation) {
+      if (password !== confirm) {
         this.errors.add(confirmAttribute, `does not match ${attribute}`);
       }
     }
   };
 }
+
+const _get = (obj: any, key: string) => obj[key];
+const _set = (obj: any, key: string, value: any) => (obj[key] = value);
