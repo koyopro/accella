@@ -58,7 +58,7 @@ export class Import {
     const params = _records
       .map((record) => {
         if (options.validate === false || record.isValid()) {
-          return this.makeInsertParams(record);
+          return makeInsertParams(record);
         }
         if (options.validate === "throw") {
           throw new Error("Validation failed");
@@ -68,47 +68,47 @@ export class Import {
       })
       .filter(Boolean);
     let q = this.queryBuilder.insert(params);
-    q = this.addOnConflictMerge<T>(options, q);
+    q = addOnConflictMerge<T>(this, options, q);
     const info = exec(q);
     return {
       numInserts: info.affectedRows ?? info.changes ?? info.rowCount ?? 0,
       failedInstances,
     };
   }
-
-  /**
-   * Adds the ON CONFLICT MERGE clause to the query.
-   * @param options - The import options.
-   * @param q - The query builder.
-   * @returns The modified query builder.
-   */
-  private static addOnConflictMerge<T extends typeof Model>(
-    this: T,
-    options: ImportOptions<T>,
-    q: Knex.QueryBuilder
-  ) {
-    if (options.onDuplicateKeyUpdate) {
-      const attributes = options.onDuplicateKeyUpdate;
-      const qb = Array.isArray(options.conflictTarget)
-        ? q.onConflict(options.conflictTarget)
-        : q.onConflict();
-      if (attributes === true) q = qb.merge();
-      else {
-        const columns = attributes.map(
-          (a) => this.attributeToColumn(a as string)!
-        );
-        q = qb.merge(columns);
-      }
-    }
-    return q;
-  }
-
-  /**
-   * Creates the insert parameters for a record.
-   * @param record - The record.
-   * @returns The insert parameters.
-   */
-  private static makeInsertParams(record: any) {
-    return record.makeInsertParams();
-  }
 }
+
+/**
+ * Creates the insert parameters for a record.
+ * @param record - The record.
+ * @returns The insert parameters.
+ */
+const makeInsertParams = (record: any) => {
+  return record.makeInsertParams();
+};
+
+/**
+ * Adds the ON CONFLICT MERGE clause to the query.
+ * @param options - The import options.
+ * @param q - The query builder.
+ * @returns The modified query builder.
+ */
+const addOnConflictMerge = <T extends typeof Model>(
+  model: T,
+  options: ImportOptions<T>,
+  q: Knex.QueryBuilder
+) => {
+  if (options.onDuplicateKeyUpdate) {
+    const attributes = options.onDuplicateKeyUpdate;
+    const qb = Array.isArray(options.conflictTarget)
+      ? q.onConflict(options.conflictTarget)
+      : q.onConflict();
+    if (attributes === true) q = qb.merge();
+    else {
+      const columns = attributes.map(
+        (a) => model.attributeToColumn(a as string)!
+      );
+      q = qb.merge(columns);
+    }
+  }
+  return q;
+};

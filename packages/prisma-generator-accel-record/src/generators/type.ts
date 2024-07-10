@@ -130,26 +130,6 @@ declare module "accel-record" {
   data += enumData(options);
   for (const _model of options.dmmf.datamodel.models) {
     const model = new ModelWrapper(_model, options.dmmf.datamodel);
-    const reject = (f: FieldWrapper) => f.relationFromFields?.[0] == undefined;
-    const relationFromFields = model.fields
-      .flatMap((f) => f.relationFromFields)
-      .filter((f) => f != undefined);
-    const columns = model.fields
-      .filter(reject)
-      .filter((f) => !relationFromFields.includes(f.name))
-      .map((field) => {
-        const optional =
-          field.hasDefaultValue ||
-          !field.isRequired ||
-          field.isList ||
-          field.isUpdatedAt;
-        const valType =
-          field.type == "Json"
-            ? `${model.baseModel}["${field.name}"]`
-            : `${field.typeName}${field.isList ? "[]" : ""}`;
-        return `    ${field.name}${optional ? "?" : ""}: ${valType};`;
-      })
-      .join("\n");
     const associationColumns = model.fields
       .filter((f) => f.relationName && (f.relationFromFields?.length ?? 0) > 0)
       .map((f) => {
@@ -176,9 +156,7 @@ type ${model.meta} = {
   Persisted: ${model.persistedModel};
   AssociationKey: ${associationKey(model)};
   Column: {${columnMeta(model)}};
-  CreateInput: {
-${columns}
-  }${associationColumns};
+  CreateInput: {${createInputs(model)}}${associationColumns};
   WhereInput: {${whereInputs(model)}};
 };
 registerModel(${model.persistedModel});
@@ -289,6 +267,37 @@ const columnMeta = (model: ModelWrapper) =>
         };`
     )
     .join("") + "\n  ";
+
+const createInputs = (model: ModelWrapper) => {
+  const relationFromFields = model.fields
+    .flatMap((f) => f.relationFromFields)
+    .filter((f) => f != undefined);
+  return (
+    model.fields
+      .filter((f) => f.relationFromFields?.[0] == undefined)
+      .filter((f) => !relationFromFields.includes(f.name))
+      .map((field) => {
+        const optional =
+          field.hasDefaultValue ||
+          !field.isRequired ||
+          field.isList ||
+          field.isUpdatedAt;
+        const valType =
+          field.type == "Json"
+            ? `${model.baseModel}["${field.name}"]`
+            : `${field.typeName}${field.isList ? "[]" : ""}`;
+        if (field.name.endsWith("Digest") && field.type == "String") {
+          return [
+            `\n    ${field.name}${optional ? "?" : ""}: string;`,
+            `\n    ${field.name.replace("Digest", "")}?: string;`,
+            `\n    ${field.name.replace("Digest", "Confirmation")}?: string;`,
+          ].join("");
+        }
+        return `\n    ${field.name}${optional ? "?" : ""}: ${valType};`;
+      })
+      .join("") + "\n  "
+  );
+};
 
 const whereInputs = (model: ModelWrapper) =>
   model.fields

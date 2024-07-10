@@ -50,6 +50,7 @@ declare module "./user" {
   interface UserModel {
     id: number | undefined;
     email: string | undefined;
+    passwordDigest: string | undefined;
     name: string | undefined;
     age: number | undefined;
     get posts(): PostCollection<PostModel>;
@@ -87,6 +88,7 @@ type UserMeta = {
   Column: {
     id: number;
     email: string;
+    passwordDigest: string | undefined;
     name: string | undefined;
     age: number | undefined;
     createdAt: Date;
@@ -95,6 +97,9 @@ type UserMeta = {
   CreateInput: {
     id?: number;
     email: string;
+    passwordDigest?: string;
+    password?: string;
+    passwordConfirmation?: string;
     name?: string;
     age?: number;
     posts?: PostModel[];
@@ -107,6 +112,7 @@ type UserMeta = {
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     email?: string | string[] | StringFilter | null;
+    passwordDigest?: string | string[] | StringFilter | null;
     name?: string | string[] | StringFilter | null;
     age?: number | number[] | Filter<number> | null;
     createdAt?: Date | Date[] | Filter<Date> | null;

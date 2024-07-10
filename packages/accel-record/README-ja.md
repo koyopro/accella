@@ -35,6 +35,7 @@ MySQL, PostgreSQL, SQLiteでの利用が可能です。
 - [Bulk Insert](#bulk-Insert)
 - [トランザクション](#トランザクション)
 - [国際化(I18n)](#国際化i18n)
+- [パスワード認証](#パスワード認証)
 - [Nullableな値の扱いについて](#nullableな値の扱いについて)
 - [今後予定されている機能追加](#今後予定されている機能追加)
 
@@ -1171,6 +1172,61 @@ i18next
 
 式展開が `count` になっているものは、エラーメッセージに `%{count}` を含むときにその部分がオプションで指定された値に置き換えられます。
 
+## パスワード認証
+
+Bcryptを利用してセキュアにハッシュ化したパスワードを保持し、それを用いて認証するための仕組みを提供しています。
+
+まずモデルにハッシュ化されたパスワードを保持するため`passwordDigest`フィールドを追加します。
+
+```ts
+// prisma/schema.prisma
+model User {
+  ...
+  passwordDigest String // パスワードのハッシュ値を保持する
+}
+```
+
+次に`hasSecurePassword()`を利用してパスワードのハッシュ化と認証を行うための機能をモデルに対して追加します。
+
+```ts
+// ./models/user.ts
+import { hasSecurePassword, Mix } from "accel-record";
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class UserModel extends Mix(ApplicationRecord, hasSecurePassword()) {}
+```
+
+これで`password`や`passwordConfirmation`フィールドを利用してパスワードのバリデーションとハッシュ化を、`authenticate()`メソッドを利用してパスワードの認証を行うことができます。
+
+```ts
+import { User } from "./models/index.js";
+
+const user = User.build({});
+user.password = "";
+user.save(); // => false (password can't be blank)
+user.password = "myPassword";
+user.save(); // => false (password confirmation doesn't match)
+user.passwordConfirmation = "myPassword";
+user.save(); // => true
+
+user.authenticate("invalid"); // => false
+user.authenticate("myPassword"); // => true
+```
+
+パスワード保持用のフィールド名を`passwordDigest`以外に設定したり、複数のパスワードをモデルで管理することもできます。
+
+```ts
+// ./models/user.ts
+import { hasSecurePassword, Mix } from "accel-record";
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class UserModel extends Mix(
+  ApplicationRecord,
+  hasSecurePassword(), // passwordDigest フィールドを利用
+  hasSecurePassword({ attribute: "recovery", validation: false }) // recoveryDigest フィールドを利用
+) {}
+```
+
 ## Nullableな値の扱いについて
 
 Nullableな値について、TypeScriptではJavaScriptと同様にundefinedとnullの2つが存在します。 \
@@ -1198,7 +1254,6 @@ user.update({ age: undefined });
 ## 今後予定されている機能追加
 
 - [accel-record-core] スコープ
-- [accel-record-core] Authentication
 - [accel-record-core] 複合IDの対応
 - [accel-record-core] クエリインターフェースの拡充
 

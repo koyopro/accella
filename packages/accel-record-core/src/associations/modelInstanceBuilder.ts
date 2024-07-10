@@ -19,11 +19,12 @@ export class ModelInstanceBuilder {
       }
     }
     this.initAssociations<T>(klass, instance);
-    for (const key of instance.associations.keys()) {
-      if (key in input) {
+    // Updating fields other than the column field
+    Object.keys(input).forEach((key) => {
+      if (klass.attributeToColumn(key) == undefined) {
         proxy[key] = input[key];
       }
-    }
+    });
     return proxy;
   }
 

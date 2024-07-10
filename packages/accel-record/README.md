@@ -34,6 +34,7 @@ It can be used with MySQL, PostgreSQL, and SQLite.
 - [Bulk Insert](#bulk-insert)
 - [Transactions](#transactions)
 - [Internationalization (I18n)](#internationalization-i18n)
+- [Password Authentication](#password-authentication)
 - [Nullable Values Handling](#nullable-values-handling)
 - [Future Planned Features](#future-planned-features)
 
@@ -1170,6 +1171,61 @@ The message keys corresponding to each validation are as follows:
 
 For those with interpolation set to `count`, that part will be replaced with the value specified in the option when the error message contains `%{count}`.
 
+## Password Authentication
+
+We provide a mechanism for securely hashing and authenticating passwords using Bcrypt.
+
+First, add a `passwordDigest` field to the model to store the hashed password.
+
+```ts
+// prisma/schema.prisma
+model User {
+  ...
+  passwordDigest String // Stores the hash value of the password
+}
+```
+
+Next, use `hasSecurePassword()` to add functionality to the model for hashing and authenticating passwords.
+
+```ts
+// ./models/user.ts
+import { hasSecurePassword, Mix } from "accel-record";
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class UserModel extends Mix(ApplicationRecord, hasSecurePassword()) {}
+```
+
+With this, you can perform password validation and hashing using the `password` and `passwordConfirmation` fields, and authenticate passwords using the `authenticate()` method.
+
+```ts
+import { User } from "./models/index.js";
+
+const user = User.build({});
+user.password = "";
+user.save(); // => false (password can't be blank)
+user.password = "myPassword";
+user.save(); // => false (password confirmation doesn't match)
+user.passwordConfirmation = "myPassword";
+user.save(); // => true
+
+user.authenticate("invalid"); // => false
+user.authenticate("myPassword"); // => true
+```
+
+You can customize the field name for storing the password by setting it to something other than `passwordDigest`, and you can manage multiple passwords in the model as well.
+
+```ts
+// ./models/user.ts
+import { hasSecurePassword, Mix } from "accel-record";
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class UserModel extends Mix(
+  ApplicationRecord,
+  hasSecurePassword(), // Uses the passwordDigest field
+  hasSecurePassword({ attribute: "recovery", validation: false }) // Uses the recoveryDigest field
+) {}
+```
+
 ## Nullable Values Handling
 
 Regarding nullable values, TypeScript, like JavaScript, has two options: undefined and null. \
@@ -1197,7 +1253,6 @@ user.update({ age: undefined });
 ## Future Planned Features
 
 - [accel-record-core] Scopes
-- [accel-record-core] Authentication
 - [accel-record-core] Support for Composite IDs
 - [accel-record-core] Expansion of Query Interface
 
