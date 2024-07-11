@@ -8,14 +8,15 @@ export class HasManyThroughAssociation<
   T extends Model,
 > extends HasManyAssociation<O, T> {
   override concat(records: T | T[]) {
-    this.persist(records);
+    return this.persist(records);
   }
 
-  persist(records: T | T[]) {
+  persist(records: T | T[]): boolean {
     const _records = Array.isArray(records) ? records : [records];
+    let ret = true;
     for (const record of _records) {
       if (!this.owner.isPersisted()) continue;
-      record.save();
+      if (!record.save()) ret = false;
       const query = this.connection
         .knex(this.info.through)
         .insert({
@@ -26,6 +27,7 @@ export class HasManyThroughAssociation<
         .ignore();
       exec(query);
     }
+    return ret;
   }
 
   deleteAll() {

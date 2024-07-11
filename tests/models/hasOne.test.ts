@@ -34,6 +34,17 @@ describe("hasOne", () => {
     expect(User.find(user.id).setting?.threshold).toBeCloseTo(0.5);
   });
 
+  test("hasOne set with validation error", () => {
+    expect(Setting.count()).toBe(0);
+    const user = $user.create();
+    const setting = $setting.build({ threshold: -1 });
+    user.setting = setting;
+    expect(setting.isValid()).toBe(false);
+    expect(Setting.count()).toBe(0);
+    expect(User.find(user.id).setting).toBeUndefined();
+    expect(user.setting).toBeUndefined();
+  });
+
   test("set in build", () => {
     expect(Setting.count()).toBe(0);
     const user = $user.create({ setting: $setting.build({ threshold: 0.5 }) });
@@ -54,6 +65,30 @@ describe("hasOne", () => {
     expect(Setting.count()).toBe(1);
     user.setting = undefined;
     expect(Setting.count()).toBe(0);
+  });
+
+  test("set to other", () => {
+    const user = $user.create({ setting: $setting.build({ threshold: 0.5 }) });
+    expect(Setting.count()).toBe(1);
+
+    {
+      const settingId = user.setting?.settingId!;
+      user.setting = $setting.build({ threshold: 1.0 });
+
+      // Old setting should be deleted
+      expect(Setting.count()).toBe(1);
+      expect(Setting.findBy({ settingId })).toBeUndefined();
+      expect(user.setting?.settingId).not.toEqual(settingId);
+    }
+    {
+      // with Validation Error, should not be replace
+      const settingId = user.setting?.settingId!;
+      const setting = $setting.build({ threshold: -1 });
+      user.setting = setting;
+
+      expect(Setting.findBy({ settingId })!.equals(user.setting!)).toBeTruthy();
+      expect(user.setting?.settingId).toEqual(settingId);
+    }
   });
 
   test("includes", () => {

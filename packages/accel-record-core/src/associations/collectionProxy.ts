@@ -32,10 +32,11 @@ export class Collection<T extends Model, S extends ModelMeta> extends Relation<
   }
 
   concat(records: S["Base"] | S["Base"][]) {
-    this.association.concat(records);
     const _records = Array.isArray(records) ? records : [records];
     for (const record of _records) {
-      (this.cache ||= []).push(record as T);
+      if (this.association.concat(record as T)) {
+        (this.cache ||= []).push(record as T);
+      }
     }
     return this;
   }

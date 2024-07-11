@@ -34,6 +34,15 @@ describe("ManyToMany", () => {
     expect(user.reload().posts.toArray().length).toEqual(2);
   });
 
+  test("push with validation error", () => {
+    const user = $user.create();
+    const post = $post.build({ title: "" });
+    user.posts.push(post);
+    expect(user.posts.toArray().length).toEqual(0);
+    expect(post.isPersisted()).toBe(false);
+    expect(post.isValid()).toBe(false);
+  });
+
   test("includes", () => {
     $user.create({ posts: [$post.build()] });
 
