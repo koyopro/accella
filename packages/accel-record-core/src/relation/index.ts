@@ -25,7 +25,6 @@ export class Relation<T, M extends ModelMeta> extends Mix(
   Where
 ) {
   protected counter = 0;
-  protected queryBuilder: any;
   protected options: Options;
   constructor(
     protected model: typeof Model,
@@ -34,7 +33,6 @@ export class Relation<T, M extends ModelMeta> extends Mix(
   ) {
     super();
     this.model = model;
-    this.queryBuilder = model.queryBuilder;
     this.options = Object.assign(getDefaultOptions(), options) as Options;
   }
   /**

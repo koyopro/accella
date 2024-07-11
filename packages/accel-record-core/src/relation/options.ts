@@ -7,6 +7,7 @@ export type Options = {
   wheres: any[];
   whereNots: any[];
   whereRaws: [string, any[]][];
+  orWheres: any[];
   orders: [string, "asc" | "desc"][];
   offset: number | undefined;
   limit: number | undefined;
@@ -21,6 +22,7 @@ export const getDefaultOptions = (): Options => ({
   wheres: [],
   whereNots: [],
   whereRaws: [],
+  orWheres: [],
   orders: [],
   offset: undefined,
   limit: undefined,

@@ -132,6 +132,25 @@ describe("Relation", () => {
     expect(User.all().where("age IS NOT NULL").first()?.name).toBe("hoge");
   });
 
+  test("#or()", () => {
+    $user.create({ name: "hoge", age: 20 });
+    $user.create({ name: "fuga", age: 30 });
+    expect(
+      User.all()
+        .where({ name: "hoge" })
+        .where({ age: 20 })
+        .or(User.where({ name: "fuga" }).where({ age: 30 }))
+        .count()
+    ).toBe(2);
+    expect(
+      User.all()
+        .where({ name: "hoge" })
+        .where({ age: 20 })
+        .or({ name: "fuga", age: 30 })
+        .count()
+    ).toBe(2);
+  });
+
   test("includes", () => {
     const u = $user.create();
     Post.create({ title: "post1", authorId: u.id });
@@ -223,5 +242,17 @@ describe("Relation", () => {
       .where("Setting.threshold > ?", 10)
       .count();
     expect(cnt).toBe(1);
+  });
+
+  test("queryBuilder", () => {
+    $user.create({ name: "hoge", age: 20 });
+    $user.create({ name: "fuga", age: 30 });
+
+    const column = User.attributeToColumn("name")!;
+    const r = User.where({ age: 20 })
+      .queryBuilder.select(column)
+      .groupBy(column)
+      .execute();
+    expect(r.length).toBe(1);
   });
 });
