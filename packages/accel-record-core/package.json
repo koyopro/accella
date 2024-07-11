@@ -27,6 +27,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@paralleldrive/cuid2": "^2.0.0",
+    "bcrypt-ts": "^5.0.0",
     "get-port": "^7.0.0",
     "knex": "^3.0.0",
     "prisma": "^5.0.0"
