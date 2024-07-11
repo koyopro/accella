@@ -1,3 +1,9 @@
+# [1.9.1](https://github.com/koyopro/accella/compare/1.9.0...1.9.1) (2024-07-12)
+
+### Bug Fixes
+
+- add bcrypt-ts to dependencies ([#22](https://github.com/koyopro/accella/pull/22))
+
 # [1.9.0](https://github.com/koyopro/accella/compare/1.8.0...1.9.0) (2024-07-12)
 
 ### Features
