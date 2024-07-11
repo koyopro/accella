@@ -1,3 +1,14 @@
+# [1.9.0](https://github.com/koyopro/accella/compare/1.8.0...1.9.0) (2024-07-12)
+
+### Features
+
+- Password Authentication ([#19](https://github.com/koyopro/accella/pull/19))
+- Add methods to Relation (or, queryBuilder) ([#20](https://github.com/koyopro/accella/pull/20))
+
+### Bug Fixes
+
+- Improvements related to associations ([#21](https://github.com/koyopro/accella/pull/21))
+
 # [1.8.0](https://github.com/koyopro/accella/compare/1.7.0...1.8.0) (2024-07-02)
 
 ### Features
