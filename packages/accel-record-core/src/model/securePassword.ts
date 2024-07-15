@@ -90,7 +90,10 @@ export function hasSecurePassword<T extends string = "password">(
       if (password == undefined && confirm == undefined) return;
       this.validates(attribute as any, { presence: true });
       if (password !== confirm) {
-        this.errors.add(confirmAttribute, `does not match ${attribute}`);
+        const humanAttributeName = this.class().humanAttributeName(attribute);
+        this.errors.add(confirmAttribute, "confirmation", {
+          attribute: humanAttributeName,
+        });
       }
     }
   };

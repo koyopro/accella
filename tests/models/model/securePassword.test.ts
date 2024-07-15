@@ -2,6 +2,7 @@ import { hasSecurePassword, Mix } from "accel-record-core";
 import { User } from "..";
 import { $user } from "../../factories/user";
 import { ApplicationRecord } from "../applicationRecord";
+import { withI18n } from "../../contexts/i18n";
 
 const validPassword = "xBOHdowK5e2YjQ1s";
 const validRecovery = "l36pjDtp7TZtBqjm";
@@ -16,7 +17,7 @@ test("hasSecurePassword()", () => {
   user.password = validPassword;
   expect(user.save()).toBe(false);
   expect(user.errors.fullMessages).toEqual([
-    "PasswordConfirmation does not match password",
+    "PasswordConfirmation doesn't match Password",
   ]);
 
   user.passwordConfirmation = validPassword;
@@ -82,4 +83,22 @@ test("hasSecurePassword() multiple", () => {
 
   expect(user.password).toBe(validPassword);
   expect(user.recovery).toBe(validRecovery);
+});
+
+describe("with i18n", () => {
+  withI18n();
+
+  test("hasSecurePassword() validation message", () => {
+    const user = $user.build({});
+    user.password = "";
+    user.passwordConfirmation = "";
+    expect(user.save()).toBe(false);
+    expect(user.errors.fullMessages).toEqual(["パスワード を入力してください"]);
+
+    user.password = validPassword;
+    expect(user.save()).toBe(false);
+    expect(user.errors.fullMessages).toEqual([
+      "パスワード(確認用) とパスワードの入力が一致しません",
+    ]);
+  });
 });

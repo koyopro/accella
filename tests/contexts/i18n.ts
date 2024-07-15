@@ -10,6 +10,8 @@ export const withI18n = () => {
     const translations = {
       "accelrecord.models.User": "ユーザー",
       "accelrecord.attributes.User.name": "名前",
+      "accelrecord.attributes.User.password": "パスワード",
+      "accelrecord.attributes.User.passwordConfirmation": "パスワード(確認用)",
       "accelrecord.attributes.ValidateSample.accepted": "許可",
       "accelrecord.attributes.ValidateSample.pattern": "パターン",
       "accelrecord.attributes.ValidateSample.size": "サイズ",
@@ -22,6 +24,7 @@ export const withI18n = () => {
       "errors.messages.tooShort": "は短すぎます(%{count}文字以上)",
       "errors.messages.tooLong": "は長すぎます(%{count}文字以下)",
       "errors.messages.taken": "は既に使用されています",
+      "errors.messages.confirmation": "と%{attribute}の入力が一致しません",
     };
     Object.entries(translations).forEach(([key, value]) =>
       addTranslation(key, value)
