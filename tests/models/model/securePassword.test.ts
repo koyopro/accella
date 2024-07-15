@@ -45,6 +45,19 @@ test("hasSecurePassword() on create", () => {
   expect(user.save()).toBe(true);
 });
 
+test("validation on update", () => {
+  const user = $user.build({});
+
+  user.password = "a".repeat(72);
+  expect(user.isValid()).toBe(true);
+
+  user.password = "a".repeat(73);
+  expect(user.isValid()).toBe(false);
+  expect(user.errors.fullMessages).toEqual([
+    "Password is too long (maximum is 72 characters)",
+  ]);
+});
+
 test("hasSecurePassword() with validations: false", () => {
   class NoValidationsUser extends Mix(
     ApplicationRecord,

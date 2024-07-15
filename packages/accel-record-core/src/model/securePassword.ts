@@ -2,6 +2,8 @@ import { Model } from "../index.js";
 import { compareSync, genSaltSync, hashSync } from "bcrypt-ts";
 import { isBlank } from "../validation/validator/presence.js";
 
+// bcrypt-ts: The maximum input length is 72 bytes
+const MAX_PASSWORD_LENGTH_ALLOWED = 72;
 /**
  * Represents a secure password type.
  * @template T - The type of the password.
@@ -93,6 +95,9 @@ export function hasSecurePassword<T extends string = "password">(
       if (validations == true && isBlank(digest)) {
         this.errors.add(attribute, "blank");
       }
+      this.validates(attribute as any, {
+        length: { maximum: MAX_PASSWORD_LENGTH_ALLOWED },
+      });
       if (confirm != undefined && password !== confirm) {
         const humanAttributeName = this.class().humanAttributeName(attribute);
         this.errors.add(confirmAttribute, "confirmation", {
