@@ -12,6 +12,9 @@ export const withI18n = () => {
       "accelrecord.attributes.User.name": "名前",
       "accelrecord.attributes.User.password": "パスワード",
       "accelrecord.attributes.User.passwordConfirmation": "パスワード(確認用)",
+      "accelrecord.attributes.Account.password": "パスワード",
+      "accelrecord.attributes.Account.passwordConfirmation":
+        "パスワード(確認用)",
       "accelrecord.attributes.ValidateSample.accepted": "許可",
       "accelrecord.attributes.ValidateSample.pattern": "パターン",
       "accelrecord.attributes.ValidateSample.size": "サイズ",

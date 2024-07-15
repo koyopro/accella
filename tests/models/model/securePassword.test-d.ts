@@ -1,45 +1,45 @@
 import { hasSecurePassword, Mix } from "accel-record-core";
-import { $user } from "../../factories/user";
+import { $Account } from "../../factories/account";
 import { ApplicationRecord } from "../applicationRecord";
 
 test("hasSecurePassword()", () => {
-  const user = $user.create();
-  user.password = "";
-  user.passwordConfirmation = "";
-  expectTypeOf(user.authenticate("")).toBeBoolean();
-  expectTypeOf(user.authenticatePassword("")).toBeBoolean();
+  const account = $Account.create();
+  account.password = "";
+  account.passwordConfirmation = "";
+  expectTypeOf(account.authenticate("")).toBeBoolean();
+  expectTypeOf(account.authenticatePassword("")).toBeBoolean();
 
   // @ts-expect-error
-  user.hoge;
+  account.hoge;
 });
 
 test("hasSecurePassword() with custom attribute", () => {
-  class CustomAttributeUser extends Mix(
+  class CustomAttributeaccount extends Mix(
     ApplicationRecord,
     hasSecurePassword({ attribute: "recovery" })
   ) {}
-  const user = new CustomAttributeUser();
-  user.recovery = "";
-  user.recoveryConfirmation = "";
-  expectTypeOf(user.authenticateRecovery("")).toBeBoolean();
+  const account = new CustomAttributeaccount();
+  account.recovery = "";
+  account.recoveryConfirmation = "";
+  expectTypeOf(account.authenticateRecovery("")).toBeBoolean();
   // @ts-expect-error
-  user.authenticate("");
+  account.authenticate("");
   // @ts-expect-error
-  user.authenticatePassword("");
+  account.authenticatePassword("");
 });
 
 test("hasSecurePassword() multiple", () => {
-  class MultiplePasswordUser extends Mix(
+  class MultiplePasswordaccount extends Mix(
     ApplicationRecord,
     hasSecurePassword(),
     hasSecurePassword({ attribute: "recovery", validations: false })
   ) {}
-  const user = new MultiplePasswordUser();
-  user.password = "";
-  user.passwordConfirmation = "";
-  user.recovery = "";
-  user.recoveryConfirmation = "";
-  expectTypeOf(user.authenticate("")).toBeBoolean();
-  expectTypeOf(user.authenticatePassword("")).toBeBoolean();
-  expectTypeOf(user.authenticateRecovery("")).toBeBoolean();
+  const account = new MultiplePasswordaccount();
+  account.password = "";
+  account.passwordConfirmation = "";
+  account.recovery = "";
+  account.recoveryConfirmation = "";
+  expectTypeOf(account.authenticate("")).toBeBoolean();
+  expectTypeOf(account.authenticatePassword("")).toBeBoolean();
+  expectTypeOf(account.authenticateRecovery("")).toBeBoolean();
 });

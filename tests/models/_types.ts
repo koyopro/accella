@@ -12,6 +12,7 @@ import { ProfileModel } from './profile.js'
 import { CompanyModel } from './company.js'
 import { EmployeeModel } from './employee.js'
 import { ValidateSampleModel } from './validateSample.js'
+import { AccountModel } from './account.js'
 import {
   registerModel,
   type Collection,
@@ -33,6 +34,7 @@ type Meta<T> = T extends typeof UserModel | UserModel ? UserMeta :
                T extends typeof CompanyModel | CompanyModel ? CompanyMeta :
                T extends typeof EmployeeModel | EmployeeModel ? EmployeeMeta :
                T extends typeof ValidateSampleModel | ValidateSampleModel ? ValidateSampleMeta :
+               T extends typeof AccountModel | AccountModel ? AccountMeta :
                any;
 
 export namespace $Enums {
@@ -532,3 +534,42 @@ type ValidateSampleMeta = {
   };
 };
 registerModel(ValidateSample);
+
+declare module "./account" {
+  interface AccountModel {
+    id: number | undefined;
+    email: string | undefined;
+    passwordDigest: string | undefined;
+  }
+}
+export interface NewAccount extends AccountModel {};
+export class Account extends AccountModel {};
+export interface Account extends AccountModel {
+  id: number;
+  email: string;
+};
+type AccountCollection<T extends AccountModel> = Collection<T, AccountMeta> | Collection<Account, AccountMeta>;
+type AccountMeta = {
+  Base: AccountModel;
+  New: NewAccount;
+  Persisted: Account;
+  AssociationKey: never;
+  Column: {
+    id: number;
+    email: string;
+    passwordDigest: string | undefined;
+  };
+  CreateInput: {
+    id?: number;
+    email: string;
+    passwordDigest?: string;
+    password?: string;
+    passwordConfirmation?: string;
+  };
+  WhereInput: {
+    id?: number | number[] | Filter<number> | null;
+    email?: string | string[] | StringFilter | null;
+    passwordDigest?: string | string[] | StringFilter | null;
+  };
+};
+registerModel(Account);
