@@ -9,7 +9,10 @@ const defaultMessages: Record<string, string | undefined> = {
   tooShort: "is too short (minimum is %{count} characters)",
   tooLong: "is too long (maximum is %{count} characters)",
   taken: "has already been taken",
+  confirmation: "doesn't match %{attribute}",
 };
+
+type Options = { count?: number; attribute?: string };
 
 /**
  * Represents an error object.
@@ -24,7 +27,7 @@ export class Error {
     private base: Model,
     public attribute: string,
     public message: string,
-    private options: { count?: number } = {}
+    private options: Options = {}
   ) {}
 
   /**
@@ -36,6 +39,12 @@ export class Error {
     let message = this.translatedMessage;
     if (this.options.count) {
       message = message.replace("%{count}", this.options.count.toString());
+    }
+    if (message.includes("%{attribute}")) {
+      message = message.replace(
+        "%{attribute}",
+        this.options.attribute || "confirmation"
+      );
     }
     return `${attrName} ${message}`;
   }
@@ -80,7 +89,7 @@ export class Errors {
    * @param attribute - The attribute associated with the error.
    * @param error - The error message.
    */
-  add(attribute: string, error: string, options?: { count: number }) {
+  add(attribute: string, error: string, options?: Options) {
     (this.errors[attribute] ||= []).push(
       new Error(this.base, attribute, error, options)
     );

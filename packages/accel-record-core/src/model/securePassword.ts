@@ -1,6 +1,9 @@
 import { Model } from "../index.js";
 import { compareSync, genSaltSync, hashSync } from "bcrypt-ts";
+import { isBlank } from "../validation/validator/presence.js";
 
+// bcrypt-ts: The maximum input length is 72 bytes
+const MAX_PASSWORD_LENGTH_ALLOWED = 72;
 /**
  * Represents a secure password type.
  * @template T - The type of the password.
@@ -34,7 +37,7 @@ type SecurePassword<T extends string> = {
 /**
  * Creates a class that represents a secure password.
  * @param options.attribute - The name of the password attribute. Default is "password".
- * @param options.validations - Indicates whether to perform validations. Default is true.
+ * @param options.validations - Indicates whether to perform validations. If set to "optional", the password can be undefined. Default is true.
  * @returns The class representing a secure password.
  *
  * @example hasSecurePassword()
@@ -43,7 +46,7 @@ type SecurePassword<T extends string> = {
 export function hasSecurePassword<T extends string = "password">(
   options: {
     attribute?: T;
-    validations?: boolean;
+    validations?: boolean | "optional";
   } = {}
 ): SecurePassword<T> {
   const attribute = options.attribute ?? "password";
@@ -63,6 +66,7 @@ export function hasSecurePassword<T extends string = "password">(
       return _get(this, _attribute);
     }
     set [attribute](value: string | undefined) {
+      if (value == "") return;
       const newDigest = value ? hashSync(value, genSaltSync()) : undefined;
       _set(this, `${attribute}Digest`, newDigest);
       _set(this, _attribute, value);
@@ -87,10 +91,18 @@ export function hasSecurePassword<T extends string = "password">(
       if (!validations) return;
       const password = _get(this, _attribute);
       const confirm = _get(this, _cofirmAttribute);
-      if (password == undefined && confirm == undefined) return;
-      this.validates(attribute as any, { presence: true });
-      if (password !== confirm) {
-        this.errors.add(confirmAttribute, `does not match ${attribute}`);
+      const digest = _get(this, `${attribute}Digest`);
+      if (validations == true && isBlank(digest)) {
+        this.errors.add(attribute, "blank");
+      }
+      this.validates(attribute as any, {
+        length: { maximum: MAX_PASSWORD_LENGTH_ALLOWED },
+      });
+      if (confirm != undefined && password !== confirm) {
+        const humanAttributeName = this.class().humanAttributeName(attribute);
+        this.errors.add(confirmAttribute, "confirmation", {
+          attribute: humanAttributeName,
+        });
       }
     }
   };

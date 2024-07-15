@@ -104,3 +104,9 @@ model ValidateSample {
   count    Int
   size     String
 }
+
+model Account {
+  id             Int     @id @default(autoincrement())
+  email          String  @unique
+  passwordDigest String?
+}
