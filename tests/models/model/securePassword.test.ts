@@ -55,6 +55,22 @@ test("hasSecurePassword() with validations: false", () => {
   expect(user.isValid()).toBe(true);
 });
 
+test("hasSecurePassword() with validations: 'optional'", () => {
+  class OptionalValidationsUser extends Mix(
+    ApplicationRecord,
+    hasSecurePassword({ validations: "optional" })
+  ) {}
+  const user = new OptionalValidationsUser();
+  expect(user.isValid()).toBe(true);
+  user.password = validPassword;
+  // Since passwordConfirmation is undefined, the confirmation will be skipped
+  expect(user.isValid()).toBe(true);
+  user.passwordConfirmation = "";
+  expect(user.isValid()).toBe(false);
+  user.passwordConfirmation = validPassword;
+  expect(user.isValid()).toBe(true);
+});
+
 test("hasSecurePassword() with custom attribute", () => {
   class CustomAttributeUser extends Mix(
     ApplicationRecord,

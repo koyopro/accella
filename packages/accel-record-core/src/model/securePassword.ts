@@ -44,7 +44,7 @@ type SecurePassword<T extends string> = {
 export function hasSecurePassword<T extends string = "password">(
   options: {
     attribute?: T;
-    validations?: boolean;
+    validations?: boolean | "optional";
   } = {}
 ): SecurePassword<T> {
   const attribute = options.attribute ?? "password";
@@ -89,7 +89,8 @@ export function hasSecurePassword<T extends string = "password">(
       if (!validations) return;
       const password = _get(this, _attribute);
       const confirm = _get(this, _cofirmAttribute);
-      if (isBlank(_get(this, `${attribute}Digest`))) {
+      const digest = _get(this, `${attribute}Digest`);
+      if (validations == true && isBlank(digest)) {
         this.errors.add(attribute, "blank");
       }
       if (confirm != undefined && password !== confirm) {
