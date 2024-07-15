@@ -20,7 +20,7 @@ export class PresenceValidator<T extends Model> extends Validator<T> {
     }
   }
 }
-const isBlank = (value: any) => {
+export const isBlank = (value: any) => {
   if (typeof value === "string") {
     return value.trim() === "";
   }

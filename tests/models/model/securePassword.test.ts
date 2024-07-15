@@ -9,12 +9,11 @@ const validRecovery = "l36pjDtp7TZtBqjm";
 
 test("hasSecurePassword()", () => {
   const user = $user.build({});
-  user.password = "";
-  user.passwordConfirmation = "";
   expect(user.save()).toBe(false);
   expect(user.errors.fullMessages).toEqual(["Password can't be blank"]);
 
   user.password = validPassword;
+  user.passwordConfirmation = "";
   expect(user.save()).toBe(false);
   expect(user.errors.fullMessages).toEqual([
     "PasswordConfirmation doesn't match Password",
@@ -85,17 +84,32 @@ test("hasSecurePassword() multiple", () => {
   expect(user.recovery).toBe(validRecovery);
 });
 
+test("password setter", () => {
+  const user = User.build({});
+  // not update passwordDigest
+  user.password = "";
+  expect(user.passwordDigest).toBeUndefined();
+  // update passwordDigest
+  user.password = validPassword;
+  expect(user.passwordDigest).not.toBeUndefined();
+  // not update passwordDigest
+  user.password = "";
+  expect(user.passwordDigest).not.toBeUndefined();
+  // update passwordDigest
+  user.password = undefined;
+  expect(user.passwordDigest).toBeUndefined();
+});
+
 describe("with i18n", () => {
   withI18n();
 
   test("hasSecurePassword() validation message", () => {
     const user = $user.build({});
-    user.password = "";
-    user.passwordConfirmation = "";
     expect(user.save()).toBe(false);
     expect(user.errors.fullMessages).toEqual(["パスワード を入力してください"]);
 
     user.password = validPassword;
+    user.passwordConfirmation = "";
     expect(user.save()).toBe(false);
     expect(user.errors.fullMessages).toEqual([
       "パスワード(確認用) とパスワードの入力が一致しません",

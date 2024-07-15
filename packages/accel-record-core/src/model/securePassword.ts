@@ -1,5 +1,6 @@
 import { Model } from "../index.js";
 import { compareSync, genSaltSync, hashSync } from "bcrypt-ts";
+import { isBlank } from "../validation/validator/presence.js";
 
 /**
  * Represents a secure password type.
@@ -63,6 +64,7 @@ export function hasSecurePassword<T extends string = "password">(
       return _get(this, _attribute);
     }
     set [attribute](value: string | undefined) {
+      if (value == "") return;
       const newDigest = value ? hashSync(value, genSaltSync()) : undefined;
       _set(this, `${attribute}Digest`, newDigest);
       _set(this, _attribute, value);
@@ -87,9 +89,10 @@ export function hasSecurePassword<T extends string = "password">(
       if (!validations) return;
       const password = _get(this, _attribute);
       const confirm = _get(this, _cofirmAttribute);
-      if (password == undefined && confirm == undefined) return;
-      this.validates(attribute as any, { presence: true });
-      if (password !== confirm) {
+      if (isBlank(_get(this, `${attribute}Digest`))) {
+        this.errors.add(attribute, "blank");
+      }
+      if (confirm != undefined && password !== confirm) {
         const humanAttributeName = this.class().humanAttributeName(attribute);
         this.errors.add(confirmAttribute, "confirmation", {
           attribute: humanAttributeName,
