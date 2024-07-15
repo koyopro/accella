@@ -37,7 +37,7 @@ type SecurePassword<T extends string> = {
 /**
  * Creates a class that represents a secure password.
  * @param options.attribute - The name of the password attribute. Default is "password".
- * @param options.validations - Indicates whether to perform validations. Default is true.
+ * @param options.validations - Indicates whether to perform validations. If set to "optional", the password can be undefined. Default is true.
  * @returns The class representing a secure password.
  *
  * @example hasSecurePassword()
