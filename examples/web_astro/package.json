@@ -13,6 +13,7 @@
     "@astrojs/check": "^0.8.1",
     "accel-web": "^0.0.1",
     "astro": "^4.11.5",
+    "mysql2": "^3.9.8",
     "typescript": "^5.5.3"
   }
 }
