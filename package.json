@@ -36,7 +36,8 @@
     "packages/accel-record-core",
     "packages/accel-record",
     "packages/accel-record-factory",
-    "packages/prisma-generator-accel-record"
+    "packages/prisma-generator-accel-record",
+    "packages/accel-web"
   ],
   "devDependencies": {
     "@eslint/js": "^9.9.0",
