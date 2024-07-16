@@ -74,11 +74,15 @@ export class Persistence {
   /**
    * Saves the model instance.
    *
-   * @template T - The type of the model.
-   * @returns A boolean indicating whether the save operation was successful.
+   * @param options - Optional configuration options.
+   * @param options.validate - A boolean indicating whether to validate the model instance before saving, default is `true`.
+   * @returns Returns `true` if the model instance is successfully saved, `false` otherwise.
    */
-  save<T extends Model>(this: T): this is Persisted<T> {
-    if (this.isInvalid()) return false;
+  save<T extends Model>(
+    this: T,
+    options?: { validate?: boolean }
+  ): this is Persisted<T> {
+    if ((options?.validate ?? true) && this.isInvalid()) return false;
     this.runBeforeCallbacks("save");
     const ret = this.createOrUpdate();
     this.isNewRecord = false;
