@@ -1,9 +1,12 @@
 "use strict";
 
-const path = require("path");
-const spawn = require("child_process").spawn;
-const spawnSync = require("child_process").spawnSync;
-const v8 = require("node:v8");
+import { spawn, spawnSync } from "child_process";
+import v8 from "v8";
+
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const host = "127.0.0.1";
 function nodeNetCatSrc(port, input) {
@@ -29,10 +32,14 @@ function start() {
     );
   }
   const port = findPort();
-  const p = spawn(process.execPath, [require.resolve("./worker.cjs"), port], {
-    stdio: "inherit",
-    windowsHide: true,
-  });
+  const p = spawn(
+    process.execPath,
+    [path.join(__dirname, "worker.cjs"), port],
+    {
+      stdio: "inherit",
+      windowsHide: true,
+    }
+  );
   p.unref();
   process.on("exit", () => {
     p.kill();
@@ -48,7 +55,7 @@ function start() {
 function findPort() {
   const findPortResult = spawnSync(
     process.execPath,
-    [require.resolve("./find-port.mjs")],
+    [path.join(__dirname, "find-port.mjs")],
     {
       windowsHide: true,
     }
@@ -178,8 +185,9 @@ function createClient(filename, args) {
 createClient.FUNCTION_PRIORITY = FUNCTION_PRIORITY;
 createClient.configuration = configuration;
 
-module.exports = createClient;
-
-module.exports.stop = function () {
+const stop = function () {
   childProcesss?.kill();
 };
+
+export default createClient;
+export { stop };
