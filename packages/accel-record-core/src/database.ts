@@ -5,7 +5,7 @@ import { loadDmmf } from "./fields.js";
 import { Model } from "./index.js";
 import { loadI18n } from "./model/naming.js";
 // @ts-ignore
-import SyncRpc from "./sync-rpc/index.cjs";
+import SyncRpc from "./sync-rpc/index.js";
 
 const log = (logLevel: LogLevel, ...args: any[]) => {
   if (
