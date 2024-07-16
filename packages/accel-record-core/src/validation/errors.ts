@@ -21,12 +21,12 @@ export class Error {
   /**
    * Creates a new Error instance.
    * @param attribute - The attribute associated with the error.
-   * @param message - The error message.
+   * @param type - The error type or message.
    */
   constructor(
     private base: Model,
     public attribute: string,
-    public message: string,
+    public type: string,
     private options: Options = {}
   ) {}
 
@@ -36,6 +36,10 @@ export class Error {
    */
   get fullMessage() {
     const attrName = this.base.class().humanAttributeName(this.attribute);
+    return `${attrName} ${this.message}`;
+  }
+
+  get message() {
     let message = this.translatedMessage;
     if (this.options.count) {
       message = message.replace("%{count}", this.options.count.toString());
@@ -46,23 +50,23 @@ export class Error {
         this.options.attribute || "confirmation"
       );
     }
-    return `${attrName} ${message}`;
+    return message;
   }
 
   private get translatedMessage() {
     const model = this.base.constructor.name;
     const keys = [
-      `accelrecord.errors.models.${model}.attributes.${this.attribute}.${this.message}`,
-      `accelrecord.errors.models.${model}.${this.message}`,
+      `accelrecord.errors.models.${model}.attributes.${this.attribute}.${this.type}`,
+      `accelrecord.errors.models.${model}.${this.type}`,
       "accelrecord.errors.messages.blank",
-      `errors.attributes.${this.attribute}.${this.message}`,
-      `errors.messages.${this.message}`,
+      `errors.attributes.${this.attribute}.${this.type}`,
+      `errors.messages.${this.type}`,
     ];
     for (const key of keys) {
       const message = i18n?.t(key, "");
       if (message) return message;
     }
-    return defaultMessages[this.message] || this.message;
+    return defaultMessages[this.type] || this.type;
   }
 }
 

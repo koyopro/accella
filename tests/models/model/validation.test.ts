@@ -205,9 +205,10 @@ test("validatesWith", () => {
 test("errros", () => {
   const sample = $ValidateSample.build();
   expect(sample.errors.isEmpty()).toBe(true);
-  sample.errors.add("key", "is invalid");
+  sample.errors.add("key", "invalid");
   expect(sample.errors.isEmpty()).toBe(false);
   expect(sample.errors.get("key").length).toBe(1);
+  expect(sample.errors.get("key")[0].type).toBe("invalid");
   expect(sample.errors.get("key")[0].message).toBe("is invalid");
   expect(sample.errors.get("key")[0].fullMessage).toBe("Key is invalid");
   expect(sample.errors.fullMessages).toContain("Key is invalid");
