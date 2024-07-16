@@ -34,7 +34,8 @@
     "packages/accel-record-core",
     "packages/accel-record",
     "packages/accel-record-factory",
-    "packages/prisma-generator-accel-record"
+    "packages/prisma-generator-accel-record",
+    "packages/accel-web"
   ],
   "devDependencies": {
     "@types/node": "^20.11.19",

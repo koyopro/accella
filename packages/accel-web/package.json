@@ -1,0 +1,27 @@
+{
+  "name": "accel-web",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {},
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koyopro/accella"
+  },
+  "bugs": {
+    "url": "https://github.com/koyopro/accella/issues"
+  },
+  "homepage": "https://github.com/koyopro/accella",
+  "keywords": [
+    "accella",
+    "accel-record"
+  ],
+  "files": [
+    "dist"
+  ],
+  "author": "koyopro",
+  "license": "Apache-2.0"
+}
