@@ -1,11 +1,11 @@
 import { DMMF, GeneratorOptions } from "@prisma/generator-helper";
 import { generateTypes } from "./type";
 
-export const generateIndex = (options: GeneratorOptions) => {
+export const generateIndex = async (options: GeneratorOptions) => {
   return [
     cautionComment,
     generateExportAllModels(options.dmmf.datamodel.models as DMMF.Model[]),
-    generateTypes(options),
+    await generateTypes(options),
   ].join("\n");
 };
 
