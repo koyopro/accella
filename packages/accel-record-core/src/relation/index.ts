@@ -7,6 +7,7 @@ import { RelationBase } from "./base.js";
 import { Batches } from "./batches.js";
 import { Calculations } from "./calculations.js";
 import { getDefaultOptions, Options } from "./options.js";
+import { Merge } from "./merge.js";
 import { Query } from "./query.js";
 import { Where } from "./where.js";
 
@@ -20,6 +21,7 @@ export class Relation<T, M extends ModelMeta> extends Mix(
   Association,
   Batches,
   Calculations,
+  Merge,
   Query,
   RelationBase,
   Where
@@ -37,7 +39,7 @@ export class Relation<T, M extends ModelMeta> extends Mix(
     for (const [f, _] of getStaticProperties(model)) {
       const method = model[f as keyof typeof model] as any;
       if (method?.isAccelRecordScope) {
-        (this as any)[f] = method;
+        (this as any)[f] = (...args: any[]) => this.merge(method(...args));
       }
     }
   }
