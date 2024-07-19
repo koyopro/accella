@@ -18,6 +18,8 @@ test("scope", () => {
     .adults()
     .count();
 
+  User.first()!.posts.john();
+
   class TestModel extends Model {
     @scope
     static test() {
