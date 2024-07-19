@@ -26,7 +26,6 @@ declare module "accel-record" {
   interface Relation<T, M> {
     john: (T extends User ? typeof UserModel['john'] : never);
     adults: (T extends User ? typeof UserModel['adults'] : never);
-    teenagers: (T extends User ? typeof UserModel['teenagers'] : never);
   }
 }
 

@@ -1,3 +1,4 @@
+import { Model, scope } from "accel-record";
 import { User } from "..";
 
 test("scope", () => {
@@ -16,4 +17,16 @@ test("scope", () => {
     .whereRaw("")
     .adults()
     .count();
+
+  class TestModel extends Model {
+    @scope
+    static test() {
+      return this.all();
+    }
+    // @ts-expect-error
+    @scope
+    static teenagers() {
+      this.count();
+    }
+  }
 });

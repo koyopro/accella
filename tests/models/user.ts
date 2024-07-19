@@ -10,9 +10,4 @@ export class UserModel extends ApplicationRecord {
   static adults() {
     return this.where({ age: { ">=": 20 } });
   }
-  // @ts-expect-error
-  @scope
-  static teenagers() {
-    this.count();
-  }
 }
