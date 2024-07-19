@@ -310,14 +310,17 @@ export class Query {
    * @returns The found record.
    * @throws An error if the record is not found.
    */
-  static find<T extends typeof Model>(this: T, id: number) {
+  static find<T extends typeof Model>(
+    this: T,
+    id: number
+  ): Meta<T>["Persisted"] {
     const instance = this.all()
       .setOption("wheres", [{ [this.primaryKeys[0]]: id }])
       .first();
     if (!instance) {
       throw new Error("Record Not found");
     }
-    return instance as Meta<T>["Persisted"];
+    return instance;
   }
 
   /**
@@ -378,7 +381,8 @@ export class Query {
     this: T,
     options?: { batchSize?: number }
   ) {
-    return this.all().findEach(options);
+    // @ts-ignore
+    return this.all().findEach<InstanceType<T>, Meta<T>>(options);
   }
 
   /**
@@ -391,6 +395,7 @@ export class Query {
     this: T,
     options?: { batchSize?: number }
   ) {
-    return this.all().findInBatches(options);
+    // @ts-ignore
+    return this.all().findInBatches<InstanceType<T>, Meta<T>>(options);
   }
 }

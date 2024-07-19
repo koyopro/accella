@@ -5,7 +5,7 @@ import { PostModel } from "../post";
 describe("setter / getter", () => {
   test("NewUser#posts", () => {
     const u = $user.build();
-    expectTypeOf(u.posts.first()).toMatchTypeOf<PostModel | undefined>();
+    expectTypeOf(u.posts.toArray()[0]).toMatchTypeOf<PostModel | undefined>();
     assertType((u.posts = [Post.build({})]));
     assertType(u.posts.push([Post.build({})]));
   });
