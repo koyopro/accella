@@ -1,4 +1,5 @@
 import { GeneratorOptions } from "@prisma/generator-helper";
+import { buildSync } from "esbuild";
 import path from "path";
 import { ModelWrapper } from "./wrapper";
 
@@ -7,7 +8,6 @@ const loadModels = async (options: GeneratorOptions) => {
   const filePath = path.join(outputDir, "index.ts");
   const outfile = path.join(__dirname, "../.models.mjs");
   try {
-    const { buildSync } = await import("esbuild");
     buildSync({
       entryPoints: [filePath],
       outfile: outfile,
@@ -23,8 +23,8 @@ const loadModels = async (options: GeneratorOptions) => {
   } catch {
     console.log(
       [
-        `[prisma-generator-accel-record] Warning: Failed to load models from '${filePath}'.`,
-        "Some features (such as scope) require esbuild 0.21.0 or higher.",
+        `[prisma-generator-accel-record] Warning: Failed to load models from '${filePath}' with esbuild.`,
+        "Some features (such as scope) may not work correctly.",
       ].join(" ")
     );
     return undefined;
