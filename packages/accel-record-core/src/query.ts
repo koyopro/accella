@@ -14,7 +14,7 @@ export class Query {
    */
   static all<T extends typeof Model>(
     this: T
-  ): Relation<InstanceType<T>, Meta<T>> {
+  ): Relation<Meta<T>["Persisted"], Meta<T>> {
     return new Relation(this);
   }
 
@@ -27,8 +27,8 @@ export class Query {
   static findOrCreateBy<T extends typeof Model>(
     this: T,
     params: Parameters<typeof Model.create<T>>[0],
-    callback?: (obj: InstanceType<T>) => void
-  ): InstanceType<T> {
+    callback?: (obj: Meta<T>["Persisted"]) => void
+  ): Meta<T>["Persisted"] {
     const user = this.findBy(params);
     if (user) return user;
     const newUser = this.create(params);
@@ -62,7 +62,7 @@ export class Query {
   static includes<T extends typeof Model>(
     this: T,
     ...input: Meta<T>["AssociationKey"][]
-  ): Relation<InstanceType<T>, Meta<T>> {
+  ): Relation<Meta<T>["Persisted"], Meta<T>> {
     return this.all().includes(...input);
   }
 
@@ -74,7 +74,7 @@ export class Query {
   static joins<T extends typeof Model>(
     this: T,
     ...input: Meta<T>["AssociationKey"][]
-  ): Relation<InstanceType<T>, Meta<T>> {
+  ): Relation<Meta<T>["Persisted"], Meta<T>> {
     return this.all().joins(...input);
   }
 
@@ -88,7 +88,7 @@ export class Query {
     this: T,
     query: string,
     ...bindings: any[]
-  ): Relation<InstanceType<T>, Meta<T>> {
+  ): Relation<Meta<T>["Persisted"], Meta<T>> {
     return this.all().joinsRaw(query, ...bindings);
   }
 
@@ -101,7 +101,7 @@ export class Query {
     this: T,
     ...attributes: F
     // @ts-ignore
-  ): Relation<{ [K in F[number]]: InstanceType<T>[K] }, Meta<T>> {
+  ): Relation<{ [K in F[number]]: Meta<T>["Persisted"][K] }, Meta<T>> {
     // @ts-ignore
     return this.all().select(...attributes);
   }
@@ -129,16 +129,18 @@ export class Query {
   static first<T extends typeof Model>(
     this: T,
     limit: number
-  ): InstanceType<T>[];
+  ): Meta<T>["Persisted"][];
   /**
    * Retrieves the first record of the model.
    * @returns The first record of the model.
    */
-  static first<T extends typeof Model>(this: T): InstanceType<T> | undefined;
+  static first<T extends typeof Model>(
+    this: T
+  ): Meta<T>["Persisted"] | undefined;
   static first<T extends typeof Model>(
     this: T,
     limit?: number
-  ): InstanceType<T> | InstanceType<T>[] | undefined {
+  ): Meta<T>["Persisted"] | Meta<T>["Persisted"][] | undefined {
     return limit ? this.all().first(limit) : this.all().first();
   }
 
@@ -149,16 +151,18 @@ export class Query {
   static last<T extends typeof Model>(
     this: T,
     limit: number
-  ): InstanceType<T>[];
+  ): Meta<T>["Persisted"][];
   /**
    * Retrieves the last record of the model.
    * @returns The last record of the model.
    */
-  static last<T extends typeof Model>(this: T): InstanceType<T> | undefined;
+  static last<T extends typeof Model>(
+    this: T
+  ): Meta<T>["Persisted"] | undefined;
   static last<T extends typeof Model>(
     this: T,
     limit?: number
-  ): InstanceType<T> | InstanceType<T>[] | undefined {
+  ): Meta<T>["Persisted"] | Meta<T>["Persisted"][] | undefined {
     return limit ? this.all().last(limit) : this.all().last();
   }
 
@@ -208,7 +212,7 @@ export class Query {
     this: T,
     attribute: keyof Meta<T>["Column"],
     direction?: "asc" | "desc"
-  ): Relation<InstanceType<T>, Meta<T>> {
+  ): Relation<Meta<T>["Persisted"], Meta<T>> {
     return this.all().order(attribute, direction);
   }
 
@@ -220,7 +224,7 @@ export class Query {
   static offset<T extends typeof Model>(
     this: T,
     offset: number
-  ): Relation<InstanceType<T>, Meta<T>> {
+  ): Relation<Meta<T>["Persisted"], Meta<T>> {
     return this.all().offset(offset);
   }
 
@@ -232,7 +236,7 @@ export class Query {
   static limit<T extends typeof Model>(
     this: T,
     limit: number
-  ): Relation<InstanceType<T>, Meta<T>> {
+  ): Relation<Meta<T>["Persisted"], Meta<T>> {
     return this.all().limit(limit);
   }
 
@@ -241,12 +245,12 @@ export class Query {
    * @description Filters the model instances based on the provided input.
    * @param {T} this - The model class.
    * @param {Meta<T>['WhereInput']} input - The input data for filtering the model instances.
-   * @returns {Relation<InstanceType<T>, Meta<T>>} - The relation containing the filtered model instances.
+   * @returns {Relation<Meta<T>['Persisted'], Meta<T>>} - The relation containing the filtered model instances.
    */
   static where<T extends typeof Model>(
     this: T,
     input: Meta<T>["WhereInput"]
-  ): Relation<InstanceType<T>, Meta<T>>;
+  ): Relation<Meta<T>["Persisted"], Meta<T>>;
 
   /**
    * @function where
@@ -254,19 +258,19 @@ export class Query {
    * @param {T} this - The model class.
    * @param {string} query - The query string.
    * @param {...any[]} bindings - The query bindings.
-   * @returns {Relation<InstanceType<T>, Meta<T>>} - The relation containing the filtered model instances.
+   * @returns {Relation<Meta<T>['Persisted'], Meta<T>>} - The relation containing the filtered model instances.
    */
   static where<T extends typeof Model>(
     this: T,
     query: string,
     ...bindings: any[]
-  ): Relation<InstanceType<T>, Meta<T>>;
+  ): Relation<Meta<T>["Persisted"], Meta<T>>;
 
   static where<T extends typeof Model>(
     this: T,
     queryOrInput: string | Meta<T>["WhereInput"],
     ...bindings: any[]
-  ): Relation<InstanceType<T>, Meta<T>> {
+  ): Relation<Meta<T>["Persisted"], Meta<T>> {
     if (typeof queryOrInput === "string") {
       return this.whereRaw(queryOrInput, ...bindings);
     } else {
@@ -282,7 +286,7 @@ export class Query {
   static whereNot<T extends typeof Model>(
     this: T,
     input: Meta<T>["WhereInput"]
-  ): Relation<InstanceType<T>, Meta<T>> {
+  ): Relation<Meta<T>["Persisted"], Meta<T>> {
     return this.all().whereNot(input);
   }
 
@@ -296,7 +300,7 @@ export class Query {
     this: T,
     query: string,
     ...bindings: any[]
-  ): Relation<InstanceType<T>, Meta<T>> {
+  ): Relation<Meta<T>["Persisted"], Meta<T>> {
     return this.all().whereRaw(query, ...bindings);
   }
 
@@ -313,7 +317,7 @@ export class Query {
     if (!instance) {
       throw new Error("Record Not found");
     }
-    return instance as InstanceType<T>;
+    return instance as Meta<T>["Persisted"];
   }
 
   /**
@@ -324,7 +328,7 @@ export class Query {
   static findBy<T extends typeof Model>(
     this: T,
     input: Meta<T>["WhereInput"]
-  ): InstanceType<T> | undefined {
+  ): Meta<T>["Persisted"] | undefined {
     return this.all().where(input).first();
   }
 
