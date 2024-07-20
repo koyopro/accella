@@ -39,8 +39,7 @@ export class Relation<T, M extends ModelMeta> extends Mix(
     for (const [f, _] of getStaticProperties(model)) {
       const method = model[f as keyof typeof model] as any;
       if (method?.isAccelRecordScope) {
-        (this as any)[f] = (...args: any[]) =>
-          this.merge(method.apply(this, args));
+        (this as any)[f] = (...args: any[]) => method.apply(this, args);
       }
     }
   }
