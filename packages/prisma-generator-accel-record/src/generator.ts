@@ -24,7 +24,7 @@ generatorHandler({
     const outputDir = options.generator.output?.value!;
     await writeFileSafely(
       path.join(outputDir, `_types.ts`),
-      generateIndex(options)
+      await generateIndex(options)
     );
     const indexFile = path.join(outputDir, `index.ts`);
     if (!fs.existsSync(indexFile)) {

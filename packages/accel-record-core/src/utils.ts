@@ -117,7 +117,7 @@ const getInstanceMethods = <T>(arg: new (...args: any[]) => T) => {
   return properties;
 };
 
-const getStaticProperties = <T extends Function>(cls: T) => {
+export const getStaticProperties = <T extends Function>(cls: T) => {
   const properties = new Map<string, any>();
   let currentCls = cls;
 

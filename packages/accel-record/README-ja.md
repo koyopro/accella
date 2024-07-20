@@ -29,6 +29,7 @@ MySQL, PostgreSQL, SQLiteでの利用が可能です。
 - [関連付け](#関連付け)
 - [クエリインターフェース](#クエリインターフェース)
 - [テスト](#テスト)
+- [スコープ](#スコープ)
 - [バリデーション](#バリデーション)
 - [コールバック](#コールバック)
 - [Serialization](#serialization)
@@ -744,6 +745,41 @@ const rows = User.queryBuilder.select("name").groupBy("name").execute();
 console.log(rows); // => [{ name: "John" }, { name: "Alice" }]
 ```
 
+## スコープ
+
+再利用可能なクエリの内容をスコープとして定義できます。
+
+スコープを定義するには、モデルにstaticなクラスメソッドを用意し、 `@scope` デコレータを付けます。
+その後 `prisma generate` を実行することで、スコープがクエリインターフェースに反映されます。
+
+```ts
+// src/models/user.ts
+
+import { scope } from "accel-record";
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class UserModel extends ApplicationRecord {
+  @scope
+  static johns() {
+    return this.where({ name: "John" });
+  }
+
+  @scope
+  static adults() {
+    return this.where({ age: { ">=": 20 } });
+  }
+}
+```
+
+上のような定義で、以下のようにスコープを利用することができます。
+
+```ts
+import { User } from "./models/index.js";
+
+// name が John で、 age が 20以上 のユーザー数を取得
+User.johns().adults().count(); // => 1
+```
+
 ## テスト
 
 ### Vitestを利用したテスト
@@ -1253,7 +1289,6 @@ user.update({ age: undefined });
 
 ## 今後予定されている機能追加
 
-- [accel-record-core] スコープ
 - [accel-record-core] 複合IDの対応
 - [accel-record-core] クエリインターフェースの拡充
 
