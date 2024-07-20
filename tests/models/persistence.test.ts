@@ -28,6 +28,12 @@ describe("Persistence", () => {
     expect(sample.isPersisted()).toBe(false);
   });
 
+  test("#save() with invalid record and skip validation", () => {
+    const sample = $ValidateSample.build({ key: "" });
+    expect(sample.save({ validate: false })).toBe(true);
+    expect(sample.isPersisted()).toBe(true);
+  });
+
   test(".create() with invalid record", () => {
     expect(() => {
       $ValidateSample.create({ key: "" });
