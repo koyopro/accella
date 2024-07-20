@@ -1,4 +1,5 @@
 import { Post, User } from ".";
+import { $Account } from "../factories/account";
 import { $post } from "../factories/post";
 import { $user } from "../factories/user";
 import { $ValidateSample } from "../factories/validateSample";
@@ -49,6 +50,15 @@ describe("Persistence", () => {
     expect(u.id).not.toBeUndefined();
     expect(u.name).toBe("fuga");
     expect(User.all().load()[0].name).toBe("fuga");
+  });
+
+  test("#update() with non column attribute", () => {
+    const account = $Account.build();
+    expect(account.passwordDigest).toBeUndefined();
+    if (!account.update({ password: "mypassword" })) {
+      throw new Error("Failed to update");
+    }
+    expect(account.passwordDigest).not.toBeUndefined();
   });
 
   test("#delete()", () => {
