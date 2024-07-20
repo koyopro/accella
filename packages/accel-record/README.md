@@ -28,6 +28,7 @@ It can be used with MySQL, PostgreSQL, and SQLite.
 - [Associations](#associations)
 - [Query Interface](#query-interface)
 - [Testing](#testing)
+- [Scopes](#scopes)
 - [Validation](#validation)
 - [Callbacks](#callbacks)
 - [Serialization](#serialization)
@@ -743,6 +744,41 @@ const rows = User.queryBuilder.select("name").groupBy("name").execute();
 console.log(rows); // => [{ name: "John" }, { name: "Alice" }]
 ```
 
+## Scopes
+
+You can define the content of reusable queries as scopes.
+
+To define a scope, create a static class method on the model and decorate it with `@scope`.
+After that, run `prisma generate` to reflect the scopes in the query interface.
+
+```ts
+// src/models/user.ts
+
+import { scope } from "accel-record";
+import { ApplicationRecord } from "./applicationRecord.js";
+
+export class UserModel extends ApplicationRecord {
+  @scope
+  static johns() {
+    return this.where({ name: "John" });
+  }
+
+  @scope
+  static adults() {
+    return this.where({ age: { ">=": 20 } });
+  }
+}
+```
+
+With the above definition, you can use the scopes as follows:
+
+```ts
+import { User } from "./models/index.js";
+
+// Get the count of users with name "John" and age greater than or equal to 20
+User.johns().adults().count(); // => 1
+```
+
 ## Testing
 
 ### Testing with Vitest
@@ -1252,7 +1288,6 @@ user.update({ age: undefined });
 
 ## Future Planned Features
 
-- [accel-record-core] Scopes
 - [accel-record-core] Support for Composite IDs
 - [accel-record-core] Expansion of Query Interface
 
