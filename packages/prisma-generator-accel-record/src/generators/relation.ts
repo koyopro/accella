@@ -1,5 +1,6 @@
 import { GeneratorOptions } from "@prisma/generator-helper";
 import { buildSync } from "esbuild";
+import fs from "fs";
 import path from "path";
 import { ModelWrapper } from "./wrapper";
 
@@ -7,6 +8,7 @@ const loadModels = async (options: GeneratorOptions) => {
   const outputDir = options.generator.output?.value!;
   const filePath = path.join(outputDir, "index.ts");
   const outfile = path.join(__dirname, "../.models.mjs");
+  if (!fs.existsSync(filePath)) return undefined;
   try {
     buildSync({
       entryPoints: [filePath],
