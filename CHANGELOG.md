@@ -1,3 +1,16 @@
+# [1.10.0](https://github.com/koyopro/accella/compare/1.9.1...1.10.0) (2024-07-20)
+
+### Features
+
+- Scopes ([#24](https://github.com/koyopro/accella/pull/24))
+
+### Improvements
+
+- Improvement of hasSecurePassword validation ([#23](https://github.com/koyopro/accella/pull/23))
+- add validate option to save() ([#25](https://github.com/koyopro/accella/pull/25))
+- Allow any key in the assignAttributes function's arguments. ([#26](https://github.com/koyopro/accella/pull/26))
+- add message getter to Error ([#27](https://github.com/koyopro/accella/pull/27))
+
 # [1.9.1](https://github.com/koyopro/accella/compare/1.9.0...1.9.1) (2024-07-12)
 
 ### Bug Fixes
