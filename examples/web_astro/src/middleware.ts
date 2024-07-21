@@ -1,5 +1,5 @@
 import { initAccelRecord } from "accel-record";
-import { Helper } from "accel-web";
+import { Helper } from "./core/helper.js";
 import { defineMiddleware } from "astro/middleware";
 import i18next from "i18next";
 
@@ -13,6 +13,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
           "accelrecord.attributes.Account.password": "パスワード",
           "accelrecord.attributes.Account.passwordConfirmation":
             "パスワード(確認用)",
+
+          "accelrecord.attributes.SignIn.email": "メールアドレス",
+          "accelrecord.attributes.SignIn.password": "パスワード",
 
           "errors.messages.blank": "を入力してください",
           "errors.messages.accepted": "をチェックしてください",
