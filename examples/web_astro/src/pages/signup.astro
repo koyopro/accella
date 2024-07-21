@@ -4,16 +4,14 @@ import Layout from "../layouts/Layout.astro";
 import { Account } from "../models";
 
 const account = Account.build({});
-// const { params } = Astro.locals.helper;
+const { params } = Astro.locals.helper;
 
-// if (Astro.request.method === "post") {
-//   const p = params.permit("email", "password", "passwordConfirmation");
-//   account.password = p.password as string;
-//   account.passwordConfirmation = p.passwordConfirmation as string;
-//   if (account.update(p)) {
-//     return Astro.redirect("/users");
-//   }
-// }
+if (Astro.request.method === "POST") {
+  const p = params.permit("email", "password", "passwordConfirmation");
+  if (account.update(p)) {
+    return Astro.redirect("/");
+  }
+}
 const { Form, Submit, Label, TextField, PasswordField } = formWith(account);
 ---
 
