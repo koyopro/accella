@@ -1,0 +1,59 @@
+---
+import { Model } from "accel-record";
+import { formWith } from "accel-web";
+import Layout from "../layouts/Layout.astro";
+import { Account } from "../models";
+
+const { params, logIn } = Astro.locals.helper;
+
+class SignIn extends Model {
+  email: string = "";
+  password: string = "";
+}
+
+const signin = new SignIn();
+const messages: string[] = [];
+
+if (Astro.request.method === "POST") {
+  const { email, password } = params.permit("email", "password");
+  signin.email = email as string;
+
+  const account = Account.findBy({ email: email as string });
+  if (account?.authenticate(password as string)) {
+    logIn(account);
+    return Astro.redirect("/");
+  } else {
+    messages.push("メールアドレスまたはパスワードが違います");
+  }
+}
+
+const { Form, Submit, Label, TextField, PasswordField } = formWith(signin);
+---
+
+<Layout title="ログイン">
+  <h1>ログイン</h1>
+  <Form method="post">
+    <div class="error-messages">
+      {messages.map((message) => <div>{message}</div>)}
+    </div>
+    <div>
+      <Label for="email" />
+      <TextField attr="email" />
+    </div>
+    <div>
+      <Label for="password" />
+      <PasswordField attr="password" />
+    </div>
+    <div>
+      <Submit>ログイン</Submit>
+    </div>
+  </Form>
+  <a href="/signup">新規登録</a>
+</Layout>
+
+<style>
+  .error-messages {
+    background: yellow;
+    color: red;
+  }
+</style>
