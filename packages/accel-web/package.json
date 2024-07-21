@@ -8,7 +8,7 @@
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/koyopro/accella"
+    "url": "git+https://github.com/koyopro/accella.git"
   },
   "bugs": {
     "url": "https://github.com/koyopro/accella/issues"
