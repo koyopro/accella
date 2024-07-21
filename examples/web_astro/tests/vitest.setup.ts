@@ -1,6 +1,7 @@
 import {
   DatabaseCleaner,
   Migration,
+  getConfig,
   initAccelRecord,
   stopWorker,
 } from "accel-record";
@@ -12,6 +13,7 @@ import "src/models/index.js";
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 beforeAll(async () => {
+  if (getConfig().type == "mysql") return; // already initialized
   await initAccelRecord({
     type: "mysql",
     // logLevel: "DEBUG",

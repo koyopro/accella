@@ -3,8 +3,9 @@ import { Model } from "accel-record";
 import { formWith } from "accel-web";
 import Layout from "../layouts/Layout.astro";
 import { Account } from "../models";
+import { Helper } from "src/core/helper";
 
-const { params, logIn } = Astro.locals.helper;
+const { params, logIn } = Astro.locals.helper ?? (await Helper.init(Astro));
 
 class SignIn extends Model {
   email: string = "";
