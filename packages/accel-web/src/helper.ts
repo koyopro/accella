@@ -1,13 +1,16 @@
 import type { APIContext } from "astro";
-import { Parameters } from "./parameters";
+import { Parameters } from "./parameters.js";
+import { createSession, Session } from "./session.js";
 
 export class Helper {
   public params: Parameters;
+  public session: Session;
   protected cache: Record<string, any> = {};
 
   constructor(protected context: APIContext) {
     const data = new FormData();
     this.params = new Parameters(data);
+    this.session = createSession(context);
   }
 
   static async init<T extends typeof Helper>(
