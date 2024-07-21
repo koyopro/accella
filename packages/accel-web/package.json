@@ -1,7 +1,7 @@
 {
   "name": "accel-web",
   "version": "0.0.1",
-  "description": "",
+  "description": "A library for integrating Astro and Accel Record.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,5 +23,9 @@
     "dist"
   ],
   "author": "koyopro",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "accel-record": "^1.15.0",
+    "astro": "^4.0.0"
+  }
 }
