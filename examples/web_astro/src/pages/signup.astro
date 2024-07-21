@@ -1,0 +1,50 @@
+---
+import { formWith } from "accel-web";
+import Layout from "../layouts/Layout.astro";
+import { Account } from "../models";
+
+const account = Account.build({});
+// const { params } = Astro.locals.helper;
+
+// if (Astro.request.method === "post") {
+//   const p = params.permit("email", "password", "passwordConfirmation");
+//   account.password = p.password as string;
+//   account.passwordConfirmation = p.passwordConfirmation as string;
+//   if (account.update(p)) {
+//     return Astro.redirect("/users");
+//   }
+// }
+const { Form, Submit, Label, TextField, PasswordField } = formWith(account);
+---
+
+<Layout title="新規登録">
+  <h1>新規登録</h1>
+  <Form method="post">
+    <div class="error-messages">
+      {account.errors.fullMessages.map((message) => <div>{message}</div>)}
+    </div>
+    <div>
+      <Label for="email">Eメール</Label>
+      <TextField attr="email" />
+    </div>
+    <div>
+      <Label for="password" />
+      <PasswordField attr="password" />
+    </div>
+    <div>
+      <Label for="passwordConfirmation" />
+      <PasswordField attr="passwordConfirmation" />
+    </div>
+    <div>
+      <Submit>登録</Submit>
+    </div>
+  </Form>
+  <a href="/signin">ログイン</a>
+</Layout>
+
+<style>
+  .error-messages {
+    background: yellow;
+    color: red;
+  }
+</style>
