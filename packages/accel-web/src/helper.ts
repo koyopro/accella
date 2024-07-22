@@ -1,6 +1,7 @@
 import type { APIContext } from "astro";
 import { Parameters } from "./parameters.js";
 import { createSession, Session } from "./session.js";
+import type { Model } from "accel-record";
 
 export class Helper {
   public params: Parameters;
@@ -31,4 +32,13 @@ export class Helper {
     }
     this.params = new Parameters(data);
   }
+
+  logIn = (resource: Model) => {
+    this.session.store(resource);
+  };
+
+  logOut = (resource?: Model) => {
+    const scope = resource?.class().name ?? "Account";
+    this.session.delete(scope);
+  };
 }

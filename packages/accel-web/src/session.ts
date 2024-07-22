@@ -1,3 +1,4 @@
+import { Models, type Model } from "accel-record";
 import type { AstroCookies } from "astro";
 // @ts-ignore
 import pkg from "jsonwebtoken";
@@ -44,12 +45,32 @@ export class Session {
     this.save();
   }
 
+  store<T extends Model>(resource: T, options?: { scope: string }) {
+    const klass = resource.class();
+    const scope = options?.scope || klass.name;
+    const data = klass.primaryKeys.toHash((k) => [k, resource[k as keyof T]]);
+    this.set(scope, { ...data, model: klass.name });
+  }
+
   protected restore(jwt: string | undefined) {
     if (!jwt) return;
     try {
       const v = verify(jwt, this.secret, { algorithms: ["HS256"] });
       if (v && typeof v === "object") {
         this.data = v;
+
+        for (const [scope, v] of Object.entries(this.data)) {
+          if (v["model"]) {
+            const klass = Models[v["model"]];
+            if (klass) {
+              const data = klass.primaryKeys.toHash((k) => [
+                k,
+                v[k as keyof typeof v],
+              ]);
+              this.data[scope] = klass.findBy(data);
+            }
+          }
+        }
       }
     } catch (e: unknown) {
       if (e instanceof JsonWebTokenError) {
@@ -69,7 +90,7 @@ export class Session {
 export const createSession = (context: Context) => {
   return new Proxy(new Session(context), {
     get(target, key, receiver) {
-      if (["delete"].includes(key as string)) {
+      if (["delete", "store"].includes(key as string)) {
         return Reflect.get(target, key, receiver).bind(target);
       }
       return target.get(key as string);

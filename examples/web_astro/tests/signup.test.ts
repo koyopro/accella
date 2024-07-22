@@ -1,15 +1,10 @@
+import { createSession } from "accel-web/src/session";
 import { experimental_AstroContainer } from "astro/container";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import { Account } from "src/models";
 import Signin from "src/pages/signin.astro";
 
-// @ts-ignore
-import pkg from "jsonwebtoken";
-const { sign } = pkg;
-
 const container = await experimental_AstroContainer.create({});
-
-let sessionJwt: string | undefined;
 
 describe("GET", async () => {
   test("not logged in", async () => {
@@ -64,15 +59,21 @@ const form = (params: Record<string, any>) => {
   return formData;
 };
 
+const cookies: any = {};
 const signIn = (resource: Account) => {
-  const secret = "secret-key-base";
-  const data = { account_id: resource.id };
-  const jwt = sign(data, secret, { algorithm: "HS256" });
-  sessionJwt = jwt;
+  const context = {
+    cookies: {
+      get: () => undefined,
+      set: (key: string, value: any) => {
+        cookies[key] = value;
+      },
+    },
+  };
+  createSession(context as any).store(resource);
 };
 
 const signOut = () => {
-  sessionJwt = undefined;
+  delete cookies["___session"];
 };
 
 const get = async (component: AstroComponentFactory) => {
@@ -80,7 +81,7 @@ const get = async (component: AstroComponentFactory) => {
     request: new Request("https://example.com", {
       method: "GET",
       headers: {
-        Cookie: `___session=${sessionJwt};`,
+        Cookie: `___session=${cookies["___session"]};`,
       },
     }),
   });
