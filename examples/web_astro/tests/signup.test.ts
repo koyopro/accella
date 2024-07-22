@@ -6,6 +6,14 @@ import Signin from "src/pages/signin.astro";
 
 const container = await experimental_AstroContainer.create({});
 
+beforeEach(() => {
+  Account.create({
+    email: "test",
+    passwordDigest: "",
+    password: "test",
+  });
+});
+
 describe("GET", async () => {
   test("not logged in", async () => {
     const response = await get(Signin);
@@ -13,12 +21,7 @@ describe("GET", async () => {
   });
 
   test("logged in", async () => {
-    const account = Account.create({
-      email: "test",
-      passwordDigest: "",
-      password: "test",
-    });
-    signIn(account);
+    signIn(Account.first()!);
 
     const response = await get(Signin);
     expect(response.status).toBe(302);
@@ -29,14 +32,6 @@ describe("GET", async () => {
 });
 
 describe("POST", () => {
-  beforeEach(() => {
-    Account.create({
-      email: "test",
-      passwordDigest: "",
-      password: "test",
-    });
-  });
-
   test("fail", async () => {
     const response = await post(Signin, { email: "test", password: "invalid" });
     expect(response.status).toBe(200);
