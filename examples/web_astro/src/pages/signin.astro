@@ -5,7 +5,10 @@ import Layout from "../layouts/Layout.astro";
 import { Account } from "../models";
 import { Helper } from "src/core/helper";
 
-const { params, logIn } = Astro.locals.helper ?? (await Helper.init(Astro));
+const { params, logIn, currentAccount } =
+  Astro.locals.helper ?? (await Helper.init(Astro));
+
+if (currentAccount) return Astro.redirect("/");
 
 class SignIn extends Model {
   email: string = "";
