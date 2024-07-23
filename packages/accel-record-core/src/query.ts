@@ -1,4 +1,5 @@
-import { RecordNotFound, type Model } from "./index.js";
+import { RecordNotFound } from "./errors.js";
+import { type Model } from "./index.js";
 import type { Meta } from "./meta.js";
 import { Relation } from "./relation/index.js";
 

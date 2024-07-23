@@ -1,4 +1,4 @@
-import { RecordNotFound } from "accel-record";
+import { RecordNotFound } from "accel-record/errors";
 import { $post } from "../factories/post";
 import { $user } from "../factories/user";
 import { User } from "./index";
