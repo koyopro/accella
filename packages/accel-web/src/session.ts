@@ -24,11 +24,15 @@ export class Session {
     if (secretKeyBase) {
       return secretKeyBase;
     }
-    if (["development", "test"].includes(process.env.NODE_ENV || "")) {
-      console.warn("Warning: SECRET_KEY_BASE is not set");
-      return "secret-key-base";
+    switch (process.env.NODE_ENV || "") {
+      case "test":
+        return "test-secret-key-base";
+      case "development":
+        console.warn("Warning: process.env.SECRET_KEY_BASE is not set");
+        return "development-secret-key-base";
+      default:
+        throw new Error("SECRET_KEY_BASE is not set");
     }
-    throw new Error("SECRET_KEY_BASE is not set");
   }
 
   set(key: string, value: any) {
