@@ -1,4 +1,4 @@
-import type { Model } from "./index.js";
+import { RecordNotFound, type Model } from "./index.js";
 import type { Meta } from "./meta.js";
 import { Relation } from "./relation/index.js";
 
@@ -318,7 +318,7 @@ export class Query {
       .setOption("wheres", [{ [this.primaryKeys[0]]: id }])
       .first();
     if (!instance) {
-      throw new Error("Record Not found");
+      throw new RecordNotFound("Record Not found");
     }
     return instance;
   }

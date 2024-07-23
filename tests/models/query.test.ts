@@ -1,3 +1,4 @@
+import { RecordNotFound } from "accel-record";
 import { $post } from "../factories/post";
 import { $user } from "../factories/user";
 import { User } from "./index";
@@ -135,9 +136,11 @@ describe("Query", () => {
   });
 
   test(".find()", () => {
-    expect(() => {
+    try {
       User.find(1);
-    }).toThrow("Record Not found");
+    } catch (e) {
+      expect(e).toBeInstanceOf(RecordNotFound);
+    }
     const u = $user.create({ name: "hoge", email: "hoge@example.com" });
     const s = User.find(u.id!);
     expect(s).toBeInstanceOf(User);
