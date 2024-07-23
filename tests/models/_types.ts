@@ -568,7 +568,7 @@ type AccountMeta = {
   CreateInput: {
     id?: number;
     email: string;
-    passwordDigest: string;
+    passwordDigest?: string;
     password?: string;
     passwordConfirmation?: string;
   };

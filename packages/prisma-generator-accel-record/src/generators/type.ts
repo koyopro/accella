@@ -198,7 +198,7 @@ const createInputs = (model: ModelWrapper) => {
             : `${field.typeName}${field.isList ? "[]" : ""}`;
         if (field.name.endsWith("Digest") && field.type == "String") {
           return [
-            `\n    ${field.name}${optional ? "?" : ""}: string;`,
+            `\n    ${field.name}?: string;`,
             `\n    ${field.name.replace("Digest", "")}?: string;`,
             `\n    ${field.name.replace("Digest", "Confirmation")}?: string;`,
           ].join("");
