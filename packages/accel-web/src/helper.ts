@@ -38,7 +38,8 @@ export class Helper {
   };
 
   logOut = (resource?: Model) => {
-    const scope = resource?.class().name ?? "Account";
-    this.session.delete(scope);
+    // const scope = resource?.class().name
+    // TODO: delete only the specified scope
+    this.session.clear();
   };
 }

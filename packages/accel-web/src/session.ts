@@ -52,6 +52,11 @@ export class Session {
     this.set(scope, { ...data, model: klass.name });
   }
 
+  clear() {
+    this.data = {};
+    this.save();
+  }
+
   protected restore(jwt: string | undefined) {
     if (!jwt) return;
     try {
@@ -90,7 +95,7 @@ export class Session {
 export const createSession = (context: Context) => {
   return new Proxy(new Session(context), {
     get(target, key, receiver) {
-      if (["delete", "store"].includes(key as string)) {
+      if (["delete", "store", "clear"].includes(key as string)) {
         return Reflect.get(target, key, receiver).bind(target);
       }
       return target.get(key as string);
