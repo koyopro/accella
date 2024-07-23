@@ -314,11 +314,13 @@ export class Query {
     this: T,
     id: number
   ): Meta<T>["Persisted"] {
-    const instance = this.all()
-      .setOption("wheres", [{ [this.primaryKeys[0]]: id }])
-      .first();
+    const instance = isFinite(id)
+      ? this.all()
+          .setOption("wheres", [{ [this.primaryKeys[0]]: id }])
+          .first()
+      : undefined;
     if (!instance) {
-      throw new RecordNotFound("Record Not found");
+      throw new RecordNotFound("Record Not Found");
     }
     return instance;
   }
