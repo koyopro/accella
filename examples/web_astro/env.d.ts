@@ -3,7 +3,7 @@
 declare global {
   namespace App {
     interface Locals {
-      helper: import("accel-web").Helper;
+      helper: import("./src/core/helper").Helper;
     }
   }
 }

@@ -1,13 +1,17 @@
 import type { APIContext } from "astro";
-import { Parameters } from "./parameters";
+import { Parameters } from "./parameters.js";
+import { createSession, Session } from "./session.js";
+import type { Model } from "accel-record";
 
 export class Helper {
   public params: Parameters;
+  public session: Session;
   protected cache: Record<string, any> = {};
 
   constructor(protected context: APIContext) {
     const data = new FormData();
     this.params = new Parameters(data);
+    this.session = createSession(context);
   }
 
   static async init<T extends typeof Helper>(
@@ -28,4 +32,14 @@ export class Helper {
     }
     this.params = new Parameters(data);
   }
+
+  logIn = (resource: Model) => {
+    this.session.store(resource);
+  };
+
+  logOut = (resource?: Model) => {
+    // const scope = resource?.class().name
+    // TODO: delete only the specified scope
+    this.session.clear();
+  };
 }
