@@ -1,3 +1,4 @@
+import { RecordNotFound } from "accel-record/errors";
 import { $post } from "../factories/post";
 import { $user } from "../factories/user";
 import { User } from "./index";
@@ -135,15 +136,20 @@ describe("Query", () => {
   });
 
   test(".find()", () => {
-    expect(() => {
+    try {
       User.find(1);
-    }).toThrow("Record Not found");
-    const u = $user.create({ name: "hoge", email: "hoge@example.com" });
+    } catch (e) {
+      expect(e).toBeInstanceOf(RecordNotFound);
+    }
+    const u = $user.create({ id: 1, name: "hoge", email: "hoge@example.com" });
     const s = User.find(u.id!);
     expect(s).toBeInstanceOf(User);
     expect(s.id).toBe(u.id!);
     expect(s.name).toBe("hoge");
     expect(s.email).toBe("hoge@example.com");
+
+    expect(() => User.find(NaN)).toThrowError("Record Not Found");
+    expect(User.find("1" as any)).toBeInstanceOf(User);
   });
 
   test(".findBy()", () => {
