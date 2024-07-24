@@ -5,6 +5,7 @@ export default defineConfig({
   test: {
     globals: true,
     setupFiles: ["./tests/vitest.setup.ts"],
+    include: ["tests/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
   },
   esbuild: {
     target: "es2022",
