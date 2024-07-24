@@ -42,6 +42,7 @@
   "devDependencies": {
     "@types/node": "^20.11.19",
     "better-sqlite3": "^9.4.1",
+    "dotenv": "^16.4.5",
     "i18next": "^23.11.5",
     "mysql2": "^3.9.8",
     "pg": "^8.12.0",
