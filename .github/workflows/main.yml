@@ -45,3 +45,9 @@ jobs:
       - run: npm run test:sqlite
       - run: npm run generate:pg
       - run: npm run test:pg
+      - name: Test web_astro example
+        run: |
+          cd examples/web_astro
+          npm install
+          npx prisma generate
+          npm run test
