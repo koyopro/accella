@@ -196,11 +196,13 @@ const createInputs = (model: ModelWrapper) => {
           field.type == "Json"
             ? `${model.baseModel}["${field.name}"]`
             : `${field.typeName}${field.isList ? "[]" : ""}`;
-        if (field.name.endsWith("Digest") && field.type == "String") {
+        const matchPassword = field.name.match(/^(.+)Digest$/);
+        if (matchPassword && field.type == "String") {
+          const password = matchPassword[1];
           return [
-            `\n    ${field.name}${optional ? "?" : ""}: string;`,
-            `\n    ${field.name.replace("Digest", "")}?: string;`,
-            `\n    ${field.name.replace("Digest", "Confirmation")}?: string;`,
+            `\n    ${field.name}?: string;`,
+            `\n    ${password}?: string;`,
+            `\n    ${password}Confirmation?: string;`,
           ].join("");
         }
         return `\n    ${field.name}${optional ? "?" : ""}: ${valType};`;

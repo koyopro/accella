@@ -1,11 +1,14 @@
 import { hasSecurePassword, Mix } from "accel-record-core";
-import { $Account } from "../../factories/account";
+import { Account } from "..";
 import { ApplicationRecord } from "../applicationRecord";
 
 test("hasSecurePassword()", () => {
-  const account = $Account.create();
-  account.password = "";
-  account.passwordConfirmation = "";
+  // Ensure that passwordDigest is not required
+  const account = Account.create({
+    email: "",
+    password: "",
+    passwordConfirmation: "",
+  });
   expectTypeOf(account.authenticate("")).toBeBoolean();
   expectTypeOf(account.authenticatePassword("")).toBeBoolean();
 

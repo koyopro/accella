@@ -552,6 +552,7 @@ export class Account extends AccountModel {};
 export interface Account extends AccountModel {
   id: number;
   email: string;
+  passwordDigest: string;
 };
 type AccountCollection<T extends AccountModel> = Collection<T, AccountMeta> | Collection<Account, AccountMeta>;
 type AccountMeta = {
@@ -562,7 +563,7 @@ type AccountMeta = {
   Column: {
     id: number;
     email: string;
-    passwordDigest: string | undefined;
+    passwordDigest: string;
   };
   CreateInput: {
     id?: number;
