@@ -1,8 +1,7 @@
 ---
-import { Todo } from "src/models";
 import Layout from "../layouts/Layout.astro";
 
-const todos = Todo.all();
+const { currentAccount } = Astro.locals.helper;
 ---
 
 <Layout title="Welcome to Astro.">
@@ -11,7 +10,7 @@ const todos = Todo.all();
     <a href="/todos/new">Add a new todo</a>
     <ul>
       {
-        todos.map((todo) => (
+        currentAccount.todos.map((todo) => (
           <li>
             <span>{todo.title}</span>
             <span>({todo.status})</span>
