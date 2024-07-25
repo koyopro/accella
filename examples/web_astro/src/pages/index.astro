@@ -1,10 +1,23 @@
 ---
+import { Todo } from "src/models";
 import Layout from "../layouts/Layout.astro";
+
+const todos = Todo.all();
 ---
 
 <Layout title="Welcome to Astro.">
   <main>
-    <h1>Index Page</h1>
+    <h1>All TODOs</h1>
     <a href="/todos/new">Add a new todo</a>
+    <ul>
+      {
+        todos.map((todo) => (
+          <li>
+            <span>{todo.title}</span>
+            <span>({todo.status})</span>
+          </li>
+        ))
+      }
+    </ul>
   </main>
 </Layout>
