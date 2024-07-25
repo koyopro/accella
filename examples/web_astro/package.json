@@ -17,5 +17,8 @@
     "astro": "^4.11.5",
     "mysql2": "^3.9.8",
     "typescript": "^5.5.3"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1"
   }
 }
