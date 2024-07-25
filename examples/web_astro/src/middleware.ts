@@ -33,6 +33,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     type: "mysql",
     datasourceUrl: process.env.DATABASE_URL,
   });
-  context.locals.helper = await Helper.init(context);
+  const helper = await Helper.init(context);
+  if (helper.needSignIn) {
+    return context.redirect("/signin");
+  }
+  context.locals.helper = helper;
   return next();
 });
