@@ -3,6 +3,7 @@
  ***************************************************************/
 
 import { AccountModel } from "./account.js";
+import { TodoModel } from "./todo.js";
 import {
   registerModel,
   type Collection,
@@ -16,7 +17,22 @@ declare module "accel-record" {
   interface Relation<T, M> {}
 }
 
-type Meta<T> = T extends typeof AccountModel | AccountModel ? AccountMeta : any;
+type Meta<T> = T extends typeof AccountModel | AccountModel
+  ? AccountMeta
+  : T extends typeof TodoModel | TodoModel
+    ? TodoMeta
+    : any;
+
+export namespace $Enums {
+  export const Status = {
+    OPEN: "OPEN",
+    CLOSED: "CLOSED",
+  } as const;
+  export type Status = (typeof Status)[keyof typeof Status];
+}
+
+export type Status = $Enums.Status;
+export const Status = $Enums.Status;
 
 declare module "./account" {
   interface AccountModel {
@@ -25,6 +41,8 @@ declare module "./account" {
     passwordDigest: string | undefined;
     createdAt: Date | undefined;
     updatedAt: Date | undefined;
+    get todos(): TodoCollection<TodoModel>;
+    set todos(value: TodoModel[]);
   }
 }
 export interface NewAccount extends AccountModel {}
@@ -35,6 +53,8 @@ export interface Account extends AccountModel {
   passwordDigest: string;
   createdAt: Date;
   updatedAt: Date;
+  get todos(): TodoCollection<Todo>;
+  set todos(value: TodoModel[]);
 }
 type AccountCollection<T extends AccountModel> =
   | Collection<T, AccountMeta>
@@ -43,7 +63,7 @@ type AccountMeta = {
   Base: AccountModel;
   New: NewAccount;
   Persisted: Account;
-  AssociationKey: never;
+  AssociationKey: "todos";
   Column: {
     id: number;
     email: string;
@@ -54,11 +74,12 @@ type AccountMeta = {
   CreateInput: {
     id?: number;
     email: string;
-    passwordDigest: string;
+    passwordDigest?: string;
     password?: string;
     passwordConfirmation?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    todos?: TodoModel[];
   };
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -69,3 +90,63 @@ type AccountMeta = {
   };
 };
 registerModel(Account);
+
+declare module "./todo" {
+  interface TodoModel {
+    id: number | undefined;
+    title: string | undefined;
+    content: string | undefined;
+    status: Status;
+    account: Account | undefined;
+    accountId: number | undefined;
+    createdAt: Date | undefined;
+    updatedAt: Date | undefined;
+  }
+}
+export interface NewTodo extends TodoModel {}
+export class Todo extends TodoModel {}
+export interface Todo extends TodoModel {
+  id: number;
+  title: string;
+  account: Account;
+  accountId: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+type TodoCollection<T extends TodoModel> =
+  | Collection<T, TodoMeta>
+  | Collection<Todo, TodoMeta>;
+type TodoMeta = {
+  Base: TodoModel;
+  New: NewTodo;
+  Persisted: Todo;
+  AssociationKey: "account";
+  Column: {
+    id: number;
+    title: string;
+    content: string | undefined;
+    status: Status;
+    accountId: number;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  CreateInput: {
+    id?: number;
+    title: string;
+    content?: string;
+    status?: Status;
+    createdAt?: Date;
+    updatedAt?: Date;
+  } & ({ account: Account } | { accountId: number });
+  WhereInput: {
+    id?: number | number[] | Filter<number> | null;
+    title?: string | string[] | StringFilter | null;
+    content?: string | string[] | StringFilter | null;
+    status?: Status | Status[] | undefined | null;
+    account?: Account | Account[];
+    accountId?: number | number[] | Filter<number> | null;
+    createdAt?: Date | Date[] | Filter<Date> | null;
+    updatedAt?: Date | Date[] | Filter<Date> | null;
+  };
+};
+registerModel(Todo);
