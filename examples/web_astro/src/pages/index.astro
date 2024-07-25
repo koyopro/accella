@@ -1,16 +1,25 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { paginate } from "accel-web";
 
+const page = Number(Astro.url.searchParams.get("p") || 1);
 const { currentAccount } = Astro.locals.helper;
+
+const pager = paginate(currentAccount.todos, { page, per: 10, window: 2 });
+const { LinkToNextPage, LinkToPrevPage, Nav, PageEntriesInfo } = pager;
 ---
 
 <Layout title="Welcome to Astro.">
   <main>
     <h1>All TODOs</h1>
     <a href="/todos/new">Add a new todo</a>
+    <div>
+      {page > 1 && <LinkToPrevPage />}
+      <LinkToNextPage />
+    </div>
     <ul>
       {
-        currentAccount.todos.map((todo) => (
+        pager.records.map((todo) => (
           <li>
             <span>{todo.id}</span>
             <span>{todo.title}</span>
@@ -19,5 +28,7 @@ const { currentAccount } = Astro.locals.helper;
         ))
       }
     </ul>
+    <Nav />
+    <PageEntriesInfo />
   </main>
 </Layout>

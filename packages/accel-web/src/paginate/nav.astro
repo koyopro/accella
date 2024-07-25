@@ -1,0 +1,26 @@
+---
+import Gap from "./gap.astro";
+import LinkToNextPage from "./linkToNextPage.astro";
+import LinkToPrevPage from "./linkToPrevPage.astro";
+import PageLink from "./pageLink.astro";
+interface Props {
+  page: number;
+  totalPages: number;
+  pages: number[];
+}
+const { page, totalPages, pages } = Astro.props;
+---
+
+<nav class="pagination">
+  <span class="first">
+    <a href="?p=1">First</a>
+  </span>
+  {page > 1 && <LinkToPrevPage {page} />}
+  {pages[0] !== 1 && <Gap />}
+  {pages.map((i) => <PageLink i={i} {page} />)}
+  {pages[pages.length - 1] !== totalPages && <Gap />}
+  {page < totalPages && <LinkToNextPage {page} />}
+  <span class="last">
+    <a href={`?p=${totalPages}`}>Last</a>
+  </span>
+</nav>

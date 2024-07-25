@@ -1,0 +1,10 @@
+---
+interface Props {
+  page: number;
+}
+const { page } = Astro.props;
+---
+
+<span class="prev">
+  <a rel="prev" href={`?p=${page - 1}`}>Prev</a>
+</span>

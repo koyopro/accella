@@ -1,0 +1,14 @@
+---
+interface Props {
+  offset: number;
+  per: number;
+  total: number;
+}
+const { offset, per, total } = Astro.props;
+const start = offset + 1;
+const end = Math.min(start + per - 1, total);
+---
+
+<div class="page-entries-info">
+  Showing {start} to {end} of {total} entries
+</div>
