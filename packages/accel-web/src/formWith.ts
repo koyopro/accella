@@ -22,7 +22,7 @@ export const formWith = (resource: Model) => {
 
     TextField: createComponent((a: any, b: any, c: any) => {
       const { attr, ...props } = b;
-      const p = { name: attr, defaultValue: r[attr], ...props, type: "text" };
+      const p = { name: attr, value: r[attr], ...props, type: "text" };
       return (input as any)(a, p, c);
     }) as (
       props: Omit<astroHTML.JSX.InputHTMLAttributes, "type"> & { attr: string }
@@ -40,7 +40,7 @@ export const formWith = (resource: Model) => {
       const { attr, ...props } = b;
       const p = {
         name: `+${attr}`,
-        defaultValue: r[attr],
+        value: r[attr],
         ...props,
         type: "number",
       };
