@@ -10,49 +10,54 @@ export const formWith = (resource: Model) => {
   return {
     Form: form,
 
-    Label: createComponent((a: any, b: any, c: any) => {
-      const { for: for_, ...props } = b;
-      const p = {
-        htmlFor: for_,
-        value: resource.class().humanAttributeName(for_),
-        ...props,
-      };
-      return (label as any)(a, p, c);
-    }) as (props: astroHTML.JSX.LabelHTMLAttributes & { for: string }) => any,
+    Label: extendCommponent<"label", { for: string }>(
+      label,
+      (p) => ({
+        htmlFor: p.for,
+        value: resource.class().humanAttributeName(p.for),
+      }),
+      ["for"]
+    ),
 
-    TextField: createComponent((a: any, b: any, c: any) => {
-      const { attr, ...props } = b;
-      const p = { name: attr, value: r[attr], ...props, type: "text" };
-      return (input as any)(a, p, c);
-    }) as (
-      props: Omit<astroHTML.JSX.InputHTMLAttributes, "type"> & { attr: string }
-    ) => any,
+    TextField: extendCommponent<"input", { attr: string }>(
+      input,
+      (p) => ({ name: p.attr, value: r[p.attr], type: "text" }),
+      ["attr"]
+    ),
 
-    PasswordField: createComponent((a: any, b: any, c: any) => {
-      const { attr, ...props } = b;
-      const p = { name: attr, ...props, type: "password" };
-      return (input as any)(a, p, c);
-    }) as (
-      props: Omit<astroHTML.JSX.InputHTMLAttributes, "type"> & { attr: string }
-    ) => any,
+    PasswordField: extendCommponent<"input", { attr: string }>(
+      input,
+      (p) => ({ name: p.attr, type: "password" }),
+      ["attr"]
+    ),
 
-    NumberField: createComponent((a: any, b: any, c: any) => {
-      const { attr, ...props } = b;
-      const p = {
-        name: `+${attr}`,
-        value: r[attr],
-        ...props,
+    NumberField: extendCommponent<"input", { attr: string }>(
+      input,
+      (p) => ({
+        name: `+${p.attr}`,
+        value: r[p.attr],
         type: "number",
-      };
-      return (input as any)(a, p, c);
-    }) as (
-      props: Omit<astroHTML.JSX.InputHTMLAttributes, "type"> & { attr: string }
-    ) => any,
+      }),
+      ["attr"]
+    ),
 
-    Submit: createComponent((a: any, b: any, c: any) => {
-      const { ...props } = b;
-      const p = { ...props, type: "submit" };
-      return (button as any)(a, p, c);
-    }) as (props: Omit<astroHTML.JSX.ButtonHTMLAttributes, "type">) => any,
+    Submit: extendCommponent<"button", {}>(button, () => ({ type: "submit" })),
   };
+};
+
+const extendCommponent = <
+  L extends keyof astroHTML.JSX.DefinedIntrinsicElements,
+  P,
+>(
+  base: any,
+  defaluts: (p: any) => any,
+  removes: string[] = []
+): ((props: astroHTML.JSX.DefinedIntrinsicElements[L] & P) => any) => {
+  return createComponent((...args) => {
+    const defaultValues = defaluts(args[1]);
+    for (const remove of removes) {
+      delete args[1][remove];
+    }
+    return base(args[0], { ...defaultValues, ...args[1] }, args[2]);
+  }) as any;
 };
