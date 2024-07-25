@@ -18,7 +18,7 @@ model Account {
   passwordDigest String
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  Todo           Todo[]
+  todos          Todo[]
 }
 
 enum Status {
