@@ -12,6 +12,7 @@ const { currentAccount } = Astro.locals.helper;
       {
         currentAccount.todos.map((todo) => (
           <li>
+            <span>{todo.id}</span>
             <span>{todo.title}</span>
             <span>({todo.status})</span>
           </li>
