@@ -1,9 +1,9 @@
 import type { Relation } from "accel-record";
 import { createComponent } from "astro/runtime/server/astro-component.js";
-import LinkToNextPage from "./paginate/linkToNextPage.astro";
-import LinkToPrevPage from "./paginate/linkToPrevPage.astro";
-import Nav from "./paginate/nav.astro";
-import PageEntriesInfo from "./paginate/pageEntriesInfo.astro";
+import LinkToNextPage from "./linkToNextPage.astro";
+import LinkToPrevPage from "./linkToPrevPage.astro";
+import Nav from "./nav.astro";
+import PageEntriesInfo from "./pageEntriesInfo.astro";
 
 export const paginate = <T>(
   query: Relation<T, any>,
