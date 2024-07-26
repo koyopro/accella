@@ -14,20 +14,16 @@ export const paginate = <T>(
   const count = options.count ?? true;
   const window = options.window ?? 4;
   const offset = (page - 1) * per;
-  const limit = per;
   const total = count ? query.count() : 0;
   const totalPages = Math.ceil(total / per);
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1).filter(
-    (i) => Math.abs(i - page) <= window
-  );
   return {
     page,
     per,
     total,
     totalPages,
-    records: query.offset(offset).limit(limit),
+    records: query.offset(offset).limit(per),
     PageEntriesInfo: ex(PageEntriesInfo, { offset, per, total }),
-    Nav: ex(Nav, { page, pages, totalPages }),
+    Nav: ex(Nav, { page, totalPages, window }),
     LinkToPrevPage: ex(LinkToPrevPage, { page }),
     LinkToNextPage: ex(LinkToNextPage, { page }),
   };

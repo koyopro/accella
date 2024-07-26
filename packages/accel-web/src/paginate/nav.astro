@@ -6,9 +6,14 @@ import PageLink from "./pageLink.astro";
 interface Props {
   page: number;
   totalPages: number;
-  pages: number[];
+  window: number;
 }
-const { page, totalPages, pages } = Astro.props;
+const { page, totalPages, window } = Astro.props;
+const min = page - window;
+const max = page + window;
+const pages = Array.from({ length: max - min + 1 }, (_, i) => min + i).filter(
+  (i) => 0 < i && i <= totalPages
+);
 ---
 
 <nav class="pagination">
