@@ -1,7 +1,4 @@
-type i18n = {
-  t: (key: string, name: string) => string | undefined;
-};
-export let i18n: i18n | undefined = undefined;
+import { i18n } from "../i18n.js";
 
 /**
  * Represents a class for handling naming conventions.
@@ -41,12 +38,4 @@ const toPascalCase = (str: string) => {
   return str
     .replace(/_./g, (s) => s[1].toUpperCase())
     .replace(/^./, (s) => s.toUpperCase());
-};
-
-export const loadI18n = async () => {
-  try {
-    i18n = await import("i18next");
-  } catch (e) {
-    // i18next not found
-  }
 };

@@ -1,5 +1,5 @@
 import { Model } from "../index.js";
-import { i18n } from "../model/naming.js";
+import { i18n } from "../i18n.js";
 
 const defaultMessages: Record<string, string | undefined> = {
   blank: "can't be blank",

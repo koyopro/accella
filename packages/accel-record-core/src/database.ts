@@ -3,7 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { loadDmmf } from "./fields.js";
 import { Model } from "./index.js";
-import { loadI18n } from "./model/naming.js";
+import { loadI18n } from "./i18n.js";
 // @ts-ignore
 import SyncRpc, { stop } from "./sync-rpc/index.js";
 
