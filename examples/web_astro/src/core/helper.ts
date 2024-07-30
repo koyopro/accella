@@ -1,7 +1,8 @@
 import { Helper as HelperBase } from "accel-web";
+import type { Account } from "src/models";
 
 export class Helper extends HelperBase {
-  get currentAccount() {
+  get currentAccount(): Account {
     return this.session["Account"];
   }
 

@@ -3,8 +3,9 @@ generator client {
 }
 
 generator custom_generator {
-  provider = "prisma-generator-accel-record"
-  output   = "../src/models"
+  provider    = "prisma-generator-accel-record"
+  output      = "../src/models"
+  factoryPath = "../tests/factories"
 }
 
 datasource db {
@@ -18,4 +19,21 @@ model Account {
   passwordDigest String
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  todos          Todo[]
+}
+
+enum Status {
+  OPEN
+  CLOSED
+}
+
+model Todo {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String?
+  status    Status   @default(OPEN)
+  account   Account  @relation(fields: [accountId], references: [id])
+  accountId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
