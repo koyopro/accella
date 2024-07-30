@@ -2,6 +2,7 @@ import { initAccelRecord } from "accel-record";
 import { Helper } from "./core/helper.js";
 import { defineMiddleware } from "astro/middleware";
 import i18next from "i18next";
+import "./models";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   await i18next.init({
