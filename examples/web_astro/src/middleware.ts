@@ -34,11 +34,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
           "views.pagination.next": "次 &rsaquo;",
           "views.pagination.truncate": "&hellip;",
 
-          "helpers.page_entries_info.one_page.display_entries_zero":
+          "helpers.pageEntriesInfo.onePage.display_entries_zero":
             "レコードが見つかりませんでした",
-          "helpers.page_entries_info.one_page.display_entries_other":
+          "helpers.pageEntriesInfo.onePage.display_entries_other":
             "<b>全{{total}}</b>件表示中",
-          "helpers.page_entries_info.more_pages.display_entries":
+          "helpers.pageEntriesInfo.morePages.displayEntries":
             "<b>{{first}}-{{last}}</b>/{{total}}件中",
         },
       },

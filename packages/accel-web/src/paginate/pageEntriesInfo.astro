@@ -8,9 +8,9 @@ interface Props {
 const { offset, per, total } = Astro.props;
 const first = offset + 1;
 const last = Math.min(first + per - 1, total);
-const key = total <= per ? "one_page" : "more_pages";
+const key = total <= per ? "onePage" : "morePages";
 const defaultValue = () => {
-  if (key == "more_pages") {
+  if (key == "morePages") {
     return "Displaying <b>{{first}}&nbsp;-&nbsp;{{last}}</b> of <b>{{total}}</b> in total";
   }
   switch (total) {
@@ -27,7 +27,7 @@ const defaultValue = () => {
 <div
   class="page-entries-info"
   set:html={I18n.t(
-    `helpers.page_entries_info.${key}.display_entries`,
+    `helpers.pageEntriesInfo.${key}.displayEntries`,
     defaultValue(),
     {
       first,
