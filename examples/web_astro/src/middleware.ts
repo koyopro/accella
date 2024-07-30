@@ -25,6 +25,20 @@ export const onRequest = defineMiddleware(async (context, next) => {
           "errors.messages.tooLong": "は長すぎます(%{count}文字以下)",
           "errors.messages.taken": "は既に使用されています",
           "errors.messages.confirmation": "と%{attribute}の入力が一致しません",
+
+          // pagination
+          "views.pagination.first": "&laquo; 最初",
+          "views.pagination.last": "最後 &raquo;",
+          "views.pagination.previous": "&lsaquo; 前",
+          "views.pagination.next": "次 &rsaquo;",
+          "views.pagination.truncate": "&hellip;",
+
+          "helpers.page_entries_info.one_page.display_entries_zero":
+            "レコードが見つかりませんでした",
+          "helpers.page_entries_info.one_page.display_entries_other":
+            "<b>全{{total}}</b>件表示中",
+          "helpers.page_entries_info.more_pages.display_entries":
+            "<b>{{first}}-{{last}}</b>/{{total}}件中",
         },
       },
     },
