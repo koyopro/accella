@@ -39,7 +39,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
           "helpers.pageEntriesInfo.onePage.display_entries_other":
             "<b>全{{total}}</b>件表示中",
           "helpers.pageEntriesInfo.morePages.displayEntries":
-            "<b>{{first}}-{{last}}</b>/{{total}}件中",
+            "<b>{{first}}-{{last}}</b>件 / {{total}}件中",
         },
       },
     },
