@@ -1,8 +1,10 @@
 ---
+import I18n from "i18next";
 import Gap from "./gap.astro";
 import LinkToNextPage from "./linkToNextPage.astro";
 import LinkToPrevPage from "./linkToPrevPage.astro";
 import PageLink from "./pageLink.astro";
+
 interface Props {
   page: number;
   totalPages: number;
@@ -18,7 +20,10 @@ const pages = Array.from({ length: max - min + 1 }, (_, i) => min + i).filter(
 
 <nav class="pagination">
   <span class="first">
-    <a href="?p=1">First</a>
+    <a
+      href="?p=1"
+      set:html={I18n.t("views.pagination.first", "&laquo; First")}
+    />
   </span>
   {page > 1 && <LinkToPrevPage {page} />}
   {pages[0] !== 1 && <Gap />}
@@ -26,6 +31,9 @@ const pages = Array.from({ length: max - min + 1 }, (_, i) => min + i).filter(
   {pages[pages.length - 1] !== totalPages && <Gap />}
   {page < totalPages && <LinkToNextPage {page} />}
   <span class="last">
-    <a href={`?p=${totalPages}`}>Last</a>
+    <a
+      href={`?p=${totalPages}`}
+      set:html={I18n.t("views.pagination.last", "Last &raquo;")}
+    />
   </span>
 </nav>

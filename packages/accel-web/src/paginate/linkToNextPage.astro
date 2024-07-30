@@ -1,4 +1,5 @@
 ---
+import I18n from "i18next";
 interface Props {
   page: number;
 }
@@ -6,5 +7,9 @@ const { page } = Astro.props;
 ---
 
 <span class="next">
-  <a rel="next" href={`?p=${page + 1}`}>Next</a>
+  <a
+    rel="next"
+    href={`?p=${page + 1}`}
+    set:html={I18n.t("views.pagination.next", "Next &rsaquo;")}
+  />
 </span>
