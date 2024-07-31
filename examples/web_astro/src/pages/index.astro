@@ -1,17 +1,33 @@
 ---
+import { Todo } from "src/models";
 import Layout from "../layouts/Layout.astro";
 import { paginate } from "accel-web";
 
 const page = Number(Astro.url.searchParams.get("p") || 1);
 const { currentAccount } = Astro.locals.helper;
 
-const pager = paginate(currentAccount.todos, { page, per: 10, window: 2 });
+const titleCont = Astro.url.searchParams.get("title_cont");
+let todos = Todo.where({ account: currentAccount });
+if (titleCont && titleCont.length > 0) {
+  todos = todos.where({ title: { contains: titleCont } });
+}
+
+const pager = paginate(todos, { page, per: 10, window: 2 });
 const { LinkToNextPage, LinkToPrevPage, Nav, PageEntriesInfo } = pager;
 ---
 
 <Layout title="Welcome to Astro.">
   <main>
     <h1>All TODOs</h1>
+    <form method="get">
+      <input
+        type="text"
+        placeholder="Search by Title"
+        name="title_cont"
+        value={titleCont}
+      />
+      <button type="submit">検索</button>
+    </form>
     <a href="/todos/new">Add a new todo</a>
     <div>
       {page > 1 && <LinkToPrevPage />}
