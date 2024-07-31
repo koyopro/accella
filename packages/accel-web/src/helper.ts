@@ -30,6 +30,9 @@ export class Helper {
     } catch (e) {
       // noop
     }
+    this.context.url.searchParams.forEach((value, key) => {
+      data.append(key, value);
+    });
     this.params = new Parameters(data);
   }
 
