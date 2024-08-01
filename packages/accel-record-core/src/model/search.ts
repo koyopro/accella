@@ -37,7 +37,11 @@ export class Search {
       }
       return relation.merge(r);
     }
-    return this.buildRelation(relation, name, predicate, value);
+    const attrs = name.split("_and_");
+    for (const attr of attrs) {
+      relation = this.buildRelation(relation, attr, predicate, value);
+    }
+    return relation;
   }
 
   private buildRelation(
@@ -51,6 +55,22 @@ export class Search {
         return relation.where({ [attr]: value });
       case "cont":
         return relation.where({ [attr]: { contains: value } });
+      case "start":
+        return relation.where({ [attr]: { startsWith: value } });
+      case "end":
+        return relation.where({ [attr]: { endsWith: value } });
+      case "matches":
+        return relation.where({ [attr]: { like: value } });
+      case "lt":
+        return relation.where({ [attr]: { "<": value } });
+      case "lte":
+        return relation.where({ [attr]: { "<=": value } });
+      case "gt":
+        return relation.where({ [attr]: { ">": value } });
+      case "gte":
+        return relation.where({ [attr]: { ">=": value } });
+      case "in":
+        return relation.where({ [attr]: { in: value } });
     }
     return relation;
   }
