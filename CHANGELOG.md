@@ -1,3 +1,11 @@
+# [1.10.1](https://github.com/koyopro/accella/compare/1.10.0...1.10.1) (2024-08-02)
+
+### Improvements
+
+- change sync-rpc/index.cjs to esm ([#29](https://github.com/koyopro/accella/pull/29))
+- Make passwordDigest optional when calling create() ([#30](https://github.com/koyopro/accella/pull/30))
+- Throw a RecordNotFound error when the id passed to find() is not finite. ([#31](https://github.com/koyopro/accella/pull/31))
+
 # [1.10.0](https://github.com/koyopro/accella/compare/1.9.1...1.10.0) (2024-07-20)
 
 ### Features
