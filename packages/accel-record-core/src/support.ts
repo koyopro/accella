@@ -17,9 +17,11 @@ Array.prototype.toHash = function <T, K extends PropertyKey, V>(
   callback: (item: T) => [K, V]
 ): Record<K, V> {
   const ret = {} as Record<K, V>;
-  for (const item of this) {
-    const [key, value] = callback(item);
-    ret[key] = value;
+  if (typeof this[Symbol.iterator] === "function") {
+    for (const item of this) {
+      const [key, value] = callback(item);
+      ret[key] = value;
+    }
   }
   return ret;
 };
