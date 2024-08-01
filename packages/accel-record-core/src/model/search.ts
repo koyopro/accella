@@ -71,6 +71,16 @@ export class Search {
         return relation.where({ [attr]: { ">=": value } });
       case "in":
         return relation.where({ [attr]: { in: value } });
+      case "true":
+        return relation.where({ [attr]: true });
+      case "false":
+        return relation.where({ [attr]: false });
+      case "null":
+        return relation.where({ [attr]: null });
+      case "blank":
+        return relation.where({ [attr]: null }).or({ [attr]: "" });
+      case "present":
+        return relation.whereNot({ [attr]: null }).whereNot({ [attr]: "" });
     }
     return relation;
   }

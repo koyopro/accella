@@ -1,11 +1,12 @@
-import { User } from "..";
+import { Profile, User } from "..";
+import { $Profile } from "../../factories/profile";
 import { $user } from "../../factories/user";
 
 test(".search()", () => {
-  $user.create({ age: 10, email: "foo@example.com", name: "foo" });
-  $user.create({ age: 20, email: "cake@foo.com", name: "bar" });
-  $user.create({ age: 30, email: "chocolate@example.com", name: "foobar" });
-  $user.create({ age: 40, email: "juice@example.com", name: "baz" });
+  $user.create({ id: 1, age: 10, email: "foo@example.com", name: "foo" });
+  $user.create({ id: 2, age: 20, email: "cake@foo.com", name: "bar" });
+  $user.create({ id: 3, age: 30, email: "choco@example.com", name: "foobar" });
+  $user.create({ id: 4, email: "juice@example.com", name: "baz" });
 
   const subject = (params: any): number => User.search(params).result().count();
 
@@ -22,7 +23,23 @@ test(".search()", () => {
   expect(subject({ age_eq: 20 })).toEqual(1);
   expect(subject({ age_lt: 20 })).toEqual(1);
   expect(subject({ age_lte: 20 })).toEqual(2);
-  expect(subject({ age_gt: 30 })).toEqual(1);
-  expect(subject({ age_gte: 30 })).toEqual(2);
+  expect(subject({ age_gt: 20 })).toEqual(1);
+  expect(subject({ age_gte: 20 })).toEqual(2);
   expect(subject({ age_in: [20, 30] })).toEqual(2);
+  expect(subject({ age_null: 1 })).toEqual(1);
+  expect(subject({ age_blank: 1 })).toEqual(1);
+  expect(subject({ age_present: 1 })).toEqual(3);
+
+  $Profile.create({ userId: 1, bio: "foo", enabled: true });
+  $Profile.create({ userId: 2, bio: "", enabled: false });
+  $Profile.create({ userId: 3, bio: "", enabled: false });
+
+  const subject2 = (params: any): number =>
+    Profile.search(params).result().count();
+
+  expect(subject2({})).toEqual(3);
+  expect(subject2({ enabled_true: 1 })).toEqual(1);
+  expect(subject2({ enabled_false: 1 })).toEqual(2);
+  expect(subject2({ bio_blank: 1 })).toEqual(2);
+  expect(subject2({ bio_present: 1 })).toEqual(1);
 });
