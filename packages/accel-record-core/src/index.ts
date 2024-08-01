@@ -10,6 +10,7 @@ import { ModelMeta } from "./meta.js";
 import { Dirty } from "./model/dirty.js";
 import { Import } from "./model/import.js";
 import { Naming } from "./model/naming.js";
+import { Searchable } from "./model/search.js";
 import { Serialization } from "./model/serialization.js";
 import { Validations } from "./model/validations.js";
 import { Persistence } from "./persistence.js";
@@ -71,6 +72,7 @@ export class Model extends Mix(
   Naming,
   Persistence,
   Query,
+  Searchable,
   Serialization,
   Transaction,
   Validations
