@@ -29,26 +29,23 @@ export class Search {
     value: any
   ) {
     const [name, predicate] = splitFromLast(key, "_");
-    const attrs = name.split("_or_");
-    if (attrs.length > 1) {
-      let r = this.buildRelation(attrs[0], predicate, value);
-      for (const attr of attrs.slice(1)) {
-        r = r.or(this.buildRelation(attr, predicate, value));
+    const ors = name.split("_or_");
+    if (ors.length > 1) {
+      let r = this.buildRelation(this.model.all(), ors[0], predicate, value);
+      for (const attr of ors.slice(1)) {
+        r = r.or(this.buildRelation(this.model.all(), attr, predicate, value));
       }
       return relation.merge(r);
     }
-    const attr = attrs[0];
-    switch (predicate) {
-      case "eq":
-        return relation.where({ [attr]: value });
-      case "cont":
-        return relation.where({ [attr]: { contains: value } });
-    }
-    return relation;
+    return this.buildRelation(relation, name, predicate, value);
   }
 
-  private buildRelation(attr: string, predicate: any, value: any) {
-    const relation = this.model.all();
+  private buildRelation(
+    relation: Relation<any, any>,
+    attr: string,
+    predicate: any,
+    value: any
+  ) {
     switch (predicate) {
       case "eq":
         return relation.where({ [attr]: value });
