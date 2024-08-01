@@ -7,18 +7,10 @@ test(".search()", () => {
   $user.create({ email: "chocolate@example.com", name: "foobar" });
   $user.create({ email: "juice@example.com", name: "baz" });
 
-  const u = User.all()
-    .where({ name: "hoge" })
-    .where({ age: 20 })
-    .or({ name: "fuga", age: 30 });
+  const subject = (params: any) => User.search(params).result().count();
 
-  const r = User.where({ email: { contains: "foo" } }).or({
-    name: { contains: "foo" },
-  });
-  expect(User.search({}).result().count()).toEqual(4);
-  expect(User.search({ name_eq: "foo" }).result().count()).toEqual(1);
-  expect(User.search({ name_cont: "bar" }).result().count()).toEqual(2);
-  expect(User.search({ email_or_name_cont: "foo" }).result().count()).toEqual(
-    3
-  );
+  expect(subject({})).toEqual(4);
+  expect(subject({ name_eq: "foo" })).toEqual(1);
+  expect(subject({ name_cont: "bar" })).toEqual(2);
+  expect(subject({ email_or_name_cont: "foo" })).toEqual(3);
 });
