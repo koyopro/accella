@@ -151,6 +151,21 @@ describe("Relation", () => {
     ).toBe(2);
   });
 
+  test("#or() with contains", () => {
+    $user.create({ name: "baz" });
+    $user.create({ name: "foobar", email: "barfoo@example.com" });
+    $user.create({ name: "foo", email: "bar@example.com" });
+    $user.create({ name: "bar" });
+
+    const r = User.where({ name: { contains: "baz" } }).or(
+      User.where({
+        email: { contains: "bar" },
+        name: { contains: "bar" },
+      })
+    );
+    expect(r.count()).toBe(2);
+  });
+
   test("includes", () => {
     const u = $user.create();
     Post.create({ title: "post1", authorId: u.id });
