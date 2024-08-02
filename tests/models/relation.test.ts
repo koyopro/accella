@@ -236,7 +236,7 @@ describe("Relation", () => {
 
     const r = Post.joins("tags");
     expect(r.where("PostTag.name = ?", "tag1").count()).toBe(2);
-    expect(r.where({ tags: { name: "tag1" } }).count()).toBe(2);
+    expect(r.where({ tags: { name: "tag1", id: { ">": 0 } } }).count()).toBe(2);
 
     expect(r.where("PostTag.name = ?", "tag2").count()).toBe(1);
     expect(r.where({ tags: { name: "tag2" } }).count()).toBe(1);
