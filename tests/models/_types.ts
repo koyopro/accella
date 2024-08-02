@@ -122,8 +122,12 @@ type UserMeta = {
     passwordDigest?: string | string[] | StringFilter | null;
     name?: string | string[] | StringFilter | null;
     age?: number | number[] | Filter<number> | null;
+    posts?: PostMeta['WhereInput'];
+    setting?: SettingMeta['WhereInput'];
+    teams?: UserTeamMeta['WhereInput'];
     createdAt?: Date | Date[] | Filter<Date> | null;
     updatedAt?: Date | Date[] | Filter<Date> | null;
+    Profile?: ProfileMeta['WhereInput'];
   };
 };
 registerModel(User);
@@ -162,6 +166,7 @@ type TeamMeta = {
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
+    users?: UserTeamMeta['WhereInput'];
   };
 };
 registerModel(Team);
@@ -203,9 +208,9 @@ type UserTeamMeta = {
     assignedBy: string;
   } & ({ user: User } | { userId: number }) & ({ team: Team } | { teamId: number });
   WhereInput: {
-    user?: User | User[];
+    user?: User | User[] | UserMeta['WhereInput'];
     userId?: number | number[] | Filter<number> | null;
-    team?: Team | Team[];
+    team?: Team | Team[] | TeamMeta['WhereInput'];
     teamId?: number | number[] | Filter<number> | null;
     assignedAt?: Date | Date[] | Filter<Date> | null;
     assignedBy?: string | string[] | StringFilter | null;
@@ -260,8 +265,9 @@ type PostMeta = {
     title?: string | string[] | StringFilter | null;
     content?: string | string[] | StringFilter | null;
     published?: boolean | boolean[] | undefined | null;
-    author?: User | User[];
+    author?: User | User[] | UserMeta['WhereInput'];
     authorId?: number | number[] | Filter<number> | null;
+    tags?: PostTagMeta['WhereInput'];
   };
 };
 registerModel(Post);
@@ -300,6 +306,7 @@ type PostTagMeta = {
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
+    posts?: PostMeta['WhereInput'];
   };
 };
 registerModel(PostTag);
@@ -342,7 +349,7 @@ type SettingMeta = {
   } & ({ user: User } | { userId: number });
   WhereInput: {
     settingId?: number | number[] | Filter<number> | null;
-    user?: User | User[];
+    user?: User | User[] | UserMeta['WhereInput'];
     userId?: number | number[] | Filter<number> | null;
     threshold?: number | number[] | Filter<number> | null;
     createdAt?: Date | Date[] | Filter<Date> | null;
@@ -397,7 +404,7 @@ type ProfileMeta = {
   } & ({ user: User } | { userId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
-    user?: User | User[];
+    user?: User | User[] | UserMeta['WhereInput'];
     userId?: number | number[] | Filter<number> | null;
     bio?: string | string[] | StringFilter | null;
     point?: number | number[] | Filter<number> | null;
@@ -443,6 +450,7 @@ type CompanyMeta = {
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
+    employees?: EmployeeMeta['WhereInput'];
   };
 };
 registerModel(Company);
@@ -482,7 +490,7 @@ type EmployeeMeta = {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
     companyId?: number | number[] | Filter<number> | null;
-    company?: Company | Company[];
+    company?: Company | Company[] | CompanyMeta['WhereInput'];
   };
 };
 registerModel(Employee);

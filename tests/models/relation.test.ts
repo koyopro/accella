@@ -195,23 +195,22 @@ describe("Relation", () => {
     $setting.create({ user: $user.create(), threshold: 10 });
     $setting.create({ user: $user.create(), threshold: 20 });
 
-    const cnt = User.all()
-      .joins("setting")
-      .where("Setting.threshold > ?", 10)
-      .count();
-    expect(cnt).toBe(1);
+    const r = User.joins("setting");
+    expect(r.where("Setting.threshold > ?", 10).count()).toBe(1);
+    expect(r.where({ setting: { threshold: 10 } }).count()).toBe(1);
+    expect(r.where({ setting: { threshold: 10 }, id: -1 }).count()).toBe(0);
+    expect(r.where({ setting: { threshold: { ">": 10 } } }).count()).toBe(1);
   });
 
   test("joins belongsTo", () => {
     const u = $user.create({ name: "foo" });
     Post.create({ title: "post1", authorId: u.id });
 
+    const r = Post.joins("author");
     const column = User.attributeToColumn("name")!;
-    const post = Post.all()
-      .joins("author")
-      .where(`User.${column} = ?`, "foo")
-      .first();
-    expect(post?.title).toBe("post1");
+    expect(r.where(`User.${column} = ?`, "foo").first()?.title).toBe("post1");
+    expect(r.where({ author: { name: "foo" } }).first()?.title).toBe("post1");
+    expect(r.where({ author: { name: "bar" } }).first()).toBe(undefined);
   });
 
   test("joins hasMany", () => {
@@ -219,11 +218,11 @@ describe("Relation", () => {
     Post.create({ title: "post1", authorId: u.id });
     Post.create({ title: "post2", authorId: u.id });
 
-    const cnt = User.all()
-      .joins("posts")
-      .where("Post.title = ?", "post1")
-      .count();
-    expect(cnt).toBe(1);
+    const r = User.joins("posts");
+    expect(r.where("Post.title = ?", "post1").count()).toBe(1);
+    expect(r.where({ posts: { title: "post1" } }).count()).toBe(1);
+    expect(r.where({ posts: { title: "post0" } }).count()).toBe(0);
+    expect(r.where({ posts: { title: "post1", content: "" } }).count()).toBe(0);
   });
 
   test("joins hasManyThrough", () => {
@@ -235,17 +234,12 @@ describe("Relation", () => {
     p1.tags = [t1, t2];
     p2.tags = [t1];
 
-    const cnt1 = Post.all()
-      .joins("tags")
-      .where("PostTag.name = ?", "tag1")
-      .count();
-    expect(cnt1).toBe(2);
+    const r = Post.joins("tags");
+    expect(r.where("PostTag.name = ?", "tag1").count()).toBe(2);
+    expect(r.where({ tags: { name: "tag1" } }).count()).toBe(2);
 
-    const cnt2 = Post.all()
-      .joins("tags")
-      .where("PostTag.name = ?", "tag2")
-      .count();
-    expect(cnt2).toBe(1);
+    expect(r.where("PostTag.name = ?", "tag2").count()).toBe(1);
+    expect(r.where({ tags: { name: "tag2" } }).count()).toBe(1);
   });
 
   test("joinsRaw", () => {

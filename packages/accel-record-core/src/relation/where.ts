@@ -1,4 +1,4 @@
-import { Relation } from "../index.js";
+import { Model, Models, Relation } from "../index.js";
 import { ModelMeta } from "../meta.js";
 import { Relations } from "./index.js";
 
@@ -77,9 +77,13 @@ export class Where {
     const field = this.model.findField(key);
     if (field?.relationName == undefined) return;
 
+    const records = [value].flat();
+    if (records.length > 0 && !(records[0] instanceof Model)) {
+      return Models[field.type].where(value).options.wheres;
+    }
+
     const where: any = {};
 
-    const records = [value].flat();
     for (let i = 0; i < field.foreignKeys.length; i++) {
       const column = this.model.attributeToColumn(field.foreignKeys[i]);
       if (!column) return;

@@ -213,19 +213,16 @@ const createInputs = (model: ModelWrapper) => {
 
 const whereInputs = (model: ModelWrapper) =>
   model.fields
-    .filter(
-      (field) =>
-        field.relationName == undefined ||
-        (field.relationFromFields?.length ?? 0) > 0
-    )
     .filter((field) => field.type != "Json")
     .map((field) => {
-      const type = field.typeName;
-      const filter = getFilterType(type);
-      if (field.relationName) {
-        if (field.name == "posts") console.log(field);
-        return `\n    ${field.name}?: ${field.type} | ${field.type}[];`;
+      if (!field.relationName) {
+        const type = field.typeName;
+        const filter = getFilterType(type);
+        return `\n    ${field.name}?: ${type} | ${type}[] | ${filter} | null;`;
       }
-      return `\n    ${field.name}?: ${type} | ${type}[] | ${filter} | null;`;
+      if ((field.relationFromFields?.length ?? 0) == 0) {
+        return `\n    ${field.name}?: ${field.model!.meta}['WhereInput'];`;
+      }
+      return `\n    ${field.name}?: ${field.type} | ${field.type}[] | ${field.model!.meta}['WhereInput'];`;
     })
     .join("") + "\n  ";
