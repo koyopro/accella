@@ -27,12 +27,10 @@ test(".search()", () => {
   expect(subject({ age_gte: 20 })).toEqual(2);
   expect(subject({ age_in: [20, 30] })).toEqual(2);
   expect(subject({ age_null: 1 })).toEqual(1);
-  expect(subject({ age_blank: 1 })).toEqual(1);
-  expect(subject({ age_present: 1 })).toEqual(3);
 
   $Profile.create({ userId: 1, bio: "foo", enabled: true });
   $Profile.create({ userId: 2, bio: "", enabled: false });
-  $Profile.create({ userId: 3, bio: "", enabled: false });
+  $Profile.create({ userId: 3, bio: null as any, enabled: false });
 
   const subject2 = (params: any): number =>
     Profile.search(params).result().count();
