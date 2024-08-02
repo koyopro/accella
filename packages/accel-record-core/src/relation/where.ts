@@ -128,7 +128,11 @@ export class Where {
         );
         if (associationWheres) {
           for (const where of associationWheres) {
-            newOptions["wheres"].push(where);
+            if (Array.isArray(where) && where[1] === "not in") {
+              newOptions["wheres"].push(where);
+            } else {
+              newOptions["whereNots"].push(where);
+            }
           }
         } else {
           throw new Error(`Attribute not found: ${key}`);
