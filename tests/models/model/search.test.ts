@@ -40,4 +40,10 @@ test(".search()", () => {
   expect(subject2({ enabled_false: 1 })).toEqual(2);
   expect(subject2({ bio_blank: 1 })).toEqual(2);
   expect(subject2({ bio_present: 1 })).toEqual(1);
+
+  expect(subject({ Profile_bio_eq: "foo" })).toEqual(1);
+  expect(subject({ Profile_enabled_true: 1 })).toEqual(1);
+  expect(subject({ Profile_enabled_false: 1 })).toEqual(2);
+  expect(subject({ Profile_bio_blank: 1 })).toEqual(2);
+  expect(subject({ Profile_bio_present: 1 })).toEqual(1);
 });

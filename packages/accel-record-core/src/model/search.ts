@@ -46,43 +46,58 @@ export class Search {
 
   private buildRelation(
     relation: Relation<any, any>,
-    attr: string,
+    attrStr: string,
     predicate: any,
     value: any
   ) {
+    const [key, attr] = this.parseAttr(attrStr);
+    let ret = relation;
+    if (key) ret = ret.joins(key);
     switch (predicate) {
-      case "eq":
-        return relation.where({ [attr]: value });
-      case "cont":
-        return relation.where({ [attr]: { contains: value } });
-      case "start":
-        return relation.where({ [attr]: { startsWith: value } });
-      case "end":
-        return relation.where({ [attr]: { endsWith: value } });
-      case "matches":
-        return relation.where({ [attr]: { like: value } });
-      case "lt":
-        return relation.where({ [attr]: { "<": value } });
-      case "lte":
-        return relation.where({ [attr]: { "<=": value } });
-      case "gt":
-        return relation.where({ [attr]: { ">": value } });
-      case "gte":
-        return relation.where({ [attr]: { ">=": value } });
-      case "in":
-        return relation.where({ [attr]: { in: value } });
-      case "true":
-        return relation.where({ [attr]: true });
-      case "false":
-        return relation.where({ [attr]: false });
-      case "null":
-        return relation.where({ [attr]: null });
       case "blank":
+        if (key) {
+          return ret
+            .where({ [key]: { [attr]: "" } })
+            .or({ [key]: { [attr]: null } });
+        }
         return relation.where({ [attr]: null }).or({ [attr]: "" });
       case "present":
+        if (key) {
+          return ret
+            .whereNot({ [key]: { [attr]: "" } })
+            .whereNot({ [key]: { [attr]: null } });
+        }
         return relation.whereNot({ [attr]: null }).whereNot({ [attr]: "" });
+      default:
+        const condition = getCondition(predicate, value);
+        if (condition === undefined) return relation;
+        if (key) {
+          return ret.where({ [key]: { [attr]: condition } });
+        }
+        return ret.where({ [attr]: condition });
     }
-    return relation;
+  }
+
+  /**
+   * Parses the attribute string into the key and attribute.
+   * @param attrStr - The attribute string to parse.
+   * @returns An arry of the association key and attribute.
+   *
+   * @example
+   * parseAttr("name") // => [undefined, "name"]
+   * parseAttr("profile_bio") // => ["profile", "bio"]
+   */
+  private parseAttr(attrStr: string): [string | undefined, string] {
+    const field = this.model.findField(attrStr);
+    if (!field) {
+      for (const key of Object.keys(this.model.associations)) {
+        if (attrStr.startsWith(`${key}_`)) {
+          const nestedAttr = attrStr.substring(key.length + 1);
+          return [key, nestedAttr];
+        }
+      }
+    }
+    return [undefined, attrStr];
   }
 }
 
@@ -93,3 +108,37 @@ function splitFromLast(str: string, delimiter: string): [string, string] {
   const predicate = str.substring(lastIndex + 1);
   return [name, predicate];
 }
+
+const getCondition = (predicate: string, value: any) => {
+  switch (predicate) {
+    case "eq":
+      return value;
+    case "cont":
+      return { contains: value };
+    case "start":
+      return { startsWith: value };
+    case "end":
+      return { endsWith: value };
+    case "matches":
+      return { like: value };
+    case "lt":
+      return { "<": value };
+    case "lte":
+      return { "<=": value };
+    case "gt":
+      return { ">": value };
+    case "gte":
+      return { ">=": value };
+    case "in":
+      return { in: value };
+    case "true":
+      return true;
+    case "false":
+      return false;
+    case "null":
+      return null;
+    default:
+      // unknown predicate
+      return undefined;
+  }
+};
