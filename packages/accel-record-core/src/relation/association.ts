@@ -31,6 +31,10 @@ export class Association {
     return new Relation(this.model, newOptions);
   }
 
+  joins<T, M extends ModelMeta>(
+    this: Relations<T, M>,
+    input: M["JoinInput"]
+  ): Relation<T, M>;
   /**
    * Adds join conditions to the relation.
    *
@@ -41,10 +45,7 @@ export class Association {
     this: Relations<T, M>,
     ...input: M["AssociationKey"][]
   ): Relation<T, M>;
-  joins<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    ...input: M["AssociationKey"][]
-  ): Relation<T, M> {
+  joins<T, M extends ModelMeta>(this: Relation<T, M>, ...input: any[]) {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key of input) {
       const info = this.model.associations[key];

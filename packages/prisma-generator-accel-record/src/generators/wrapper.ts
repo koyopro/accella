@@ -86,6 +86,9 @@ export class ModelWrapper {
   get meta() {
     return `${this.model.name}Meta`;
   }
+  get associationKey() {
+    return `${this.model.name}AssociationKey`;
+  }
   get fileName() {
     return toCamelCase(this.model.name);
   }

@@ -86,12 +86,19 @@ export interface User extends UserModel {
   get Profile(): Profile | undefined;
   set Profile(value: ProfileModel | undefined);
 };
+type UserAssociationKey = 'posts' | 'setting' | 'teams' | 'Profile';
 type UserCollection<T extends UserModel> = Collection<T, UserMeta> | Collection<User, UserMeta>;
 type UserMeta = {
   Base: UserModel;
   New: NewUser;
   Persisted: User;
-  AssociationKey: 'posts' | 'setting' | 'teams' | 'Profile';
+  AssociationKey: UserAssociationKey;
+  JoinInput: UserAssociationKey | UserAssociationKey[] | {
+    posts?: Meta<Post>['JoinInput'];
+    setting?: Meta<Setting>['JoinInput'];
+    teams?: Meta<UserTeam>['JoinInput'];
+    Profile?: Meta<Profile>['JoinInput'];
+  };
   Column: {
     id: number;
     email: string;
@@ -148,12 +155,16 @@ export interface Team extends TeamModel {
   get users(): UserTeamCollection<UserTeam>;
   set users(value: UserTeamModel[]);
 };
+type TeamAssociationKey = 'users';
 type TeamCollection<T extends TeamModel> = Collection<T, TeamMeta> | Collection<Team, TeamMeta>;
 type TeamMeta = {
   Base: TeamModel;
   New: NewTeam;
   Persisted: Team;
-  AssociationKey: 'users';
+  AssociationKey: TeamAssociationKey;
+  JoinInput: TeamAssociationKey | TeamAssociationKey[] | {
+    users?: Meta<UserTeam>['JoinInput'];
+  };
   Column: {
     id: number;
     name: string;
@@ -191,12 +202,17 @@ export interface UserTeam extends UserTeamModel {
   assignedAt: Date;
   assignedBy: string;
 };
+type UserTeamAssociationKey = 'user' | 'team';
 type UserTeamCollection<T extends UserTeamModel> = Collection<T, UserTeamMeta> | Collection<UserTeam, UserTeamMeta>;
 type UserTeamMeta = {
   Base: UserTeamModel;
   New: NewUserTeam;
   Persisted: UserTeam;
-  AssociationKey: 'user' | 'team';
+  AssociationKey: UserTeamAssociationKey;
+  JoinInput: UserTeamAssociationKey | UserTeamAssociationKey[] | {
+    user?: Meta<User>['JoinInput'];
+    team?: Meta<Team>['JoinInput'];
+  };
   Column: {
     userId: number;
     teamId: number;
@@ -240,12 +256,17 @@ export interface Post extends PostModel {
   get tags(): PostTagCollection<PostTag>;
   set tags(value: PostTagModel[]);
 };
+type PostAssociationKey = 'author' | 'tags';
 type PostCollection<T extends PostModel> = Collection<T, PostMeta> | Collection<Post, PostMeta>;
 type PostMeta = {
   Base: PostModel;
   New: NewPost;
   Persisted: Post;
-  AssociationKey: 'author' | 'tags';
+  AssociationKey: PostAssociationKey;
+  JoinInput: PostAssociationKey | PostAssociationKey[] | {
+    author?: Meta<User>['JoinInput'];
+    tags?: Meta<PostTag>['JoinInput'];
+  };
   Column: {
     id: number;
     title: string;
@@ -288,12 +309,16 @@ export interface PostTag extends PostTagModel {
   get posts(): PostCollection<Post>;
   set posts(value: PostModel[]);
 };
+type PostTagAssociationKey = 'posts';
 type PostTagCollection<T extends PostTagModel> = Collection<T, PostTagMeta> | Collection<PostTag, PostTagMeta>;
 type PostTagMeta = {
   Base: PostTagModel;
   New: NewPostTag;
   Persisted: PostTag;
-  AssociationKey: 'posts';
+  AssociationKey: PostTagAssociationKey;
+  JoinInput: PostTagAssociationKey | PostTagAssociationKey[] | {
+    posts?: Meta<Post>['JoinInput'];
+  };
   Column: {
     id: number;
     name: string;
@@ -329,12 +354,16 @@ export interface Setting extends SettingModel {
   userId: number;
   createdAt: Date;
 };
+type SettingAssociationKey = 'user';
 type SettingCollection<T extends SettingModel> = Collection<T, SettingMeta> | Collection<Setting, SettingMeta>;
 type SettingMeta = {
   Base: SettingModel;
   New: NewSetting;
   Persisted: Setting;
-  AssociationKey: 'user';
+  AssociationKey: SettingAssociationKey;
+  JoinInput: SettingAssociationKey | SettingAssociationKey[] | {
+    user?: Meta<User>['JoinInput'];
+  };
   Column: {
     settingId: number;
     userId: number;
@@ -377,12 +406,16 @@ export interface Profile extends ProfileModel {
   user: User;
   userId: number;
 };
+type ProfileAssociationKey = 'user';
 type ProfileCollection<T extends ProfileModel> = Collection<T, ProfileMeta> | Collection<Profile, ProfileMeta>;
 type ProfileMeta = {
   Base: ProfileModel;
   New: NewProfile;
   Persisted: Profile;
-  AssociationKey: 'user';
+  AssociationKey: ProfileAssociationKey;
+  JoinInput: ProfileAssociationKey | ProfileAssociationKey[] | {
+    user?: Meta<User>['JoinInput'];
+  };
   Column: {
     id: number;
     userId: number;
@@ -432,12 +465,16 @@ export interface Company extends CompanyModel {
   get employees(): EmployeeCollection<Employee>;
   set employees(value: EmployeeModel[]);
 };
+type CompanyAssociationKey = 'employees';
 type CompanyCollection<T extends CompanyModel> = Collection<T, CompanyMeta> | Collection<Company, CompanyMeta>;
 type CompanyMeta = {
   Base: CompanyModel;
   New: NewCompany;
   Persisted: Company;
-  AssociationKey: 'employees';
+  AssociationKey: CompanyAssociationKey;
+  JoinInput: CompanyAssociationKey | CompanyAssociationKey[] | {
+    employees?: Meta<Employee>['JoinInput'];
+  };
   Column: {
     id: number;
     name: string;
@@ -471,12 +508,16 @@ export interface Employee extends EmployeeModel {
   companyId: number;
   company: Company;
 };
+type EmployeeAssociationKey = 'company';
 type EmployeeCollection<T extends EmployeeModel> = Collection<T, EmployeeMeta> | Collection<Employee, EmployeeMeta>;
 type EmployeeMeta = {
   Base: EmployeeModel;
   New: NewEmployee;
   Persisted: Employee;
-  AssociationKey: 'company';
+  AssociationKey: EmployeeAssociationKey;
+  JoinInput: EmployeeAssociationKey | EmployeeAssociationKey[] | {
+    company?: Meta<Company>['JoinInput'];
+  };
   Column: {
     id: number;
     name: string;
@@ -515,12 +556,14 @@ export interface ValidateSample extends ValidateSampleModel {
   count: number;
   size: string;
 };
+type ValidateSampleAssociationKey = never;
 type ValidateSampleCollection<T extends ValidateSampleModel> = Collection<T, ValidateSampleMeta> | Collection<ValidateSample, ValidateSampleMeta>;
 type ValidateSampleMeta = {
   Base: ValidateSampleModel;
   New: NewValidateSample;
   Persisted: ValidateSample;
-  AssociationKey: never;
+  AssociationKey: ValidateSampleAssociationKey;
+  JoinInput: ValidateSampleAssociationKey | ValidateSampleAssociationKey[];
   Column: {
     id: number;
     accepted: boolean;
@@ -562,12 +605,14 @@ export interface Account extends AccountModel {
   email: string;
   passwordDigest: string;
 };
+type AccountAssociationKey = never;
 type AccountCollection<T extends AccountModel> = Collection<T, AccountMeta> | Collection<Account, AccountMeta>;
 type AccountMeta = {
   Base: AccountModel;
   New: NewAccount;
   Persisted: Account;
-  AssociationKey: never;
+  AssociationKey: AccountAssociationKey;
+  JoinInput: AccountAssociationKey | AccountAssociationKey[];
   Column: {
     id: number;
     email: string;

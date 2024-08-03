@@ -9,6 +9,7 @@ export type ModelMeta = {
   New: Model;
   Persisted: Model;
   AssociationKey: string;
+  JoinInput: any;
   Column: Record<string, any>;
   WhereInput: Record<string, any>;
   CreateInput: Record<string, any>;
