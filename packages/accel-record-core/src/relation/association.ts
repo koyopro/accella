@@ -46,15 +46,19 @@ export class Association {
     ...input: M["AssociationKey"][]
   ): Relation<T, M>;
   joins<T, M extends ModelMeta>(this: Relation<T, M>, ...input: any[]) {
+    const hash = formatJoinsInput(...input);
     const newOptions = JSON.parse(JSON.stringify(this.options));
-    for (const key of input) {
+    for (const [key, value] of Object.entries(hash)) {
       const info = this.model.associations[key];
       const joins = info.isBelongsTo
         ? this.belongsToJoins(info)
         : info.through
           ? this.hasManyThroughJoins(info)
           : this.hasOneOrHasManyJoins(info);
-      for (const join of joins) {
+      const nestedJoins = isBlankArray(value)
+        ? []
+        : info.model.joins(value).options.joins;
+      for (const join of joins.concat(nestedJoins)) {
         if (alreadyContains(newOptions["joins"], join)) continue;
 
         newOptions["joins"].push(join);
@@ -127,4 +131,21 @@ function alreadyContains(arrays: any[][], targetArray: any[]): boolean {
       array.length === targetArray.length &&
       array.every((value, index) => value === targetArray[index])
   );
+}
+
+function formatJoinsInput(...input: any[]): object {
+  // e.g. User.joins(["posts", "tags"])
+  if (input.length === 1 && Array.isArray(input[0])) {
+    return input[0].toHash((t) => [t, []]);
+  }
+  // e.g. User.joins({ posts: "tags" })
+  if (input.length === 1 && typeof input[0] === "object") {
+    return input[0];
+  }
+  // e.g. User.joins("posts", "tags")
+  return input.toHash((t) => [t, []]);
+}
+
+function isBlankArray(value: any): boolean {
+  return Array.isArray(value) && value.length === 0;
 }
