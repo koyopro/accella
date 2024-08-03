@@ -54,4 +54,7 @@ test(".search()", () => {
       Profile_enabled_true: 1,
     })
   ).toEqual(1);
+
+  // use searchableScope
+  expect(subject({ bio_cont: "foo" })).toEqual(1);
 });

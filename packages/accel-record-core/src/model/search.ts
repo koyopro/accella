@@ -7,6 +7,8 @@ export class Searchable {
   ) {
     return new Search(this, params);
   }
+
+  static searchableScopes: string[] = [];
 }
 
 export class Search {
@@ -28,6 +30,9 @@ export class Search {
     key: string,
     value: any
   ) {
+    if (this.model.searchableScopes.includes(key)) {
+      return relation.merge((this.model as any)[key](value));
+    }
     const [name, predicate] = splitFromLast(key, "_");
     const ors = name.split("_or_");
     if (ors.length > 1) {

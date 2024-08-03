@@ -10,4 +10,12 @@ export class UserModel extends ApplicationRecord {
   static adults() {
     return this.where({ age: { ">=": 20 } });
   }
+
+  static bio_cont(value: string) {
+    return this.joins("Profile").where({
+      Profile: { bio: { like: `%${value}%` } },
+    });
+  }
+
+  static override searchableScopes = ["bio_cont"];
 }
