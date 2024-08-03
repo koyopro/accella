@@ -53,7 +53,11 @@ export class Association {
         : info.through
           ? this.hasManyThroughJoins(info)
           : this.hasOneOrHasManyJoins(info);
-      newOptions["joins"].push(...joins);
+      for (const join of joins) {
+        if (alreadyContains(newOptions["joins"], join)) continue;
+
+        newOptions["joins"].push(join);
+      }
     }
     return new Relation(this.model, newOptions);
   }
@@ -114,4 +118,12 @@ export class Association {
     newOptions["joinsRaw"].push([query, bindings]);
     return new Relation(this.model, newOptions);
   }
+}
+
+function alreadyContains(arrays: any[][], targetArray: any[]): boolean {
+  return arrays.some(
+    (array) =>
+      array.length === targetArray.length &&
+      array.every((value, index) => value === targetArray[index])
+  );
 }

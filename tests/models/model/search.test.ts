@@ -46,4 +46,12 @@ test(".search()", () => {
   expect(subject({ Profile_enabled_false: 1 })).toEqual(2);
   expect(subject({ Profile_bio_blank: 1 })).toEqual(2);
   expect(subject({ Profile_bio_present: 1 })).toEqual(1);
+
+  // Ensure that jonis is executed only once
+  expect(
+    subject({
+      Profile_bio_eq: "foo",
+      Profile_enabled_true: 1,
+    })
+  ).toEqual(1);
 });
