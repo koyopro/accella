@@ -1,3 +1,4 @@
+import { a } from "vitest/dist/suite-xGC-mxBC.js";
 import { Model, Relation } from "../index.js";
 
 export class Searchable {
@@ -55,54 +56,51 @@ export class Search {
     predicate: any,
     value: any
   ) {
-    const [key, attr] = this.parseAttr(attrStr);
-    let ret = relation;
-    if (key) ret = ret.joins(key);
     switch (predicate) {
-      case "blank":
-        if (key) {
-          return ret
-            .where({ [key]: { [attr]: "" } })
-            .or({ [key]: { [attr]: null } });
-        }
-        return relation.where({ [attr]: null }).or({ [attr]: "" });
-      case "present":
-        if (key) {
-          return ret
-            .whereNot({ [key]: { [attr]: "" } })
-            .whereNot({ [key]: { [attr]: null } });
-        }
-        return relation.whereNot({ [attr]: null }).whereNot({ [attr]: "" });
+      case "blank": {
+        const w1 = this.buildWhere(this.model, attrStr, predicate, "");
+        const w2 = this.buildWhere(this.model, attrStr, predicate, null);
+        return relation.joins(w1.joins).where(w1.where).or(w2.where);
+      }
+      case "present": {
+        const w1 = this.buildWhere(this.model, attrStr, predicate, "");
+        const w2 = this.buildWhere(this.model, attrStr, predicate, null);
+        return relation.joins(w1.joins).whereNot(w1.where).whereNot(w2.where);
+      }
       default:
-        const condition = getCondition(predicate, value);
-        if (condition === undefined) return relation;
-        if (key) {
-          return ret.where({ [key]: { [attr]: condition } });
-        }
-        return ret.where({ [attr]: condition });
+        const w = this.buildWhere(this.model, attrStr, predicate, value);
+        return relation.joins(w.joins).where(w.where);
     }
   }
 
-  /**
-   * Parses the attribute string into the key and attribute.
-   * @param attrStr - The attribute string to parse.
-   * @returns An arry of the association key and attribute.
-   *
-   * @example
-   * parseAttr("name") // => [undefined, "name"]
-   * parseAttr("profile_bio") // => ["profile", "bio"]
-   */
-  private parseAttr(attrStr: string): [string | undefined, string] {
-    const field = this.model.findField(attrStr);
+  private buildWhere(
+    model: typeof Model,
+    attrStr: string,
+    predicate: string,
+    value: any
+  ): { where: object; joins: object } {
+    const field = model.findField(attrStr);
     if (!field) {
-      for (const key of Object.keys(this.model.associations)) {
+      for (const [key, association] of Object.entries(model.associations)) {
         if (attrStr.startsWith(`${key}_`)) {
-          const nestedAttr = attrStr.substring(key.length + 1);
-          return [key, nestedAttr];
+          const nextAttr = attrStr.substring(key.length + 1);
+          const next = this.buildWhere(
+            association.model,
+            nextAttr,
+            predicate,
+            value
+          );
+          const where = { [key]: next.where };
+          const joins = { [key]: next.joins };
+          return { where, joins };
         }
       }
     }
-    return [undefined, attrStr];
+    const where = {
+      [attrStr]: getCondition(predicate, value),
+    };
+    const joins = {};
+    return { where, joins };
   }
 }
 
@@ -144,6 +142,6 @@ const getCondition = (predicate: string, value: any) => {
       return null;
     default:
       // unknown predicate
-      return undefined;
+      return value;
   }
 };
