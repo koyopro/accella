@@ -1,4 +1,6 @@
 import { Profile, User } from "..";
+import { $post } from "../../factories/post";
+import { $postTag } from "../../factories/postTag";
 import { $Profile } from "../../factories/profile";
 import { $user } from "../../factories/user";
 
@@ -28,7 +30,11 @@ test(".search()", () => {
   expect(subject({ age_in: [20, 30] })).toEqual(2);
   expect(subject({ age_null: 1 })).toEqual(1);
 
-  $Profile.create({ userId: 1, bio: "foo", enabled: true });
+  $Profile.create({
+    userId: 1,
+    bio: "foo",
+    enabled: true,
+  });
   $Profile.create({ userId: 2, bio: "", enabled: false });
   $Profile.create({ userId: 3, bio: null as any, enabled: false });
 
@@ -57,4 +63,11 @@ test(".search()", () => {
 
   // use searchableScope
   expect(subject({ bio_cont: "foo" })).toEqual(1);
+
+  $post.create({ authorId: 1, tags: [$postTag.build({ name: "tag1" })] });
+  $post.create({ authorId: 2, tags: [$postTag.build({ name: "" })] });
+  // multi level joins
+  expect(subject({ posts_tags_name_eq: "tag1" })).toEqual(1);
+  expect(subject({ posts_tags_name_blank: 1 })).toEqual(1);
+  expect(subject({ posts_tags_name_present: 1 })).toEqual(1);
 });
