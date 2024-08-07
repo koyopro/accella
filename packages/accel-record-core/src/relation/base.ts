@@ -78,6 +78,17 @@ export class RelationBase {
         }
       });
     }
+    for (const where of this.options.orWhereNots) {
+      q = q.orWhere(function (this: any) {
+        for (const w of where) {
+          if (Array.isArray(w)) {
+            this.whereNot(...w);
+          } else {
+            this.whereNot(w);
+          }
+        }
+      });
+    }
     if (this.options.limit) q = q.limit(this.options.limit);
     if (this.options.offset) q = q.offset(this.options.offset);
     for (const [column, direction] of this.options.orders ?? []) {
