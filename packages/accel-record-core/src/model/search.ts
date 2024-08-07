@@ -35,11 +35,10 @@ export class Search {
       return relation.merge((this.model as any)[key](value));
     }
     const result = key.match(
-      /^(.+?)_(((does_)?not_)?(eq|in|cont|start|end|null|match(es)?|lt|lte|gt|gte|true|false|blank|present)(_all)?)$/
+      /^(.+?)_(((does_)?not_)?(eq|in|cont|start|end|null|match(es)?|lt|lte|gt|gte|true|false|blank|present)(_all|_any)?)$/
     );
     if (!result) return relation;
     const [name, predicate] = result.slice(1);
-    // console.log({ name, predicate });
     const ors = name.split("_or_");
     if (ors.length > 1) {
       let r = this.buildRelation(this.model.all(), ors[0], predicate, value);
@@ -63,6 +62,7 @@ export class Search {
   ) {
     let not = false;
     let all = false;
+    let any = false;
     if (predicate.startsWith("not_")) {
       predicate = predicate.substring(4);
       not = true;
@@ -74,6 +74,10 @@ export class Search {
     if (predicate.endsWith("_all")) {
       predicate = predicate.substring(0, predicate.length - 4);
       all = true;
+    }
+    if (predicate.endsWith("_any")) {
+      predicate = predicate.substring(0, predicate.length - 4);
+      any = true;
     }
     switch (predicate) {
       case "blank": {
@@ -88,12 +92,22 @@ export class Search {
       }
       default: {
         let ret = relation;
+        const values = [value].flat();
         if (all) {
           for (const v of [value].flat()) {
             const w = this.buildWhere(this.model, attrStr, predicate, v);
             const method = not ? "whereNot" : "where";
             ret = ret.joins(w.joins)[method](w.where);
           }
+        } else if (any) {
+          const method = not ? "whereNot" : "where";
+          const w = this.buildWhere(this.model, attrStr, predicate, values[0]);
+          let r = this.model.joins(w.joins)[method](w.where);
+          for (const v of values.slice(1)) {
+            const w = this.buildWhere(this.model, attrStr, predicate, v);
+            r = r.or(this.model[method](w.where));
+          }
+          return relation.merge(r);
         } else {
           const w = this.buildWhere(this.model, attrStr, predicate, value);
           const method = not ? "whereNot" : "where";
