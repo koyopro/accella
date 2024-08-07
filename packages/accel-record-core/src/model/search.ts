@@ -34,7 +34,12 @@ export class Search {
     if (this.model.searchableScopes.includes(key)) {
       return relation.merge((this.model as any)[key](value));
     }
-    const [name, predicate] = splitFromLast(key, "_");
+    const result = key.match(
+      /^(.+?)_(((does_)?not_)?(eq|in|cont|start|end|null|match(es)?|lt|lte|gt|gte|true|false|blank|present)(_all)?)$/
+    );
+    if (!result) return relation;
+    const [name, predicate] = result.slice(1);
+    // console.log({ name, predicate });
     const ors = name.split("_or_");
     if (ors.length > 1) {
       let r = this.buildRelation(this.model.all(), ors[0], predicate, value);
@@ -53,9 +58,23 @@ export class Search {
   private buildRelation(
     relation: Relation<any, any>,
     attrStr: string,
-    predicate: any,
+    predicate: string,
     value: any
   ) {
+    let not = false;
+    let all = false;
+    if (predicate.startsWith("not_")) {
+      predicate = predicate.substring(4);
+      not = true;
+    }
+    if (predicate.startsWith("does_not_")) {
+      predicate = predicate.substring(9);
+      not = true;
+    }
+    if (predicate.endsWith("_all")) {
+      predicate = predicate.substring(0, predicate.length - 4);
+      all = true;
+    }
     switch (predicate) {
       case "blank": {
         const w1 = this.buildWhere(this.model, attrStr, predicate, "");
@@ -67,9 +86,21 @@ export class Search {
         const w2 = this.buildWhere(this.model, attrStr, predicate, null);
         return relation.joins(w1.joins).whereNot(w1.where).whereNot(w2.where);
       }
-      default:
-        const w = this.buildWhere(this.model, attrStr, predicate, value);
-        return relation.joins(w.joins).where(w.where);
+      default: {
+        let ret = relation;
+        if (all) {
+          for (const v of [value].flat()) {
+            const w = this.buildWhere(this.model, attrStr, predicate, v);
+            const method = not ? "whereNot" : "where";
+            ret = ret.joins(w.joins)[method](w.where);
+          }
+        } else {
+          const w = this.buildWhere(this.model, attrStr, predicate, value);
+          const method = not ? "whereNot" : "where";
+          ret = relation.joins(w.joins)[method](w.where);
+        }
+        return ret;
+      }
     }
   }
 
@@ -104,14 +135,6 @@ export class Search {
   }
 }
 
-function splitFromLast(str: string, delimiter: string): [string, string] {
-  const lastIndex = str.lastIndexOf(delimiter);
-  if (lastIndex === -1) return [str, ""];
-  const name = str.substring(0, lastIndex);
-  const predicate = str.substring(lastIndex + 1);
-  return [name, predicate];
-}
-
 const getCondition = (predicate: string, value: any) => {
   switch (predicate) {
     case "eq":
@@ -123,6 +146,7 @@ const getCondition = (predicate: string, value: any) => {
     case "end":
       return { endsWith: value };
     case "matches":
+    case "match":
       return { like: value };
     case "lt":
       return { "<": value };
