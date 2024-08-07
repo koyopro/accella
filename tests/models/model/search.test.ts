@@ -22,6 +22,21 @@ test(".search()", () => {
   expect(subject({ name_matches: "ba%" })).toEqual(2);
   expect(subject({ name_in: ["foo", "bar", "baz"] })).toEqual(3);
 
+  expect(subject({ name_not_eq: "foo" })).toEqual(3);
+  expect(subject({ name_not_cont: "bar" })).toEqual(2);
+  expect(subject({ name_not_start: "bar" })).toEqual(3);
+  expect(subject({ name_not_end: "bar" })).toEqual(2);
+  expect(subject({ name_not_in: ["foo", "bar", "baz"] })).toEqual(1);
+  expect(subject({ name_does_not_match: "ba%" })).toEqual(2);
+
+  expect(subject({ name_cont_all: ["bar", "foo"] })).toEqual(1);
+  expect(subject({ name_end_all: ["r", "ar", "obar"] })).toEqual(1);
+  expect(subject({ name_matches_all: ["foo%", "%bar"] })).toEqual(1);
+
+  expect(subject({ name_not_cont_all: ["bar", "foo"] })).toEqual(1);
+  expect(subject({ name_not_start_all: ["bar", "foo"] })).toEqual(1);
+  expect(subject({ name_does_not_match_all: ["az%", "ba%"] })).toEqual(2);
+
   expect(subject({ age_eq: 20 })).toEqual(1);
   expect(subject({ age_lt: 20 })).toEqual(1);
   expect(subject({ age_lte: 20 })).toEqual(2);
@@ -29,6 +44,10 @@ test(".search()", () => {
   expect(subject({ age_gte: 20 })).toEqual(2);
   expect(subject({ age_in: [20, 30] })).toEqual(2);
   expect(subject({ age_null: 1 })).toEqual(1);
+
+  expect(subject({ age_not_null: 1 })).toEqual(3);
+
+  expect(subject({ age_lt_all: [21, 15] })).toEqual(1);
 
   $Profile.create({
     userId: 1,
