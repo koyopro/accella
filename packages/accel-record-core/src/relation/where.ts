@@ -203,6 +203,7 @@ export class Where {
         : new Relation(this.model, {}).where(relationOrInput);
     const newOptions = JSON.parse(JSON.stringify(this.options));
     newOptions["orWheres"].push(relation.options.wheres);
+    newOptions["orWhereNots"].push(relation.options.whereNots);
     return new Relation(this.model, newOptions);
   }
 }
