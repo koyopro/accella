@@ -66,11 +66,12 @@ export class Query {
 export class Search {
   constructor(
     protected model: typeof Model,
-    protected params: Record<string, number | string>
+    protected params: Record<string, number | string>,
+    protected relation: Relation<any, any> | undefined = undefined
   ) {}
 
   result() {
-    let relation = this.model.all();
+    let relation = this.relation ?? this.model.all();
     for (const [key, value] of Object.entries(this.params)) {
       relation = this.updateRelation(relation, key, value);
     }

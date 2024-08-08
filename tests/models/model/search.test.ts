@@ -105,3 +105,13 @@ test(".search()", () => {
   expect(subject({ posts_tags_name_blank: 1 })).toEqual(1);
   expect(subject({ posts_tags_name_present: 1 })).toEqual(1);
 });
+
+test("Relation#search()", () => {
+  $user.create({ age: 20, name: "foo" });
+  $user.create({ age: 20, name: "bar" });
+  $user.create({ age: 30, name: "foo" });
+
+  expect(
+    User.where({ age: 20 }).search({ name_eq: "foo" }).result().count()
+  ).toEqual(1);
+});
