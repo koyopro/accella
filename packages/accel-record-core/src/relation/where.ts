@@ -50,7 +50,7 @@ export class Where {
             newOptions["wheres"].push(where);
           }
         } else {
-          throw new Error(`Attribute not found: ${key}`);
+          // Ignore the key if it's not an attribute or association.
         }
       } else if (Array.isArray(input[key])) {
         newOptions["wheres"].push([col, "in", input[key]]);
