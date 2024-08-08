@@ -60,6 +60,10 @@ test(".search()", () => {
 
   expect(subject({ age_gte_any: [30, 20] })).toEqual(2);
 
+  // second query is ignored because attribute is not found
+  // third query is ignored because predicate is not found
+  expect(subject({ name_eq: "foo", foo_eq: "bar", name_foo: 1 })).toEqual(1);
+
   $Profile.create({
     userId: 1,
     bio: "foo",
