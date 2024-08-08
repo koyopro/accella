@@ -1,10 +1,11 @@
-import { Model } from "../index.js";
+import { ModelMeta } from "../meta.js";
 import { Search } from "../search/index.js";
+import { Relation } from "./index.js";
 
 /**
- * Represents a class for handling search parameters.
+ * Provides the search methods for relations.
  *
- * This class is intended to be inherited by the Model class.
+ * This class is intended to be inherited by the Relation class.
  */
 export class Searchable {
   /**
@@ -77,12 +78,10 @@ export class Searchable {
    * const users = search.result();
    * ```
    */
-  static search<T extends typeof Model>(this: T, params: Record<string, any>) {
-    return new Search(this, params);
+  search<T, M extends ModelMeta>(
+    this: Relation<T, M>,
+    params: Record<string, any>
+  ) {
+    return new Search(this.model, params, this);
   }
-
-  /**
-   * An array of searchable scopes used in the search() method.
-   */
-  static searchableScopes: string[] = [];
 }
