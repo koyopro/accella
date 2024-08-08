@@ -10,6 +10,7 @@ import { getDefaultOptions, Options } from "./options.js";
 import { Merge } from "./merge.js";
 import { Query } from "./query.js";
 import { Where } from "./where.js";
+import { Search } from "../model/search.js";
 
 export { Options } from "./options.js";
 
@@ -79,6 +80,10 @@ export class Relation<T, M extends ModelMeta> extends Mix(
   ): T extends Model ? string : never;
   toJson(options = {}): string {
     return JSON.stringify(this.toHashArray(options));
+  }
+
+  search(params: Record<string, any>) {
+    return new Search(this.model, params, this);
   }
 
   /**
