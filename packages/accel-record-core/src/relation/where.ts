@@ -1,3 +1,4 @@
+import { AttributeNotFound } from "../errors.js";
 import { Model, Models, Relation } from "../index.js";
 import { ModelMeta } from "../meta.js";
 import { Relations } from "./index.js";
@@ -50,7 +51,7 @@ export class Where {
             newOptions["wheres"].push(where);
           }
         } else {
-          // Ignore the key if it's not an attribute or association.
+          throw new AttributeNotFound(`Attribute not found: ${key}`);
         }
       } else if (Array.isArray(input[key])) {
         newOptions["wheres"].push([col, "in", input[key]]);

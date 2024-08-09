@@ -1,3 +1,4 @@
+import { AttributeNotFound } from "../errors.js";
 import type { Model } from "../index.js";
 import type { Relation } from "../relation/index.js";
 import { getCondition } from "./condition.js";
@@ -16,7 +17,13 @@ export class Search {
   result() {
     let relation = this.relation ?? this.model.all();
     for (const [key, value] of Object.entries(this.params)) {
-      relation = this.updateRelation(relation, key, value);
+      try {
+        relation = this.updateRelation(relation, key, value);
+      } catch (e) {
+        if (e instanceof AttributeNotFound) {
+          // Ignore the error
+        } else throw e;
+      }
     }
     return relation;
   }
