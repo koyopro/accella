@@ -1,4 +1,4 @@
-import { Relation } from "../index.js";
+import { Model, Models, Relation } from "../index.js";
 import { ModelMeta } from "../meta.js";
 import { Relations } from "./index.js";
 
@@ -42,6 +42,7 @@ export class Where {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key in input) {
       const column = this.model.attributeToColumn(key);
+      const col = `${this.model.tableName}.${column}`;
       if (!column) {
         const associationWheres = this.getAssocationWhere(key, input[key]);
         if (associationWheres) {
@@ -52,17 +53,17 @@ export class Where {
           throw new Error(`Attribute not found: ${key}`);
         }
       } else if (Array.isArray(input[key])) {
-        newOptions["wheres"].push([column, "in", input[key]]);
+        newOptions["wheres"].push([col, "in", input[key]]);
       } else if (input[key] != null && typeof input[key] === "object") {
         for (const operator in input[key]) {
           newOptions["wheres"].push(
-            makeWhere(column, operator, input[key][operator])
+            makeWhere(col, operator, input[key][operator])
           );
         }
       } else {
         // In knex, we need to use null instead of undefined."
         const value = input[key] ?? null;
-        newOptions["wheres"].push({ [column]: value });
+        newOptions["wheres"].push({ [col]: value });
       }
     }
     return new Relation(this.model, newOptions);
@@ -77,9 +78,13 @@ export class Where {
     const field = this.model.findField(key);
     if (field?.relationName == undefined) return;
 
+    const records = [value].flat();
+    if (records.length > 0 && !(records[0] instanceof Model)) {
+      return Models[field.type].where(value).options.wheres;
+    }
+
     const where: any = {};
 
-    const records = [value].flat();
     for (let i = 0; i < field.foreignKeys.length; i++) {
       const column = this.model.attributeToColumn(field.foreignKeys[i]);
       if (!column) return;
@@ -114,6 +119,7 @@ export class Where {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key in input) {
       const column = this.model.attributeToColumn(key);
+      const col = `${this.model.tableName}.${column}`;
       if (!column) {
         const associationWheres = this.getAssocationWhere(
           key,
@@ -122,7 +128,11 @@ export class Where {
         );
         if (associationWheres) {
           for (const where of associationWheres) {
-            newOptions["wheres"].push(where);
+            if (Array.isArray(where) && where[1] === "not in") {
+              newOptions["wheres"].push(where);
+            } else {
+              newOptions["whereNots"].push(where);
+            }
           }
         } else {
           throw new Error(`Attribute not found: ${key}`);
@@ -130,17 +140,17 @@ export class Where {
       } else if (input[key] != null && typeof input[key] === "object") {
         for (const operator in input[key]) {
           if (operator === "in") {
-            newOptions["wheres"].push([column, "not in", input[key][operator]]);
+            newOptions["wheres"].push([col, "not in", input[key][operator]]);
           } else {
             newOptions["whereNots"].push(
-              makeWhere(column, operator, input[key][operator])
+              makeWhere(col, operator, input[key][operator])
             );
           }
         }
       } else {
         // In knex, we need to use null instead of undefined."
         const value = input[key] ?? null;
-        newOptions["whereNots"].push({ [column]: value });
+        newOptions["whereNots"].push({ [col]: value });
       }
     }
     return new Relation(this.model, newOptions);

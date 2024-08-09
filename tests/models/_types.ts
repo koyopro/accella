@@ -86,12 +86,19 @@ export interface User extends UserModel {
   get Profile(): Profile | undefined;
   set Profile(value: ProfileModel | undefined);
 };
+type UserAssociationKey = 'posts' | 'setting' | 'teams' | 'Profile';
 type UserCollection<T extends UserModel> = Collection<T, UserMeta> | Collection<User, UserMeta>;
 type UserMeta = {
   Base: UserModel;
   New: NewUser;
   Persisted: User;
-  AssociationKey: 'posts' | 'setting' | 'teams' | 'Profile';
+  AssociationKey: UserAssociationKey;
+  JoinInput: UserAssociationKey | UserAssociationKey[] | {
+    posts?: Meta<Post>['JoinInput'];
+    setting?: Meta<Setting>['JoinInput'];
+    teams?: Meta<UserTeam>['JoinInput'];
+    Profile?: Meta<Profile>['JoinInput'];
+  };
   Column: {
     id: number;
     email: string;
@@ -122,8 +129,12 @@ type UserMeta = {
     passwordDigest?: string | string[] | StringFilter | null;
     name?: string | string[] | StringFilter | null;
     age?: number | number[] | Filter<number> | null;
+    posts?: PostMeta['WhereInput'];
+    setting?: SettingMeta['WhereInput'];
+    teams?: UserTeamMeta['WhereInput'];
     createdAt?: Date | Date[] | Filter<Date> | null;
     updatedAt?: Date | Date[] | Filter<Date> | null;
+    Profile?: ProfileMeta['WhereInput'];
   };
 };
 registerModel(User);
@@ -144,12 +155,16 @@ export interface Team extends TeamModel {
   get users(): UserTeamCollection<UserTeam>;
   set users(value: UserTeamModel[]);
 };
+type TeamAssociationKey = 'users';
 type TeamCollection<T extends TeamModel> = Collection<T, TeamMeta> | Collection<Team, TeamMeta>;
 type TeamMeta = {
   Base: TeamModel;
   New: NewTeam;
   Persisted: Team;
-  AssociationKey: 'users';
+  AssociationKey: TeamAssociationKey;
+  JoinInput: TeamAssociationKey | TeamAssociationKey[] | {
+    users?: Meta<UserTeam>['JoinInput'];
+  };
   Column: {
     id: number;
     name: string;
@@ -162,6 +177,7 @@ type TeamMeta = {
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
+    users?: UserTeamMeta['WhereInput'];
   };
 };
 registerModel(Team);
@@ -186,12 +202,17 @@ export interface UserTeam extends UserTeamModel {
   assignedAt: Date;
   assignedBy: string;
 };
+type UserTeamAssociationKey = 'user' | 'team';
 type UserTeamCollection<T extends UserTeamModel> = Collection<T, UserTeamMeta> | Collection<UserTeam, UserTeamMeta>;
 type UserTeamMeta = {
   Base: UserTeamModel;
   New: NewUserTeam;
   Persisted: UserTeam;
-  AssociationKey: 'user' | 'team';
+  AssociationKey: UserTeamAssociationKey;
+  JoinInput: UserTeamAssociationKey | UserTeamAssociationKey[] | {
+    user?: Meta<User>['JoinInput'];
+    team?: Meta<Team>['JoinInput'];
+  };
   Column: {
     userId: number;
     teamId: number;
@@ -203,9 +224,9 @@ type UserTeamMeta = {
     assignedBy: string;
   } & ({ user: User } | { userId: number }) & ({ team: Team } | { teamId: number });
   WhereInput: {
-    user?: User | User[];
+    user?: User | User[] | UserMeta['WhereInput'];
     userId?: number | number[] | Filter<number> | null;
-    team?: Team | Team[];
+    team?: Team | Team[] | TeamMeta['WhereInput'];
     teamId?: number | number[] | Filter<number> | null;
     assignedAt?: Date | Date[] | Filter<Date> | null;
     assignedBy?: string | string[] | StringFilter | null;
@@ -235,12 +256,17 @@ export interface Post extends PostModel {
   get tags(): PostTagCollection<PostTag>;
   set tags(value: PostTagModel[]);
 };
+type PostAssociationKey = 'author' | 'tags';
 type PostCollection<T extends PostModel> = Collection<T, PostMeta> | Collection<Post, PostMeta>;
 type PostMeta = {
   Base: PostModel;
   New: NewPost;
   Persisted: Post;
-  AssociationKey: 'author' | 'tags';
+  AssociationKey: PostAssociationKey;
+  JoinInput: PostAssociationKey | PostAssociationKey[] | {
+    author?: Meta<User>['JoinInput'];
+    tags?: Meta<PostTag>['JoinInput'];
+  };
   Column: {
     id: number;
     title: string;
@@ -260,8 +286,9 @@ type PostMeta = {
     title?: string | string[] | StringFilter | null;
     content?: string | string[] | StringFilter | null;
     published?: boolean | boolean[] | undefined | null;
-    author?: User | User[];
+    author?: User | User[] | UserMeta['WhereInput'];
     authorId?: number | number[] | Filter<number> | null;
+    tags?: PostTagMeta['WhereInput'];
   };
 };
 registerModel(Post);
@@ -282,12 +309,16 @@ export interface PostTag extends PostTagModel {
   get posts(): PostCollection<Post>;
   set posts(value: PostModel[]);
 };
+type PostTagAssociationKey = 'posts';
 type PostTagCollection<T extends PostTagModel> = Collection<T, PostTagMeta> | Collection<PostTag, PostTagMeta>;
 type PostTagMeta = {
   Base: PostTagModel;
   New: NewPostTag;
   Persisted: PostTag;
-  AssociationKey: 'posts';
+  AssociationKey: PostTagAssociationKey;
+  JoinInput: PostTagAssociationKey | PostTagAssociationKey[] | {
+    posts?: Meta<Post>['JoinInput'];
+  };
   Column: {
     id: number;
     name: string;
@@ -300,6 +331,7 @@ type PostTagMeta = {
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
+    posts?: PostMeta['WhereInput'];
   };
 };
 registerModel(PostTag);
@@ -322,12 +354,16 @@ export interface Setting extends SettingModel {
   userId: number;
   createdAt: Date;
 };
+type SettingAssociationKey = 'user';
 type SettingCollection<T extends SettingModel> = Collection<T, SettingMeta> | Collection<Setting, SettingMeta>;
 type SettingMeta = {
   Base: SettingModel;
   New: NewSetting;
   Persisted: Setting;
-  AssociationKey: 'user';
+  AssociationKey: SettingAssociationKey;
+  JoinInput: SettingAssociationKey | SettingAssociationKey[] | {
+    user?: Meta<User>['JoinInput'];
+  };
   Column: {
     settingId: number;
     userId: number;
@@ -342,7 +378,7 @@ type SettingMeta = {
   } & ({ user: User } | { userId: number });
   WhereInput: {
     settingId?: number | number[] | Filter<number> | null;
-    user?: User | User[];
+    user?: User | User[] | UserMeta['WhereInput'];
     userId?: number | number[] | Filter<number> | null;
     threshold?: number | number[] | Filter<number> | null;
     createdAt?: Date | Date[] | Filter<Date> | null;
@@ -370,12 +406,16 @@ export interface Profile extends ProfileModel {
   user: User;
   userId: number;
 };
+type ProfileAssociationKey = 'user';
 type ProfileCollection<T extends ProfileModel> = Collection<T, ProfileMeta> | Collection<Profile, ProfileMeta>;
 type ProfileMeta = {
   Base: ProfileModel;
   New: NewProfile;
   Persisted: Profile;
-  AssociationKey: 'user';
+  AssociationKey: ProfileAssociationKey;
+  JoinInput: ProfileAssociationKey | ProfileAssociationKey[] | {
+    user?: Meta<User>['JoinInput'];
+  };
   Column: {
     id: number;
     userId: number;
@@ -397,7 +437,7 @@ type ProfileMeta = {
   } & ({ user: User } | { userId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
-    user?: User | User[];
+    user?: User | User[] | UserMeta['WhereInput'];
     userId?: number | number[] | Filter<number> | null;
     bio?: string | string[] | StringFilter | null;
     point?: number | number[] | Filter<number> | null;
@@ -425,12 +465,16 @@ export interface Company extends CompanyModel {
   get employees(): EmployeeCollection<Employee>;
   set employees(value: EmployeeModel[]);
 };
+type CompanyAssociationKey = 'employees';
 type CompanyCollection<T extends CompanyModel> = Collection<T, CompanyMeta> | Collection<Company, CompanyMeta>;
 type CompanyMeta = {
   Base: CompanyModel;
   New: NewCompany;
   Persisted: Company;
-  AssociationKey: 'employees';
+  AssociationKey: CompanyAssociationKey;
+  JoinInput: CompanyAssociationKey | CompanyAssociationKey[] | {
+    employees?: Meta<Employee>['JoinInput'];
+  };
   Column: {
     id: number;
     name: string;
@@ -443,6 +487,7 @@ type CompanyMeta = {
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
+    employees?: EmployeeMeta['WhereInput'];
   };
 };
 registerModel(Company);
@@ -463,12 +508,16 @@ export interface Employee extends EmployeeModel {
   companyId: number;
   company: Company;
 };
+type EmployeeAssociationKey = 'company';
 type EmployeeCollection<T extends EmployeeModel> = Collection<T, EmployeeMeta> | Collection<Employee, EmployeeMeta>;
 type EmployeeMeta = {
   Base: EmployeeModel;
   New: NewEmployee;
   Persisted: Employee;
-  AssociationKey: 'company';
+  AssociationKey: EmployeeAssociationKey;
+  JoinInput: EmployeeAssociationKey | EmployeeAssociationKey[] | {
+    company?: Meta<Company>['JoinInput'];
+  };
   Column: {
     id: number;
     name: string;
@@ -482,7 +531,7 @@ type EmployeeMeta = {
     id?: number | number[] | Filter<number> | null;
     name?: string | string[] | StringFilter | null;
     companyId?: number | number[] | Filter<number> | null;
-    company?: Company | Company[];
+    company?: Company | Company[] | CompanyMeta['WhereInput'];
   };
 };
 registerModel(Employee);
@@ -507,12 +556,14 @@ export interface ValidateSample extends ValidateSampleModel {
   count: number;
   size: string;
 };
+type ValidateSampleAssociationKey = never;
 type ValidateSampleCollection<T extends ValidateSampleModel> = Collection<T, ValidateSampleMeta> | Collection<ValidateSample, ValidateSampleMeta>;
 type ValidateSampleMeta = {
   Base: ValidateSampleModel;
   New: NewValidateSample;
   Persisted: ValidateSample;
-  AssociationKey: never;
+  AssociationKey: ValidateSampleAssociationKey;
+  JoinInput: ValidateSampleAssociationKey | ValidateSampleAssociationKey[];
   Column: {
     id: number;
     accepted: boolean;
@@ -554,12 +605,14 @@ export interface Account extends AccountModel {
   email: string;
   passwordDigest: string;
 };
+type AccountAssociationKey = never;
 type AccountCollection<T extends AccountModel> = Collection<T, AccountMeta> | Collection<Account, AccountMeta>;
 type AccountMeta = {
   Base: AccountModel;
   New: NewAccount;
   Persisted: Account;
-  AssociationKey: never;
+  AssociationKey: AccountAssociationKey;
+  JoinInput: AccountAssociationKey | AccountAssociationKey[];
   Column: {
     id: number;
     email: string;

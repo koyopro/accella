@@ -34,6 +34,16 @@ export class Association {
   /**
    * Adds join conditions to the relation.
    *
+   * @param input - The associations to join.
+   * @returns A new `Relation` instance with the added join conditions.
+   */
+  joins<T, M extends ModelMeta>(
+    this: Relations<T, M>,
+    input: M["JoinInput"]
+  ): Relation<T, M>;
+  /**
+   * Adds join conditions to the relation.
+   *
    * @param input - The association keys to join.
    * @returns A new `Relation` instance with the added join conditions.
    */
@@ -41,19 +51,24 @@ export class Association {
     this: Relations<T, M>,
     ...input: M["AssociationKey"][]
   ): Relation<T, M>;
-  joins<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    ...input: M["AssociationKey"][]
-  ): Relation<T, M> {
+  joins<T, M extends ModelMeta>(this: Relation<T, M>, ...input: any[]) {
+    const hash = formatJoinsInput(...input);
     const newOptions = JSON.parse(JSON.stringify(this.options));
-    for (const key of input) {
+    for (const [key, value] of Object.entries(hash)) {
       const info = this.model.associations[key];
       const joins = info.isBelongsTo
         ? this.belongsToJoins(info)
         : info.through
           ? this.hasManyThroughJoins(info)
           : this.hasOneOrHasManyJoins(info);
-      newOptions["joins"].push(...joins);
+      const nestedJoins = isBlankArray(value)
+        ? []
+        : info.model.joins(value).options.joins;
+      for (const join of joins.concat(nestedJoins)) {
+        if (alreadyContains(newOptions["joins"], join)) continue;
+
+        newOptions["joins"].push(join);
+      }
     }
     return new Relation(this.model, newOptions);
   }
@@ -114,4 +129,29 @@ export class Association {
     newOptions["joinsRaw"].push([query, bindings]);
     return new Relation(this.model, newOptions);
   }
+}
+
+function alreadyContains(arrays: any[][], targetArray: any[]): boolean {
+  return arrays.some(
+    (array) =>
+      array.length === targetArray.length &&
+      array.every((value, index) => value === targetArray[index])
+  );
+}
+
+function formatJoinsInput(...input: any[]): object {
+  // e.g. User.joins(["posts", "tags"])
+  if (input.length === 1 && Array.isArray(input[0])) {
+    return input[0].toHash((t) => [t, []]);
+  }
+  // e.g. User.joins({ posts: "tags" })
+  if (input.length === 1 && typeof input[0] === "object") {
+    return input[0];
+  }
+  // e.g. User.joins("posts", "tags")
+  return input.toHash((t) => [t, []]);
+}
+
+function isBlankArray(value: any): boolean {
+  return Array.isArray(value) && value.length === 0;
 }
