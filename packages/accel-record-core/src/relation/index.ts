@@ -6,9 +6,10 @@ import { Association } from "./association.js";
 import { RelationBase } from "./base.js";
 import { Batches } from "./batches.js";
 import { Calculations } from "./calculations.js";
-import { getDefaultOptions, Options } from "./options.js";
 import { Merge } from "./merge.js";
+import { getDefaultOptions, Options } from "./options.js";
 import { Query } from "./query.js";
+import { Searchable } from "./search.js";
 import { Where } from "./where.js";
 
 export { Options } from "./options.js";
@@ -24,6 +25,7 @@ export class Relation<T, M extends ModelMeta> extends Mix(
   Merge,
   Query,
   RelationBase,
+  Searchable,
   Where
 ) {
   protected counter = 0;
