@@ -27,8 +27,9 @@ It can be used with MySQL, PostgreSQL, and SQLite.
 - [Type of Json Field](#type-of-json-field)
 - [Associations](#associations)
 - [Query Interface](#query-interface)
-- [Testing](#testing)
 - [Scopes](#scopes)
+- [Flexible Search](#flexible-search)
+- [Testing](#testing)
 - [Validation](#validation)
 - [Callbacks](#callbacks)
 - [Serialization](#serialization)
@@ -779,6 +780,57 @@ import { User } from "./models/index.js";
 User.johns().adults().count(); // => 1
 ```
 
+## Flexible Search
+
+Using the `.search()` method, you can perform object-based flexible searches.
+(The interface is inspired by the Ransack gem.)
+
+Search parameters are specified as an object with keys representing the field name and search condition combination strings, and values representing the search values.
+You can include associations in the keys.
+Available search conditions include eq, cont, matches, lt, gte, in, null, and more.
+You can also use modifiers like not, or, any, and others.
+Please refer to the documentation of the search() method for more details.
+
+```ts
+import { User } from "./models/index.js";
+
+const search = User.search({
+  name_eq: "John", // name equals "John"
+  age_not_null: 1, // age is not null
+  profile_bio_cont: "foo", // related profile's bio contains "foo"
+  email_or_name_cont_any: ["bar", "baz"], // email or name contains "bar" or "baz"
+});
+const users = search.result();
+```
+
+Additionally, you can include the names of searchable scopes defined in the `searchableScopes` array as keys in the search parameters.
+
+For example, the `bio_cont` scope defined as follows can be used in the search parameters:
+
+```ts
+// src/models/user.ts
+
+import { scope } from "accel-record";
+import { ApplicationRecord } from "./applicationRecord.js";
+
+class UserModel extends ApplicationRecord {
+  @scope
+  static bio_cont(value: string) {
+    return this.joins("profile").where({
+      profile: { bio: { contains: value } },
+    });
+  }
+  static searchableScopes = ["bio_cont"];
+}
+```
+
+```ts
+import { User } from "./models/index.js";
+
+const search = User.search({ bio_cont: "foo" }); // profile's bio contains "foo"
+const users = search.result();
+```
+
 ## Testing
 
 ### Testing with Vitest
@@ -1289,6 +1341,5 @@ user.update({ age: undefined });
 ## Future Planned Features
 
 - [accel-record-core] Support for Composite IDs
-- [accel-record-core] Expansion of Query Interface
 
 Related: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
