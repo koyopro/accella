@@ -67,6 +67,11 @@ export class Query {
     return this.all().includes(...input);
   }
 
+  /**
+   * Joins associations in the query result.
+   * @param input - The associations to join.
+   * @returns A `Relation` object representing the query result with the joined associations.
+   */
   static joins<T extends typeof Model>(
     this: T,
     input: Meta<T>["JoinInput"]

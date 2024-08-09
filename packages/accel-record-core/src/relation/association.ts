@@ -31,6 +31,12 @@ export class Association {
     return new Relation(this.model, newOptions);
   }
 
+  /**
+   * Adds join conditions to the relation.
+   *
+   * @param input - The associations to join.
+   * @returns A new `Relation` instance with the added join conditions.
+   */
   joins<T, M extends ModelMeta>(
     this: Relations<T, M>,
     input: M["JoinInput"]
