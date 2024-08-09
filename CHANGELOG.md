@@ -1,3 +1,13 @@
+# [1.11.0](https://github.com/koyopro/accella/compare/1.10.1...1.11.0) (2024-08-10)
+
+### Features
+
+- Flexible Search ([#33](https://github.com/koyopro/accella/pull/33))
+
+### Improvements
+
+- Nested join and nested association search ([#32](https://github.com/koyopro/accella/pull/32))
+
 # [1.10.1](https://github.com/koyopro/accella/compare/1.10.0...1.10.1) (2024-08-02)
 
 ### Improvements
