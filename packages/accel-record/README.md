@@ -787,8 +787,8 @@ Using the `.search()` method, you can perform object-based flexible searches.
 
 Search parameters are specified as an object with keys representing the field name and search condition combination strings, and values representing the search values.
 You can include associations in the keys.
-Available search conditions include eq, cont, matches, lt, gte, in, null, and more.
-You can also use modifiers like not, or, any, and others.
+The search conditions include `eq`, `cont`, `matches`, `lt`, `gte`, `in`, `null`, and more.
+In addition, modifiers such as `not`, `or`, `and`, `any`, `all` are also available.
 Please refer to the documentation of the search() method for more details.
 
 ```ts
