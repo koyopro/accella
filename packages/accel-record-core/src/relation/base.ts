@@ -68,7 +68,26 @@ export class RelationBase {
       q = q.whereRaw(query, bindings);
     }
     for (const where of this.options.orWheres) {
-      q = q.orWhere(...where);
+      q = q.orWhere(function (this: any) {
+        for (const w of where) {
+          if (Array.isArray(w)) {
+            this.where(...w);
+          } else {
+            this.where(w);
+          }
+        }
+      });
+    }
+    for (const where of this.options.orWhereNots) {
+      q = q.orWhere(function (this: any) {
+        for (const w of where) {
+          if (Array.isArray(w)) {
+            this.whereNot(...w);
+          } else {
+            this.whereNot(w);
+          }
+        }
+      });
     }
     if (this.options.limit) q = q.limit(this.options.limit);
     if (this.options.offset) q = q.offset(this.options.offset);

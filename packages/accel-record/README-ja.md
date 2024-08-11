@@ -28,8 +28,9 @@ MySQL, PostgreSQL, SQLiteでの利用が可能です。
 - [Jsonフィールドの型](#jsonフィールドの型)
 - [関連付け](#関連付け)
 - [クエリインターフェース](#クエリインターフェース)
-- [テスト](#テスト)
 - [スコープ](#スコープ)
+- [Flexible Search](#flexible-search)
+- [テスト](#テスト)
 - [バリデーション](#バリデーション)
 - [コールバック](#コールバック)
 - [Serialization](#serialization)
@@ -780,6 +781,57 @@ import { User } from "./models/index.js";
 User.johns().adults().count(); // => 1
 ```
 
+## Flexible Search
+
+`.search()`メソッドを使うと、オブジェクトベースの柔軟な検索が可能です。
+(インターフェースは Ransack gem を参考にしています)
+
+検索パラメータは、フィールド名と検索条件を組み合わせた文字列をキー、検索用の値をバリューとして持つオブジェクトで指定します。
+キーには関連付けを含めることができます。
+検索条件には、`eq`, `cont`, `matches`, `lt`, `gte`, `in`, `null` などが利用可能です。
+その他に `not`, `or`, `and`, `any`, `all` などの修飾子も用意されています。
+詳細はsearch()メソッドのドキュメントを参照してください。
+
+```ts
+import { User } from "./models/index.js";
+
+const search = User.search({
+  name_eq: "John", // name が "John" に等しい
+  age_not_null: 1, // age が null でない
+  profile_bio_cont: "foo", // 関連である profile の bio が "foo" を含む
+  email_or_name_cont_any: ["bar", "baz"], // email または name が "bar" または "baz" を含む
+});
+const users = search.result();
+```
+
+また、検索パラメータのキーには`searchableScopes`配列で定義された検索可能なスコープの名前を含めることができます。
+
+例えば以下のように定義された`bio_cont`スコープは検索パラメータで使用することができます。
+
+```ts
+// src/models/user.ts
+
+import { scope } from "accel-record";
+import { ApplicationRecord } from "./applicationRecord.js";
+
+class UserModel extends ApplicationRecord {
+  @scope
+  static bio_cont(value: string) {
+    return this.joins("profile").where({
+      profile: { bio: { contains: value } },
+    });
+  }
+  static searchableScopes = ["bio_cont"];
+}
+```
+
+```ts
+import { User } from "./models/index.js";
+
+const search = User.search({ bio_cont: "foo" }); // profile の bio が "foo" を含む
+const users = search.result();
+```
+
 ## テスト
 
 ### Vitestを利用したテスト
@@ -1290,6 +1342,5 @@ user.update({ age: undefined });
 ## 今後予定されている機能追加
 
 - [accel-record-core] 複合IDの対応
-- [accel-record-core] クエリインターフェースの拡充
 
 関連: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)

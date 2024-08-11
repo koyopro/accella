@@ -12,3 +12,23 @@ test("generator", () => {
     expectTypeOf(user).toMatchTypeOf<User>();
   }
 });
+
+test("joins", () => {
+  User.joins("posts", "setting");
+  User.joins({ posts: "tags" });
+  User.joins({ posts: ["tags", "author"] });
+  User.joins({ posts: { author: ["setting", "teams"] } });
+  // @ts-expect-error
+  User.joins("posts", "invalid");
+  // @ts-expect-error
+  User.joins({ posts: "invalid" });
+
+  User.all().joins("posts", "setting");
+  User.all().joins({ posts: "tags" });
+  User.all().joins({ posts: ["tags", "author"] });
+  User.all().joins({ posts: { author: ["setting", "teams"] } });
+  // @ts-expect-error
+  User.all().joins("posts", "invalid");
+  // @ts-expect-error
+  User.all().joins({ posts: "invalid" });
+});

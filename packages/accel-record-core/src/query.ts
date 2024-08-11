@@ -74,8 +74,18 @@ export class Query {
    */
   static joins<T extends typeof Model>(
     this: T,
+    input: Meta<T>["JoinInput"]
+  ): Relation<Meta<T>["Persisted"], Meta<T>>;
+  /**
+   * Joins associations in the query result.
+   * @param input - The associations to join.
+   * @returns A `Relation` object representing the query result with the joined associations.
+   */
+  static joins<T extends typeof Model>(
+    this: T,
     ...input: Meta<T>["AssociationKey"][]
-  ): Relation<Meta<T>["Persisted"], Meta<T>> {
+  ): Relation<Meta<T>["Persisted"], Meta<T>>;
+  static joins<T extends typeof Model>(this: T, ...input: any[]) {
     return this.all().joins(...input);
   }
 

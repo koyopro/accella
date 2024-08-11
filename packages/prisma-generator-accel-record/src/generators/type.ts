@@ -59,12 +59,14 @@ ${columnDefines(model)}
 export interface ${model.newModel} extends ${model.baseModel} {};
 export class ${model.persistedModel} extends ${model.baseModel} {};
 export interface ${model.persistedModel} extends ${model.baseModel} {${columnForPersist(model)}};
+type ${model.associationKey} = ${associationKey(model)};
 type ${model.collection}<T extends ${model.baseModel}> = Collection<T, ${model.meta}> | Collection<${model.persistedModel}, ${model.meta}>;
 type ${model.meta} = {
   Base: ${model.baseModel};
   New: ${model.newModel};
   Persisted: ${model.persistedModel};
-  AssociationKey: ${associationKey(model)};
+  AssociationKey: ${model.associationKey};
+  JoinInput: ${model.associationKey} | ${model.associationKey}[]${joinInputs(model)};
   Column: {${columnMeta(model)}};
   CreateInput: {${createInputs(model)}}${associationColumns};
   WhereInput: {${whereInputs(model)}};
@@ -213,19 +215,27 @@ const createInputs = (model: ModelWrapper) => {
 
 const whereInputs = (model: ModelWrapper) =>
   model.fields
-    .filter(
-      (field) =>
-        field.relationName == undefined ||
-        (field.relationFromFields?.length ?? 0) > 0
-    )
     .filter((field) => field.type != "Json")
     .map((field) => {
-      const type = field.typeName;
-      const filter = getFilterType(type);
-      if (field.relationName) {
-        if (field.name == "posts") console.log(field);
-        return `\n    ${field.name}?: ${field.type} | ${field.type}[];`;
+      if (!field.relationName) {
+        const type = field.typeName;
+        const filter = getFilterType(type);
+        return `\n    ${field.name}?: ${type} | ${type}[] | ${filter} | null;`;
       }
-      return `\n    ${field.name}?: ${type} | ${type}[] | ${filter} | null;`;
+      if ((field.relationFromFields?.length ?? 0) == 0) {
+        return `\n    ${field.name}?: ${field.model!.meta}['WhereInput'];`;
+      }
+      return `\n    ${field.name}?: ${field.type} | ${field.type}[] | ${field.model!.meta}['WhereInput'];`;
     })
     .join("") + "\n  ";
+
+const joinInputs = (model: ModelWrapper) => {
+  const fields = model.fields.filter((field) => field.relationName);
+  if (fields.length == 0) return "";
+  const types = fields
+    .map(
+      (f) => `\n    ${f.name}?: Meta<${f.model!.persistedModel}>['JoinInput'];`
+    )
+    .join("");
+  return ` | {${types}\n  }`;
+};
