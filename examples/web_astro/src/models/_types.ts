@@ -56,6 +56,7 @@ export interface Account extends AccountModel {
   get todos(): TodoCollection<Todo>;
   set todos(value: TodoModel[]);
 }
+type AccountAssociationKey = "todos";
 type AccountCollection<T extends AccountModel> =
   | Collection<T, AccountMeta>
   | Collection<Account, AccountMeta>;
@@ -63,7 +64,13 @@ type AccountMeta = {
   Base: AccountModel;
   New: NewAccount;
   Persisted: Account;
-  AssociationKey: "todos";
+  AssociationKey: AccountAssociationKey;
+  JoinInput:
+    | AccountAssociationKey
+    | AccountAssociationKey[]
+    | {
+        todos?: Meta<Todo>["JoinInput"];
+      };
   Column: {
     id: number;
     email: string;
@@ -87,6 +94,7 @@ type AccountMeta = {
     passwordDigest?: string | string[] | StringFilter | null;
     createdAt?: Date | Date[] | Filter<Date> | null;
     updatedAt?: Date | Date[] | Filter<Date> | null;
+    todos?: TodoMeta["WhereInput"];
   };
 };
 registerModel(Account);
@@ -113,6 +121,7 @@ export interface Todo extends TodoModel {
   createdAt: Date;
   updatedAt: Date;
 }
+type TodoAssociationKey = "account";
 type TodoCollection<T extends TodoModel> =
   | Collection<T, TodoMeta>
   | Collection<Todo, TodoMeta>;
@@ -120,7 +129,13 @@ type TodoMeta = {
   Base: TodoModel;
   New: NewTodo;
   Persisted: Todo;
-  AssociationKey: "account";
+  AssociationKey: TodoAssociationKey;
+  JoinInput:
+    | TodoAssociationKey
+    | TodoAssociationKey[]
+    | {
+        account?: Meta<Account>["JoinInput"];
+      };
   Column: {
     id: number;
     title: string;
@@ -143,7 +158,7 @@ type TodoMeta = {
     title?: string | string[] | StringFilter | null;
     content?: string | string[] | StringFilter | null;
     status?: Status | Status[] | undefined | null;
-    account?: Account | Account[];
+    account?: Account | Account[] | AccountMeta["WhereInput"];
     accountId?: number | number[] | Filter<number> | null;
     createdAt?: Date | Date[] | Filter<Date> | null;
     updatedAt?: Date | Date[] | Filter<Date> | null;
