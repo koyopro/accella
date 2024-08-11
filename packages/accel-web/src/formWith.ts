@@ -36,7 +36,7 @@ export const formWith = (resource: Model, options?: { namespace?: string }) => {
     NumberField: extendCommponent<"input", { attr: string }>(
       input,
       (p) => ({
-        name: `+${prefix}${p.attr}`,
+        name: `${prefix}${p.attr}`,
         value: r[p.attr],
         type: "number",
       }),
