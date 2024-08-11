@@ -4,15 +4,12 @@ import Layout from "../layouts/Layout.astro";
 import { paginate } from "accel-web";
 
 const { currentAccount, params } = Astro.locals.helper;
-const searchParams = params.permit("titleCont", "p");
+const searchParams = params.permit("q", "p");
 
 const page = Number(searchParams.p || 1);
-const titleCont = searchParams.titleCont as string;
+const q: Record<string, any> = (searchParams.q as any) ?? {};
 
-let todos = Todo.where({ account: currentAccount });
-if (titleCont && titleCont.length > 0) {
-  todos = todos.where({ title: { contains: titleCont } });
-}
+let todos = Todo.where({ account: currentAccount }).search(q).result();
 
 const pager = paginate(todos, { page, per: 10, window: 2 });
 const { LinkToNextPage, LinkToPrevPage, Nav, PageEntriesInfo } = pager;
@@ -25,8 +22,8 @@ const { LinkToNextPage, LinkToPrevPage, Nav, PageEntriesInfo } = pager;
       <input
         type="text"
         placeholder="Search by Title"
-        name="titleCont"
-        value={titleCont}
+        name="q.title_cont"
+        value={q.title_cont}
       />
       <button type="submit">検索</button>
     </form>
