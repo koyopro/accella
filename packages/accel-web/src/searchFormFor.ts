@@ -4,7 +4,7 @@ import button from "./nativeComponents/button.astro";
 import form from "./nativeComponents/form.astro";
 import input from "./nativeComponents/input.astro";
 import label from "./nativeComponents/label.astro";
-import { Search } from "accel-record-core/dist/search";
+import { Search } from "accel-record/search";
 import { extendCommponent } from "./formWith";
 
 export const searchFormFor = (s: Search) => {
