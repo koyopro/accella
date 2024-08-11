@@ -8,9 +8,7 @@ const searchParams = params.permit("q", "p");
 
 const page = Number(searchParams.p || 1);
 
-const q = Todo.where({ account: currentAccount }).search(
-  (searchParams.q as any) ?? {}
-);
+const q = Todo.where({ account: currentAccount }).search(searchParams.q ?? {});
 
 const pager = paginate(q.result(), { page, per: 10, window: 2 });
 const { LinkToNextPage, LinkToPrevPage, Nav, PageEntriesInfo } = pager;
