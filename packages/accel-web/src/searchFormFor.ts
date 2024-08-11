@@ -8,13 +8,24 @@ import { Search } from "accel-record/search";
 import { extendCommponent } from "./formWith";
 
 export const searchFormFor = (s: Search) => {
+  const r = s.params;
   return {
     Form: form,
 
     SearchField: extendCommponent<"input", { name: string }>(
       input,
-      (p) => ({ name: `q.${p.name}`, value: s.params[p.name], type: "text" }),
+      (p) => ({ name: `q.${p.name}`, value: r[p.name], type: "text" }),
       ["name"]
+    ),
+
+    NumberField: extendCommponent<"input", { attr: string }>(
+      input,
+      (p) => ({
+        name: `+q.${p.attr}`,
+        value: r[p.attr],
+        type: "number",
+      }),
+      ["attr"]
     ),
   };
 };

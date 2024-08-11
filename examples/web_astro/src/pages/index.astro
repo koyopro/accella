@@ -19,6 +19,7 @@ const f = searchFormFor(q);
   <main>
     <h1>All TODOs</h1>
     <form method="get">
+      <f.SearchField name="id_eq" placeholder="Search by ID" />
       <f.SearchField name="title_cont" placeholder="Search by Title" />
       <button type="submit">検索</button>
     </form>
