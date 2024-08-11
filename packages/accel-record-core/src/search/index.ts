@@ -1,6 +1,7 @@
 import { AttributeNotFound } from "../errors.js";
 import type { Model } from "../index.js";
 import type { Relation } from "../relation/index.js";
+import { isBlank } from "../validation/validator/presence.js";
 import { getCondition } from "./condition.js";
 import { Predicate, Query } from "./query.js";
 
@@ -12,7 +13,10 @@ export class Search {
     params: Record<string, any> | undefined,
     protected relation: Relation<any, any> | undefined = undefined
   ) {
-    this.params = params ?? {};
+    this.params = JSON.parse(JSON.stringify(params ?? {}));
+    for (const key of Object.keys(this.params)) {
+      if (isBlank(this.params[key])) delete this.params[key];
+    }
   }
 
   /**
