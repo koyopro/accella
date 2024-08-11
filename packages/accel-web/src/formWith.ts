@@ -5,7 +5,9 @@ import form from "./nativeComponents/form.astro";
 import input from "./nativeComponents/input.astro";
 import label from "./nativeComponents/label.astro";
 
-export const formWith = (resource: Model) => {
+export const formWith = (resource: Model, options?: { namespace?: string }) => {
+  const namespace = options?.namespace || "";
+  const prefix = namespace ? `${namespace}.` : "";
   const r = resource as any;
   return {
     Form: form,
@@ -13,7 +15,7 @@ export const formWith = (resource: Model) => {
     Label: extendCommponent<"label", { for: string }>(
       label,
       (p) => ({
-        htmlFor: p.for,
+        htmlFor: `${prefix}${p.for}`,
         value: resource.class().humanAttributeName(p.for),
       }),
       ["for"]
@@ -21,20 +23,20 @@ export const formWith = (resource: Model) => {
 
     TextField: extendCommponent<"input", { attr: string }>(
       input,
-      (p) => ({ name: p.attr, value: r[p.attr], type: "text" }),
+      (p) => ({ name: `${prefix}${p.attr}`, value: r[p.attr], type: "text" }),
       ["attr"]
     ),
 
     PasswordField: extendCommponent<"input", { attr: string }>(
       input,
-      (p) => ({ name: p.attr, type: "password" }),
+      (p) => ({ name: `${prefix}${p.attr}`, type: "password" }),
       ["attr"]
     ),
 
     NumberField: extendCommponent<"input", { attr: string }>(
       input,
       (p) => ({
-        name: `+${p.attr}`,
+        name: `+${prefix}${p.attr}`,
         value: r[p.attr],
         type: "number",
       }),
