@@ -5,7 +5,7 @@ import { getCondition } from "./condition.js";
 import { Predicate, Query } from "./query.js";
 
 export class Search {
-  params: Record<string, any>;
+  readonly params: Record<string, any>;
 
   constructor(
     protected model: typeof Model,
