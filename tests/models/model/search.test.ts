@@ -13,6 +13,7 @@ test(".search()", () => {
   const subject = (params: any): number => User.search(params).result().count();
 
   expect(subject({})).toEqual(4);
+  expect(subject(undefined)).toEqual(4);
   expect(subject({ name_eq: "foo" })).toEqual(1);
   expect(subject({ name_cont: "bar" })).toEqual(2);
   expect(subject({ email_or_name_cont: "foo" })).toEqual(3);

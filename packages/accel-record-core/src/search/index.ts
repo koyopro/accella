@@ -5,11 +5,15 @@ import { getCondition } from "./condition.js";
 import { Predicate, Query } from "./query.js";
 
 export class Search {
+  params: Record<string, any>;
+
   constructor(
     protected model: typeof Model,
-    protected params: Record<string, number | string>,
+    params: Record<string, any> | undefined,
     protected relation: Relation<any, any> | undefined = undefined
-  ) {}
+  ) {
+    this.params = params ?? {};
+  }
 
   /**
    * Retrieves the search result based on the specified parameters.
