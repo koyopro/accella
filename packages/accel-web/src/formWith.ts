@@ -45,7 +45,7 @@ export const formWith = (resource: Model) => {
   };
 };
 
-const extendCommponent = <
+export const extendCommponent = <
   L extends keyof astroHTML.JSX.DefinedIntrinsicElements,
   P,
 >(
