@@ -81,30 +81,50 @@ export class Search {
     predicate: Predicate,
     value: any
   ) {
-    const method = predicate.not ? "whereNot" : "where";
     const values = [value].flat();
     switch (predicate.type) {
-      case "all": {
-        let ret = relation;
-        for (const v of values) {
-          const w = this.buildWhere(this.model, attrStr, predicate, v);
-          ret = ret.joins(w.joins)[method](w.where);
-        }
-        return ret;
-      }
-      case "any": {
-        const tmp = values.reduce((acc: Relation<any, any> | undefined, v) => {
-          const w = this.buildWhere(this.model, attrStr, predicate, v);
-          const r = this.model[method](w.where);
-          return acc?.or(r) ?? r.joins(w.joins);
-        }, undefined);
-        return relation.merge(tmp);
-      }
+      case "all":
+        return this.buildAllWhere(relation, values, attrStr, predicate);
+
+      case "any":
+        return this.buildAnyWhere(relation, values, attrStr, predicate);
+
       default: {
+        const method = predicate.not ? "whereNot" : "where";
         const w = this.buildWhere(this.model, attrStr, predicate, value);
         return relation.joins(w.joins)[method](w.where);
       }
     }
+  }
+
+  private buildAnyWhere(
+    relation: Relation<any, any>,
+    values: any[],
+    attrStr: string,
+    predicate: Predicate
+  ) {
+    const method = predicate.not ? "whereNot" : "where";
+    const tmp = values.reduce((acc: Relation<any, any> | undefined, v) => {
+      const w = this.buildWhere(this.model, attrStr, predicate, v);
+      const r = this.model[method](w.where);
+      return acc?.or(r) ?? r.joins(w.joins);
+    }, undefined);
+    return relation.merge(tmp);
+  }
+
+  private buildAllWhere(
+    relation: Relation<any, any>,
+    values: any[],
+    attrStr: string,
+    predicate: Predicate
+  ) {
+    const method = predicate.not ? "whereNot" : "where";
+    let ret = relation;
+    for (const v of values) {
+      const w = this.buildWhere(this.model, attrStr, predicate, v);
+      ret = ret.joins(w.joins)[method](w.where);
+    }
+    return ret;
   }
 
   private buildWhere(

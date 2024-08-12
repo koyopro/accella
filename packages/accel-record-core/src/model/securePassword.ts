@@ -43,6 +43,7 @@ type SecurePassword<T extends string> = {
  * @example hasSecurePassword()
  * @example hasSecurePassword({ attribute: "recovery", validations: false })
  */
+// eslint-disable-next-line max-lines-per-function
 export function hasSecurePassword<T extends string = "password">(
   options: {
     attribute?: T;

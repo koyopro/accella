@@ -57,24 +57,21 @@ const generateFactories = async (
   indexFile: string
 ) => {
   const factoryDir = options.generator.config.factoryPath;
-  if (typeof factoryDir === "string") {
-    const prefix = factoryDir.startsWith("/")
-      ? ""
-      : path.dirname(options.schemaPath);
-    for (const model of options.dmmf.datamodel.models) {
-      const fileName = `${toCamelCase(model.name)}.ts`;
-      const filePath = path.join(prefix, factoryDir, fileName);
-      if (fs.existsSync(filePath)) continue;
-      const relative = path
-        .relative(path.dirname(filePath), indexFile)
-        .replace(/.ts$/, ".js");
-      await writeFileSafely(
-        filePath,
-        generateFactory(model, { pathToIndex: relative })
-      );
-      console.info(
-        `${green("create")}: ${path.relative(currentDir, filePath)}`
-      );
-    }
+  if (typeof factoryDir !== "string") return;
+  const prefix = factoryDir.startsWith("/")
+    ? ""
+    : path.dirname(options.schemaPath);
+  for (const model of options.dmmf.datamodel.models) {
+    const fileName = `${toCamelCase(model.name)}.ts`;
+    const filePath = path.join(prefix, factoryDir, fileName);
+    if (fs.existsSync(filePath)) continue;
+    const relative = path
+      .relative(path.dirname(filePath), indexFile)
+      .replace(/.ts$/, ".js");
+    await writeFileSafely(
+      filePath,
+      generateFactory(model, { pathToIndex: relative })
+    );
+    console.info(`${green("create")}: ${path.relative(currentDir, filePath)}`);
   }
 };

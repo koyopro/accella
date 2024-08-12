@@ -5,6 +5,17 @@ import { HasManyAssociation } from "./hasManyAssociation.js";
 import { HasManyThroughAssociation } from "./hasManyThroughAssociation.js";
 import { HasOneAssociation } from "./hasOneAssociation.js";
 
+const isHasOneOrBelongsTo = (
+  association: any
+): association is
+  | HasOneAssociation<any, any>
+  | BelongsToAssociation<any, any> => {
+  return (
+    association instanceof HasOneAssociation ||
+    association instanceof BelongsToAssociation
+  );
+};
+
 export class ModelInstanceBuilder {
   static build<T extends typeof Model>(klass: T, input: any): InstanceType<T> {
     const instance = new klass() as InstanceType<T>;
@@ -30,38 +41,17 @@ export class ModelInstanceBuilder {
 
   private static createProxy<T extends typeof Model>(instance: any, klass: T) {
     return new Proxy(instance, {
-      get(target: any, prop, receiver) {
+      get: (target: any, prop, receiver) => {
         const column = klass.attributeToColumn(prop as string);
-        if (typeof column === "string") {
-          return target[column];
-        }
+        if (typeof column === "string") return target[column];
+
         const association = target.associations.get(prop as string);
-        if (
-          association instanceof HasOneAssociation ||
-          association instanceof BelongsToAssociation
-        ) {
-          return association.reader();
-        }
+        if (isHasOneOrBelongsTo(association)) return association.reader();
+
         return Reflect.get(target, prop, receiver);
       },
       set(target, prop, value, _receiver) {
-        const column = klass.attributeToColumn(prop as string);
-        if (typeof column === "string") {
-          target[column] = value;
-          return true;
-        }
-        const association = target.associations.get(prop as string);
-        if (
-          association instanceof HasOneAssociation ||
-          association instanceof BelongsToAssociation
-        ) {
-          association.setter(value);
-        }
-        if (target[prop] instanceof Collection && Array.isArray(value)) {
-          target[prop].replace(value);
-          return true;
-        }
-        target[prop] = value;
+        updateTarget(klass, target, prop, value);
         return true;
       },
     });
@@ -94,3 +84,24 @@ export class ModelInstanceBuilder {
     }
   }
 }
+
+const updateTarget = <T extends typeof Model>(
+  klass: T,
+  target: any,
+  prop: string | symbol,
+  value: any
+) => {
+  const column = klass.attributeToColumn(prop as string);
+  if (typeof column === "string") {
+    target[column] = value;
+    return;
+  }
+  const association = target.associations.get(prop as string);
+  if (isHasOneOrBelongsTo(association)) association.setter(value);
+
+  if (target[prop] instanceof Collection && Array.isArray(value)) {
+    target[prop].replace(value);
+    return;
+  }
+  target[prop] = value;
+};

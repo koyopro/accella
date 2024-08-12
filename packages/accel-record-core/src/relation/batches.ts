@@ -24,10 +24,7 @@ export class Batches {
               count = 0;
               offset += limit;
             }
-            return {
-              done: cache.length == 0,
-              value: cache[count++],
-            };
+            return { done: cache.length == 0, value: cache[count++] };
           },
         };
       },

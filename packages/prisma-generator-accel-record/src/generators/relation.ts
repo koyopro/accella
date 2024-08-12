@@ -10,17 +10,7 @@ const loadModels = async (options: GeneratorOptions) => {
   const outfile = path.join(__dirname, "../.models.mjs");
   if (!fs.existsSync(filePath)) return undefined;
   try {
-    buildSync({
-      entryPoints: [filePath],
-      outfile: outfile,
-      bundle: true,
-      platform: "node",
-      format: "esm",
-      sourcemap: false,
-      allowOverwrite: true,
-      packages: "external",
-      target: "node18",
-    });
+    buildFile(filePath, outfile);
     return await eval(`import('${outfile}')`);
   } catch {
     console.log(
@@ -58,15 +48,7 @@ const getScopeMethods = <T extends (...args: any[]) => any>(cls: T) => {
 export const relationMethods = async (options: GeneratorOptions) => {
   const m = await loadModels(options);
   if (m == undefined) return "";
-  const methods = {} as Record<string, ModelWrapper[]>;
-  for (const _model of options.dmmf.datamodel.models) {
-    const model = new ModelWrapper(_model, options.dmmf.datamodel);
-    const definedModel = m[model.persistedModel];
-    if (!definedModel) continue;
-    for (const method of getScopeMethods(definedModel)) {
-      (methods[method] ||= []).push(model);
-    }
-  }
+  const methods = pickMethods(options, m);
   return (
     Object.entries(methods)
       .map(([name, models]) => {
@@ -79,3 +61,30 @@ export const relationMethods = async (options: GeneratorOptions) => {
       .join("") + "\n  "
   );
 };
+
+function pickMethods(options: GeneratorOptions, m: any) {
+  const methods = {} as Record<string, ModelWrapper[]>;
+  for (const _model of options.dmmf.datamodel.models) {
+    const model = new ModelWrapper(_model, options.dmmf.datamodel);
+    const definedModel = m[model.persistedModel];
+    if (!definedModel) continue;
+    for (const method of getScopeMethods(definedModel)) {
+      (methods[method] ||= []).push(model);
+    }
+  }
+  return methods;
+}
+
+function buildFile(filePath: string, outfile: string) {
+  buildSync({
+    entryPoints: [filePath],
+    outfile: outfile,
+    bundle: true,
+    platform: "node",
+    format: "esm",
+    sourcemap: false,
+    allowOverwrite: true,
+    packages: "external",
+    target: "node18",
+  });
+}
