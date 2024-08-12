@@ -29,7 +29,7 @@ export default [
       ],
       "max-lines-per-function": [
         "warn",
-        { max: 20, skipBlankLines: true, skipComments: true },
+        { max: 25, skipBlankLines: true, skipComments: true },
       ],
       "max-lines": [
         "warn",
