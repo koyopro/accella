@@ -27,12 +27,22 @@ export default [
           ignoreRestSiblings: true,
         },
       ],
+      "max-lines-per-function": [
+        "warn",
+        { max: 20, skipBlankLines: true, skipComments: true },
+      ],
+      "max-lines": [
+        "warn",
+        { max: 150, skipBlankLines: true, skipComments: true },
+      ],
     },
   },
   {
-    files: ["**/*.{test,test-d}.ts"],
+    files: ["**/*.{test,test-d}.ts", "**/vitest.setup.ts"],
     rules: {
       "@typescript-eslint/no-unused-vars": "off",
+      "max-lines-per-function": "off",
+      "max-lines": "off",
     },
   },
   { ignores: ["**/{dist,sync-rpc}/**/*"] },
