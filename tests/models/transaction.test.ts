@@ -77,7 +77,7 @@ describe("nested Transaction", () => {
         // It will not reach here
         assert(false);
       }); // rollbacked
-    } catch (e) {
+    } catch {
       expect(User.count()).toBe(0);
     }
   });

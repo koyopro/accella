@@ -56,7 +56,7 @@ export const Mix = <T extends (new (...args: any) => any)[]>(
       }
     }
   };
-  for (let cls of classList) {
+  for (const cls of classList) {
     getStaticProperties(cls).forEach((klass, key) => {
       assign(newClass, klass, key);
     });
@@ -117,7 +117,7 @@ const getInstanceMethods = <T>(arg: new (...args: any[]) => T) => {
   return properties;
 };
 
-export const getStaticProperties = <T extends Function>(cls: T) => {
+export const getStaticProperties = (cls: any) => {
   const properties = new Map<string, any>();
   let currentCls = cls;
 

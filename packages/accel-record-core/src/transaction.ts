@@ -116,7 +116,7 @@ export class Transaction {
   protected static transactionAsync<F extends () => Promise<any>>(
     callback: F
   ): Promise<Awaited<ReturnType<F>> | undefined> {
-    return new Promise(async (resolve, reject) => {
+    return (async () => {
       let result = undefined;
       this.startNestableTransaction();
       try {
@@ -124,14 +124,13 @@ export class Transaction {
       } catch (e) {
         this.rollbackNestableTransaction();
         if (e instanceof Rollback) {
-          resolve(undefined);
+          return undefined;
         } else {
-          reject(e);
+          throw e;
         }
-        return;
       }
       this.tryCommitNestableTransaction();
-      resolve(result);
-    });
+      return result;
+    })();
   }
 }

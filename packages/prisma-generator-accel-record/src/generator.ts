@@ -8,6 +8,7 @@ import { generateIndex, toCamelCase } from "./generators/index";
 import { getModel as generateModel } from "./generators/model";
 import { writeFileSafely } from "./utils/writeFileSafely";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { version } = require("../package.json");
 
 const currentDir = process.cwd();
@@ -21,7 +22,7 @@ generatorHandler({
     };
   },
   onGenerate: async (options: GeneratorOptions) => {
-    const outputDir = options.generator.output?.value!;
+    const outputDir = options.generator.output!.value!;
     await writeFileSafely(
       path.join(outputDir, `_types.ts`),
       await generateIndex(options)

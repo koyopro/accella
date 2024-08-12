@@ -11,7 +11,7 @@ export class Merge {
   }
 }
 
-function isObject(item: any): item is Object {
+function isObject(item: any): item is any {
   return item && typeof item === "object" && !Array.isArray(item);
 }
 
@@ -21,7 +21,7 @@ function mergeArrays<T>(arr1: T[], arr2: T[]): T[] {
 
 function deepMerge<T extends object>(target: T, source: T): T;
 function deepMerge(target: any, source: any) {
-  let output = Object.assign({}, target);
+  const output = Object.assign({}, target);
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach((key) => {
       if (isObject(source[key])) {

@@ -72,7 +72,7 @@ describe("hasOne", () => {
     expect(Setting.count()).toBe(1);
 
     {
-      const settingId = user.setting?.settingId!;
+      const settingId = user.setting!.settingId;
       user.setting = $setting.build({ threshold: 1.0 });
 
       // Old setting should be deleted
@@ -82,7 +82,7 @@ describe("hasOne", () => {
     }
     {
       // with Validation Error, should not be replace
-      const settingId = user.setting?.settingId!;
+      const settingId = user.setting?.settingId;
       const setting = $setting.build({ threshold: -1 });
       user.setting = setting;
 

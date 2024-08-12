@@ -5,7 +5,7 @@ import path from "path";
 import { ModelWrapper } from "./wrapper";
 
 const loadModels = async (options: GeneratorOptions) => {
-  const outputDir = options.generator.output?.value!;
+  const outputDir = options.generator.output!.value!;
   const filePath = path.join(outputDir, "index.ts");
   const outfile = path.join(__dirname, "../.models.mjs");
   if (!fs.existsSync(filePath)) return undefined;
@@ -33,7 +33,7 @@ const loadModels = async (options: GeneratorOptions) => {
   }
 };
 
-const getScopeMethods = <T extends Function>(cls: T) => {
+const getScopeMethods = <T extends (...args: any[]) => any>(cls: T) => {
   const properties: string[] = [];
   let currentCls = cls;
 

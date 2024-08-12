@@ -41,7 +41,7 @@ export class Search {
 
     const { predicate, orList } = q;
     if (orList.length > 1) {
-      let tmp = orList.reduce((acc: Relation<any, any> | undefined, attr) => {
+      const tmp = orList.reduce((acc: Relation<any, any> | undefined, attr) => {
         const r = this.affectQuery(this.model.all(), attr, predicate, value);
         return acc?.or(r) ?? r;
       }, undefined);
@@ -93,7 +93,7 @@ export class Search {
         return ret;
       }
       case "any": {
-        let tmp = values.reduce((acc: Relation<any, any> | undefined, v) => {
+        const tmp = values.reduce((acc: Relation<any, any> | undefined, v) => {
           const w = this.buildWhere(this.model, attrStr, predicate, v);
           const r = this.model[method](w.where);
           return acc?.or(r) ?? r.joins(w.joins);

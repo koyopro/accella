@@ -1,3 +1,4 @@
+/* eslint-disable */
 const Knex = require("knex");
 const fs = require("fs");
 

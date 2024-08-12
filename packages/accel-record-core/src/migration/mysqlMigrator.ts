@@ -1,5 +1,5 @@
 import Knex from "knex";
-import { getConfig, getKnex, getKnexConfig } from "../database.js";
+import { getConfig, getKnexConfig } from "../database.js";
 import { Migrator } from "./migrator.js";
 
 export class MySQLMigrator extends Migrator {

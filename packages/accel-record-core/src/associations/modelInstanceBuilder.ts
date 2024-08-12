@@ -44,7 +44,7 @@ export class ModelInstanceBuilder {
         }
         return Reflect.get(target, prop, receiver);
       },
-      set(target, prop, value, receiver) {
+      set(target, prop, value, _receiver) {
         const column = klass.attributeToColumn(prop as string);
         if (typeof column === "string") {
           target[column] = value;
