@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "format": "prettier -w '{src,tests,packages}/**/*.ts'",
-    "lint": "prettier --check '{src,tests,packages}/**/*.ts'",
+    "lint": "eslint && prettier --check '{src,tests,packages}/**/*.ts'",
     "dev": "npm run dev --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "generate:sqlite": "DATABASE_URL=file:./test.db npx prisma generate --schema=tests/prisma/schema.prisma",
