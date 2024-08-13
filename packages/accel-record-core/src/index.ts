@@ -9,6 +9,7 @@ import { Fields } from "./fields.js";
 import { ModelMeta } from "./meta.js";
 import { Dirty } from "./model/dirty.js";
 import { Import } from "./model/import.js";
+import { Lock } from "./model/lock.js";
 import { Naming } from "./model/naming.js";
 import { Searchable } from "./model/search.js";
 import { Serialization } from "./model/serialization.js";
@@ -69,6 +70,7 @@ export class Model extends Mix(
   Dirty,
   Fields,
   Import,
+  Lock,
   Naming,
   Persistence,
   Query,

@@ -13,6 +13,7 @@ export type Options = {
   offset: number | undefined;
   limit: number | undefined;
   includes: Association[];
+  lock: "forUpdate" | "forShare" | undefined;
 };
 
 export const getDefaultOptions = (): Options => ({
@@ -28,4 +29,5 @@ export const getDefaultOptions = (): Options => ({
   orders: [],
   offset: undefined,
   limit: undefined,
+  lock: undefined,
 });

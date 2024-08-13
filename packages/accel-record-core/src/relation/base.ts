@@ -60,7 +60,18 @@ export class RelationBase {
     for (const [column, direction] of this.options.orders ?? []) {
       q = q.orderBy(column, direction);
     }
+    q = this.affectLock(q);
     return q;
+  }
+  protected affectLock<T>(this: Relation<T, ModelMeta>, q: any) {
+    switch (this.options.lock) {
+      case "forUpdate":
+        return q.forUpdate();
+      case "forShare":
+        return q.forShare();
+      default:
+        return q;
+    }
   }
   protected affectWheres<T>(this: Relation<T, ModelMeta>, q: any) {
     for (const where of this.options.wheres) {

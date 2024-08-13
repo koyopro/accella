@@ -97,6 +97,13 @@ export class Relation<T, M extends ModelMeta> extends Mix(
     return this.toArray().map((row, i, array) => func(row, i, array));
   }
 
+  lock<T, M extends ModelMeta>(
+    this: Relation<T, M>,
+    type: Options["lock"] = "forUpdate"
+  ): Relation<T, M> {
+    return new Relation(this.model, { ...this.options, lock: type });
+  }
+
   /**
    * Returns an iterator for the Relation class.
    * @returns An iterator object with `next()` and `return()` methods.
