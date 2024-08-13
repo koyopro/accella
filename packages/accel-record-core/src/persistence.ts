@@ -1,9 +1,11 @@
+import { Knex } from "knex";
 import { HasManyAssociation } from "./associations/hasManyAssociation.js";
 import { HasOneAssociation } from "./associations/hasOneAssociation.js";
 import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder.js";
 import { exec, execSQL } from "./database.js";
 import { Collection, Model } from "./index.js";
 import { Meta, New, Persisted } from "./meta.js";
+import { Options } from "./relation/options.js";
 
 // FIXME: This file is too long . [max-lines]
 /*eslint max-lines: ["error", {"max": 203, "skipBlankLines": true, "skipComments": true }]*/
@@ -234,15 +236,31 @@ export class Persistence {
    */
   protected retriveInsertedAttributes<T extends Model>(
     this: T,
-    returning: Record<keyof T, any>
+    returning: Record<keyof T, any>,
+    lock?: Options["lock"]
   ) {
     const data: Partial<T> = {};
     for (const key of this.primaryKeys as (keyof T)[]) {
       data[key] = this[key] || returning[key] || this.getLastInsertId();
     }
-    const [record] = exec(this.queryBuilder.where(data).limit(1), "TRACE");
+    const q = this.affectLock(this.queryBuilder, lock).where(data).limit(1);
+    const [record] = exec(q, "TRACE");
     for (const [key, value] of Object.entries(record)) {
       this[key as keyof T] = this.findField(key)?.cast(value) ?? value;
+    }
+  }
+
+  protected affectLock(
+    queryBuilder: Knex.QueryBuilder,
+    lockType: Options["lock"]
+  ) {
+    switch (lockType) {
+      case "forShare":
+        return queryBuilder.forShare();
+      case "forUpdate":
+        return queryBuilder.forUpdate();
+      default:
+        return queryBuilder;
     }
   }
 

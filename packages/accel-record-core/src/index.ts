@@ -110,8 +110,11 @@ export class Model extends Mix(
    * Reloads the record by resetting associations and attributes.
    * @returns The reloaded record.
    */
-  reload() {
-    this.retriveInsertedAttributes({} as Record<keyof this, any>);
+  reload(options?: { lock?: "forUpdate" | "forShare" }) {
+    this.retriveInsertedAttributes(
+      {} as Record<keyof this, any>,
+      options?.lock
+    );
     for (const [key, association] of this.associations.entries()) {
       if (association instanceof HasOneAssociation) {
         association.reset();

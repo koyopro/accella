@@ -18,4 +18,8 @@ export class Lock {
   ) {
     return this.all().lock(type);
   }
+
+  lock<T extends Model>(this: T, type: Options["lock"] = "forUpdate") {
+    return this.reload({ lock: type });
+  }
 }
