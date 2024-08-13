@@ -28,11 +28,11 @@ export default [
         },
       ],
       "max-lines-per-function": [
-        "warn",
+        "error",
         { max: 25, skipBlankLines: true, skipComments: true },
       ],
       "max-lines": [
-        "warn",
+        "error",
         { max: 150, skipBlankLines: true, skipComments: true },
       ],
     },
