@@ -5,6 +5,9 @@ import { ModelMeta } from "../meta.js";
 import { Relation } from "./index.js";
 import { Options } from "./options.js";
 
+// FIXME: This file is too long . [max-lines]
+/*eslint max-lines: ["error", {"max": 188, "skipBlankLines": true, "skipComments": true }]*/
+
 /**
  * Provides the base methods for relations.
  *

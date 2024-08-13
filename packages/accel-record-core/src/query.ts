@@ -3,6 +3,9 @@ import { type Model } from "./index.js";
 import type { Meta } from "./meta.js";
 import { Relation } from "./relation/index.js";
 
+// FIXME: This file is too long . [max-lines]
+/*eslint max-lines: ["error", {"max": 213, "skipBlankLines": true, "skipComments": true }]*/
+
 /**
  * Represents a query class for performing database queries.
  *

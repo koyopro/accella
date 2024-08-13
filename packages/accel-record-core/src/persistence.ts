@@ -5,6 +5,9 @@ import { exec, execSQL } from "./database.js";
 import { Collection, Model } from "./index.js";
 import { Meta, New, Persisted } from "./meta.js";
 
+// FIXME: This file is too long . [max-lines]
+/*eslint max-lines: ["error", {"max": 203, "skipBlankLines": true, "skipComments": true }]*/
+
 /**
  * Represents a Persistence class that provides methods for managing records.
  *
