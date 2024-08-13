@@ -15,3 +15,17 @@ test("#lock()", () => {
 
   user.lock("forShare");
 });
+
+test("#withLock()", () => {
+  const user = $user.create({ id: 1, name: "foo" });
+  {
+    const r = user.withLock(() => user.update({ name: "bar" }));
+    expect(r).toBeTruthy();
+    expect(user.name).toBe("bar");
+  }
+  {
+    const r = user.withLock("forShare", () => user.update({ name: "baz" }));
+    expect(r).toBeTruthy();
+    expect(user.name).toBe("baz");
+  }
+});
