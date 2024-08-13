@@ -50,6 +50,16 @@ export class RelationBase {
     for (const [query, bindings] of this.options.joinsRaw) {
       q = q.joinRaw(query, bindings);
     }
+    q = this.affectWheres(q);
+    q = this.affectOrWheres(q);
+    if (this.options.limit) q = q.limit(this.options.limit);
+    if (this.options.offset) q = q.offset(this.options.offset);
+    for (const [column, direction] of this.options.orders ?? []) {
+      q = q.orderBy(column, direction);
+    }
+    return q;
+  }
+  protected affectWheres<T>(this: Relation<T, ModelMeta>, q: any) {
     for (const where of this.options.wheres) {
       if (Array.isArray(where)) {
         q = q.where(...where);
@@ -67,6 +77,9 @@ export class RelationBase {
     for (const [query, bindings] of this.options.whereRaws) {
       q = q.whereRaw(query, bindings);
     }
+    return q;
+  }
+  protected affectOrWheres<T>(this: Relation<T, ModelMeta>, q: any) {
     for (const where of this.options.orWheres) {
       q = q.orWhere(function (this: any) {
         for (const w of where) {
@@ -88,11 +101,6 @@ export class RelationBase {
           }
         }
       });
-    }
-    if (this.options.limit) q = q.limit(this.options.limit);
-    if (this.options.offset) q = q.offset(this.options.offset);
-    for (const [column, direction] of this.options.orders ?? []) {
-      q = q.orderBy(column, direction);
     }
     return q;
   }
@@ -123,7 +131,7 @@ export class RelationBase {
     association: Options["includes"][0],
     rows: any[]
   ) {
-    const { klass, primaryKey, foreignKey, joinKey } = association;
+    const { primaryKey, foreignKey, joinKey } = association;
     const name = association.field.name;
     const primaryKeys = rows.map((row: any) => row[primaryKey]);
 
@@ -132,6 +140,25 @@ export class RelationBase {
       .where(foreignKey, "in", primaryKeys)
       .execute();
 
+    const includedMap = this.makeIncludedMapOfHasManyThrough(
+      relations,
+      association
+    );
+
+    const mapping: any = {};
+    for (const row of relations) {
+      (mapping[row[foreignKey]] ||= []).push(includedMap[row[joinKey]]);
+    }
+    for (const row of rows) {
+      row[name] = mapping[row[primaryKey]] ?? [];
+    }
+  }
+
+  private makeIncludedMapOfHasManyThrough(
+    relations: any[],
+    association: Options["includes"][0]
+  ) {
+    const { klass, joinKey } = association;
     const targetModel = Models[klass];
     const pk = targetModel.primaryKeys[0];
     const attribute = targetModel.columnToAttribute(pk)!;
@@ -142,14 +169,7 @@ export class RelationBase {
     for (const row of included) {
       includedMap[(row as any)[pk]] = row;
     }
-
-    const mapping: any = {};
-    for (const row of relations) {
-      (mapping[row[foreignKey]] ||= []).push(includedMap[row[joinKey]]);
-    }
-    for (const row of rows) {
-      row[name] = mapping[row[primaryKey]] ?? [];
-    }
+    return includedMap;
   }
 
   protected loadBelongsToIncludes(
