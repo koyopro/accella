@@ -1,5 +1,5 @@
 import { Model } from "../index.js";
-import { Association as Info } from "../fields";
+import { Association as Info } from "../model/association.js";
 
 export class Association<O extends Model, T extends Model> {
   protected target: T | undefined = undefined;
