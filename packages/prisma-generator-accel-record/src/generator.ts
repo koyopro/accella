@@ -8,6 +8,7 @@ import { generateIndex, toCamelCase } from "./generators/index";
 import { getModel as generateModel } from "./generators/model";
 import { writeFileSafely } from "./utils/writeFileSafely";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { version } = require("../package.json");
 
 const currentDir = process.cwd();
@@ -21,7 +22,7 @@ generatorHandler({
     };
   },
   onGenerate: async (options: GeneratorOptions) => {
-    const outputDir = options.generator.output?.value!;
+    const outputDir = options.generator.output!.value!;
     await writeFileSafely(
       path.join(outputDir, `_types.ts`),
       await generateIndex(options)
@@ -56,24 +57,21 @@ const generateFactories = async (
   indexFile: string
 ) => {
   const factoryDir = options.generator.config.factoryPath;
-  if (typeof factoryDir === "string") {
-    const prefix = factoryDir.startsWith("/")
-      ? ""
-      : path.dirname(options.schemaPath);
-    for (const model of options.dmmf.datamodel.models) {
-      const fileName = `${toCamelCase(model.name)}.ts`;
-      const filePath = path.join(prefix, factoryDir, fileName);
-      if (fs.existsSync(filePath)) continue;
-      const relative = path
-        .relative(path.dirname(filePath), indexFile)
-        .replace(/.ts$/, ".js");
-      await writeFileSafely(
-        filePath,
-        generateFactory(model, { pathToIndex: relative })
-      );
-      console.info(
-        `${green("create")}: ${path.relative(currentDir, filePath)}`
-      );
-    }
+  if (typeof factoryDir !== "string") return;
+  const prefix = factoryDir.startsWith("/")
+    ? ""
+    : path.dirname(options.schemaPath);
+  for (const model of options.dmmf.datamodel.models) {
+    const fileName = `${toCamelCase(model.name)}.ts`;
+    const filePath = path.join(prefix, factoryDir, fileName);
+    if (fs.existsSync(filePath)) continue;
+    const relative = path
+      .relative(path.dirname(filePath), indexFile)
+      .replace(/.ts$/, ".js");
+    await writeFileSafely(
+      filePath,
+      generateFactory(model, { pathToIndex: relative })
+    );
+    console.info(`${green("create")}: ${path.relative(currentDir, filePath)}`);
   }
 };

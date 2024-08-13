@@ -46,7 +46,7 @@ const toPascalCase = (str: string) => {
 export const loadI18n = async () => {
   try {
     i18n = await import("i18next");
-  } catch (e) {
+  } catch {
     // i18next not found
   }
 };

@@ -1,4 +1,4 @@
-import { Association as Info } from "../fields.js";
+import { Association as Info } from "../model/association.js";
 import { ModelMeta } from "../meta.js";
 import { Relation, Relations } from "./index.js";
 

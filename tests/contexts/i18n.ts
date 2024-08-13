@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import i18next from "i18next";
 
 export const addTranslation = (key: string, value: string) => {

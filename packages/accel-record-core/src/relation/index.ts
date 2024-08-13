@@ -18,6 +18,7 @@ export type Relations<T, M extends ModelMeta> =
   | Relation<T, M>
   | Collection<T extends Model ? T : any, M>;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class Relation<T, M extends ModelMeta> extends Mix(
   Association,
   Batches,

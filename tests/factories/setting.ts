@@ -1,7 +1,7 @@
 import { Setting } from "../models/index.js";
 import { defineFactory } from "accel-record-factory";
 
-export const SettingFactory = defineFactory(Setting, ({ seq }) => ({
+export const SettingFactory = defineFactory(Setting, () => ({
   threshold: undefined,
 }));
 

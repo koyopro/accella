@@ -15,6 +15,7 @@ type BuildParamsCallable<T extends typeof Model> =
   | BuildParams<T>
   | ((opt: { seq: number }) => BuildParams<T>);
 
+// eslint-disable-next-line max-lines-per-function
 export const defineFactory = <
   T extends typeof Model,
   S extends { [key: string]: BuildParamsCallable<T> },

@@ -54,19 +54,7 @@ export class Import {
     const _records = records.map((r) =>
       r instanceof Model ? r : this.build(r)
     );
-    const failedInstances: Meta<T>["Base"][] = [];
-    const params = _records
-      .map((record) => {
-        if (options.validate === false || record.isValid()) {
-          return makeInsertParams(record);
-        }
-        if (options.validate === "throw") {
-          throw new Error("Validation failed");
-        }
-        failedInstances.push(record);
-        return undefined;
-      })
-      .filter(Boolean);
+    const { params, failedInstances } = formatParams(_records, options);
     let q = this.queryBuilder.insert(params);
     q = addOnConflictMerge<T>(this, options, q);
     const info = exec(q);
@@ -76,6 +64,26 @@ export class Import {
     };
   }
 }
+
+const formatParams = <T extends typeof Model>(
+  records: Model[],
+  options: ImportOptions<T>
+) => {
+  const failedInstances: Meta<T>["Base"][] = [];
+  const params = records
+    .map((record) => {
+      if (options.validate === false || record.isValid()) {
+        return makeInsertParams(record);
+      }
+      if (options.validate === "throw") {
+        throw new Error("Validation failed");
+      }
+      failedInstances.push(record);
+      return undefined;
+    })
+    .filter(Boolean);
+  return { params, failedInstances };
+};
 
 /**
  * Creates the insert parameters for a record.

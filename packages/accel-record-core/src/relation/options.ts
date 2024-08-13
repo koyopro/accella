@@ -1,4 +1,4 @@
-import { Association } from "../fields.js";
+import { Association } from "../model/association.js";
 
 export type Options = {
   select: string[];

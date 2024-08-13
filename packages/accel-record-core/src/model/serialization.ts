@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { BelongsToAssociation } from "../associations/belongsToAssociation.js";
 import { Collection } from "../associations/collectionProxy.js";
 import { HasManyAssociation } from "../associations/hasManyAssociation.js";
