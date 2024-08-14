@@ -5,7 +5,7 @@ import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder.js";
 import { exec, execSQL } from "./database.js";
 import { Collection, Model } from "./index.js";
 import { Meta, New, Persisted } from "./meta.js";
-import { Options } from "./relation/options.js";
+import { LockType } from "./model/lock.js";
 
 // FIXME: This file is too long . [max-lines]
 /*eslint max-lines: ["error", {"max": 203, "skipBlankLines": true, "skipComments": true }]*/
@@ -237,7 +237,7 @@ export class Persistence {
   protected retriveInsertedAttributes<T extends Model>(
     this: T,
     returning: Record<keyof T, any>,
-    lock?: Options["lock"]
+    lock?: LockType
   ) {
     const data: Partial<T> = {};
     for (const key of this.primaryKeys as (keyof T)[]) {
@@ -250,10 +250,7 @@ export class Persistence {
     }
   }
 
-  protected affectLock(
-    queryBuilder: Knex.QueryBuilder,
-    lockType: Options["lock"]
-  ) {
+  protected affectLock(queryBuilder: Knex.QueryBuilder, lockType: LockType) {
     switch (lockType) {
       case "forShare":
         return queryBuilder.forShare();

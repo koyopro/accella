@@ -1,5 +1,6 @@
 import { Collection, Model } from "../index.js";
 import { type ModelMeta } from "../meta.js";
+import { LockType } from "../model/lock.js";
 import { ToHashOptions, ToHashResult } from "../model/serialization.js";
 import { getStaticProperties, Mix } from "../utils.js";
 import { Association } from "./association.js";
@@ -99,7 +100,7 @@ export class Relation<T, M extends ModelMeta> extends Mix(
 
   lock<T, M extends ModelMeta>(
     this: Relation<T, M>,
-    type: Options["lock"] = "forUpdate"
+    type: LockType = "forUpdate"
   ): Relation<T, M> {
     return new Relation(this.model, { ...this.options, lock: type });
   }
