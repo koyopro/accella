@@ -36,6 +36,7 @@ MySQL, PostgreSQL, SQLiteでの利用が可能です。
 - [Serialization](#serialization)
 - [Bulk Insert](#bulk-Insert)
 - [トランザクション](#トランザクション)
+- [ロック](#ロック)
 - [国際化(I18n)](#国際化i18n)
 - [パスワード認証](#パスワード認証)
 - [Nullableな値の扱いについて](#nullableな値の扱いについて)
@@ -1135,6 +1136,32 @@ User.transaction(() => {
   // 外側のトランザクションはコミットされます
 });
 console.log(User.count()); // => 1
+```
+
+## ロック
+
+`lock()`や`withLock()`メソッドを利用することで行のロックを行うことができます。(MySQLとPostgreSQLに対応)
+
+```ts
+import { User } from "./models/index.js";
+
+User.transaction(() => {
+  const user1 = User.lock().find(1);
+  const user2 = User.lock().find(2);
+
+  user1.point += 100;
+  user2.point -= 100;
+
+  user1.save();
+  user2.save();
+});
+```
+
+```ts
+const user = User.find(1);
+user.withLock(() => {
+  user.update({ name: "bar" });
+});
 ```
 
 ## 国際化(I18n)
