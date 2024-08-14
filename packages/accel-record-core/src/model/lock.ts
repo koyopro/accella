@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import { Model } from "../index.js";
+import { Meta, Model, Relation } from "../index.js";
 
 export type LockType = "forUpdate" | "forShare" | undefined;
 /**
@@ -13,7 +13,10 @@ export class Lock {
    *
    * @param type The type of lock to apply. Defaults to "forUpdate".
    */
-  static lock<T extends typeof Model>(this: T, type: LockType = "forUpdate") {
+  static lock<T extends typeof Model>(
+    this: T,
+    type: LockType = "forUpdate"
+  ): Relation<Meta<T>["Persisted"], Meta<T>> {
     return this.all().lock(type);
   }
 
