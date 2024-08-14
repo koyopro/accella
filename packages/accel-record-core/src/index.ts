@@ -9,7 +9,7 @@ import { Fields } from "./fields.js";
 import { ModelMeta } from "./meta.js";
 import { Dirty } from "./model/dirty.js";
 import { Import } from "./model/import.js";
-import { Lock } from "./model/lock.js";
+import { Lock, LockType } from "./model/lock.js";
 import { Naming } from "./model/naming.js";
 import { Searchable } from "./model/search.js";
 import { Serialization } from "./model/serialization.js";
@@ -110,7 +110,7 @@ export class Model extends Mix(
    * Reloads the record by resetting associations and attributes.
    * @returns The reloaded record.
    */
-  reload(options?: { lock?: "forUpdate" | "forShare" }) {
+  reload(options?: { lock?: LockType }) {
     this.retriveInsertedAttributes(
       {} as Record<keyof this, any>,
       options?.lock
