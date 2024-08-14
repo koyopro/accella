@@ -1,13 +1,13 @@
 import { HasManyAssociation } from "./associations/hasManyAssociation.js";
 import { HasOneAssociation } from "./associations/hasOneAssociation.js";
 import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder.js";
-import { exec, execSQL } from "./database.js";
+import { exec } from "./database.js";
 import { Collection, Model } from "./index.js";
 import { Meta, New, Persisted } from "./meta.js";
-import { affectLock, LockType } from "./model/lock.js";
-
-// FIXME: This file is too long . [max-lines]
-/*eslint max-lines: ["error", {"max": 203, "skipBlankLines": true, "skipComments": true }]*/
+import { LockType } from "./model/lock.js";
+import { InsertManager } from "./table/insert.js";
+import { UpdateManager } from "./table/update.js";
+import { primaryKeysCondition } from "./table/utils.js";
 
 /**
  * Represents a Persistence class that provides methods for managing records.
@@ -167,49 +167,10 @@ export class Persistence {
   protected updateRecord<T extends Model>(this: T): boolean {
     if (this.isChanged()) {
       this.runBeforeCallbacks("update");
-      const data = this.makeUpdateParams();
-      exec(this.queryBuilder.where(this.primaryKeysCondition()).update(data));
-      this.retriveUpdatedAt(data);
+      new UpdateManager(this).update();
       this.runAfterCallbacks("update");
     }
     return true;
-  }
-
-  /**
-   * Creates the parameters for updating the record.
-   * @returns The update parameters.
-   */
-  protected makeUpdateParams<T extends Model>(this: T) {
-    const data: Record<string, any> = {};
-    const now = new Date();
-    for (const field of this.columnFields) {
-      const column = field.dbName as keyof T;
-      if (this.isAttributeChanged(field.name) && this[column] !== undefined) {
-        data[column as string] = this[column];
-      }
-      if (this.findField(column as string)?.isUpdatedAt) {
-        data[column as string] = now;
-      }
-      if (this.findField(column as string)?.type === "Json") {
-        data[column as string] = JSON.stringify(this[column]);
-      }
-    }
-    return data;
-  }
-
-  /**
-   * Retrieves the updated attributes of the record from the database.
-   * @param data - The updated data returned from the database.
-   */
-  protected retriveUpdatedAt<T extends Model>(
-    this: T,
-    data: Record<string, any>
-  ) {
-    for (const column of this.columns as (keyof T)[]) {
-      if (this.findField(column as string)?.isUpdatedAt) {
-        this[column as keyof T] = data[column as string];
-      }
-    }
   }
 
   /**
@@ -218,13 +179,7 @@ export class Persistence {
    */
   protected createRecord<T extends Model>(this: T): boolean {
     this.runBeforeCallbacks("create");
-    const data = this.makeInsertParams();
-    let q = this.queryBuilder;
-    if (Model.connection.returningUsable()) {
-      q = q.returning(this.primaryKeys);
-    }
-    const returning = exec(q.insert(data)) as Record<keyof T, any>[];
-    this.retriveInsertedAttributes(returning[0] ?? {});
+    new InsertManager(this).insert();
     this.runAfterCallbacks("create");
     return true;
   }
@@ -238,24 +193,7 @@ export class Persistence {
     returning: Record<keyof T, any>,
     lock?: LockType
   ) {
-    const data: Partial<T> = {};
-    for (const key of this.primaryKeys as (keyof T)[]) {
-      data[key] = this[key] || returning[key] || this.getLastInsertId();
-    }
-    const q = affectLock(this.queryBuilder, lock).where(data).limit(1);
-    const [record] = exec(q, "TRACE");
-    for (const [key, value] of Object.entries(record)) {
-      this[key as keyof T] = this.findField(key)?.cast(value) ?? value;
-    }
-  }
-
-  // for MySQL (The 'returning' clause is not available.)
-  protected getLastInsertId<T extends Model>(this: T) {
-    return execSQL({
-      sql: "select last_insert_id() as id;",
-      bindings: [],
-      logLevel: "TRACE",
-    })[0]["id"];
+    new InsertManager(this).retriveInsertedAttributes(returning, lock);
   }
 
   /**
@@ -263,24 +201,7 @@ export class Persistence {
    * @returns The insert parameters.
    */
   protected makeInsertParams<T extends Model>(this: T) {
-    const data: any = {};
-    const now = new Date();
-    for (const column of this.columns as (keyof T)[]) {
-      if (this[column] !== undefined) {
-        data[column] = this[column];
-      }
-      const field = this.findField(column as string);
-      if (field?.isUpdatedAt && data[column] == undefined) {
-        data[column] = now;
-      }
-      if (field?.defaultIsNow && data[column] == undefined) {
-        data[column] = now;
-      }
-      if (this.findField(column as string)?.type === "Json") {
-        data[column as string] = JSON.stringify(this[column]);
-      }
-    }
-    return data;
+    return new InsertManager(this).makeInsertParams();
   }
 
   /**
@@ -307,19 +228,7 @@ export class Persistence {
    * @returns A boolean indicating whether the record was successfully deleted.
    */
   protected deleteRecord<T extends Model>(this: T): boolean {
-    exec(this.queryBuilder.where(this.primaryKeysCondition()).delete());
+    exec(this.queryBuilder.where(primaryKeysCondition(this)).delete());
     return true;
-  }
-
-  /**
-   * Creates the condition for the primary keys of the record.
-   * @returns The primary keys condition.
-   */
-  protected primaryKeysCondition<T extends Model>(this: T) {
-    const where = {} as Record<keyof T, any>;
-    for (const key of this.primaryKeys as (keyof T)[]) {
-      where[key] = this[key];
-    }
-    return where;
   }
 }
