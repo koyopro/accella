@@ -9,6 +9,7 @@ import { Fields } from "./fields.js";
 import { ModelMeta } from "./meta.js";
 import { Dirty } from "./model/dirty.js";
 import { Import } from "./model/import.js";
+import { Lock, LockType } from "./model/lock.js";
 import { Naming } from "./model/naming.js";
 import { Searchable } from "./model/search.js";
 import { Serialization } from "./model/serialization.js";
@@ -69,6 +70,7 @@ export class Model extends Mix(
   Dirty,
   Fields,
   Import,
+  Lock,
   Naming,
   Persistence,
   Query,
@@ -108,8 +110,11 @@ export class Model extends Mix(
    * Reloads the record by resetting associations and attributes.
    * @returns The reloaded record.
    */
-  reload() {
-    this.retriveInsertedAttributes({} as Record<keyof this, any>);
+  reload(options?: { lock?: LockType }) {
+    this.retriveInsertedAttributes(
+      {} as Record<keyof this, any>,
+      options?.lock
+    );
     for (const [key, association] of this.associations.entries()) {
       if (association instanceof HasOneAssociation) {
         association.reset();

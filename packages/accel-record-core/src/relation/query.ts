@@ -1,4 +1,5 @@
 import { exec } from "../database.js";
+import { RecordNotFound } from "../errors.js";
 import { Model } from "../index.js";
 import { ModelMeta } from "../meta.js";
 import { Relation, Relations } from "./index.js";
@@ -14,6 +15,23 @@ export class Query {
     this.counter = 0;
     return this;
   }
+
+  /**
+   * Finds a record by its ID.
+   * @param id - The ID of the record.
+   * @returns The found record.
+   * @throws An error if the record is not found.
+   */
+  find<T, M extends ModelMeta>(this: Relation<T, M>, id: number): T {
+    const instance = isFinite(id)
+      ? this.setOption("wheres", [{ [this.model.primaryKeys[0]]: id }]).first()
+      : undefined;
+    if (!instance) {
+      throw new RecordNotFound("Record Not Found");
+    }
+    return instance;
+  }
+
   /**
    * Retrieves the first n elements.
    *

@@ -1,4 +1,5 @@
 import { Association } from "../model/association.js";
+import { LockType } from "../model/lock.js";
 
 export type Options = {
   select: string[];
@@ -13,6 +14,7 @@ export type Options = {
   offset: number | undefined;
   limit: number | undefined;
   includes: Association[];
+  lock: LockType;
 };
 
 export const getDefaultOptions = (): Options => ({
@@ -28,4 +30,5 @@ export const getDefaultOptions = (): Options => ({
   orders: [],
   offset: undefined,
   limit: undefined,
+  lock: undefined,
 });
