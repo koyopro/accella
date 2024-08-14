@@ -1,3 +1,4 @@
+import { Knex } from "knex";
 import { Model } from "../index.js";
 
 export type LockType = "forUpdate" | "forShare" | undefined;
@@ -35,3 +36,17 @@ export class Lock {
     });
   }
 }
+
+export const affectLock = (
+  queryBuilder: Knex.QueryBuilder,
+  lockType: LockType
+) => {
+  switch (lockType) {
+    case "forShare":
+      return queryBuilder.forShare();
+    case "forUpdate":
+      return queryBuilder.forUpdate();
+    default:
+      return queryBuilder;
+  }
+};

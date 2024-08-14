@@ -4,6 +4,7 @@ import { Models } from "../index.js";
 import { ModelMeta } from "../meta.js";
 import { Relation } from "./index.js";
 import { Options } from "./options.js";
+import { affectLock } from "../model/lock.js";
 
 // FIXME: This file is too long . [max-lines]
 /*eslint max-lines: ["error", {"max": 188, "skipBlankLines": true, "skipComments": true }]*/
@@ -60,18 +61,8 @@ export class RelationBase {
     for (const [column, direction] of this.options.orders ?? []) {
       q = q.orderBy(column, direction);
     }
-    q = this.affectLock(q);
+    q = affectLock(q, this.options.lock);
     return q;
-  }
-  protected affectLock<T>(this: Relation<T, ModelMeta>, q: any) {
-    switch (this.options.lock) {
-      case "forUpdate":
-        return q.forUpdate();
-      case "forShare":
-        return q.forShare();
-      default:
-        return q;
-    }
   }
   protected affectWheres<T>(this: Relation<T, ModelMeta>, q: any) {
     for (const where of this.options.wheres) {
