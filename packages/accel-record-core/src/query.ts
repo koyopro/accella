@@ -1,7 +1,9 @@
-import { RecordNotFound } from "./errors.js";
 import { type Model } from "./index.js";
 import type { Meta } from "./meta.js";
 import { Relation } from "./relation/index.js";
+
+// FIXME: This file is too long . [max-lines]
+/*eslint max-lines: ["error", {"max": 213, "skipBlankLines": true, "skipComments": true }]*/
 
 /**
  * Represents a query class for performing database queries.
@@ -325,15 +327,7 @@ export class Query {
     this: T,
     id: number
   ): Meta<T>["Persisted"] {
-    const instance = isFinite(id)
-      ? this.all()
-          .setOption("wheres", [{ [this.primaryKeys[0]]: id }])
-          .first()
-      : undefined;
-    if (!instance) {
-      throw new RecordNotFound("Record Not Found");
-    }
-    return instance;
+    return this.all().find(id);
   }
 
   /**

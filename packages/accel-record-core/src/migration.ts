@@ -57,10 +57,10 @@ export class Migration {
   async applyAllPendingMigrations() {
     await this.migrator.createLogsTableIfNotExists();
     await this.resetLogsMap();
-    let applyCount = 0;
+    // let applyCount = 0;
     for (const dir of fs.readdirSync(this.migrationsPath)) {
       if (await this.applyIfPending(dir)) {
-        applyCount++;
+        // applyCount++;
       }
     }
     // if (applyCount == 0) {

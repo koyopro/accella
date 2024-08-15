@@ -3,6 +3,10 @@ import { Model, Models, Relation } from "../index.js";
 import { ModelMeta } from "../meta.js";
 import { Relations } from "./index.js";
 
+// FIXME: Fix the behavior of 'or' and resolve the accompanying Linter error
+/* eslint-disable max-lines-per-function */
+/* eslint-disable max-lines */
+
 /**
  * Provides the *where* related methods for relations.
  *

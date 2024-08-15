@@ -43,9 +43,21 @@ type ObjectIntersection<T extends any[]> = T extends [
 export const Mix = <T extends (new (...args: any) => any)[]>(
   ...classes: T
 ): { new (): InstanceTypeIntersection<T> } & ObjectIntersection<T> => {
-  const BaseClass = classes[0];
-  const classList = classes.slice(1);
-  const newClass: any = class extends BaseClass {
+  const [BaseClass, ...classList] = classes;
+  const newClass: any = defineNewClass(BaseClass, classList);
+  for (const cls of classList) {
+    getStaticProperties(cls).forEach((klass, key) => {
+      assign(newClass, klass, key);
+    });
+    getInstanceMethods(cls).forEach((proto, key) => {
+      assign(newClass.prototype, proto, key);
+    });
+  }
+  return newClass;
+};
+
+const defineNewClass = (BaseClass: any, classList: any[]) => {
+  return class extends BaseClass {
     constructor() {
       super();
       for (const cls of classList) {
@@ -56,15 +68,6 @@ export const Mix = <T extends (new (...args: any) => any)[]>(
       }
     }
   };
-  for (let cls of classList) {
-    getStaticProperties(cls).forEach((klass, key) => {
-      assign(newClass, klass, key);
-    });
-    getInstanceMethods(cls).forEach((proto, key) => {
-      assign(newClass.prototype, proto, key);
-    });
-  }
-  return newClass;
 };
 
 const findMethod = (target: object, key: string) => {
@@ -117,7 +120,7 @@ const getInstanceMethods = <T>(arg: new (...args: any[]) => T) => {
   return properties;
 };
 
-export const getStaticProperties = <T extends Function>(cls: T) => {
+export const getStaticProperties = (cls: any) => {
   const properties = new Map<string, any>();
   let currentCls = cls;
 
@@ -134,9 +137,7 @@ export const getStaticProperties = <T extends Function>(cls: T) => {
     });
 
     currentCls = Object.getPrototypeOf(currentCls);
-    if (currentCls === Function.prototype) {
-      break;
-    }
+    if (currentCls === Function.prototype) break;
   }
 
   return properties;

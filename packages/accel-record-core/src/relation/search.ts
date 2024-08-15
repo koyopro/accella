@@ -80,7 +80,7 @@ export class Searchable {
    */
   search<T, M extends ModelMeta>(
     this: Relation<T, M>,
-    params: Record<string, any>
+    params: Record<string, any> | undefined
   ) {
     return new Search(this.model, params, this);
   }

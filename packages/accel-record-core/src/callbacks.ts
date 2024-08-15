@@ -47,8 +47,8 @@ export class Callbacks {
    * An object that stores the callbacks.
    */
   callbacks = {
-    before: callbackMethods.toHash((m) => [m, [] as Function[]]),
-    after: callbackMethods.toHash((m) => [m, [] as Function[]]),
+    before: callbackMethods.toHash((m) => [m, [] as (() => any)[]]),
+    after: callbackMethods.toHash((m) => [m, [] as (() => any)[]]),
   };
 
   /**

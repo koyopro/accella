@@ -1,3 +1,4 @@
+/* eslint-disable-next-line max-lines-per-function */
 export const getCondition = (predicate: string, value: any) => {
   switch (predicate) {
     case "eq":

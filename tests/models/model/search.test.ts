@@ -13,6 +13,7 @@ test(".search()", () => {
   const subject = (params: any): number => User.search(params).result().count();
 
   expect(subject({})).toEqual(4);
+  expect(subject(undefined)).toEqual(4);
   expect(subject({ name_eq: "foo" })).toEqual(1);
   expect(subject({ name_cont: "bar" })).toEqual(2);
   expect(subject({ email_or_name_cont: "foo" })).toEqual(3);
@@ -60,9 +61,12 @@ test(".search()", () => {
 
   expect(subject({ age_gte_any: [30, 20] })).toEqual(2);
 
-  // second query is ignored because attribute is not found
-  // third query is ignored because predicate is not found
-  expect(subject({ name_eq: "foo", foo_eq: "bar", name_foo: 1 })).toEqual(1);
+  // 2nd query is ignored because attribute is not found
+  // 3rd query is ignored because predicate is not found
+  // 4th query is ignored because value is blank
+  expect(
+    subject({ name_eq: "foo", foo_eq: "bar", name_foo: 1, email_eq: "" })
+  ).toEqual(1);
 
   $Profile.create({
     userId: 1,
@@ -114,4 +118,10 @@ test("Relation#search()", () => {
   expect(
     User.where({ age: 20 }).search({ name_eq: "foo" }).result().count()
   ).toEqual(1);
+});
+
+test("search() params", () => {
+  const search = User.search({ name_eq: "foo" });
+  expect(search["name_eq"]).toEqual("foo");
+  expect(search["name_cont"]).toBeUndefined();
 });

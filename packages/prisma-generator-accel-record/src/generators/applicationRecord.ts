@@ -5,7 +5,7 @@ import { writeFileSafely } from "../utils/writeFileSafely";
 
 export const ensureApplicationRecord = async (options: GeneratorOptions) => {
   const filePath = path.join(
-    options.generator.output?.value!,
+    options.generator.output!.value!,
     `applicationRecord.ts`
   );
   if (!fs.existsSync(filePath)) {

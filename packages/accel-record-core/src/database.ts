@@ -171,6 +171,10 @@ export const execSQL = (params: {
     bindings
   );
   _queryCount++;
+  return formatByEngine(ret);
+};
+
+const formatByEngine = (ret: any) => {
   if (_config.type == "pg") {
     if (ret.command == "SELECT" || ret.rows.length > 0) {
       return ret.rows;

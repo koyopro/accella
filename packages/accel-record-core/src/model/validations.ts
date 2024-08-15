@@ -59,11 +59,15 @@ export class Validations {
     this.runBeforeCallbacks("validation");
     this.errors.clearAll();
     this.validateAttributes();
-    let result = this.errors.isEmpty();
+    this.validateAssociations();
+    this.runAfterCallbacks("validation");
+    return this.errors.isEmpty();
+  }
+
+  private validateAssociations<T extends Model>(this: T) {
     for (const [key, association] of this.associations) {
       if (association instanceof HasOneAssociation) {
         if (association.isValid() === false) {
-          result = false;
           this.errors.add(key, "is invalid");
         }
       }
@@ -73,13 +77,10 @@ export class Validations {
       ) {
         const value = this[key as keyof T];
         if (value instanceof Collection && value.isValid() === false) {
-          result = false;
           this.errors.add(key, "is invalid");
         }
       }
     }
-    this.runAfterCallbacks("validation");
-    return result;
   }
 
   /**
@@ -126,24 +127,24 @@ export class Validations {
     const attributes = Array.isArray(attribute) ? attribute : [attribute];
     for (const attribute of attributes as (keyof T & string)[]) {
       const value = this[attribute] as any;
-      if (options.acceptance) {
+
+      if (options.acceptance)
         new AcceptanceValidator(this, attribute, options.acceptance).validate();
-      }
-      if (options.presence) {
+
+      if (options.presence)
         new PresenceValidator(this, attribute, options.presence).validate();
-      }
-      if (options.length && value != undefined) {
+
+      if (options.length && value != undefined)
         new LengthValidator(this, attribute, options.length).validate();
-      }
-      if (options.inclusion && value != undefined) {
+
+      if (options.inclusion && value != undefined)
         new InclusionValidator(this, attribute, options.inclusion).validate();
-      }
-      if (options.format && value != undefined) {
+
+      if (options.format && value != undefined)
         new FormatValidator(this, attribute, options.format).validate();
-      }
-      if (options.uniqueness) {
+
+      if (options.uniqueness)
         new UniquenessValidator(this, attribute, options.uniqueness).validate();
-      }
     }
   }
 }

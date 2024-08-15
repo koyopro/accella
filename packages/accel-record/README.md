@@ -35,6 +35,7 @@ It can be used with MySQL, PostgreSQL, and SQLite.
 - [Serialization](#serialization)
 - [Bulk Insert](#bulk-insert)
 - [Transactions](#transactions)
+- [Lock](#lock)
 - [Internationalization (I18n)](#internationalization-i18n)
 - [Password Authentication](#password-authentication)
 - [Nullable Values Handling](#nullable-values-handling)
@@ -1134,6 +1135,32 @@ User.transaction(() => {
   // The outer transaction is committed
 });
 console.log(User.count()); // => 1
+```
+
+## Lock
+
+You can perform row locking using the `lock()` and `withLock()` methods. (Supported in MySQL and PostgreSQL)
+
+```ts
+import { User } from "./models/index.js";
+
+User.transaction(() => {
+  const user1 = User.lock().find(1);
+  const user2 = User.lock().find(2);
+
+  user1.point += 100;
+  user2.point -= 100;
+
+  user1.save();
+  user2.save();
+});
+```
+
+```ts
+const user = User.find(1);
+user.withLock(() => {
+  user.update({ name: "bar" });
+});
 ```
 
 ## Internationalization (I18n)
