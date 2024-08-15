@@ -2,5 +2,5 @@ import { Search } from "accel-record/search";
 import { formWith } from "./formWith";
 
 export const searchFormFor = (s: Search) => {
-  return formWith(s.params, { namespace: "q" });
+  return formWith(s, { namespace: "q" });
 };
