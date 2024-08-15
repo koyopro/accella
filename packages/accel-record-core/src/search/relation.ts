@@ -22,14 +22,14 @@ export class RelationUpdater {
     const { predicate, orList } = q;
     if (orList.length > 1) {
       const tmp = orList.reduce((acc: Relation<any, any> | undefined, attr) => {
-        const r = this.affectQuery(this.model.all(), attr, predicate, value);
+        const r = this.affectQuery(this.model.all(), attr, predicate);
         return acc?.or(r) ?? r;
       }, undefined);
       return relation.merge(tmp!);
     }
     let ret = relation;
     for (const attr of q.attributes) {
-      ret = this.affectQuery(ret, attr, predicate, value);
+      ret = this.affectQuery(ret, attr, predicate);
     }
     return ret;
   }
@@ -37,8 +37,7 @@ export class RelationUpdater {
   private affectQuery(
     relation: Relation<any, any>,
     attrStr: string,
-    predicate: Predicate,
-    value: any
+    predicate: Predicate
   ) {
     switch (predicate.name) {
       case "blank": {
@@ -52,17 +51,16 @@ export class RelationUpdater {
         return relation.joins(w1.joins).whereNot(w1.where).whereNot(w2.where);
       }
       default:
-        return this.affectDefaultQuery(relation, attrStr, predicate, value);
+        return this.affectDefaultQuery(relation, attrStr, predicate);
     }
   }
 
   private affectDefaultQuery(
     relation: Relation<any, any>,
     attrStr: string,
-    predicate: Predicate,
-    value: any
+    predicate: Predicate
   ) {
-    const values = [value].flat();
+    const values = [this.value].flat();
     switch (predicate.type) {
       case "all":
         return this.buildAllWhere(relation, values, attrStr, predicate);
@@ -72,7 +70,7 @@ export class RelationUpdater {
 
       default: {
         const method = predicate.not ? "whereNot" : "where";
-        const w = this.buildWhere(this.model, attrStr, predicate, value);
+        const w = this.buildWhere(this.model, attrStr, predicate, this.value);
         return relation.joins(w.joins)[method](w.where);
       }
     }
