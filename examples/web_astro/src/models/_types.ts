@@ -105,6 +105,8 @@ declare module "./todo" {
     id: number | undefined;
     title: string | undefined;
     content: string | undefined;
+    estimate: number | undefined;
+    dueDate: Date | undefined;
     status: Status;
     account: Account | undefined;
     accountId: number | undefined;
@@ -141,6 +143,8 @@ type TodoMeta = {
     id: number;
     title: string;
     content: string | undefined;
+    estimate: number | undefined;
+    dueDate: Date | undefined;
     status: Status;
     accountId: number;
     createdAt: Date;
@@ -150,6 +154,8 @@ type TodoMeta = {
     id?: number;
     title: string;
     content?: string;
+    estimate?: number;
+    dueDate?: Date;
     status?: Status;
     createdAt?: Date;
     updatedAt?: Date;
@@ -158,6 +164,8 @@ type TodoMeta = {
     id?: number | number[] | Filter<number> | null;
     title?: string | string[] | StringFilter | null;
     content?: string | string[] | StringFilter | null;
+    estimate?: number | number[] | Filter<number> | null;
+    dueDate?: Date | Date[] | Filter<Date> | null;
     status?: Status | Status[] | undefined | null;
     account?: Account | Account[] | AccountMeta["WhereInput"];
     accountId?: number | number[] | Filter<number> | null;
