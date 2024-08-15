@@ -15,6 +15,9 @@ export const initI18n = async () => {
           "accelrecord.attributes.SignIn.email": "メールアドレス",
           "accelrecord.attributes.SignIn.password": "パスワード",
 
+          "accelrecord.attributes.Todo.title": "タイトル",
+          "accelrecord.attributes.Todo.estimate": "見積もり",
+
           "errors.messages.blank": "を入力してください",
           "errors.messages.accepted": "をチェックしてください",
           "errors.messages.invalid": "は不正です",

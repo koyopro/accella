@@ -7,20 +7,30 @@ const { params, currentAccount } = Astro.locals.helper;
 
 const todo = Todo.build({ account: currentAccount });
 if (Astro.request.method === "POST") {
-  if (todo.update(params.permit("title"))) {
+  if (todo.update(params.permit("title", "estimate"))) {
     return Astro.redirect("/");
   }
 }
-const { Form, Label, TextField, Submit } = formWith(todo);
+const f = formWith(todo);
+const { Form, Label, TextField, Submit } = f;
 ---
 
 <Layout title="Add a new todo">
-  <Form method="post">
-    <div class="error-messages">
-      {todo.errors.fullMessages.map((message) => <div>{message}</div>)}
-    </div>
-    <Label for="title" />
-    <TextField attr="title" />
-    <Submit>作成</Submit>
-  </Form>
+  <main>
+    <h1>Create a new TODO</h1>
+    <Form method="post">
+      <div class="error-messages">
+        {todo.errors.fullMessages.map((message) => <div>{message}</div>)}
+      </div>
+      <div>
+        <Label for="title" />
+        <TextField attr="title" />
+      </div>
+      <div>
+        <Label for="estimate" />
+        <f.NumberField attr="estimate" />
+      </div>
+      <Submit>作成</Submit>
+    </Form>
+  </main>
 </Layout>
