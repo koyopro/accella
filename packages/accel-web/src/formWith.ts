@@ -5,6 +5,7 @@ import form from "./nativeComponents/form.astro";
 import input from "./nativeComponents/input.astro";
 import label from "./nativeComponents/label.astro";
 
+// eslint-disable-next-line max-lines-per-function
 export const formWith = (resource: Model, options?: { namespace?: string }) => {
   const namespace = options?.namespace || "";
   const prefix = namespace ? `${namespace}.` : "";

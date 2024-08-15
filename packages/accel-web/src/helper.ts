@@ -27,7 +27,7 @@ export class Helper {
     let data = new FormData();
     try {
       data = await this.context.request.clone().formData();
-    } catch (e) {
+    } catch {
       // noop
     }
     this.context.url.searchParams.forEach((value, key) => {
@@ -40,6 +40,7 @@ export class Helper {
     this.session.store(resource);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   logOut = (resource?: Model) => {
     // const scope = resource?.class().name
     // TODO: delete only the specified scope

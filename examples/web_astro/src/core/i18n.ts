@@ -1,5 +1,6 @@
 import i18next from "i18next";
 
+// eslint-disable-next-line max-lines-per-function
 export const initI18n = async () => {
   await i18next.init({
     lng: "ja",
