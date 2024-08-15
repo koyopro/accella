@@ -1,4 +1,6 @@
 import { initAccelRecord } from "accel-record";
+import "accel-record/errors";
+import "accel-record/search";
 import { User } from "../tests/models/index.js";
 
 initAccelRecord({
