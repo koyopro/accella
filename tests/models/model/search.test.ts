@@ -119,3 +119,9 @@ test("Relation#search()", () => {
     User.where({ age: 20 }).search({ name_eq: "foo" }).result().count()
   ).toEqual(1);
 });
+
+test("search() params", () => {
+  const search = User.search({ name_eq: "foo" });
+  expect(search["name_eq"]).toEqual("foo");
+  expect(search["name_cont"]).toBeUndefined();
+});

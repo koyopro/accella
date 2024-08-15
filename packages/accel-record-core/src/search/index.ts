@@ -7,6 +7,7 @@ import { Predicate, Query } from "./query.js";
 
 export class Search {
   readonly params: Record<string, any>;
+  readonly [key: string]: any;
 
   constructor(
     protected model: typeof Model,
@@ -16,6 +17,13 @@ export class Search {
     this.params = JSON.parse(JSON.stringify(params ?? {}));
     for (const key of Object.keys(this.params)) {
       if (isBlank(this.params[key])) delete this.params[key];
+      else if (key.match(/.+_.+/)) {
+        Object.defineProperty(this, key, {
+          value: this.params[key],
+          writable: true,
+          configurable: true,
+        });
+      }
     }
   }
 
