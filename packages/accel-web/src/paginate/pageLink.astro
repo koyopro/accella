@@ -1,4 +1,5 @@
 ---
+import { buildPageLink } from "./common";
 interface Props {
   i: number;
   page: number;
@@ -7,5 +8,5 @@ const { i, page } = Astro.props;
 ---
 
 <span class={`page ${i === page ? "current" : ""}`}>
-  {i === page ? i : <a href={`?p=${i}`}>{i}</a>}
+  {i === page ? i : <a href={buildPageLink(Astro, i)}>{i}</a>}
 </span>

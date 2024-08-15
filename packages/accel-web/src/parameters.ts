@@ -7,7 +7,7 @@ export class Parameters {
     this.data = parseFormData(data);
   }
 
-  permit<T extends string[]>(...keys: T) {
-    return keys.toHash((name) => [name, this.data[name]]);
+  permit<T extends string[]>(...keys: T): { [K in T[number]]: any } {
+    return keys.toHash((name) => [name, this.data[name]]) as any;
   }
 }

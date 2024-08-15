@@ -65,21 +65,18 @@ export class Session {
     if (!jwt) return;
     try {
       const v = verify(jwt, this.secret, { algorithms: ["HS256"] });
-      if (v && typeof v === "object") {
-        this.data = v;
+      if (!v || typeof v !== "object") return;
+      this.data = v;
 
-        for (const [scope, v] of Object.entries(this.data)) {
-          if (v["model"]) {
-            const klass = Models[v["model"]];
-            if (klass) {
-              const data = klass.primaryKeys.toHash((k) => [
-                k,
-                v[k as keyof typeof v],
-              ]);
-              this.data[scope] = klass.findBy(data);
-            }
-          }
-        }
+      for (const [scope, v] of Object.entries(this.data)) {
+        if (!v["model"]) continue;
+        const klass = Models[v["model"]];
+        if (!klass) continue;
+        const data = klass.primaryKeys.toHash((k) => [
+          k,
+          v[k as keyof typeof v],
+        ]);
+        this.data[scope] = klass.findBy(data);
       }
     } catch (e: unknown) {
       if (e instanceof JsonWebTokenError) {

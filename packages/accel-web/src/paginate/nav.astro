@@ -1,5 +1,6 @@
 ---
 import I18n from "i18next";
+import { buildPageLink } from "./common";
 import Gap from "./gap.astro";
 import LinkToNextPage from "./linkToNextPage.astro";
 import LinkToPrevPage from "./linkToPrevPage.astro";
@@ -21,7 +22,7 @@ const pages = Array.from({ length: max - min + 1 }, (_, i) => min + i).filter(
 <nav class="pagination">
   <span class="first">
     <a
-      href="?p=1"
+      href={buildPageLink(Astro, 1)}
       set:html={I18n.t("views.pagination.first", "&laquo; First")}
     />
   </span>
@@ -32,7 +33,7 @@ const pages = Array.from({ length: max - min + 1 }, (_, i) => min + i).filter(
   {page < totalPages && <LinkToNextPage {page} />}
   <span class="last">
     <a
-      href={`?p=${totalPages}`}
+      href={buildPageLink(Astro, totalPages)}
       set:html={I18n.t("views.pagination.last", "Last &raquo;")}
     />
   </span>
