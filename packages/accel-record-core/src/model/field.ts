@@ -1,5 +1,6 @@
 import { createId as cuid } from "@paralleldrive/cuid2";
 import { DMMF } from "prisma/prisma-client/runtime/library.js";
+import { isBlank } from "../validation/validator/presence.js";
 
 /**
  * Represents a field in a database table.
@@ -139,7 +140,7 @@ export class Field {
       case "Decimal":
       case "Float":
       case "Int":
-        return Number(value);
+        return isBlank(value) ? undefined : Number(value);
       case "Bytes":
       case "String":
         return String(value);
