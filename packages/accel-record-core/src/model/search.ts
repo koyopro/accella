@@ -1,4 +1,4 @@
-import { Model } from "../index.js";
+import { Meta, Model } from "../index.js";
 import { Search } from "../search/index.js";
 
 /**
@@ -78,7 +78,7 @@ export class Searchable {
    * ```
    */
   static search<T extends typeof Model>(this: T, params: Record<string, any> | undefined) {
-    return new Search(this, params);
+    return new Search<Meta<T>["Persisted"], Meta<T>>(this, params);
   }
 
   /**
