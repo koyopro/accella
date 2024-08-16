@@ -1,13 +1,13 @@
 ---
 import { formWith } from "accel-web";
 import Layout from "src/layouts/Layout.astro";
-import { Todo } from "src/models";
+import { Status, Todo } from "src/models";
 
 const { params, currentAccount } = Astro.locals.helper;
 
 const todo = Todo.build({ account: currentAccount });
 if (Astro.request.method === "POST") {
-  if (todo.update(params.permit("title", "estimate", "dueDate"))) {
+  if (todo.update(params.permit("title", "estimate", "dueDate", "status"))) {
     return Astro.redirect("/");
   }
 }
@@ -33,6 +33,22 @@ const { Form, Label, TextField, Submit } = f;
       <div>
         <Label for="dueDate" />
         <f.DateField attr="dueDate" />
+      </div>
+      <div>
+        <Label for="status" />
+        {
+          Object.values(Status).map((s) => (
+            <>
+              <f.RadioButton
+                id={`status_${s.toLowerCase()}`}
+                attr="status"
+                value={s}
+                checked={s == todo.status}
+              />
+              <label for={`status_${s.toLowerCase()}`}>{s}</label>
+            </>
+          ))
+        }
       </div>
       <Submit>作成</Submit>
     </Form>
