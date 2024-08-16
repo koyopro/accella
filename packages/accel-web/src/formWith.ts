@@ -44,6 +44,16 @@ export const formWith = (resource: Model, options?: { namespace?: string }) => {
       ["attr"]
     ),
 
+    DateField: extendCommponent<"input", { attr: string }>(
+      input,
+      (p) => ({
+        name: `${prefix}${p.attr}`,
+        value: formatDate(r[p.attr]),
+        type: "date",
+      }),
+      ["attr"]
+    ),
+
     Submit: extendCommponent<"button", {}>(button, () => ({ type: "submit" })),
   };
 };
@@ -61,3 +71,12 @@ export const extendCommponent = <L extends keyof astroHTML.JSX.DefinedIntrinsicE
     return base(args[0], { ...defaultValues, ...args[1] }, args[2]);
   }) as any;
 };
+
+const formatDate = (date: any) => {
+  if (date instanceof Date) {
+    if (isInvalidDate(date)) return "";
+    return date.toISOString().slice(0, 10);
+  }
+  return date;
+};
+const isInvalidDate = (date: Date) => Number.isNaN(date.getTime());
