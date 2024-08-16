@@ -39,6 +39,9 @@ const f = searchFormFor(q);
             <span>{todo.id}</span>
             <span>{todo.title}</span>
             {todo.estimate ? <span>｜{todo.estimate}</span> : null}
+            {todo.dueDate ? (
+              <span>{todo.dueDate.toISOString().slice(0, 10)}迄</span>
+            ) : null}
             <span>({todo.status})</span>
           </li>
         ))

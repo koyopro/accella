@@ -7,7 +7,7 @@ const { params, currentAccount } = Astro.locals.helper;
 
 const todo = Todo.build({ account: currentAccount });
 if (Astro.request.method === "POST") {
-  if (todo.update(params.permit("title", "estimate"))) {
+  if (todo.update(params.permit("title", "estimate", "dueDate"))) {
     return Astro.redirect("/");
   }
 }
@@ -29,6 +29,10 @@ const { Form, Label, TextField, Submit } = f;
       <div>
         <Label for="estimate" />
         <f.NumberField attr="estimate" />
+      </div>
+      <div>
+        <Label for="dueDate" />
+        <f.DateField attr="dueDate" />
       </div>
       <Submit>作成</Submit>
     </Form>

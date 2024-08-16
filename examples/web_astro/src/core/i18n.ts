@@ -17,6 +17,7 @@ export const initI18n = async () => {
 
           "accelrecord.attributes.Todo.title": "タイトル",
           "accelrecord.attributes.Todo.estimate": "見積もり",
+          "accelrecord.attributes.Todo.dueDate": "期日",
 
           "errors.messages.blank": "を入力してください",
           "errors.messages.accepted": "をチェックしてください",
