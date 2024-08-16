@@ -1,0 +1,23 @@
+---
+interface Props {
+  name: string;
+  collection: object;
+  value: any;
+}
+const { name, collection, value: currentValue } = Astro.props;
+---
+
+{
+  Object.entries(collection).map(([value, text]) => (
+    <>
+      <input
+        type="radio"
+        id={`${name}_${value.toLowerCase()}`}
+        name={name}
+        value={value}
+        checked={value == currentValue}
+      />
+      <label for={`${name}_${value.toLowerCase()}`}>{text}</label>
+    </>
+  ))
+}

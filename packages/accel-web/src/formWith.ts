@@ -1,6 +1,7 @@
 import type { Model } from "accel-record";
 import { createComponent } from "astro/runtime/server/astro-component.js";
 import button from "./nativeComponents/button.astro";
+import collectionRadioButtons from "./nativeComponents/collectionRadioButtons.astro";
 import form from "./nativeComponents/form.astro";
 import input from "./nativeComponents/input.astro";
 import label from "./nativeComponents/label.astro";
@@ -62,6 +63,16 @@ export const formWith = (resource: Model, options?: { namespace?: string }) => {
       }),
       ["attr"]
     ),
+
+    CollectionRadioButtons: extendCommponent<"input", {}>(
+      collectionRadioButtons,
+      (p) => ({
+        collection: p.collection,
+        name: `${prefix}${p.attr}`,
+        value: r[p.attr],
+      }),
+      []
+    ) as (props: { attr: string; collection: object }) => any,
 
     Submit: extendCommponent<"button", {}>(button, () => ({ type: "submit" })),
   };
