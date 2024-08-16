@@ -54,6 +54,15 @@ export const formWith = (resource: Model, options?: { namespace?: string }) => {
       ["attr"]
     ),
 
+    RadioButton: extendCommponent<"input", { attr: string }>(
+      input,
+      (p) => ({
+        name: `${prefix}${p.attr}`,
+        type: "radio",
+      }),
+      ["attr"]
+    ),
+
     Submit: extendCommponent<"button", {}>(button, () => ({ type: "submit" })),
   };
 };
