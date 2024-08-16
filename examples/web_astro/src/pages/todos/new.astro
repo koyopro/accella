@@ -36,19 +36,7 @@ const { Form, Label, TextField, Submit } = f;
       </div>
       <div>
         <Label for="status" />
-        {
-          Object.values(Status).map((s) => (
-            <>
-              <f.RadioButton
-                id={`status_${s.toLowerCase()}`}
-                attr="status"
-                value={s}
-                checked={s == todo.status}
-              />
-              <label for={`status_${s.toLowerCase()}`}>{s}</label>
-            </>
-          ))
-        }
+        <f.CollectionRadioButtons attr="status" collection={Status} />
       </div>
       <Submit>作成</Submit>
     </Form>
