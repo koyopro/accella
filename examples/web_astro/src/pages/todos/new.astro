@@ -1,7 +1,7 @@
 ---
 import { formWith } from "accel-web";
 import Layout from "src/layouts/Layout.astro";
-import { Status, Todo } from "src/models";
+import { Todo } from "src/models";
 
 const { params, currentAccount } = Astro.locals.helper;
 
@@ -36,7 +36,7 @@ const { Form, Label, TextField, Submit } = f;
       </div>
       <div>
         <Label for="status" />
-        <f.CollectionRadioButtons attr="status" collection={Status} />
+        <f.CollectionRadioButtons attr="status" collection={Todo.status.options()} />
       </div>
       <Submit>作成</Submit>
     </Form>

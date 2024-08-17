@@ -1,14 +1,14 @@
 ---
 interface Props {
   name: string;
-  collection: object;
+  collection: [string, string][];
   value: any;
 }
 const { name, collection, value: currentValue } = Astro.props;
 ---
 
 {
-  Object.entries(collection).map(([value, text]) => (
+  collection.map(([text, value]) => (
     <>
       <input
         type="radio"

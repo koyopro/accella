@@ -20,6 +20,10 @@ export const initI18n = async () => {
           "accelrecord.attributes.Todo.dueDate": "期日",
           "accelrecord.attributes.Todo.status": "ステータス",
 
+          "enums.Status": "ステータス",
+          "enums.Status.OPEN": "オープン",
+          "enums.Status.CLOSED": "クローズド",
+
           "errors.messages.blank": "を入力してください",
           "errors.messages.accepted": "をチェックしてください",
           "errors.messages.invalid": "は不正です",
