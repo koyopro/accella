@@ -21,6 +21,9 @@ export const withI18n = () => {
       "accelrecord.attributes.ValidateSample.size": "サイズ",
       "accelrecord.attributes.ValidateSample.key": "キー",
 
+      "enums.Role.MEMBER": "メンバー",
+      "enums.Role.ADMIN": "管理者",
+
       "errors.messages.blank": "を入力してください",
       "errors.messages.accepted": "をチェックしてください",
       "errors.messages.invalid": "は不正です",

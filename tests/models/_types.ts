@@ -403,7 +403,7 @@ declare module "./profile" {
 }
 export interface NewProfile extends ProfileModel {};
 export class Profile extends ProfileModel {
-  static role = new Attribute(ProfileModel, "Role", Role);
+  static role = new Attribute(this, "Role", Role);
 };
 export interface Profile extends ProfileModel {
   id: number;
