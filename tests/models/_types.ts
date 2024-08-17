@@ -145,7 +145,6 @@ type UserMeta = {
 };
 registerModel(User);
 
-
 declare module "./team" {
   interface TeamModel {
     id: number | undefined;
@@ -189,7 +188,6 @@ type TeamMeta = {
   };
 };
 registerModel(Team);
-
 
 declare module "./userTeam" {
   interface UserTeamModel {
@@ -243,7 +241,6 @@ type UserTeamMeta = {
   };
 };
 registerModel(UserTeam);
-
 
 declare module "./post" {
   interface PostModel {
@@ -305,7 +302,6 @@ type PostMeta = {
 };
 registerModel(Post);
 
-
 declare module "./postTag" {
   interface PostTagModel {
     id: number | undefined;
@@ -349,7 +345,6 @@ type PostTagMeta = {
   };
 };
 registerModel(PostTag);
-
 
 declare module "./setting" {
   interface SettingModel {
@@ -401,7 +396,6 @@ type SettingMeta = {
   };
 };
 registerModel(Setting);
-
 
 declare module "./profile" {
   interface ProfileModel {
@@ -514,7 +508,6 @@ type CompanyMeta = {
 };
 registerModel(Company);
 
-
 declare module "./employee" {
   interface EmployeeModel {
     id: number | undefined;
@@ -559,7 +552,6 @@ type EmployeeMeta = {
   };
 };
 registerModel(Employee);
-
 
 declare module "./validateSample" {
   interface ValidateSampleModel {
@@ -617,7 +609,6 @@ type ValidateSampleMeta = {
 };
 registerModel(ValidateSample);
 
-
 declare module "./account" {
   interface AccountModel {
     id: number | undefined;
@@ -660,4 +651,3 @@ type AccountMeta = {
   };
 };
 registerModel(Account);
-

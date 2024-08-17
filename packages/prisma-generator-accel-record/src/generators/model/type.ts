@@ -23,8 +23,7 @@ type ${model.meta} = {
   WhereInput: {${whereInputs(model)}};
 };
 registerModel(${model.persistedModel});
-${defineEnumTextAttributes(model)}
-`;
+${defineEnumTextAttributes(model)}`;
 
 const defineEnumTextTypes = (model: ModelWrapper) =>
   model.fields
@@ -40,9 +39,9 @@ const defineEnumTextAttributes = (model: ModelWrapper) =>
     .filter((f) => f.kind == "enum")
     .map(
       (f) =>
-        `defineEnumTextAttribute(${model.baseModel}, ${model.persistedModel}, "${f.name}");`
+        `defineEnumTextAttribute(${model.baseModel}, ${model.persistedModel}, "${f.name}");\n`
     )
-    .join("\n");
+    .join("");
 
 const associationColumns = (model: ModelWrapper) =>
   model.fields
