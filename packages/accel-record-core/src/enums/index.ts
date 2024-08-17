@@ -1,3 +1,4 @@
+import { Model } from "../index.js";
 import { i18n } from "../model/naming.js";
 
 export class Attribute {
@@ -39,3 +40,16 @@ export class Value {
     return this.name;
   }
 }
+
+export const defineEnumTextAttribute = (
+  base: typeof Model,
+  persisted: any,
+  name: string
+) => {
+  Object.defineProperty(base.prototype, `${name}Text`, {
+    get() {
+      return persisted[name].values.find((v: Value) => v.value == this[name])
+        ?.text;
+    },
+  });
+};
