@@ -15,13 +15,15 @@ import { EmployeeModel } from './employee.js'
 import { ValidateSampleModel } from './validateSample.js'
 import { AccountModel } from './account.js'
 import {
-  Attribute,
-  defineEnumTextAttribute,
   registerModel,
   type Collection,
   type Filter,
   type StringFilter,
 } from "accel-record";
+import {
+  Attribute,
+  defineEnumTextAttribute,
+} from "accel-record/enums";
 
 declare module "accel-record" {
   function meta<T>(model: T): Meta<T>;

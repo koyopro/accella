@@ -27,7 +27,6 @@ export {
   initAccelRecord,
   stopRpcClient as stopWorker,
 } from "./database.js";
-export { Attribute, defineEnumTextAttribute } from "./enums/index.js";
 export { Migration } from "./migration.js";
 export { hasSecurePassword } from "./model/securePassword.js";
 export { Relation } from "./relation/index.js";
