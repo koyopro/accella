@@ -397,10 +397,16 @@ declare module "./profile" {
     point: number;
     enabled: boolean;
     role: Role;
+    roleText: string;
     uuid: string;
     cuid: string;
   }
 }
+Object.defineProperty(ProfileModel.prototype, 'roleText', {
+  get() {
+    return Profile.role.values.find(v => v.value == this.role)?.text;
+  }
+});
 export interface NewProfile extends ProfileModel {};
 export class Profile extends ProfileModel {
   static role = new Attribute(this, "Role", Role);
