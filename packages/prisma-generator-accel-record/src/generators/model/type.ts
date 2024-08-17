@@ -1,4 +1,4 @@
-import { ModelWrapper } from "../wrapper";
+import { FieldWrapper, ModelWrapper } from "../wrapper";
 import { joinInputs, createInputs, whereInputs } from "./inputs";
 
 export const generateModelTypes = (model: ModelWrapper) => `
@@ -8,7 +8,7 @@ ${columnDefines(model)}
   }
 }
 export interface ${model.newModel} extends ${model.baseModel} {};
-export class ${model.persistedModel} extends ${model.baseModel} {};
+export class ${model.persistedModel} extends ${model.baseModel} {${defineEnumTextTypes(model)}};
 export interface ${model.persistedModel} extends ${model.baseModel} {${columnForPersist(model)}};
 type ${model.associationKey} = ${associationKey(model)};
 type ${model.collection}<T extends ${model.baseModel}> = Collection<T, ${model.meta}> | Collection<${model.persistedModel}, ${model.meta}>;
@@ -23,7 +23,26 @@ type ${model.meta} = {
   WhereInput: {${whereInputs(model)}};
 };
 registerModel(${model.persistedModel});
+${defineEnumTextAttributes(model)}
 `;
+
+const defineEnumTextTypes = (model: ModelWrapper) =>
+  model.fields
+    .filter((f) => f.kind == "enum")
+    .map(
+      (f) =>
+        `\n  static ${f.name} = new Attribute(this, "${f.typeName}", ${f.typeName});`
+    )
+    .join("") + "\n";
+
+const defineEnumTextAttributes = (model: ModelWrapper) =>
+  model.fields
+    .filter((f) => f.kind == "enum")
+    .map(
+      (f) =>
+        `defineEnumTextAttribute(${model.baseModel}, ${model.persistedModel}, "${f.name}");`
+    )
+    .join("\n");
 
 const associationColumns = (model: ModelWrapper) =>
   model.fields
@@ -56,12 +75,21 @@ const columnDefines = (model: ModelWrapper) =>
         if (!optional) return `    ${field.name}: ${field.type} | undefined;`;
         return `    ${field.name}: ${type} | undefined;`;
       }
+      if (field.kind == "enum") return enumFields(field, type);
+
       const nonNullable = field.hasScalarDefault;
       return `    ${field.name}: ${type}${field.isList ? "[]" : ""}${
         nonNullable ? "" : " | undefined"
       };`;
     })
     .join("\n");
+
+const enumFields = (field: FieldWrapper, type: string) => {
+  return [
+    `    ${field.name}: ${type};\n`,
+    `    ${field.name}Text: string;`,
+  ].join("");
+};
 
 const columnForPersist = (model: ModelWrapper) =>
   model.fields

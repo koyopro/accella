@@ -10,6 +10,10 @@ export const generateTypes = async (options: GeneratorOptions) => {
   type Filter,
   type StringFilter,
 } from "accel-record";
+import {
+  Attribute,
+  defineEnumTextAttribute,
+} from "accel-record/enums";
 
 declare module "accel-record" {
   function meta<T>(model: T): Meta<T>;

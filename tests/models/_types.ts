@@ -76,7 +76,8 @@ declare module "./user" {
   }
 }
 export interface NewUser extends UserModel {};
-export class User extends UserModel {};
+export class User extends UserModel {
+};
 export interface User extends UserModel {
   id: number;
   email: string;
@@ -144,6 +145,7 @@ type UserMeta = {
 };
 registerModel(User);
 
+
 declare module "./team" {
   interface TeamModel {
     id: number | undefined;
@@ -153,7 +155,8 @@ declare module "./team" {
   }
 }
 export interface NewTeam extends TeamModel {};
-export class Team extends TeamModel {};
+export class Team extends TeamModel {
+};
 export interface Team extends TeamModel {
   id: number;
   name: string;
@@ -187,6 +190,7 @@ type TeamMeta = {
 };
 registerModel(Team);
 
+
 declare module "./userTeam" {
   interface UserTeamModel {
     user: User | undefined;
@@ -198,7 +202,8 @@ declare module "./userTeam" {
   }
 }
 export interface NewUserTeam extends UserTeamModel {};
-export class UserTeam extends UserTeamModel {};
+export class UserTeam extends UserTeamModel {
+};
 export interface UserTeam extends UserTeamModel {
   user: User;
   userId: number;
@@ -239,6 +244,7 @@ type UserTeamMeta = {
 };
 registerModel(UserTeam);
 
+
 declare module "./post" {
   interface PostModel {
     id: number | undefined;
@@ -252,7 +258,8 @@ declare module "./post" {
   }
 }
 export interface NewPost extends PostModel {};
-export class Post extends PostModel {};
+export class Post extends PostModel {
+};
 export interface Post extends PostModel {
   id: number;
   title: string;
@@ -298,6 +305,7 @@ type PostMeta = {
 };
 registerModel(Post);
 
+
 declare module "./postTag" {
   interface PostTagModel {
     id: number | undefined;
@@ -307,7 +315,8 @@ declare module "./postTag" {
   }
 }
 export interface NewPostTag extends PostTagModel {};
-export class PostTag extends PostTagModel {};
+export class PostTag extends PostTagModel {
+};
 export interface PostTag extends PostTagModel {
   id: number;
   name: string;
@@ -341,6 +350,7 @@ type PostTagMeta = {
 };
 registerModel(PostTag);
 
+
 declare module "./setting" {
   interface SettingModel {
     settingId: number | undefined;
@@ -352,7 +362,8 @@ declare module "./setting" {
   }
 }
 export interface NewSetting extends SettingModel {};
-export class Setting extends SettingModel {};
+export class Setting extends SettingModel {
+};
 export interface Setting extends SettingModel {
   settingId: number;
   user: User;
@@ -390,6 +401,7 @@ type SettingMeta = {
   };
 };
 registerModel(Setting);
+
 
 declare module "./profile" {
   interface ProfileModel {
@@ -456,7 +468,7 @@ type ProfileMeta = {
   };
 };
 registerModel(Profile);
-defineEnumTextAttribute(ProfileModel, Profile, 'role');
+defineEnumTextAttribute(ProfileModel, Profile, "role");
 
 declare module "./company" {
   interface CompanyModel {
@@ -467,7 +479,8 @@ declare module "./company" {
   }
 }
 export interface NewCompany extends CompanyModel {};
-export class Company extends CompanyModel {};
+export class Company extends CompanyModel {
+};
 export interface Company extends CompanyModel {
   id: number;
   name: string;
@@ -501,6 +514,7 @@ type CompanyMeta = {
 };
 registerModel(Company);
 
+
 declare module "./employee" {
   interface EmployeeModel {
     id: number | undefined;
@@ -510,7 +524,8 @@ declare module "./employee" {
   }
 }
 export interface NewEmployee extends EmployeeModel {};
-export class Employee extends EmployeeModel {};
+export class Employee extends EmployeeModel {
+};
 export interface Employee extends EmployeeModel {
   id: number;
   name: string;
@@ -545,6 +560,7 @@ type EmployeeMeta = {
 };
 registerModel(Employee);
 
+
 declare module "./validateSample" {
   interface ValidateSampleModel {
     id: number | undefined;
@@ -556,7 +572,8 @@ declare module "./validateSample" {
   }
 }
 export interface NewValidateSample extends ValidateSampleModel {};
-export class ValidateSample extends ValidateSampleModel {};
+export class ValidateSample extends ValidateSampleModel {
+};
 export interface ValidateSample extends ValidateSampleModel {
   id: number;
   accepted: boolean;
@@ -600,6 +617,7 @@ type ValidateSampleMeta = {
 };
 registerModel(ValidateSample);
 
+
 declare module "./account" {
   interface AccountModel {
     id: number | undefined;
@@ -608,7 +626,8 @@ declare module "./account" {
   }
 }
 export interface NewAccount extends AccountModel {};
-export class Account extends AccountModel {};
+export class Account extends AccountModel {
+};
 export interface Account extends AccountModel {
   id: number;
   email: string;
@@ -641,3 +660,4 @@ type AccountMeta = {
   };
 };
 registerModel(Account);
+
