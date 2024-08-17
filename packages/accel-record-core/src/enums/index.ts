@@ -48,8 +48,9 @@ export const defineEnumTextAttribute = (
 ) => {
   Object.defineProperty(base.prototype, `${name}Text`, {
     get() {
-      return persisted[name].values.find((v: Value) => v.value == this[name])
-        ?.text;
+      return (persisted[name] as Attribute).values.find(
+        (v) => v.value == this[name]
+      )?.text;
     },
   });
 };
