@@ -15,6 +15,7 @@ import { EmployeeModel } from './employee.js'
 import { ValidateSampleModel } from './validateSample.js'
 import { AccountModel } from './account.js'
 import {
+  Attribute,
   registerModel,
   type Collection,
   type Filter,
@@ -401,7 +402,9 @@ declare module "./profile" {
   }
 }
 export interface NewProfile extends ProfileModel {};
-export class Profile extends ProfileModel {};
+export class Profile extends ProfileModel {
+  static role = new Attribute(ProfileModel, "Role", Role);
+};
 export interface Profile extends ProfileModel {
   id: number;
   user: User;

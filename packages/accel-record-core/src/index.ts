@@ -35,6 +35,7 @@ export { DatabaseCleaner } from "./testUtils.js";
 export { Rollback } from "./transaction.js";
 export { Errors } from "./validation/errors.js";
 export { Validator } from "./validation/validator/index.js";
+export { Attribute } from "./enums/index.js";
 
 export { Mix };
 
