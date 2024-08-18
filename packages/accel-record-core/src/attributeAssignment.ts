@@ -13,8 +13,7 @@ export class AttributeAssignment {
    */
   assignAttributes<T extends Model>(this: T, attributes: Record<string, any>) {
     for (const [key, value] of Object.entries(attributes)) {
-      const field = this.findField(key);
-      this[key as keyof T] = field ? field.cast(value) : value;
+      this[key as keyof T] = value;
     }
   }
 }

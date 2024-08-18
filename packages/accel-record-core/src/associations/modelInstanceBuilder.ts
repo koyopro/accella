@@ -93,7 +93,8 @@ const updateTarget = <T extends typeof Model>(
 ) => {
   const column = klass.attributeToColumn(prop as string);
   if (typeof column === "string") {
-    target[column] = value;
+    const field = klass.findField(prop as string);
+    target[column] = field ? field.cast(value) : value;
     return;
   }
   const association = target.associations.get(prop as string);
