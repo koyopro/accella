@@ -16,6 +16,7 @@ type ${model.meta} = {
   Base: ${model.baseModel};
   New: ${model.newModel};
   Persisted: ${model.persistedModel};
+  PrimaryKeys: ${model.primaryKeys};
   AssociationKey: ${model.associationKey};
   JoinInput: ${model.associationKey} | ${model.associationKey}[]${joinInputs(model)};
   Column: {${columnMeta(model)}};

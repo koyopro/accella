@@ -98,6 +98,7 @@ type UserMeta = {
   Base: UserModel;
   New: NewUser;
   Persisted: User;
+  PrimaryKeys: number;
   AssociationKey: UserAssociationKey;
   JoinInput: UserAssociationKey | UserAssociationKey[] | {
     posts?: Meta<Post>['JoinInput'];
@@ -168,6 +169,7 @@ type TeamMeta = {
   Base: TeamModel;
   New: NewTeam;
   Persisted: Team;
+  PrimaryKeys: number;
   AssociationKey: TeamAssociationKey;
   JoinInput: TeamAssociationKey | TeamAssociationKey[] | {
     users?: Meta<UserTeam>['JoinInput'];
@@ -216,6 +218,7 @@ type UserTeamMeta = {
   Base: UserTeamModel;
   New: NewUserTeam;
   Persisted: UserTeam;
+  PrimaryKeys: [number, number];
   AssociationKey: UserTeamAssociationKey;
   JoinInput: UserTeamAssociationKey | UserTeamAssociationKey[] | {
     user?: Meta<User>['JoinInput'];
@@ -271,6 +274,7 @@ type PostMeta = {
   Base: PostModel;
   New: NewPost;
   Persisted: Post;
+  PrimaryKeys: number;
   AssociationKey: PostAssociationKey;
   JoinInput: PostAssociationKey | PostAssociationKey[] | {
     author?: Meta<User>['JoinInput'];
@@ -325,6 +329,7 @@ type PostTagMeta = {
   Base: PostTagModel;
   New: NewPostTag;
   Persisted: PostTag;
+  PrimaryKeys: number;
   AssociationKey: PostTagAssociationKey;
   JoinInput: PostTagAssociationKey | PostTagAssociationKey[] | {
     posts?: Meta<Post>['JoinInput'];
@@ -371,6 +376,7 @@ type SettingMeta = {
   Base: SettingModel;
   New: NewSetting;
   Persisted: Setting;
+  PrimaryKeys: number;
   AssociationKey: SettingAssociationKey;
   JoinInput: SettingAssociationKey | SettingAssociationKey[] | {
     user?: Meta<User>['JoinInput'];
@@ -426,6 +432,7 @@ type ProfileMeta = {
   Base: ProfileModel;
   New: NewProfile;
   Persisted: Profile;
+  PrimaryKeys: number;
   AssociationKey: ProfileAssociationKey;
   JoinInput: ProfileAssociationKey | ProfileAssociationKey[] | {
     user?: Meta<User>['JoinInput'];
@@ -487,6 +494,7 @@ type CompanyMeta = {
   Base: CompanyModel;
   New: NewCompany;
   Persisted: Company;
+  PrimaryKeys: number;
   AssociationKey: CompanyAssociationKey;
   JoinInput: CompanyAssociationKey | CompanyAssociationKey[] | {
     employees?: Meta<Employee>['JoinInput'];
@@ -531,6 +539,7 @@ type EmployeeMeta = {
   Base: EmployeeModel;
   New: NewEmployee;
   Persisted: Employee;
+  PrimaryKeys: number;
   AssociationKey: EmployeeAssociationKey;
   JoinInput: EmployeeAssociationKey | EmployeeAssociationKey[] | {
     company?: Meta<Company>['JoinInput'];
@@ -580,6 +589,7 @@ type ValidateSampleMeta = {
   Base: ValidateSampleModel;
   New: NewValidateSample;
   Persisted: ValidateSample;
+  PrimaryKeys: number;
   AssociationKey: ValidateSampleAssociationKey;
   JoinInput: ValidateSampleAssociationKey | ValidateSampleAssociationKey[];
   Column: {
@@ -630,6 +640,7 @@ type AccountMeta = {
   Base: AccountModel;
   New: NewAccount;
   Persisted: Account;
+  PrimaryKeys: number;
   AssociationKey: AccountAssociationKey;
   JoinInput: AccountAssociationKey | AccountAssociationKey[];
   Column: {
