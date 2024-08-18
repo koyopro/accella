@@ -139,8 +139,11 @@ export class Field {
       case "BigInt":
       case "Decimal":
       case "Float":
-      case "Int":
-        return isBlank(value) ? undefined : Number(value);
+      case "Int": {
+        if (isBlank(value)) return undefined;
+        const num = Number(value);
+        return Number.isFinite(num) ? num : undefined;
+      }
       case "Bytes":
       case "String":
         return String(value);
