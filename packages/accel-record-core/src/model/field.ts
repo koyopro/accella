@@ -139,18 +139,17 @@ export class Field {
       case "BigInt":
       case "Decimal":
       case "Float":
-      case "Int": {
-        if (isBlank(value)) return undefined;
-        const num = Number(value);
-        return Number.isFinite(num) ? num : undefined;
-      }
+      case "Int":
+        return castNumber(value);
       case "Bytes":
       case "String":
         return String(value);
       case "Boolean":
         return !!value;
-      case "DateTime":
-        return new Date(value);
+      case "DateTime": {
+        const date = new Date(value);
+        return isInvalidDate(date) ? undefined : date;
+      }
       case "JSON":
         return JSON.parse(value);
       default:
@@ -158,3 +157,11 @@ export class Field {
     }
   }
 }
+
+const castNumber = (value: any) => {
+  if (isBlank(value)) return undefined;
+  const num = Number(value);
+  return Number.isFinite(num) ? num : undefined;
+};
+
+const isInvalidDate = (date: Date) => Number.isNaN(date.getTime());
