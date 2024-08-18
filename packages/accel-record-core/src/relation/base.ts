@@ -12,6 +12,12 @@ import { Options } from "./options.js";
  * This class is intended to be inherited by the Relation class.
  */
 export class RelationBase {
+  reset<T>(this: Relation<T, ModelMeta>) {
+    this.cache = undefined;
+    this.counter = 0;
+    return this;
+  }
+
   setOption<T>(this: Relation<T, ModelMeta>, key: keyof Options, value: any) {
     (this.options as any)[key] = value;
     return this;
