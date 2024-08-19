@@ -28,6 +28,12 @@ export class Association<O extends Model, T extends Model> {
     return ret;
   }
 
+  get ownerHasPrimary() {
+    return this.info.primaryKeyColumns.every(
+      (col) => this.owner[col as keyof O] !== undefined
+    );
+  }
+
   get ownersPrimary() {
     return this.owner[this.info.primaryKey as keyof O];
   }
