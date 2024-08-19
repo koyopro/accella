@@ -676,7 +676,8 @@ declare module "./author" {
   }
 }
 export interface NewAuthor extends AuthorModel {};
-export class Author extends AuthorModel {};
+export class Author extends AuthorModel {
+};
 export interface Author extends AuthorModel {
   firstName: string;
   lastName: string;
@@ -689,7 +690,7 @@ type AuthorMeta = {
   Base: AuthorModel;
   New: NewAuthor;
   Persisted: Author;
-  PrimaryKeys: [string, string];
+  PrimaryKey: [string, string];
   AssociationKey: AuthorAssociationKey;
   JoinInput: AuthorAssociationKey | AuthorAssociationKey[] | {
     Book?: Meta<Book>['JoinInput'];
@@ -721,7 +722,8 @@ declare module "./book" {
   }
 }
 export interface NewBook extends BookModel {};
-export class Book extends BookModel {};
+export class Book extends BookModel {
+};
 export interface Book extends BookModel {
   id: number;
   title: string;
@@ -735,7 +737,7 @@ type BookMeta = {
   Base: BookModel;
   New: NewBook;
   Persisted: Book;
-  PrimaryKeys: [number];
+  PrimaryKey: number;
   AssociationKey: BookAssociationKey;
   JoinInput: BookAssociationKey | BookAssociationKey[] | {
     author?: Meta<Author>['JoinInput'];

@@ -15,13 +15,19 @@ export class BelongsToAssociation<O extends Model, T extends Model> extends Asso
 
   setter(record: T) {
     this.target = record;
-    this.owner[this.info.foreignKey as keyof O] = record[this.info.primaryKey as keyof T] as any;
+    for (let i = 0; i < this.info.foreignKeyColumns.length; i++) {
+      this.owner[this.info.foreignKeyColumns[i] as keyof O] = record[
+        this.info.primaryKeyColumns[i] as keyof T
+      ] as any;
+    }
     this.isLoaded = true;
   }
 
   override scopeAttributes() {
-    return {
-      [this.info.primaryKey]: this.owner[this.info.foreignKey as keyof O],
-    };
+    const ret: any = {};
+    for (let i = 0; i < this.info.foreignKeyColumns.length; i++) {
+      ret[this.info.primaryKeyColumns[i]] = this.owner[this.info.foreignKeyColumns[i] as keyof O];
+    }
+    return ret;
   }
 }
