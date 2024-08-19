@@ -31,9 +31,12 @@ export class ModelInstanceBuilder {
     }
     this.initAssociations<T>(klass, instance);
     // Updating fields other than the column field
-    Object.keys(input).forEach((key) => {
-      if (klass.attributeToColumn(key) == undefined) {
-        proxy[key] = input[key];
+    Object.entries(input).forEach(([key, value]) => {
+      const v = (instance as any)[key];
+      if (v instanceof Collection && Array.isArray(value)) {
+        (v as any).cache = value;
+      } else if (klass.attributeToColumn(key) == undefined) {
+        proxy[key] = value;
       }
     });
     return proxy;
