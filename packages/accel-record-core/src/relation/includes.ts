@@ -13,6 +13,8 @@ export class IncludesLoader {
       this.loadBelongsToIncludes();
     } else if (this.association.through) {
       this.loadHasManyThroughIncludes();
+    } else if (this.association.primaryKeyColumns.length >= 2) {
+      this.loadCompositeIdsIncludes();
     } else {
       const { klass, primaryKey, foreignKey } = this.association;
       const name = this.association.field.name;
@@ -26,6 +28,27 @@ export class IncludesLoader {
       for (const row of this.rows) {
         row[name] = mapping[row[primaryKey]] ?? [];
       }
+    }
+  }
+
+  private loadCompositeIdsIncludes() {
+    const { klass, primaryKeyColumns, foreignKeyColumns } = this.association;
+    const relation = this.rows.reduce((relation, row) => {
+      const where = foreignKeyColumns.toHash((pk, i) => [
+        Models[klass].columnToAttribute(pk)!,
+        row[primaryKeyColumns[i]],
+      ]);
+      return relation.or(where);
+    }, Models[klass].all());
+    const mapping: any = {};
+    for (const row of relation) {
+      const key = foreignKeyColumns.map((pk) => row[pk]).join("__");
+      (mapping[key] ||= []).push(row);
+    }
+    const name = this.association.field.name;
+    for (const row of this.rows) {
+      const key = primaryKeyColumns.map((pk) => row[pk]).join("__");
+      row[name] = mapping[key] ?? [];
     }
   }
 
