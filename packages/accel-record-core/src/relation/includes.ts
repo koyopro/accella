@@ -66,8 +66,13 @@ export class IncludesLoader {
   }
 
   protected loadBelongsToIncludes() {
-    const { klass, primaryKey, foreignKey } = this.association;
+    if (this.association.primaryKeyColumns.length >= 2)
+      return this.loadCompositeIdsBelongsToIncludes();
+
+    const { klass, primaryKeyColumns, foreignKeyColumns } = this.association;
     const name = this.association.field.name;
+    const primaryKey = primaryKeyColumns[0];
+    const foreignKey = foreignKeyColumns[0];
     const foreignKeys = this.rows.map((row: any) => row[foreignKey]);
     const mapping: any = {};
     const attribute = Models[klass].columnToAttribute(primaryKey)!;
@@ -77,6 +82,26 @@ export class IncludesLoader {
     }
     for (const row of this.rows) {
       row[name] = mapping[row[foreignKey]];
+    }
+  }
+
+  protected loadCompositeIdsBelongsToIncludes() {
+    const { klass, primaryKeyColumns, foreignKeyColumns } = this.association;
+    const relation = this.rows.reduce((relation, row) => {
+      const where = primaryKeyColumns.toHash((pk, i) => [
+        Models[klass].columnToAttribute(pk)!,
+        row[foreignKeyColumns[i]],
+      ]);
+      return relation.or(where);
+    }, Models[klass].all());
+    const mapping = relation.toArray().toHash((row: any) => {
+      const key = primaryKeyColumns.map((pk) => row[pk]).join("__");
+      return [key, row];
+    });
+    const name = this.association.field.name;
+    for (const row of this.rows) {
+      const key = foreignKeyColumns.map((pk) => row[pk]).join("__");
+      row[name] = mapping[key];
     }
   }
 }

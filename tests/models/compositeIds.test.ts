@@ -1,4 +1,4 @@
-import { UserTeam } from ".";
+import { Book, UserTeam } from ".";
 import { $Author } from "../factories/author";
 import { $Book } from "../factories/book";
 import { $team } from "../factories/team";
@@ -18,7 +18,10 @@ test("find()", () => {
 
 test("relation()", () => {
   $Author.create({ firstName: "Jane", lastName: "A" });
+  $Author.create({ firstName: "Jane", lastName: "Z" });
   const author = $Author.create({ firstName: "Jane", lastName: "Doe" });
   const book = $Book.create({ title: "Book1", author });
   expect(book.reload().author.lastName).toBe("Doe");
+
+  expect(Book.includes("author").find(book.id).author.lastName).toBe("Doe");
 });
