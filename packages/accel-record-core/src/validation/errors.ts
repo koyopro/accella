@@ -10,6 +10,17 @@ const defaultMessages: Record<string, string | undefined> = {
   tooLong: "is too long (maximum is %{count} characters)",
   taken: "has already been taken",
   confirmation: "doesn't match %{attribute}",
+
+  notANumber: "is not a number",
+  notAnInteger: "must be an integer",
+  equalTo: "must be equal to %{count}",
+  greaterThan: "must be greater than %{count}",
+  greaterThanOrEqualTo: "must be greater than or equal to %{count}",
+  lessThan: "must be less than %{count}",
+  lessThanOrEqualTo: "must be less than or equal to %{count}",
+  otherThan: "must be other than %{count}",
+  odd: "must be odd",
+  even: "must be even",
 };
 
 type Options = { count?: number; attribute?: string };
@@ -41,7 +52,7 @@ export class Error {
 
   get message() {
     let message = this.translatedMessage;
-    if (this.options.count) {
+    if (this.options.count != undefined) {
       message = message.replace("%{count}", this.options.count.toString());
     }
     if (message.includes("%{attribute}")) {
