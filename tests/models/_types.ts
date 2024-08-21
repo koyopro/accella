@@ -20,6 +20,10 @@ import {
   type Filter,
   type StringFilter,
 } from "accel-record";
+import {
+  Attribute,
+  defineEnumTextAttribute,
+} from "accel-record/enums";
 
 declare module "accel-record" {
   function meta<T>(model: T): Meta<T>;
@@ -72,7 +76,8 @@ declare module "./user" {
   }
 }
 export interface NewUser extends UserModel {};
-export class User extends UserModel {};
+export class User extends UserModel {
+};
 export interface User extends UserModel {
   id: number;
   email: string;
@@ -149,7 +154,8 @@ declare module "./team" {
   }
 }
 export interface NewTeam extends TeamModel {};
-export class Team extends TeamModel {};
+export class Team extends TeamModel {
+};
 export interface Team extends TeamModel {
   id: number;
   name: string;
@@ -194,7 +200,8 @@ declare module "./userTeam" {
   }
 }
 export interface NewUserTeam extends UserTeamModel {};
-export class UserTeam extends UserTeamModel {};
+export class UserTeam extends UserTeamModel {
+};
 export interface UserTeam extends UserTeamModel {
   user: User;
   userId: number;
@@ -248,7 +255,8 @@ declare module "./post" {
   }
 }
 export interface NewPost extends PostModel {};
-export class Post extends PostModel {};
+export class Post extends PostModel {
+};
 export interface Post extends PostModel {
   id: number;
   title: string;
@@ -303,7 +311,8 @@ declare module "./postTag" {
   }
 }
 export interface NewPostTag extends PostTagModel {};
-export class PostTag extends PostTagModel {};
+export class PostTag extends PostTagModel {
+};
 export interface PostTag extends PostTagModel {
   id: number;
   name: string;
@@ -348,7 +357,8 @@ declare module "./setting" {
   }
 }
 export interface NewSetting extends SettingModel {};
-export class Setting extends SettingModel {};
+export class Setting extends SettingModel {
+};
 export interface Setting extends SettingModel {
   settingId: number;
   user: User;
@@ -396,12 +406,15 @@ declare module "./profile" {
     point: number;
     enabled: boolean;
     role: Role;
+    roleText: string;
     uuid: string;
     cuid: string;
   }
 }
 export interface NewProfile extends ProfileModel {};
-export class Profile extends ProfileModel {};
+export class Profile extends ProfileModel {
+  static role = new Attribute(this, "Role", Role);
+};
 export interface Profile extends ProfileModel {
   id: number;
   user: User;
@@ -449,6 +462,7 @@ type ProfileMeta = {
   };
 };
 registerModel(Profile);
+defineEnumTextAttribute(ProfileModel, Profile, "role");
 
 declare module "./company" {
   interface CompanyModel {
@@ -459,7 +473,8 @@ declare module "./company" {
   }
 }
 export interface NewCompany extends CompanyModel {};
-export class Company extends CompanyModel {};
+export class Company extends CompanyModel {
+};
 export interface Company extends CompanyModel {
   id: number;
   name: string;
@@ -502,7 +517,8 @@ declare module "./employee" {
   }
 }
 export interface NewEmployee extends EmployeeModel {};
-export class Employee extends EmployeeModel {};
+export class Employee extends EmployeeModel {
+};
 export interface Employee extends EmployeeModel {
   id: number;
   name: string;
@@ -548,7 +564,8 @@ declare module "./validateSample" {
   }
 }
 export interface NewValidateSample extends ValidateSampleModel {};
-export class ValidateSample extends ValidateSampleModel {};
+export class ValidateSample extends ValidateSampleModel {
+};
 export interface ValidateSample extends ValidateSampleModel {
   id: number;
   accepted: boolean;
@@ -600,7 +617,8 @@ declare module "./account" {
   }
 }
 export interface NewAccount extends AccountModel {};
-export class Account extends AccountModel {};
+export class Account extends AccountModel {
+};
 export interface Account extends AccountModel {
   id: number;
   email: string;

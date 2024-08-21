@@ -2,6 +2,7 @@ import { DMMF } from "@prisma/generator-helper";
 import { toCamelCase } from ".";
 
 export class FieldWrapper {
+  kind: DMMF.Field["kind"];
   name: DMMF.Field["name"];
   relationFromFields: DMMF.Field["relationFromFields"];
   hasDefaultValue: DMMF.Field["hasDefaultValue"];
@@ -15,6 +16,7 @@ export class FieldWrapper {
     private field: DMMF.Field,
     private datamodel: DMMF.Datamodel
   ) {
+    this.kind = field.kind;
     this.name = field.name;
     this.relationFromFields = field.relationFromFields;
     this.hasDefaultValue = field.hasDefaultValue;

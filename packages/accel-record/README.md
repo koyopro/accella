@@ -1179,17 +1179,9 @@ i18next
     resources: {
       en: {
         translation: {
-          accelrecord: {
-            models: {
-              User: "User",
-            },
-            attributes: {
-              User: {
-                firstName: "First Name",
-                lastName: "Last Name",
-              },
-            },
-          },
+          "accelrecord.models.User": "User",
+          "accelrecord.attributes.User.firstName": "First Name",
+          "accelrecord.attributes.User.lastName": "Last Name",
         },
       },
     },
@@ -1244,22 +1236,10 @@ i18next
     resources: {
       en: {
         translation: {
-          accelrecord: {
-            models: {
-              User: "User",
-            },
-            attributes: {
-              User: {
-                firstName: "First Name",
-                lastName: "Last Name",
-              },
-            },
-            errors: {
-              messages: {
-                blank: "can't be blank",
-              },
-            },
-          },
+          "accelrecord.models.User": "User",
+          "accelrecord.attributes.User.firstName": "First Name",
+          "accelrecord.attributes.User.lastName": "Last Name",
+          "accelrecord.errors.messages.blank": "can't be blank", // Add
         },
       },
     },
@@ -1285,6 +1265,60 @@ The message keys corresponding to each validation are as follows:
 | inclusion  | -         | 'inclusion' | -             |
 
 For those with interpolation set to `count`, that part will be replaced with the value specified in the option when the error message contains `%{count}`.
+
+### Translation of Enums
+
+You can define translations for each value of an Enum.
+
+```ts
+// prisma/schema.prisma
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+model User {
+  /* ... */
+  role Role @default(MEMBER)
+}
+```
+
+You can use `User.role.options()` to retrieve the translations corresponding to each value of the Enum.
+For each `User` with a `role`, you can retrieve the translation corresponding to the Enum value using the `roleText` property.
+
+```ts
+import i18next from "i18next";
+import { User } from "./models/index.js";
+
+i18next
+  .init({
+    lng: "ja",
+    resources: {
+      ja: {
+        translation: {
+          "enums.User.Role.MEMBER": "Member",
+          "enums.User.Role.ADMIN": "Admin",
+        },
+      },
+    },
+  })
+  .then(() => {
+    User.role.options(); // => [["Member", "MEMBER"], ["Admin", "ADMIN"]]
+
+    const user = User.build({});
+    user.role; // => "MEMBER"
+    user.roleText; // => "Member"
+  });
+```
+
+In the example of `user.role`, the following keys will be searched in order, and the first key found will be used:
+
+```
+enums.User.Role.MEMBER
+enums.defaults.Role.MEMBER
+enums.Role.MEMBER
+```
 
 ## Password Authentication
 

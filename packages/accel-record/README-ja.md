@@ -1180,17 +1180,9 @@ i18next
     resources: {
       ja: {
         translation: {
-          accelrecord: {
-            models: {
-              User: "ユーザー",
-            },
-            attributes: {
-              User: {
-                firstName: "名",
-                lastName: "姓",
-              },
-            },
-          },
+          "accelrecord.models.User": "ユーザー",
+          "accelrecord.attributes.User.firstName": "名",
+          "accelrecord.attributes.User.lastName": "姓",
         },
       },
     },
@@ -1245,22 +1237,10 @@ i18next
     resources: {
       ja: {
         translation: {
-          accelrecord: {
-            models: {
-              User: "ユーザー",
-            },
-            attributes: {
-              User: {
-                firstName: "名",
-                lastName: "姓",
-              },
-            },
-            errors: {
-              messages: {
-                blank: "を入力してください",
-              },
-            },
-          },
+          "accelrecord.models.User": "ユーザー",
+          "accelrecord.attributes.User.firstName": "名",
+          "accelrecord.attributes.User.lastName": "姓",
+          "accelrecord.errors.messages.blank": "を入力してください", // 追加
         },
       },
     },
@@ -1286,6 +1266,60 @@ i18next
 | inclusion      | -          | 'inclusion'    | -      |
 
 式展開が `count` になっているものは、エラーメッセージに `%{count}` を含むときにその部分がオプションで指定された値に置き換えられます。
+
+### Enumの翻訳
+
+Enumの各値に対しても翻訳を定義することができます。
+
+```ts
+// prisma/schema.prisma
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+model User {
+  /* ... */
+  role Role @default(MEMBER)
+}
+```
+
+`User.role.options()`で、Enumの各値に対応する翻訳を取得することができます。
+各`User`が持つ`role`に対して、`roleText`というプロパティでEnumの値に対応する翻訳を取得することができます。
+
+```ts
+import i18next from "i18next";
+import { User } from "./models/index.js";
+
+i18next
+  .init({
+    lng: "ja",
+    resources: {
+      ja: {
+        translation: {
+          "enums.User.Role.MEMBER": "メンバー",
+          "enums.User.Role.ADMIN": "管理者",
+        },
+      },
+    },
+  })
+  .then(() => {
+    User.role.options(); // => [["メンバー", "MEMBER"], ["管理者", "ADMIN"]]
+
+    const user = User.build({});
+    user.role; // => "MEMBER"
+    user.roleText; // => "メンバー"
+  });
+```
+
+`user.role`の例では、以下のキーを順に探し、最初に見つかったキーが利用されます。
+
+```
+enums.User.Role.MEMBER
+enums.defaults.Role.MEMBER
+enums.Role.MEMBER
+```
 
 ## パスワード認証
 
