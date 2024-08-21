@@ -10,11 +10,11 @@ describe("Enums", (context: any) => {
   if (dbConfig().type == "sqlite") return context.skip();
 
   test("Enums options", () => {
-    expect(Profile.role.values.map((v) => v.value)).toEqual([
+    expect(Profile.role.values().map((v) => v.value)).toEqual([
       "MEMBER",
       "ADMIN",
     ]);
-    expect(Profile.role.values.map((v) => v.text)).toEqual(["MEMBER", "ADMIN"]);
+    expect(Profile.role.values().map((v) => v.text)).toEqual(["MEMBER", "ADMIN"]);
     expect(Profile.role.options()).toEqual([
       ["MEMBER", "MEMBER"],
       ["ADMIN", "ADMIN"],
@@ -31,11 +31,11 @@ describe("Enums", (context: any) => {
     withI18n();
 
     test("Enums options", () => {
-      expect(Profile.role.values.map((v) => v.value)).toEqual([
+      expect(Profile.role.values().map((v) => v.value)).toEqual([
         "MEMBER",
         "ADMIN",
       ]);
-      expect(Profile.role.values.map((v) => v.text)).toEqual([
+      expect(Profile.role.values().map((v) => v.text)).toEqual([
         "メンバー",
         "管理者",
       ]);
