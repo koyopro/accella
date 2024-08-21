@@ -1179,17 +1179,9 @@ i18next
     resources: {
       en: {
         translation: {
-          accelrecord: {
-            models: {
-              User: "User",
-            },
-            attributes: {
-              User: {
-                firstName: "First Name",
-                lastName: "Last Name",
-              },
-            },
-          },
+          "accelrecord.models.User": "User",
+          "accelrecord.attributes.User.firstName": "First Name",
+          "accelrecord.attributes.User.lastName": "Last Name",
         },
       },
     },
@@ -1244,22 +1236,10 @@ i18next
     resources: {
       en: {
         translation: {
-          accelrecord: {
-            models: {
-              User: "User",
-            },
-            attributes: {
-              User: {
-                firstName: "First Name",
-                lastName: "Last Name",
-              },
-            },
-            errors: {
-              messages: {
-                blank: "can't be blank",
-              },
-            },
-          },
+          "accelrecord.models.User": "User",
+          "accelrecord.attributes.User.firstName": "First Name",
+          "accelrecord.attributes.User.lastName": "Last Name",
+          "accelrecord.errors.messages.blank": "can't be blank", // Add
         },
       },
     },

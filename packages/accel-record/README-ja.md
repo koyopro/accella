@@ -1180,17 +1180,9 @@ i18next
     resources: {
       ja: {
         translation: {
-          accelrecord: {
-            models: {
-              User: "ユーザー",
-            },
-            attributes: {
-              User: {
-                firstName: "名",
-                lastName: "姓",
-              },
-            },
-          },
+          "accelrecord.models.User": "ユーザー",
+          "accelrecord.attributes.User.firstName": "名",
+          "accelrecord.attributes.User.lastName": "姓",
         },
       },
     },
@@ -1245,22 +1237,10 @@ i18next
     resources: {
       ja: {
         translation: {
-          accelrecord: {
-            models: {
-              User: "ユーザー",
-            },
-            attributes: {
-              User: {
-                firstName: "名",
-                lastName: "姓",
-              },
-            },
-            errors: {
-              messages: {
-                blank: "を入力してください",
-              },
-            },
-          },
+          "accelrecord.models.User": "ユーザー",
+          "accelrecord.attributes.User.firstName": "名",
+          "accelrecord.attributes.User.lastName": "姓",
+          "accelrecord.errors.messages.blank": "を入力してください", // 追加
         },
       },
     },
