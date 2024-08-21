@@ -50,14 +50,14 @@ export class Value {
 
   /**
    * Retrieves the localized text for the current enum value.
-   * 
+   *
    * The text is retrieved using the following keys in order:
    * - `enums.${klass}.${attribute}.${name}`
    * - `enums.defaults.${attribute}.${name}`
    * - `enums.${attribute}.${name}`
-   * 
+   *
    * If no localized text is found, the name of the enum value is returned.
-   * 
+   *
    * @returns The localized text for the enum value, or the name if no text is found.
    */
   get text() {
@@ -81,9 +81,9 @@ export const defineEnumTextAttribute = (
 ) => {
   Object.defineProperty(base.prototype, `${name}Text`, {
     get() {
-      return (persisted[name] as Attribute).values().find(
-        (v) => v.value == this[name]
-      )?.text;
+      return (persisted[name] as Attribute)
+        .values()
+        .find((v) => v.value == this[name])?.text;
     },
   });
 };

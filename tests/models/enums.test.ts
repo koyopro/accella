@@ -4,8 +4,6 @@ import { withI18n } from "../contexts/i18n";
 import { $Profile } from "../factories/profile";
 import { dbConfig } from "../vitest.setup";
 
-
-
 describe("Enums", (context: any) => {
   if (dbConfig().type == "sqlite") return context.skip();
 
@@ -14,7 +12,10 @@ describe("Enums", (context: any) => {
       "MEMBER",
       "ADMIN",
     ]);
-    expect(Profile.role.values().map((v) => v.text)).toEqual(["MEMBER", "ADMIN"]);
+    expect(Profile.role.values().map((v) => v.text)).toEqual([
+      "MEMBER",
+      "ADMIN",
+    ]);
     expect(Profile.role.options()).toEqual([
       ["MEMBER", "MEMBER"],
       ["ADMIN", "ADMIN"],
