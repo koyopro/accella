@@ -1,11 +1,13 @@
-import { getConfig } from "accel-record";
 import i18next from "i18next";
 import { Profile } from ".";
 import { withI18n } from "../contexts/i18n";
 import { $Profile } from "../factories/profile";
+import { dbConfig } from "../vitest.setup";
+
+
 
 describe("Enums", (context: any) => {
-  if (getConfig().type === "sqlite") return context.skip();
+  if (dbConfig().type == "sqlite") return context.skip();
 
   test("Enums options", () => {
     expect(Profile.role.values.map((v) => v.value)).toEqual([
