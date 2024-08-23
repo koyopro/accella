@@ -1,17 +1,74 @@
 import { Model } from "../../index.js";
 import { DefualtOptions, Validator } from "./index.js";
 
+/**
+ * Options for numericality validation.
+ */
 export type NumericalityOptions = {
+  /**
+   * Validates that the value is of type Number.
+   *
+   * The message key is `notANumber`. The default message is `is not a number`.
+   */
   onlyNumeric?: boolean;
+  /**
+   * Validates that the value is an integer.
+   *
+   * The message key is `notAnInteger`. The default message is `must be an integer`.
+   */
   onlyInteger?: boolean;
+  /**
+   * Validates that the value is equal to the specified number.
+   *
+   * The message key is `equalTo`. The default message is `must be equal to {{count}}`.
+   */
   equalTo?: number;
+  /**
+   * Validates that the value is greater than the specified number.
+   *
+   * The message key is `greaterThan`. The default message is `must be greater than {{count}}`.
+   */
   greaterThan?: number;
+  /**
+   * Validates that the value is greater than or equal to the specified number.
+   *
+   * The message key is `greaterThanOrEqualTo`. The default message is `must be greater than or equal to {{count}}`.
+   */
   greaterThanOrEqualTo?: number;
+  /**
+   * Validates that the value is less than the specified number.
+   *
+   * The message key is `lessThan`. The default message is `must be less than {{count}}`.
+   */
   lessThan?: number;
+  /**
+   * Validates that the value is less than or equal to the specified number.
+   *
+   * The message key is `lessThanOrEqualTo`. The default message is `must be less than or equal to {{count}}`.
+   */
   lessThanOrEqualTo?: number;
+  /**
+   * Validates that the value is other than the specified number.
+   *
+   * The message key is `otherThan`. The default message is `must be other than {{count}}`.
+   */
   otherThan?: number;
+  /**
+   * Validates that the value is odd.
+   *
+   * The message key is `odd`. The default message is `must be odd`.
+   */
   odd?: boolean;
+  /**
+   * Validates that the value is even.
+   *
+   * The message key is `even`. The default message is `must be even`.
+   */
   even?: boolean;
+  /**
+   * Allows the value to be undefined.
+   * The default value is `false`.
+   */
   allowBlank?: boolean;
 } & DefualtOptions;
 
@@ -73,10 +130,7 @@ export class NumericalityValidator<T extends Model> extends Validator<T> {
   }
 
   private validateInteger(value: number) {
-    if (
-      this.options.onlyInteger === true &&
-      Number.isInteger(value) === false
-    ) {
+    if (this.options.onlyInteger === true && Number.isInteger(value) === false) {
       this.errors.add(this.attribute, this.options.message ?? "notAnInteger");
     }
   }
@@ -88,10 +142,7 @@ export class NumericalityValidator<T extends Model> extends Validator<T> {
   }
 
   private validateOtherThan(value: number) {
-    if (
-      this.options.otherThan != undefined &&
-      value === this.options.otherThan
-    ) {
+    if (this.options.otherThan != undefined && value === this.options.otherThan) {
       this.errors.add(this.attribute, this.options.message ?? "otherThan", {
         count: this.options.otherThan,
       });
@@ -107,25 +158,15 @@ export class NumericalityValidator<T extends Model> extends Validator<T> {
   }
 
   private validateLessThanOrEqualTo(value: number) {
-    if (
-      this.options.lessThanOrEqualTo != undefined &&
-      value > this.options.lessThanOrEqualTo
-    ) {
-      this.errors.add(
-        this.attribute,
-        this.options.message ?? "lessThanOrEqualTo",
-        {
-          count: this.options.lessThanOrEqualTo,
-        }
-      );
+    if (this.options.lessThanOrEqualTo != undefined && value > this.options.lessThanOrEqualTo) {
+      this.errors.add(this.attribute, this.options.message ?? "lessThanOrEqualTo", {
+        count: this.options.lessThanOrEqualTo,
+      });
     }
   }
 
   private validateGreaterThan(value: number) {
-    if (
-      this.options.greaterThan != undefined &&
-      value <= this.options.greaterThan
-    ) {
+    if (this.options.greaterThan != undefined && value <= this.options.greaterThan) {
       this.errors.add(this.attribute, this.options.message ?? "greaterThan", {
         count: this.options.greaterThan,
       });
@@ -137,13 +178,9 @@ export class NumericalityValidator<T extends Model> extends Validator<T> {
       this.options.greaterThanOrEqualTo != undefined &&
       value < this.options.greaterThanOrEqualTo
     ) {
-      this.errors.add(
-        this.attribute,
-        this.options.message ?? "greaterThanOrEqualTo",
-        {
-          count: this.options.greaterThanOrEqualTo,
-        }
-      );
+      this.errors.add(this.attribute, this.options.message ?? "greaterThanOrEqualTo", {
+        count: this.options.greaterThanOrEqualTo,
+      });
     }
   }
 }
