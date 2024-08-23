@@ -1,5 +1,6 @@
 import { createId as cuid } from "@paralleldrive/cuid2";
 import { DMMF } from "prisma/prisma-client/runtime/library.js";
+import { isBlank } from "../validation/validator/presence.js";
 
 /**
  * Represents a field in a database table.
@@ -139,14 +140,16 @@ export class Field {
       case "Decimal":
       case "Float":
       case "Int":
-        return Number(value);
+        return castNumber(value);
       case "Bytes":
       case "String":
         return String(value);
       case "Boolean":
         return !!value;
-      case "DateTime":
-        return new Date(value);
+      case "DateTime": {
+        const date = new Date(value);
+        return isInvalidDate(date) ? undefined : date;
+      }
       case "JSON":
         return JSON.parse(value);
       default:
@@ -154,3 +157,11 @@ export class Field {
     }
   }
 }
+
+const castNumber = (value: any) => {
+  if (isBlank(value)) return undefined;
+  const num = Number(value);
+  return Number.isFinite(num) ? num : undefined;
+};
+
+const isInvalidDate = (date: Date) => Number.isNaN(date.getTime());
