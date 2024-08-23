@@ -72,10 +72,7 @@ export class Session {
         if (!v["model"]) continue;
         const klass = Models[v["model"]];
         if (!klass) continue;
-        const data = klass.primaryKeys.toHash((k) => [
-          k,
-          v[k as keyof typeof v],
-        ]);
+        const data = klass.primaryKeys.toHash((k) => [k, v[k as keyof typeof v]]);
         this.data[scope] = klass.findBy(data);
       }
     } catch (e: unknown) {

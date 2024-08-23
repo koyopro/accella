@@ -48,10 +48,7 @@ export const formWith = (resource: Model, options?: { namespace?: string }) => {
   };
 };
 
-export const extendCommponent = <
-  L extends keyof astroHTML.JSX.DefinedIntrinsicElements,
-  P,
->(
+export const extendCommponent = <L extends keyof astroHTML.JSX.DefinedIntrinsicElements, P>(
   base: any,
   defaluts: (p: any) => any,
   removes: string[] = []
