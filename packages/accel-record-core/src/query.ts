@@ -325,9 +325,9 @@ export class Query {
    */
   static find<T extends typeof Model>(
     this: T,
-    id: number
+    key: Meta<T>["PrimaryKey"]
   ): Meta<T>["Persisted"] {
-    return this.all().find(id);
+    return this.all().find(key);
   }
 
   /**

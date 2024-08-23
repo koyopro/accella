@@ -7,6 +7,7 @@ export class FieldWrapper {
   relationFromFields: DMMF.Field["relationFromFields"];
   hasDefaultValue: DMMF.Field["hasDefaultValue"];
   isRequired: DMMF.Field["isRequired"];
+  isId: DMMF.Field["isId"];
   isList: DMMF.Field["isList"];
   isUpdatedAt: DMMF.Field["isUpdatedAt"];
   type: DMMF.Field["type"];
@@ -21,6 +22,7 @@ export class FieldWrapper {
     this.relationFromFields = field.relationFromFields;
     this.hasDefaultValue = field.hasDefaultValue;
     this.isRequired = field.isRequired;
+    this.isId = field.isId;
     this.isList = field.isList;
     this.isUpdatedAt = field.isUpdatedAt;
     this.type = field.type;
@@ -90,6 +92,15 @@ export class ModelWrapper {
   }
   get associationKey() {
     return `${this.model.name}AssociationKey`;
+  }
+  get primaryKeys(): string {
+    const pkNames = this.model.primaryKey?.fields ?? [];
+    const types = this.fields
+      .filter((f) => f.isId || pkNames.includes(f.name))
+      .map((f) => f.typeName);
+    if (types.length == 0) return "never";
+    if (types.length == 1) return types[0];
+    return `[${types.join(", ")}]`;
   }
   get fileName() {
     return toCamelCase(this.model.name);

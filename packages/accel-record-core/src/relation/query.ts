@@ -22,9 +22,12 @@ export class Query {
    * @returns The found record.
    * @throws An error if the record is not found.
    */
-  find<T, M extends ModelMeta>(this: Relation<T, M>, id: number): T {
-    const instance = isFinite(id)
-      ? this.setOption("wheres", [{ [this.model.primaryKeys[0]]: id }]).first()
+  find<T, M extends ModelMeta>(this: Relation<T, M>, key: M["PrimaryKey"]): T {
+    const keys = [key].flat();
+    const valid = keys.every((key) => typeof key !== "number" || isFinite(key));
+    const where = this.model.primaryKeys.toHash((col, i) => [col, keys[i]]);
+    const instance = valid
+      ? this.setOption("wheres", [where]).first()
       : undefined;
     if (!instance) {
       throw new RecordNotFound("Record Not Found");
