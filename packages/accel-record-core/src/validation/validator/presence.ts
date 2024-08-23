@@ -14,8 +14,7 @@ export class PresenceValidator<T extends Model> extends Validator<T> {
   }
   validate() {
     if (this.options && isBlank(this.record[this.attribute])) {
-      const message =
-        typeof this.options === "object" ? this.options.message : undefined;
+      const message = typeof this.options === "object" ? this.options.message : undefined;
       this.errors.add(this.attribute, message ?? "blank");
     }
   }

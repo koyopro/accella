@@ -12,9 +12,7 @@ type RetriveModel<T> = undefined extends T
     ? U
     : T;
 
-type ToUnion<T extends any[] | undefined> = undefined extends T
-  ? never
-  : NonNullable<T>[number];
+type ToUnion<T extends any[] | undefined> = undefined extends T ? never : NonNullable<T>[number];
 
 type ToHashIncludeResult<K, T, O extends ToHashOptions<any>> = K extends keyof T
   ? undefined extends T[K]
@@ -39,10 +37,7 @@ type ToHashInclude<O extends ToHashOptions<T>, T> = O["include"] extends string
       }
     : {};
 
-type ToHashMethods<
-  O extends ToHashOptions<T>,
-  T,
-> = undefined extends O["methods"]
+type ToHashMethods<O extends ToHashOptions<T>, T> = undefined extends O["methods"]
   ? {}
   : {
       [K in ToUnion<O["methods"]>]: T[Extract<K, keyof T>] extends () => any
@@ -58,9 +53,7 @@ export type ToHashResult<T, O extends ToHashOptions<T>> = {
   ToHashMethods<O, T>;
 
 type ToHashIncludeOption<T> = {
-  [K in Meta<T>["AssociationKey"]]?: K extends keyof T
-    ? ToHashOptions<RetriveModel<T[K]>>
-    : never;
+  [K in Meta<T>["AssociationKey"]]?: K extends keyof T ? ToHashOptions<RetriveModel<T[K]>> : never;
 };
 
 type NoArgMethods<T> = {
@@ -85,14 +78,8 @@ export class Serialization {
    * @param options - The options for the conversion.
    * @returns The hash object representing the model instance.
    */
-  toHash<T, O extends ToHashOptions<T>>(
-    this: T,
-    options?: O
-  ): ToHashResult<T, O>;
-  toHash<T extends Model, O extends ToHashOptions<T>>(
-    this: T,
-    options: O = {} as O
-  ) {
+  toHash<T, O extends ToHashOptions<T>>(this: T, options?: O): ToHashResult<T, O>;
+  toHash<T extends Model, O extends ToHashOptions<T>>(this: T, options: O = {} as O) {
     const ret = {} as any;
     for (const field of this.columnFields) {
       if (options.only && !options.only.includes(field.name)) continue;
@@ -122,19 +109,12 @@ export class Serialization {
    * @param options - The options for the conversion.
    * @returns The hash object representing the associated model instance.
    */
-  protected toHashInclude<T extends Model>(
-    this: T,
-    key: string,
-    options: ToHashOptions<any>
-  ) {
+  protected toHashInclude<T extends Model>(this: T, key: string, options: ToHashOptions<any>) {
     const association = this.associations.get(key);
     if (association instanceof HasManyAssociation) {
       return (this[key as keyof T] as any).map((r: Model) => r.toHash(options));
     }
-    if (
-      association instanceof HasOneAssociation ||
-      association instanceof BelongsToAssociation
-    ) {
+    if (association instanceof HasOneAssociation || association instanceof BelongsToAssociation) {
       return (this[key as keyof T] as Model)?.toHash(options);
     }
     return undefined;
@@ -148,10 +128,7 @@ export class Serialization {
    * @param options - The options for serialization.
    * @returns The JSON string representation of the model instance.
    */
-  toJson<T extends Model, O extends ToHashOptions<T>>(
-    this: T,
-    options?: O
-  ): string {
+  toJson<T extends Model, O extends ToHashOptions<T>>(this: T, options?: O): string {
     return JSON.stringify(this.toHash(options));
   }
 }

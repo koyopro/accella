@@ -8,9 +8,7 @@ import { loadI18n } from "./model/naming.js";
 import SyncRpc, { stop } from "./sync-rpc/index.js";
 
 const log = (logLevel: LogLevel, ...args: any[]) => {
-  if (
-    LogLevel.indexOf(logLevel) >= LogLevel.indexOf(_config.logLevel ?? "WARN")
-  ) {
+  if (LogLevel.indexOf(logLevel) >= LogLevel.indexOf(_config.logLevel ?? "WARN")) {
     const func = (logLevel.toLowerCase() ?? "info") as keyof Logger;
     const logger = _config.logger ?? defaultLogger;
     logger[func](...args);
@@ -31,11 +29,7 @@ export const getKnexConfig = (config: Config) => {
   if (config.knexConfig) return config.knexConfig;
   if (config.datasourceUrl) {
     const client =
-      config.type == "mysql"
-        ? "mysql2"
-        : config.type == "pg"
-          ? "pg"
-          : "better-sqlite3";
+      config.type == "mysql" ? "mysql2" : config.type == "pg" ? "pg" : "better-sqlite3";
     return { client, connection: config.datasourceUrl };
   }
 };
@@ -45,21 +39,12 @@ const setupKnex = (config: Config) => {
   if (knexConfig) {
     return Knex(knexConfig);
   }
-  throw new Error(
-    "No config for knex. Please call initAccelRecord(config) first."
-  );
+  throw new Error("No config for knex. Please call initAccelRecord(config) first.");
 };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export const LogLevel = [
-  "TRACE",
-  "DEBUG",
-  "INFO",
-  "WARN",
-  "ERROR",
-  "FATAL",
-] as const;
+export const LogLevel = ["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"] as const;
 export type LogLevel = (typeof LogLevel)[number];
 
 export interface Config {
@@ -144,10 +129,7 @@ export const getQueryCount = () => {
   return _queryCount;
 };
 
-export const exec = (
-  queryBuilder: Knex.Knex.QueryBuilder<any, any>,
-  logLevel?: LogLevel
-) => {
+export const exec = (queryBuilder: Knex.Knex.QueryBuilder<any, any>, logLevel?: LogLevel) => {
   return execSQL({ ...queryBuilder.toSQL(), logLevel });
 };
 
@@ -165,11 +147,7 @@ export const execSQL = (params: {
   const ret = _rpcClient(params);
   const time = Date.now() - startTime;
   const color = /begin|commit|rollback/i.test(sql) ? "\x1b[36m" : "\x1b[32m";
-  log(
-    params.logLevel ?? "DEBUG",
-    `  \x1b[36mSQL(${time}ms)  ${color}${sql}\x1b[39m`,
-    bindings
-  );
+  log(params.logLevel ?? "DEBUG", `  \x1b[36mSQL(${time}ms)  ${color}${sql}\x1b[39m`, bindings);
   _queryCount++;
   return formatByEngine(ret);
 };

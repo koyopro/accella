@@ -53,8 +53,7 @@ export const relationMethods = async (options: GeneratorOptions) => {
     Object.entries(methods)
       .map(([name, models]) => {
         const ts = models.map(
-          (m) =>
-            `T extends ${m.persistedModel} ? typeof ${m.baseModel}['${name}'] : `
+          (m) => `T extends ${m.persistedModel} ? typeof ${m.baseModel}['${name}'] : `
         );
         return `\n    ${name}: (${ts.join("")}never);`;
       })

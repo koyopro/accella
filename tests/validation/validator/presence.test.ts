@@ -19,18 +19,12 @@ describe("error message", () => {
     });
 
     test("with accelrecord.errors.models.User.blank", () => {
-      addTranslation(
-        "accelrecord.errors.models.User.blank",
-        "を入れてください"
-      );
+      addTranslation("accelrecord.errors.models.User.blank", "を入れてください");
       expect(subject()).toBe("名前 を入れてください");
     });
 
     test("with accelrecord.errors.models.User.attributes.name.blank", () => {
-      addTranslation(
-        "accelrecord.errors.models.User.attributes.name.blank",
-        "を入れてください"
-      );
+      addTranslation("accelrecord.errors.models.User.attributes.name.blank", "を入れてください");
       expect(subject()).toBe("名前 を入れてください");
     });
 

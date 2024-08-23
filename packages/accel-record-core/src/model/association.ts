@@ -73,8 +73,7 @@ export const buildAssociation = (
 ) => {
   const rModel = dmmf.datamodel.models.find((m) => m.name === field.type)!;
   const r = rModel?.fields.find((f) => f.relationName === field.relationName);
-  if (r?.relationFromFields == undefined || r?.relationToFields == undefined)
-    return undefined;
+  if (r?.relationFromFields == undefined || r?.relationToFields == undefined) return undefined;
 
   const findKeys = (m: DMMF.Model) => (name: string) =>
     m.fields.find((f) => f.name === name)?.dbName ?? name;

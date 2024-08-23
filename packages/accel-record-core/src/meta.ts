@@ -8,6 +8,7 @@ export type ModelMeta = {
   Base: Model;
   New: Model;
   Persisted: Model;
+  PrimaryKey: any;
   AssociationKey: string;
   JoinInput: any;
   Column: Record<string, any>;

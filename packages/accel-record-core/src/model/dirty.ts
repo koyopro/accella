@@ -25,13 +25,8 @@ export class Dirty {
    * @param attribute - The name of the attribute to check.
    * @returns A boolean indicating whether the attribute has been changed.
    */
-  isAttributeChanged<T extends Model>(
-    this: T,
-    attribute: keyof Meta<T>["Column"]
-  ): boolean {
-    return (
-      this[attribute as keyof T] !== this.originalValues[attribute as string]
-    );
+  isAttributeChanged<T extends Model>(this: T, attribute: keyof Meta<T>["Column"]): boolean {
+    return this[attribute as keyof T] !== this.originalValues[attribute as string];
   }
 
   /**
@@ -40,10 +35,7 @@ export class Dirty {
    * @param attribute - Optional. The name of the attribute to check.
    * @returns A boolean indicating whether any attribute has been changed.
    */
-  isChanged<T extends Model>(
-    this: T,
-    attribute?: keyof Meta<T>["Column"]
-  ): boolean {
+  isChanged<T extends Model>(this: T, attribute?: keyof Meta<T>["Column"]): boolean {
     if (attribute) {
       return this.isAttributeChanged(attribute);
     }

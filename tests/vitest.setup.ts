@@ -1,9 +1,4 @@
-import {
-  DatabaseCleaner,
-  Migration,
-  initAccelRecord,
-  stopWorker,
-} from "accel-record";
+import { DatabaseCleaner, Migration, initAccelRecord, stopWorker } from "accel-record";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -47,10 +42,7 @@ export const dbConfig = () => {
       // },
       sqlTransformer: (sql: string) => {
         for (const table of ["Setting", "User", "Post", "PostTag"]) {
-          sql = sql.replace(
-            new RegExp(`(\\s|[^"])(${table})(\\s|\\.)`, "g"),
-            `$1"$2"$3`
-          );
+          sql = sql.replace(new RegExp(`(\\s|[^"])(${table})(\\s|\\.)`, "g"), `$1"$2"$3`);
         }
         return sql;
       },
@@ -63,10 +55,7 @@ export const dbConfig = () => {
       knexConfig: {
         client: "better-sqlite3",
         useNullAsDefault: true,
-        connection: path.resolve(
-          __dirname,
-          `./prisma/test${process.env.VITEST_POOL_ID}.db`
-        ),
+        connection: path.resolve(__dirname, `./prisma/test${process.env.VITEST_POOL_ID}.db`),
       },
     } as const;
   }

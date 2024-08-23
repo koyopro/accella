@@ -3,9 +3,7 @@ import { Meta, Model } from "accel-record-core";
 type Functionable<T> = {
   [K in keyof T]: T[K] | ((seq?: number) => T[K]);
 };
-type FunctionableUnion<D> = D extends infer T
-  ? Functionable<Extract<D, T>>
-  : never;
+type FunctionableUnion<D> = D extends infer T ? Functionable<Extract<D, T>> : never;
 
 export type BuildParams<T extends typeof Model> = Partial<
   FunctionableUnion<Meta<T>["CreateInput"]>
@@ -28,8 +26,7 @@ export const defineFactory = <
 ) => {
   let seq = 0;
   type Trait = keyof S;
-  const callIfFunc = (arg: any) =>
-    typeof arg === "function" ? arg(++seq) : arg;
+  const callIfFunc = (arg: any) => (typeof arg === "function" ? arg(++seq) : arg);
   const getValues = (params: BuildParams<T>, traits: Trait[]) => {
     const data = { ...callIfFunc(defaults) };
     for (const trait of traits) {
@@ -43,22 +40,14 @@ export const defineFactory = <
     return ret;
   };
   return {
-    create(
-      params: BuildParams<T> = {},
-      ...traits: Trait[]
-    ): ReturnType<typeof Model.create<T>> {
+    create(params: BuildParams<T> = {}, ...traits: Trait[]): ReturnType<typeof Model.create<T>> {
       return model.create(getValues(params, traits));
     },
-    build(
-      params: BuildParams<T> = {},
-      ...traits: Trait[]
-    ): ReturnType<typeof Model.build<T>> {
+    build(params: BuildParams<T> = {}, ...traits: Trait[]): ReturnType<typeof Model.build<T>> {
       return model.build(getValues(params, traits));
     },
     createList(count: number, params: BuildParams<T> = {}, ...traits: Trait[]) {
-      return Array.from({ length: count }, () =>
-        this.create(params, ...traits)
-      );
+      return Array.from({ length: count }, () => this.create(params, ...traits));
     },
     buildList(count: number, params: BuildParams<T> = {}, ...traits: Trait[]) {
       return Array.from({ length: count }, () => this.build(params, ...traits));

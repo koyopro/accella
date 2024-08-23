@@ -3,10 +3,7 @@ import { ModelMeta } from "../meta.js";
 import { Options, Relation } from "../relation/index.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
 
-export class Collection<T extends Model, S extends ModelMeta> extends Relation<
-  T,
-  S
-> {
+export class Collection<T extends Model, S extends ModelMeta> extends Relation<T, S> {
   constructor(
     model: typeof Model,
     private association: HasManyAssociation<Model, S["Base"]>,
@@ -20,9 +17,7 @@ export class Collection<T extends Model, S extends ModelMeta> extends Relation<
   }
 
   resetOptions() {
-    for (const [key, value] of Object.entries(
-      this.association.whereAttributes()
-    )) {
+    for (const [key, value] of Object.entries(this.association.whereAttributes())) {
       this.setOption(key as keyof Options, value);
     }
   }

@@ -1,9 +1,7 @@
 import { Meta, Model } from "../../index.js";
 import { Validator } from "./index.js";
 
-export type UniqunessOptions<T> =
-  | boolean
-  | { scope: (keyof Meta<T>["Column"] & string)[] };
+export type UniqunessOptions<T> = boolean | { scope: (keyof Meta<T>["Column"] & string)[] };
 
 export class UniquenessValidator<T extends Model> extends Validator<T> {
   constructor(
@@ -22,9 +20,7 @@ export class UniquenessValidator<T extends Model> extends Validator<T> {
         });
       }
     }
-    const found = relation
-      .where({ [this.attribute]: this.record[this.attribute] })
-      .first();
+    const found = relation.where({ [this.attribute]: this.record[this.attribute] }).first();
     if (found?.equals(this.record) === false) {
       this.errors.add(this.attribute, "taken");
     }

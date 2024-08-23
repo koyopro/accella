@@ -9,10 +9,7 @@ test("execute", () => {
     posts: [$post.build({ title: "title1" })],
   });
   const nameCol = User.attributeToColumn("name")!;
-  Model.connection.execute(`update User set ${nameCol} = ? where _id = ?`, [
-    "fuga",
-    u.id,
-  ]);
+  Model.connection.execute(`update User set ${nameCol} = ? where _id = ?`, ["fuga", u.id]);
   expect(u.reload().name).toBe("fuga");
 
   const r = Model.connection.execute(
@@ -39,11 +36,7 @@ test("knex builder", async () => {
   }
   {
     const knex = Model.connection.knex;
-    const r = knex
-      .select(column, knex.raw("SUM(_id) as s"))
-      .from("User")
-      .groupBy("_id")
-      .execute();
+    const r = knex.select(column, knex.raw("SUM(_id) as s")).from("User").groupBy("_id").execute();
     expect(r[0][column]).toBe(u.name);
     expect(Number(r[0].s)).toBe(u.id);
   }

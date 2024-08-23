@@ -10,6 +10,10 @@ export const generateTypes = async (options: GeneratorOptions) => {
   type Filter,
   type StringFilter,
 } from "accel-record";
+import {
+  Attribute,
+  defineEnumTextAttribute,
+} from "accel-record/enums";
 
 declare module "accel-record" {
   function meta<T>(model: T): Meta<T>;
@@ -32,10 +36,7 @@ const models = (options: GeneratorOptions) => {
 const meta = (options: GeneratorOptions) =>
   options.dmmf.datamodel.models
     .map((model) => new ModelWrapper(model, options.dmmf.datamodel))
-    .map(
-      (model) =>
-        `T extends typeof ${model.baseModel} | ${model.baseModel} ? ${model.meta} :`
-    )
+    .map((model) => `T extends typeof ${model.baseModel} | ${model.baseModel} ? ${model.meta} :`)
     .join("\n               ");
 
 const enumData = (options: GeneratorOptions) => {

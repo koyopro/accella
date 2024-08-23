@@ -8,8 +8,7 @@ describe("error message", () => {
     return sample.errors.fullMessages[0];
   };
 
-  test("default", () =>
-    expect(subject()).toBe("Size is not included in the list"));
+  test("default", () => expect(subject()).toBe("Size is not included in the list"));
 
   describe("with i18n", () => {
     withI18n();

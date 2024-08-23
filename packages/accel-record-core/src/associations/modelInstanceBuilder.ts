@@ -7,13 +7,8 @@ import { HasOneAssociation } from "./hasOneAssociation.js";
 
 const isHasOneOrBelongsTo = (
   association: any
-): association is
-  | HasOneAssociation<any, any>
-  | BelongsToAssociation<any, any> => {
-  return (
-    association instanceof HasOneAssociation ||
-    association instanceof BelongsToAssociation
-  );
+): association is HasOneAssociation<any, any> | BelongsToAssociation<any, any> => {
+  return association instanceof HasOneAssociation || association instanceof BelongsToAssociation;
 };
 
 export class ModelInstanceBuilder {
@@ -31,9 +26,12 @@ export class ModelInstanceBuilder {
     }
     this.initAssociations<T>(klass, instance);
     // Updating fields other than the column field
-    Object.keys(input).forEach((key) => {
-      if (klass.attributeToColumn(key) == undefined) {
-        proxy[key] = input[key];
+    Object.entries(input).forEach(([key, value]) => {
+      const v = (instance as any)[key];
+      if (v instanceof Collection && Array.isArray(value)) {
+        (v as any).cache = value;
+      } else if (klass.attributeToColumn(key) == undefined) {
+        proxy[key] = value;
       }
     });
     return proxy;
@@ -57,10 +55,7 @@ export class ModelInstanceBuilder {
     });
   }
 
-  private static initAssociations<T extends typeof Model>(
-    klass: T,
-    obj: Model
-  ) {
+  private static initAssociations<T extends typeof Model>(klass: T, obj: Model) {
     for (const [key, info] of Object.entries(klass.associations)) {
       if (info.isHasOne) {
         obj.associations.set(key, new HasOneAssociation(obj, info));
@@ -93,7 +88,8 @@ const updateTarget = <T extends typeof Model>(
 ) => {
   const column = klass.attributeToColumn(prop as string);
   if (typeof column === "string") {
-    target[column] = value;
+    const field = klass.findField(prop as string);
+    target[column] = field ? field.cast(value) : value;
     return;
   }
   const association = target.associations.get(prop as string);

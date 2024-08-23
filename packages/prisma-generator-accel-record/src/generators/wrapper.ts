@@ -2,10 +2,12 @@ import { DMMF } from "@prisma/generator-helper";
 import { toCamelCase } from ".";
 
 export class FieldWrapper {
+  kind: DMMF.Field["kind"];
   name: DMMF.Field["name"];
   relationFromFields: DMMF.Field["relationFromFields"];
   hasDefaultValue: DMMF.Field["hasDefaultValue"];
   isRequired: DMMF.Field["isRequired"];
+  isId: DMMF.Field["isId"];
   isList: DMMF.Field["isList"];
   isUpdatedAt: DMMF.Field["isUpdatedAt"];
   type: DMMF.Field["type"];
@@ -15,10 +17,12 @@ export class FieldWrapper {
     private field: DMMF.Field,
     private datamodel: DMMF.Datamodel
   ) {
+    this.kind = field.kind;
     this.name = field.name;
     this.relationFromFields = field.relationFromFields;
     this.hasDefaultValue = field.hasDefaultValue;
     this.isRequired = field.isRequired;
+    this.isId = field.isId;
     this.isList = field.isList;
     this.isUpdatedAt = field.isUpdatedAt;
     this.type = field.type;
@@ -26,15 +30,10 @@ export class FieldWrapper {
   }
 
   get hasScalarDefault() {
-    if (
-      typeof this.field.default === "object" &&
-      "name" in this.field.default
-    ) {
+    if (typeof this.field.default === "object" && "name" in this.field.default) {
       return ["uuid", "cuid"].includes(this.field.default.name);
     }
-    return (
-      this.field.default != undefined && typeof this.field.default !== "object"
-    );
+    return this.field.default != undefined && typeof this.field.default !== "object";
   }
 
   get model() {
@@ -88,6 +87,15 @@ export class ModelWrapper {
   }
   get associationKey() {
     return `${this.model.name}AssociationKey`;
+  }
+  get primaryKeys(): string {
+    const pkNames = this.model.primaryKey?.fields ?? [];
+    const types = this.fields
+      .filter((f) => f.isId || pkNames.includes(f.name))
+      .map((f) => f.typeName);
+    if (types.length == 0) return "never";
+    if (types.length == 1) return types[0];
+    return `[${types.join(", ")}]`;
   }
   get fileName() {
     return toCamelCase(this.model.name);

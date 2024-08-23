@@ -7,10 +7,7 @@ export class Batches {
    * @param options.batchSize - The number of records to load in each batch. Defaults to 1000.
    * @returns - An iterator object that allows iterating over the relation in batches.
    */
-  findEach<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    options?: { batchSize?: number }
-  ) {
+  findEach<T, M extends ModelMeta>(this: Relation<T, M>, options?: { batchSize?: number }) {
     return {
       [Symbol.iterator]: () => {
         const limit = options?.batchSize ?? 1000;
@@ -36,10 +33,7 @@ export class Batches {
    * @param options.batchSize - The size of each batch. Defaults to 1000 if not provided.
    * @returns An iterator object that provides the records in batches.
    */
-  findInBatches<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    options?: { batchSize?: number }
-  ) {
+  findInBatches<T, M extends ModelMeta>(this: Relation<T, M>, options?: { batchSize?: number }) {
     return {
       [Symbol.iterator]: () => {
         const limit = options?.batchSize ?? 1000;

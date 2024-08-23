@@ -29,9 +29,7 @@ describe("setter / getter", () => {
     expectTypeOf(u.posts.maximum("id")).toMatchTypeOf<number>();
     expectTypeOf(u.posts.average("id")).toMatchTypeOf<number>();
     expectTypeOf(u.posts.updateAll({ id: 1 })).toMatchTypeOf<void>();
-    expectTypeOf(u.posts.select("id").toArray()).toMatchTypeOf<
-      { id: number }[]
-    >();
+    expectTypeOf(u.posts.select("id").toArray()).toMatchTypeOf<{ id: number }[]>();
     expectTypeOf(u.posts.pluck("id")).toMatchTypeOf<number[]>();
     // @ts-expect-error
     u.posts.where({ foo: 1 });

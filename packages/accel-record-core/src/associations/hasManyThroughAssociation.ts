@@ -3,10 +3,10 @@ import { Model } from "../index.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
 
 // cf. https://github.com/rails/rails/blob/main/activerecord/lib/active_record/associations/has_many_through_association.rb
-export class HasManyThroughAssociation<
-  O extends Model,
-  T extends Model,
-> extends HasManyAssociation<O, T> {
+export class HasManyThroughAssociation<O extends Model, T extends Model> extends HasManyAssociation<
+  O,
+  T
+> {
   override concat(records: T | T[]) {
     return this.persist(records);
   }

@@ -21,8 +21,7 @@ export class RelationBase {
     const select =
       this.options.select.length > 0
         ? this.options.select.map(
-            (column) =>
-              `${this.model.tableName}.${this.model.attributeToColumn(column)}`
+            (column) => `${this.model.tableName}.${this.model.attributeToColumn(column)}`
           )
         : [`${this.model.tableName}.*`];
     const rows = exec(this.query().select(...select));

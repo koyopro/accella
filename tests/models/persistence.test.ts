@@ -6,10 +6,7 @@ import { $ValidateSample } from "../factories/validateSample";
 
 describe("Persistence", () => {
   test("#save()", () => {
-    const posts = [
-      Post.build({ title: "post1" }),
-      Post.build({ title: "post2" }),
-    ];
+    const posts = [Post.build({ title: "post1" }), Post.build({ title: "post2" })];
     const u = $user.build({ posts });
     if (!u.save()) {
       throw new Error("Failed to save");

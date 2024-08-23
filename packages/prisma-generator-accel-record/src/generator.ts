@@ -23,10 +23,7 @@ generatorHandler({
   },
   onGenerate: async (options: GeneratorOptions) => {
     const outputDir = options.generator.output!.value!;
-    await writeFileSafely(
-      path.join(outputDir, `_types.ts`),
-      await generateIndex(options)
-    );
+    await writeFileSafely(path.join(outputDir, `_types.ts`), await generateIndex(options));
     const indexFile = path.join(outputDir, `index.ts`);
     if (!fs.existsSync(indexFile)) {
       await writeFileSafely(indexFile, `export * from "./_types.js";\n`);
@@ -52,26 +49,16 @@ const generateModels = async (options: GeneratorOptions, outputDir: string) => {
   }
 };
 
-const generateFactories = async (
-  options: GeneratorOptions,
-  indexFile: string
-) => {
+const generateFactories = async (options: GeneratorOptions, indexFile: string) => {
   const factoryDir = options.generator.config.factoryPath;
   if (typeof factoryDir !== "string") return;
-  const prefix = factoryDir.startsWith("/")
-    ? ""
-    : path.dirname(options.schemaPath);
+  const prefix = factoryDir.startsWith("/") ? "" : path.dirname(options.schemaPath);
   for (const model of options.dmmf.datamodel.models) {
     const fileName = `${toCamelCase(model.name)}.ts`;
     const filePath = path.join(prefix, factoryDir, fileName);
     if (fs.existsSync(filePath)) continue;
-    const relative = path
-      .relative(path.dirname(filePath), indexFile)
-      .replace(/.ts$/, ".js");
-    await writeFileSafely(
-      filePath,
-      generateFactory(model, { pathToIndex: relative })
-    );
+    const relative = path.relative(path.dirname(filePath), indexFile).replace(/.ts$/, ".js");
+    await writeFileSafely(filePath, generateFactory(model, { pathToIndex: relative }));
     console.info(`${green("create")}: ${path.relative(currentDir, filePath)}`);
   }
 };

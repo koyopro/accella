@@ -4,10 +4,7 @@ import { $user } from "../../factories/user";
 
 describe("#Collection()", () => {
   test("#toArray()", () => {
-    const posts = [
-      Post.build({ title: "post1" }),
-      Post.build({ title: "post2" }),
-    ];
+    const posts = [Post.build({ title: "post1" }), Post.build({ title: "post2" })];
     const u = $user.build({ posts });
     expect(u.posts.toArray()).toEqual(posts);
     u.save();

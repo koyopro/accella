@@ -46,7 +46,10 @@ describe("ManyToMany", () => {
   test("includes", () => {
     $user.create({ posts: [$post.build()] });
 
+    const baseCount = User.connection.queryCount;
     const user = User.includes("posts").first()!;
+    expect(User.connection.queryCount - baseCount).toBe(2);
+
     const beforeCount = User.connection.queryCount;
     expect(user.posts.toArray().length).toBe(1);
     expect(User.connection.queryCount).toBe(beforeCount);

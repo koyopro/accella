@@ -38,9 +38,7 @@ export class Naming {
 }
 
 const toPascalCase = (str: string) => {
-  return str
-    .replace(/_./g, (s) => s[1].toUpperCase())
-    .replace(/^./, (s) => s.toUpperCase());
+  return str.replace(/_./g, (s) => s[1].toUpperCase()).replace(/^./, (s) => s.toUpperCase());
 };
 
 export const loadI18n = async () => {

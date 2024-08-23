@@ -1,10 +1,7 @@
 import { Model, Models } from "../index.js";
 import { Association } from "./association.js";
 
-export class BelongsToAssociation<
-  O extends Model,
-  T extends Model,
-> extends Association<O, T> {
+export class BelongsToAssociation<O extends Model, T extends Model> extends Association<O, T> {
   reader() {
     if (!this.isLoaded) {
       this.target = Models[this.info.klass]
@@ -18,9 +15,7 @@ export class BelongsToAssociation<
 
   setter(record: T) {
     this.target = record;
-    this.owner[this.info.foreignKey as keyof O] = record[
-      this.info.primaryKey as keyof T
-    ] as any;
+    this.owner[this.info.foreignKey as keyof O] = record[this.info.primaryKey as keyof T] as any;
     this.isLoaded = true;
   }
 

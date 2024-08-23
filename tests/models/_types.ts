@@ -20,6 +20,10 @@ import {
   type Filter,
   type StringFilter,
 } from "accel-record";
+import {
+  Attribute,
+  defineEnumTextAttribute,
+} from "accel-record/enums";
 
 declare module "accel-record" {
   function meta<T>(model: T): Meta<T>;
@@ -72,7 +76,8 @@ declare module "./user" {
   }
 }
 export interface NewUser extends UserModel {};
-export class User extends UserModel {};
+export class User extends UserModel {
+};
 export interface User extends UserModel {
   id: number;
   email: string;
@@ -93,6 +98,7 @@ type UserMeta = {
   Base: UserModel;
   New: NewUser;
   Persisted: User;
+  PrimaryKey: number;
   AssociationKey: UserAssociationKey;
   JoinInput: UserAssociationKey | UserAssociationKey[] | {
     posts?: Meta<Post>['JoinInput'];
@@ -149,7 +155,8 @@ declare module "./team" {
   }
 }
 export interface NewTeam extends TeamModel {};
-export class Team extends TeamModel {};
+export class Team extends TeamModel {
+};
 export interface Team extends TeamModel {
   id: number;
   name: string;
@@ -162,6 +169,7 @@ type TeamMeta = {
   Base: TeamModel;
   New: NewTeam;
   Persisted: Team;
+  PrimaryKey: number;
   AssociationKey: TeamAssociationKey;
   JoinInput: TeamAssociationKey | TeamAssociationKey[] | {
     users?: Meta<UserTeam>['JoinInput'];
@@ -194,7 +202,8 @@ declare module "./userTeam" {
   }
 }
 export interface NewUserTeam extends UserTeamModel {};
-export class UserTeam extends UserTeamModel {};
+export class UserTeam extends UserTeamModel {
+};
 export interface UserTeam extends UserTeamModel {
   user: User;
   userId: number;
@@ -209,6 +218,7 @@ type UserTeamMeta = {
   Base: UserTeamModel;
   New: NewUserTeam;
   Persisted: UserTeam;
+  PrimaryKey: [number, number];
   AssociationKey: UserTeamAssociationKey;
   JoinInput: UserTeamAssociationKey | UserTeamAssociationKey[] | {
     user?: Meta<User>['JoinInput'];
@@ -248,7 +258,8 @@ declare module "./post" {
   }
 }
 export interface NewPost extends PostModel {};
-export class Post extends PostModel {};
+export class Post extends PostModel {
+};
 export interface Post extends PostModel {
   id: number;
   title: string;
@@ -263,6 +274,7 @@ type PostMeta = {
   Base: PostModel;
   New: NewPost;
   Persisted: Post;
+  PrimaryKey: number;
   AssociationKey: PostAssociationKey;
   JoinInput: PostAssociationKey | PostAssociationKey[] | {
     author?: Meta<User>['JoinInput'];
@@ -303,7 +315,8 @@ declare module "./postTag" {
   }
 }
 export interface NewPostTag extends PostTagModel {};
-export class PostTag extends PostTagModel {};
+export class PostTag extends PostTagModel {
+};
 export interface PostTag extends PostTagModel {
   id: number;
   name: string;
@@ -316,6 +329,7 @@ type PostTagMeta = {
   Base: PostTagModel;
   New: NewPostTag;
   Persisted: PostTag;
+  PrimaryKey: number;
   AssociationKey: PostTagAssociationKey;
   JoinInput: PostTagAssociationKey | PostTagAssociationKey[] | {
     posts?: Meta<Post>['JoinInput'];
@@ -348,7 +362,8 @@ declare module "./setting" {
   }
 }
 export interface NewSetting extends SettingModel {};
-export class Setting extends SettingModel {};
+export class Setting extends SettingModel {
+};
 export interface Setting extends SettingModel {
   settingId: number;
   user: User;
@@ -361,6 +376,7 @@ type SettingMeta = {
   Base: SettingModel;
   New: NewSetting;
   Persisted: Setting;
+  PrimaryKey: number;
   AssociationKey: SettingAssociationKey;
   JoinInput: SettingAssociationKey | SettingAssociationKey[] | {
     user?: Meta<User>['JoinInput'];
@@ -396,12 +412,15 @@ declare module "./profile" {
     point: number;
     enabled: boolean;
     role: Role;
+    roleText: string;
     uuid: string;
     cuid: string;
   }
 }
 export interface NewProfile extends ProfileModel {};
-export class Profile extends ProfileModel {};
+export class Profile extends ProfileModel {
+  static role = new Attribute(this, "Role", Role);
+};
 export interface Profile extends ProfileModel {
   id: number;
   user: User;
@@ -413,6 +432,7 @@ type ProfileMeta = {
   Base: ProfileModel;
   New: NewProfile;
   Persisted: Profile;
+  PrimaryKey: number;
   AssociationKey: ProfileAssociationKey;
   JoinInput: ProfileAssociationKey | ProfileAssociationKey[] | {
     user?: Meta<User>['JoinInput'];
@@ -449,6 +469,7 @@ type ProfileMeta = {
   };
 };
 registerModel(Profile);
+defineEnumTextAttribute(ProfileModel, Profile, "role");
 
 declare module "./company" {
   interface CompanyModel {
@@ -459,7 +480,8 @@ declare module "./company" {
   }
 }
 export interface NewCompany extends CompanyModel {};
-export class Company extends CompanyModel {};
+export class Company extends CompanyModel {
+};
 export interface Company extends CompanyModel {
   id: number;
   name: string;
@@ -472,6 +494,7 @@ type CompanyMeta = {
   Base: CompanyModel;
   New: NewCompany;
   Persisted: Company;
+  PrimaryKey: number;
   AssociationKey: CompanyAssociationKey;
   JoinInput: CompanyAssociationKey | CompanyAssociationKey[] | {
     employees?: Meta<Employee>['JoinInput'];
@@ -502,7 +525,8 @@ declare module "./employee" {
   }
 }
 export interface NewEmployee extends EmployeeModel {};
-export class Employee extends EmployeeModel {};
+export class Employee extends EmployeeModel {
+};
 export interface Employee extends EmployeeModel {
   id: number;
   name: string;
@@ -515,6 +539,7 @@ type EmployeeMeta = {
   Base: EmployeeModel;
   New: NewEmployee;
   Persisted: Employee;
+  PrimaryKey: number;
   AssociationKey: EmployeeAssociationKey;
   JoinInput: EmployeeAssociationKey | EmployeeAssociationKey[] | {
     company?: Meta<Company>['JoinInput'];
@@ -548,7 +573,8 @@ declare module "./validateSample" {
   }
 }
 export interface NewValidateSample extends ValidateSampleModel {};
-export class ValidateSample extends ValidateSampleModel {};
+export class ValidateSample extends ValidateSampleModel {
+};
 export interface ValidateSample extends ValidateSampleModel {
   id: number;
   accepted: boolean;
@@ -563,6 +589,7 @@ type ValidateSampleMeta = {
   Base: ValidateSampleModel;
   New: NewValidateSample;
   Persisted: ValidateSample;
+  PrimaryKey: number;
   AssociationKey: ValidateSampleAssociationKey;
   JoinInput: ValidateSampleAssociationKey | ValidateSampleAssociationKey[];
   Column: {
@@ -600,7 +627,8 @@ declare module "./account" {
   }
 }
 export interface NewAccount extends AccountModel {};
-export class Account extends AccountModel {};
+export class Account extends AccountModel {
+};
 export interface Account extends AccountModel {
   id: number;
   email: string;
@@ -612,6 +640,7 @@ type AccountMeta = {
   Base: AccountModel;
   New: NewAccount;
   Persisted: Account;
+  PrimaryKey: number;
   AssociationKey: AccountAssociationKey;
   JoinInput: AccountAssociationKey | AccountAssociationKey[];
   Column: {

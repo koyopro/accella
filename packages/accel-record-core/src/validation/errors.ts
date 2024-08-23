@@ -6,10 +6,21 @@ const defaultMessages: Record<string, string | undefined> = {
   accepted: "must be accepted",
   invalid: "is invalid",
   inclusion: "is not included in the list",
-  tooShort: "is too short (minimum is %{count} characters)",
-  tooLong: "is too long (maximum is %{count} characters)",
+  tooShort: "is too short (minimum is {{count}} characters)",
+  tooLong: "is too long (maximum is {{count}} characters)",
   taken: "has already been taken",
-  confirmation: "doesn't match %{attribute}",
+  confirmation: "doesn't match {{attribute}}",
+
+  notANumber: "is not a number",
+  notAnInteger: "must be an integer",
+  equalTo: "must be equal to {{count}}",
+  greaterThan: "must be greater than {{count}}",
+  greaterThanOrEqualTo: "must be greater than or equal to {{count}}",
+  lessThan: "must be less than {{count}}",
+  lessThanOrEqualTo: "must be less than or equal to {{count}}",
+  otherThan: "must be other than {{count}}",
+  odd: "must be odd",
+  even: "must be even",
 };
 
 type Options = { count?: number; attribute?: string };
@@ -41,14 +52,15 @@ export class Error {
 
   get message() {
     let message = this.translatedMessage;
-    if (this.options.count) {
-      message = message.replace("%{count}", this.options.count.toString());
+    if (this.options.count != undefined) {
+      for (const key of ["{{count}}", "%{count}"]) {
+        message = message.replace(key, this.options.count.toString());
+      }
     }
-    if (message.includes("%{attribute}")) {
-      message = message.replace(
-        "%{attribute}",
-        this.options.attribute || "confirmation"
-      );
+    if (message.includes("{attribute}")) {
+      for (const key of ["{{attribute}}", "%{attribute}"]) {
+        message = message.replace(key, this.options.attribute || "confirmation");
+      }
     }
     return message;
   }
@@ -94,9 +106,7 @@ export class Errors {
    * @param error - The error message.
    */
   add(attribute: string, error: string, options?: Options) {
-    (this.errors[attribute] ||= []).push(
-      new Error(this.base, attribute, error, options)
-    );
+    (this.errors[attribute] ||= []).push(new Error(this.base, attribute, error, options));
   }
 
   /**

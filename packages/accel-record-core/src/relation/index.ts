@@ -67,9 +67,7 @@ export class Relation<T, M extends ModelMeta> extends Mix(
     options?: O
   ): T extends Model ? ToHashResult<T, O>[] : never;
   toHashArray(options = {}): Record<string, any>[] {
-    return this.toArray().map((row) =>
-      row instanceof Model ? row.toHash(options) : {}
-    );
+    return this.toArray().map((row) => (row instanceof Model ? row.toHash(options) : {}));
   }
 
   /**
@@ -78,9 +76,7 @@ export class Relation<T, M extends ModelMeta> extends Mix(
    * @param options - The options for the conversion.
    * @returns A JSON string representation of the relation.
    */
-  toJson<O extends ToHashOptions<T>>(
-    options?: O
-  ): T extends Model ? string : never;
+  toJson<O extends ToHashOptions<T>>(options?: O): T extends Model ? string : never;
   toJson(options = {}): string {
     return JSON.stringify(this.toHashArray(options));
   }
@@ -92,16 +88,11 @@ export class Relation<T, M extends ModelMeta> extends Mix(
    * @param {F} func - The mapping function to apply to each element.
    * @returns {ReturnType<F>[]} - An array of the results of applying the mapping function to each element.
    */
-  map<F extends (value: T, index: number, array: T[]) => any>(
-    func: F
-  ): ReturnType<F>[] {
+  map<F extends (value: T, index: number, array: T[]) => any>(func: F): ReturnType<F>[] {
     return this.toArray().map((row, i, array) => func(row, i, array));
   }
 
-  lock<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    type: LockType = "forUpdate"
-  ): Relation<T, M> {
+  lock<T, M extends ModelMeta>(this: Relation<T, M>, type: LockType = "forUpdate"): Relation<T, M> {
     return new Relation(this.model, { ...this.options, lock: type });
   }
 
@@ -114,9 +105,7 @@ export class Relation<T, M extends ModelMeta> extends Mix(
     return {
       next(): { value: T; done: boolean } {
         const done = _this.counter === _this.toArray().length;
-        const value = (
-          done ? undefined : _this.toArray()![_this.counter++]
-        ) as T;
+        const value = (done ? undefined : _this.toArray()![_this.counter++]) as T;
         return { value, done };
       },
       return(): { value: T; done: boolean } {

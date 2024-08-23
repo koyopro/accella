@@ -34,11 +34,7 @@ export class RelationUpdater {
     return ret;
   }
 
-  private affectQuery(
-    relation: Relation<any, any>,
-    attrStr: string,
-    predicate: Predicate
-  ) {
+  private affectQuery(relation: Relation<any, any>, attrStr: string, predicate: Predicate) {
     switch (predicate.name) {
       case "blank": {
         const w1 = this.buildWhere(this.model, attrStr, predicate, "");
@@ -55,11 +51,7 @@ export class RelationUpdater {
     }
   }
 
-  private affectDefaultQuery(
-    relation: Relation<any, any>,
-    attrStr: string,
-    predicate: Predicate
-  ) {
+  private affectDefaultQuery(relation: Relation<any, any>, attrStr: string, predicate: Predicate) {
     const values = [this.value].flat();
     switch (predicate.type) {
       case "all":

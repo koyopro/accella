@@ -13,9 +13,7 @@ export class Calculations {
    * @returns The number of records in the relation.
    */
   count<T>(this: Relation<T, ModelMeta>): number {
-    const res = exec(
-      this.query().count(`${this.model.tableName}.${this.model.primaryKeys[0]}`)
-    );
+    const res = exec(this.query().count(`${this.model.tableName}.${this.model.primaryKeys[0]}`));
     return Number(Object.values(res[0])[0]);
   }
 
@@ -25,17 +23,9 @@ export class Calculations {
    * @param attribute - The attribute to find the minimum value for.
    * @returns The minimum value of the specified attribute.
    */
-  minimum<T, M extends ModelMeta>(
-    this: Relations<T, M>,
-    attribute: keyof M["Column"]
-  ): number;
-  minimum<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    attribute: keyof M["Column"]
-  ) {
-    const res = exec(
-      this.query().min(this.model.attributeToColumn(attribute as string))
-    );
+  minimum<T, M extends ModelMeta>(this: Relations<T, M>, attribute: keyof M["Column"]): number;
+  minimum<T, M extends ModelMeta>(this: Relation<T, M>, attribute: keyof M["Column"]) {
+    const res = exec(this.query().min(this.model.attributeToColumn(attribute as string)));
     return Number(Object.values(res[0])[0]);
   }
 
@@ -45,17 +35,9 @@ export class Calculations {
    * @param attribute - The attribute to find the maximum value for.
    * @returns The maximum value of the specified attribute.
    */
-  maximum<T, M extends ModelMeta>(
-    this: Relations<T, M>,
-    attribute: keyof M["Column"]
-  ): number;
-  maximum<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    attribute: keyof M["Column"]
-  ) {
-    const res = exec(
-      this.query().max(this.model.attributeToColumn(attribute as string))
-    );
+  maximum<T, M extends ModelMeta>(this: Relations<T, M>, attribute: keyof M["Column"]): number;
+  maximum<T, M extends ModelMeta>(this: Relation<T, M>, attribute: keyof M["Column"]) {
+    const res = exec(this.query().max(this.model.attributeToColumn(attribute as string)));
     return Number(Object.values(res[0])[0]);
   }
 
@@ -65,17 +47,9 @@ export class Calculations {
    * @param attribute - The attribute to calculate the average for.
    * @returns The average value of the specified attribute.
    */
-  average<T, M extends ModelMeta>(
-    this: Relations<T, M>,
-    attribute: keyof M["Column"]
-  ): number;
-  average<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    attribute: keyof M["Column"]
-  ) {
-    const res = exec(
-      this.query().avg(this.model.attributeToColumn(attribute as string))
-    );
+  average<T, M extends ModelMeta>(this: Relations<T, M>, attribute: keyof M["Column"]): number;
+  average<T, M extends ModelMeta>(this: Relation<T, M>, attribute: keyof M["Column"]) {
+    const res = exec(this.query().avg(this.model.attributeToColumn(attribute as string)));
     return Number(Object.values(res[0])[0]);
   }
 }

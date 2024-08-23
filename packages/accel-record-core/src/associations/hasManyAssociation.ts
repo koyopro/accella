@@ -2,10 +2,7 @@ import { Model, Models } from "../index.js";
 import { Association } from "./association.js";
 
 // cf. https://github.com/rails/rails/blob/main/activerecord/lib/active_record/associations/has_many_association.rb#L11
-export class HasManyAssociation<
-  O extends Model,
-  T extends Model,
-> extends Association<O, T> {
+export class HasManyAssociation<O extends Model, T extends Model> extends Association<O, T> {
   concat(records: T | T[]) {
     return this.persist(records);
   }
@@ -15,10 +12,7 @@ export class HasManyAssociation<
     let ret = true;
     for (const record of _records) {
       Object.assign(record, this.scopeAttributes());
-      if (
-        this.owner.isPersisted() &&
-        (record.isChanged() || record.isNewRecord)
-      ) {
+      if (this.owner.isPersisted() && (record.isChanged() || record.isNewRecord)) {
         if (!record.save()) {
           ret = false;
         }
@@ -28,17 +22,11 @@ export class HasManyAssociation<
   }
 
   deleteAll() {
-    Models[this.info.klass]
-      .all()
-      .setOption("wheres", [this.scopeAttributes()])
-      .deleteAll();
+    Models[this.info.klass].all().setOption("wheres", [this.scopeAttributes()]).deleteAll();
   }
 
   destroyAll() {
-    Models[this.info.klass]
-      .all()
-      .setOption("wheres", [this.scopeAttributes()])
-      .destroyAll();
+    Models[this.info.klass].all().setOption("wheres", [this.scopeAttributes()]).destroyAll();
   }
 
   delete(...records: T[]) {

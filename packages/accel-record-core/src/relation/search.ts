@@ -78,10 +78,7 @@ export class Searchable {
    * const users = search.result();
    * ```
    */
-  search<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    params: Record<string, any> | undefined
-  ) {
+  search<T, M extends ModelMeta>(this: Relation<T, M>, params: Record<string, any> | undefined) {
     return new Search(this.model, params, this);
   }
 }

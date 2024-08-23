@@ -1,3 +1,26 @@
+# [1.13.0](https://github.com/koyopro/accella/compare/1.12.0...1.13.0) (2024-08-24)
+
+### Features
+
+- Translation of Enums ([#38](https://github.com/koyopro/accella/pull/38))
+
+### Improvements
+
+- Improve casting of Invalid Number and Date ([#39](https://github.com/koyopro/accella/pull/39))
+- Modify the argument type of the find() method. ([#40](https://github.com/koyopro/accella/pull/40))
+- Reduce unnecessary query execution when including hasMany association. ([#41](https://github.com/koyopro/accella/pull/41))
+
+# [1.12.0](https://github.com/koyopro/accella/compare/1.11.0...1.12.0) (2024-08-17)
+
+### Features
+
+- Lock ([#35](https://github.com/koyopro/accella/pull/35))
+
+### Improvements
+
+- Improvement of the Search class interface ([#36](https://github.com/koyopro/accella/pull/36))
+- Fix export path of accel-record/errors ([#37](https://github.com/koyopro/accella/pull/37))
+
 # [1.11.0](https://github.com/koyopro/accella/compare/1.10.1...1.11.0) (2024-08-10)
 
 ### Features

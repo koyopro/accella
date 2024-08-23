@@ -1,6 +1,6 @@
 type ToHash<A extends ReadonlyArray<T>, T> = <K extends PropertyKey, V>(
   this: A,
-  callback: (item: T) => [K, V]
+  callback: (item: T, index: number) => [K, V]
 ) => Record<K, V>;
 
 declare global {
@@ -14,15 +14,13 @@ declare global {
 
 Array.prototype.toHash = function <T, K extends PropertyKey, V>(
   this: Array<T>,
-  callback: (item: T) => [K, V]
+  callback: (item: T, index: number) => [K, V]
 ): Record<K, V> {
   const ret = {} as Record<K, V>;
-  if (typeof this[Symbol.iterator] === "function") {
-    for (const item of this) {
-      const [key, value] = callback(item);
-      ret[key] = value;
-    }
-  }
+  this.forEach((item, index) => {
+    const [key, value] = callback(item, index);
+    ret[key] = value;
+  });
   return ret;
 };
 
