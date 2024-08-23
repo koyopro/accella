@@ -842,12 +842,7 @@ Vitestを使ったテストでは、以下のようなsetupファイルを用意
 ```ts
 // tests/vitest.setup.ts
 
-import {
-  DatabaseCleaner,
-  Migration,
-  initAccelRecord,
-  stopWorker,
-} from "accel-record";
+import { DatabaseCleaner, Migration, initAccelRecord, stopWorker } from "accel-record";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -1264,8 +1259,9 @@ i18next
 | uniqueness     | -          | 'taken'        | -      |
 | format         | -          | 'invalid'      | -      |
 | inclusion      | -          | 'inclusion'    | -      |
+| numericality   | 'equalTo'  | 'equalTo'      | count  |
 
-式展開が `count` になっているものは、エラーメッセージに `%{count}` を含むときにその部分がオプションで指定された値に置き換えられます。
+式展開が `count` になっているものは、エラーメッセージに `{{count}}` を含むときにその部分がオプションで指定された値に置き換えられます。
 
 ### Enumの翻訳
 
