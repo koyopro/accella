@@ -9,8 +9,7 @@ export const initI18n = async () => {
         translation: {
           "accelrecord.attributes.Account.email": "メールアドレス",
           "accelrecord.attributes.Account.password": "パスワード",
-          "accelrecord.attributes.Account.passwordConfirmation":
-            "パスワード(確認用)",
+          "accelrecord.attributes.Account.passwordConfirmation": "パスワード(確認用)",
 
           "accelrecord.attributes.SignIn.email": "メールアドレス",
           "accelrecord.attributes.SignIn.password": "パスワード",
@@ -40,10 +39,8 @@ export const initI18n = async () => {
           "views.pagination.next": "次 &rsaquo;",
           "views.pagination.truncate": "&hellip;",
 
-          "helpers.pageEntriesInfo.onePage.displayEntries_zero":
-            "レコードが見つかりませんでした",
-          "helpers.pageEntriesInfo.onePage.displayEntries_other":
-            "<b>全{{total}}</b>件表示中",
+          "helpers.pageEntriesInfo.onePage.displayEntries_zero": "レコードが見つかりませんでした",
+          "helpers.pageEntriesInfo.onePage.displayEntries_other": "<b>全{{total}}</b>件表示中",
           "helpers.pageEntriesInfo.morePages.displayEntries":
             "<b>{{first}}-{{last}}</b>件 / {{total}}件中",
         },
