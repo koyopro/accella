@@ -29,9 +29,7 @@ export class Fields {
 
   private static get model() {
     const tableName = this.tableName;
-    const model = dmmf.datamodel.models.find((m) =>
-      [m.name, m.dbName].includes(tableName)
-    );
+    const model = dmmf.datamodel.models.find((m) => [m.name, m.dbName].includes(tableName));
     if (!model) throw new Error(`Model for table '${tableName}' not found`);
     return model;
   }

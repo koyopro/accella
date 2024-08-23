@@ -14,8 +14,7 @@ export const withI18n = () => {
       "accelrecord.attributes.User.password": "パスワード",
       "accelrecord.attributes.User.passwordConfirmation": "パスワード(確認用)",
       "accelrecord.attributes.Account.password": "パスワード",
-      "accelrecord.attributes.Account.passwordConfirmation":
-        "パスワード(確認用)",
+      "accelrecord.attributes.Account.passwordConfirmation": "パスワード(確認用)",
       "accelrecord.attributes.ValidateSample.accepted": "許可",
       "accelrecord.attributes.ValidateSample.pattern": "パターン",
       "accelrecord.attributes.ValidateSample.size": "サイズ",
@@ -33,9 +32,7 @@ export const withI18n = () => {
       "errors.messages.taken": "は既に使用されています",
       "errors.messages.confirmation": "と%{attribute}の入力が一致しません",
     };
-    Object.entries(translations).forEach(([key, value]) =>
-      addTranslation(key, value)
-    );
+    Object.entries(translations).forEach(([key, value]) => addTranslation(key, value));
   });
 
   afterEach(async () => {

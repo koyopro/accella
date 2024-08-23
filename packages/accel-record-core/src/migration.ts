@@ -93,10 +93,7 @@ export class Migration {
   }
 
   protected async applyIfPending(dir: string): Promise<boolean> {
-    const sqlPath = path.resolve(
-      this.prismaDir,
-      `./migrations/${dir}/migration.sql`
-    );
+    const sqlPath = path.resolve(this.prismaDir, `./migrations/${dir}/migration.sql`);
     if (!fs.existsSync(sqlPath)) return false;
     if (!this.isPending(dir)) return false;
 

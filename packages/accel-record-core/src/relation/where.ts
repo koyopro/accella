@@ -19,10 +19,7 @@ export class Where {
    * @param input - An object representing the WHERE clause.
    * @returns A new instance of the Relation class with the WHERE clause added.
    */
-  where<T, M extends ModelMeta>(
-    this: Relations<T, M>,
-    input: M["WhereInput"]
-  ): Relation<T, M>;
+  where<T, M extends ModelMeta>(this: Relations<T, M>, input: M["WhereInput"]): Relation<T, M>;
   /**
    * Adds a WHERE clause to the query.
    *
@@ -61,9 +58,7 @@ export class Where {
         newOptions["wheres"].push([col, "in", input[key]]);
       } else if (input[key] != null && typeof input[key] === "object") {
         for (const operator in input[key]) {
-          newOptions["wheres"].push(
-            makeWhere(col, operator, input[key][operator])
-          );
+          newOptions["wheres"].push(makeWhere(col, operator, input[key][operator]));
         }
       } else {
         // In knex, we need to use null instead of undefined."
@@ -100,11 +95,7 @@ export class Where {
       }
     }
 
-    return Object.entries(where).map(([column, values]) => [
-      column,
-      op,
-      values,
-    ]);
+    return Object.entries(where).map(([column, values]) => [column, op, values]);
   }
 
   /**
@@ -113,24 +104,14 @@ export class Where {
    * @param input - The input object specifying the "where not" condition.
    * @returns A new instance of the Relation class with the added "where not" condition.
    */
-  whereNot<T, M extends ModelMeta>(
-    this: Relations<T, M>,
-    input: M["WhereInput"]
-  ): Relation<T, M>;
-  whereNot<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    input: M["WhereInput"]
-  ): Relation<T, M> {
+  whereNot<T, M extends ModelMeta>(this: Relations<T, M>, input: M["WhereInput"]): Relation<T, M>;
+  whereNot<T, M extends ModelMeta>(this: Relation<T, M>, input: M["WhereInput"]): Relation<T, M> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
     for (const key in input) {
       const column = this.model.attributeToColumn(key);
       const col = `${this.model.tableName}.${column}`;
       if (!column) {
-        const associationWheres = this.getAssocationWhere(
-          key,
-          input[key],
-          "not in"
-        );
+        const associationWheres = this.getAssocationWhere(key, input[key], "not in");
         if (associationWheres) {
           for (const where of associationWheres) {
             if (Array.isArray(where) && where[1] === "not in") {
@@ -147,9 +128,7 @@ export class Where {
           if (operator === "in") {
             newOptions["wheres"].push([col, "not in", input[key][operator]]);
           } else {
-            newOptions["whereNots"].push(
-              makeWhere(col, operator, input[key][operator])
-            );
+            newOptions["whereNots"].push(makeWhere(col, operator, input[key][operator]));
           }
         }
       } else {
@@ -184,20 +163,14 @@ export class Where {
    * @param relation - The relation to combine with the current relation.
    * @returns A new relation that represents the combined result.
    */
-  or<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    relation: Relation<T, M>
-  ): Relation<T, M>;
+  or<T, M extends ModelMeta>(this: Relation<T, M>, relation: Relation<T, M>): Relation<T, M>;
   /**
    * Adds a condition to the current relation using the OR operator.
    *
    * @param input - An object representing the WHERE clause.
    * @returns A new relation with the added condition.
    */
-  or<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    input: M["WhereInput"]
-  ): Relation<T, M>;
+  or<T, M extends ModelMeta>(this: Relation<T, M>, input: M["WhereInput"]): Relation<T, M>;
   or<T, M extends ModelMeta>(
     this: Relation<T, M>,
     relationOrInput: Relation<T, M> | M["WhereInput"]

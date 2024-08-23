@@ -59,9 +59,7 @@ test("toHash with include", () => {
 
   u.setting = $setting.build({ threshold: 3.0 });
 
-  expect(
-    u.toHash({ include: { posts: { only: ["title"] }, setting: {} } })
-  ).toEqual(
+  expect(u.toHash({ include: { posts: { only: ["title"] }, setting: {} } })).toEqual(
     objectContaining({
       id: u.id,
       name: "hoge",

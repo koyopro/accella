@@ -33,12 +33,7 @@ export class Search {
     let relation = this.relation ?? this.model.all();
     for (const [key, value] of Object.entries(this.params)) {
       try {
-        relation = new RelationUpdater(
-          this.model,
-          relation,
-          key,
-          value
-        ).update();
+        relation = new RelationUpdater(this.model, relation, key, value).update();
       } catch (e) {
         if (e instanceof AttributeNotFound) {
           // Ignore the error

@@ -52,8 +52,7 @@ export class InsertManager<T extends Model> {
     const q = affectLock(this.record.queryBuilder, lock).where(data).limit(1);
     const [record] = exec(q, "TRACE");
     for (const [key, value] of Object.entries(record)) {
-      this.record[key as keyof T] =
-        this.record.findField(key)?.cast(value) ?? value;
+      this.record[key as keyof T] = this.record.findField(key)?.cast(value) ?? value;
     }
   }
 

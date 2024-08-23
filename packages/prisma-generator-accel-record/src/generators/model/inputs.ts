@@ -24,10 +24,7 @@ export const createInputs = (model: ModelWrapper) => {
 };
 
 const isOptional = (field: ModelWrapper["fields"][0]) =>
-  field.hasDefaultValue ||
-  !field.isRequired ||
-  field.isList ||
-  field.isUpdatedAt;
+  field.hasDefaultValue || !field.isRequired || field.isList || field.isUpdatedAt;
 
 const passwordFields = (field: FieldWrapper, password: string) =>
   [
@@ -55,9 +52,7 @@ export const joinInputs = (model: ModelWrapper) => {
   const fields = model.fields.filter((field) => field.relationName);
   if (fields.length == 0) return "";
   const types = fields
-    .map(
-      (f) => `\n    ${f.name}?: Meta<${f.model!.persistedModel}>['JoinInput'];`
-    )
+    .map((f) => `\n    ${f.name}?: Meta<${f.model!.persistedModel}>['JoinInput'];`)
     .join("");
   return ` | {${types}\n  }`;
 };

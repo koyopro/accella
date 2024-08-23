@@ -26,9 +26,7 @@ export class Query {
     const keys = [key].flat();
     const valid = keys.every((key) => typeof key !== "number" || isFinite(key));
     const where = this.model.primaryKeys.toHash((col, i) => [col, keys[i]]);
-    const instance = valid
-      ? this.setOption("wheres", [where]).first()
-      : undefined;
+    const instance = valid ? this.setOption("wheres", [where]).first() : undefined;
     if (!instance) {
       throw new RecordNotFound("Record Not Found");
     }
@@ -92,10 +90,7 @@ export class Query {
    * @param offset - The number of rows to skip from the beginning of the result set.
    * @returns A new `Relation` object with the specified offset.
    */
-  offset<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    offset: number
-  ): Relation<T, M> {
+  offset<T, M extends ModelMeta>(this: Relation<T, M>, offset: number): Relation<T, M> {
     return new Relation(this.model, { ...this.options, offset });
   }
   /**
@@ -104,10 +99,7 @@ export class Query {
    * @param limit - The maximum number of records to be returned.
    * @returns A new `Relation` instance with the specified limit.
    */
-  limit<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    limit: number
-  ): Relation<T, M> {
+  limit<T, M extends ModelMeta>(this: Relation<T, M>, limit: number): Relation<T, M> {
     return new Relation(this.model, { ...this.options, limit });
   }
   /**
@@ -128,10 +120,7 @@ export class Query {
     direction: "asc" | "desc" = "asc"
   ): Relation<T, M> {
     const newOptions = JSON.parse(JSON.stringify(this.options));
-    newOptions["orders"].push([
-      this.model.attributeToColumn(attribute as string),
-      direction,
-    ]);
+    newOptions["orders"].push([this.model.attributeToColumn(attribute as string), direction]);
     return new Relation(this.model, newOptions);
   }
   /**
@@ -153,14 +142,8 @@ export class Query {
    *
    * @param {Partial<M["Column"]>} attributes - The attributes to update.
    */
-  updateAll<T, M extends ModelMeta>(
-    this: Relations<T, M>,
-    attributes: Partial<M["Column"]>
-  ): void;
-  updateAll<T, M extends ModelMeta>(
-    this: Relation<T, M>,
-    attributes: Partial<M["Column"]>
-  ) {
+  updateAll<T, M extends ModelMeta>(this: Relations<T, M>, attributes: Partial<M["Column"]>): void;
+  updateAll<T, M extends ModelMeta>(this: Relation<T, M>, attributes: Partial<M["Column"]>) {
     const params: any = {};
     for (const key in attributes) {
       const column = this.model.attributeToColumn(key);
@@ -197,20 +180,14 @@ export class Query {
     F extends (keyof M["Column"])[],
     // @ts-ignore
     R extends { [K in F[number]]: M["Persisted"][K] },
-  >(
-    this: Relations<T, M>,
-    ...attributes: F
-  ): Relation<T extends Model ? R : T & R, M>;
+  >(this: Relations<T, M>, ...attributes: F): Relation<T extends Model ? R : T & R, M>;
   select<
     T,
     M extends ModelMeta,
     F extends (keyof M["Column"])[],
     // @ts-ignore
     R extends { [K in F[number]]: M["Persisted"][K] },
-  >(
-    this: Relation<T, M>,
-    ...attributes: F
-  ): Relation<T extends Model ? R : T & R, M> {
+  >(this: Relation<T, M>, ...attributes: F): Relation<T extends Model ? R : T & R, M> {
     return new Relation(this.model, {
       ...this.options,
       select: [...this.options.select, ...(attributes as string[])],

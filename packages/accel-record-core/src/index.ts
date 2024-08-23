@@ -22,11 +22,7 @@ import { Mix } from "./utils.js";
 
 export { Collection } from "./associations/collectionProxy.js";
 export { after, before } from "./callbacks.js";
-export {
-  getConfig,
-  initAccelRecord,
-  stopRpcClient as stopWorker,
-} from "./database.js";
+export { getConfig, initAccelRecord, stopRpcClient as stopWorker } from "./database.js";
 export { Migration } from "./migration.js";
 export { hasSecurePassword } from "./model/securePassword.js";
 export { Relation } from "./relation/index.js";
@@ -111,10 +107,7 @@ export class Model extends Mix(
    * @returns The reloaded record.
    */
   reload(options?: { lock?: LockType }) {
-    this.retriveInsertedAttributes(
-      {} as Record<keyof this, any>,
-      options?.lock
-    );
+    this.retriveInsertedAttributes({} as Record<keyof this, any>, options?.lock);
     for (const [key, association] of this.associations.entries()) {
       if (association instanceof HasOneAssociation) {
         association.reset();

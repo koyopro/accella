@@ -59,8 +59,7 @@ export function hasSecurePassword<T extends string = "password">(
   const authenticate = `authenticate${toPascalCase(attribute)}`;
 
   // Create an alias for authenticate only when the attribute is "password"
-  const authenticateAlias =
-    attribute == "password" ? "authenticate" : "__authenticate";
+  const authenticateAlias = attribute == "password" ? "authenticate" : "__authenticate";
   // @ts-ignore
   return class SecurePassword {
     get [attribute]() {
@@ -78,10 +77,7 @@ export function hasSecurePassword<T extends string = "password">(
     get [confirmAttribute]() {
       return _get(this, _cofirmAttribute);
     }
-    [authenticate]<T extends Model & SecurePassword>(
-      this: T,
-      password: string
-    ) {
+    [authenticate]<T extends Model & SecurePassword>(this: T, password: string) {
       const digest = _get(this, `${attribute}Digest`) as string | undefined;
       return digest ? compareSync(password, digest) : false;
     }

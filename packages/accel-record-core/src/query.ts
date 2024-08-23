@@ -15,9 +15,7 @@ export class Query {
    * Retrieves all records of the model.
    * @returns A `Relation` object representing the query result.
    */
-  static all<T extends typeof Model>(
-    this: T
-  ): Relation<Meta<T>["Persisted"], Meta<T>> {
+  static all<T extends typeof Model>(this: T): Relation<Meta<T>["Persisted"], Meta<T>> {
     return new Relation(this);
   }
 
@@ -127,11 +125,10 @@ export class Query {
    * @param attribute - The attribute key to retrieve.
    * @returns An array of attribute values from all persisted instances of the model.
    */
-  static pluck<
-    T extends typeof Model,
-    M extends Meta<T>,
-    F extends keyof M["Column"],
-  >(this: T, attribute: F): M["Persisted"][F][] {
+  static pluck<T extends typeof Model, M extends Meta<T>, F extends keyof M["Column"]>(
+    this: T,
+    attribute: F
+  ): M["Persisted"][F][] {
     return this.all().pluck(attribute as any);
   }
 
@@ -139,17 +136,12 @@ export class Query {
    * Retrieves the first n records of the model.
    * @returns The first record of the model.
    */
-  static first<T extends typeof Model>(
-    this: T,
-    limit: number
-  ): Meta<T>["Persisted"][];
+  static first<T extends typeof Model>(this: T, limit: number): Meta<T>["Persisted"][];
   /**
    * Retrieves the first record of the model.
    * @returns The first record of the model.
    */
-  static first<T extends typeof Model>(
-    this: T
-  ): Meta<T>["Persisted"] | undefined;
+  static first<T extends typeof Model>(this: T): Meta<T>["Persisted"] | undefined;
   static first<T extends typeof Model>(
     this: T,
     limit?: number
@@ -161,17 +153,12 @@ export class Query {
    * Retrieves the last n records of the model.
    * @returns The last record of the model.
    */
-  static last<T extends typeof Model>(
-    this: T,
-    limit: number
-  ): Meta<T>["Persisted"][];
+  static last<T extends typeof Model>(this: T, limit: number): Meta<T>["Persisted"][];
   /**
    * Retrieves the last record of the model.
    * @returns The last record of the model.
    */
-  static last<T extends typeof Model>(
-    this: T
-  ): Meta<T>["Persisted"] | undefined;
+  static last<T extends typeof Model>(this: T): Meta<T>["Persisted"] | undefined;
   static last<T extends typeof Model>(
     this: T,
     limit?: number
@@ -184,10 +171,7 @@ export class Query {
    *
    * @param attributes - The attributes to update the records with.
    */
-  static updateAll<T extends typeof Model>(
-    this: T,
-    attributes: Partial<Meta<T>["Column"]>
-  ): void {
+  static updateAll<T extends typeof Model>(this: T, attributes: Partial<Meta<T>["Column"]>): void {
     return this.all().updateAll(attributes);
   }
 
@@ -323,10 +307,7 @@ export class Query {
    * @returns The found record.
    * @throws An error if the record is not found.
    */
-  static find<T extends typeof Model>(
-    this: T,
-    key: Meta<T>["PrimaryKey"]
-  ): Meta<T>["Persisted"] {
+  static find<T extends typeof Model>(this: T, key: Meta<T>["PrimaryKey"]): Meta<T>["Persisted"] {
     return this.all().find(key);
   }
 
@@ -347,10 +328,7 @@ export class Query {
    * @param attribute - The attribute to retrieve the maximum value for.
    * @returns The maximum value of the attribute.
    */
-  static maximum<T extends typeof Model>(
-    this: T,
-    attribute: keyof Meta<T>["Column"]
-  ): number {
+  static maximum<T extends typeof Model>(this: T, attribute: keyof Meta<T>["Column"]): number {
     return this.all().maximum(attribute);
   }
 
@@ -359,10 +337,7 @@ export class Query {
    * @param attribute - The attribute to retrieve the minimum value for.
    * @returns The minimum value of the attribute.
    */
-  static minimum<T extends typeof Model>(
-    this: T,
-    attribute: keyof Meta<T>["Column"]
-  ): number {
+  static minimum<T extends typeof Model>(this: T, attribute: keyof Meta<T>["Column"]): number {
     return this.all().minimum(attribute);
   }
 
@@ -371,10 +346,7 @@ export class Query {
    * @param attribute - The attribute to retrieve the average value for.
    * @returns The average value of the attribute.
    */
-  static average<T extends typeof Model>(
-    this: T,
-    attribute: keyof Meta<T>["Column"]
-  ): number {
+  static average<T extends typeof Model>(this: T, attribute: keyof Meta<T>["Column"]): number {
     return this.all().average(attribute);
   }
 
@@ -384,10 +356,7 @@ export class Query {
    * @param options.batchSize - The number of records to load in each batch. Defaults to 1000.
    * @returns - An iterator object that allows iterating over the model in batches.
    */
-  static findEach<T extends typeof Model>(
-    this: T,
-    options?: { batchSize?: number }
-  ) {
+  static findEach<T extends typeof Model>(this: T, options?: { batchSize?: number }) {
     // @ts-ignore
     return this.all().findEach<InstanceType<T>, Meta<T>>(options);
   }
@@ -398,10 +367,7 @@ export class Query {
    * @param options.batchSize - The size of each batch. Defaults to 1000 if not provided.
    * @returns An iterator object that provides the records in batches.
    */
-  static findInBatches<T extends typeof Model>(
-    this: T,
-    options?: { batchSize?: number }
-  ) {
+  static findInBatches<T extends typeof Model>(this: T, options?: { batchSize?: number }) {
     // @ts-ignore
     return this.all().findInBatches<InstanceType<T>, Meta<T>>(options);
   }

@@ -45,10 +45,7 @@ export class Error {
       message = message.replace("%{count}", this.options.count.toString());
     }
     if (message.includes("%{attribute}")) {
-      message = message.replace(
-        "%{attribute}",
-        this.options.attribute || "confirmation"
-      );
+      message = message.replace("%{attribute}", this.options.attribute || "confirmation");
     }
     return message;
   }
@@ -94,9 +91,7 @@ export class Errors {
    * @param error - The error message.
    */
   add(attribute: string, error: string, options?: Options) {
-    (this.errors[attribute] ||= []).push(
-      new Error(this.base, attribute, error, options)
-    );
+    (this.errors[attribute] ||= []).push(new Error(this.base, attribute, error, options));
   }
 
   /**

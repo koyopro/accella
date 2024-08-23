@@ -1,12 +1,6 @@
 import { Model } from "./index.js";
 
-const callbackMethods = [
-  "validation",
-  "create",
-  "save",
-  "update",
-  "destroy",
-] as const;
+const callbackMethods = ["validation", "create", "save", "update", "destroy"] as const;
 type CallbackMethod = (typeof callbackMethods)[number];
 
 /**

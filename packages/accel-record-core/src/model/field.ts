@@ -72,11 +72,7 @@ export class Field {
     this.relationName = field.relationName?.toString() ?? null;
     this.isList = !!field.isList;
     this.isRequired = !!field.isRequired;
-    this.kind = field.kind.toString() as
-      | "scalar"
-      | "object"
-      | "enum"
-      | "unsupported";
+    this.kind = field.kind.toString() as "scalar" | "object" | "enum" | "unsupported";
     this.isUpdatedAt = !!field.isUpdatedAt;
     this.default = field.default?.valueOf() ?? undefined;
     this.foreignKeys = field.relationFromFields?.map((f) => f) ?? [];

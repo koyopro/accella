@@ -77,10 +77,7 @@ export class Searchable {
    * const users = search.result();
    * ```
    */
-  static search<T extends typeof Model>(
-    this: T,
-    params: Record<string, any> | undefined
-  ) {
+  static search<T extends typeof Model>(this: T, params: Record<string, any> | undefined) {
     return new Search(this, params);
   }
 

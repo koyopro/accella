@@ -29,18 +29,14 @@ ${defineEnumTextAttributes(model)}`;
 const defineEnumTextTypes = (model: ModelWrapper) =>
   model.fields
     .filter((f) => f.kind == "enum")
-    .map(
-      (f) =>
-        `\n  static ${f.name} = new Attribute(this, "${f.typeName}", ${f.typeName});`
-    )
+    .map((f) => `\n  static ${f.name} = new Attribute(this, "${f.typeName}", ${f.typeName});`)
     .join("") + "\n";
 
 const defineEnumTextAttributes = (model: ModelWrapper) =>
   model.fields
     .filter((f) => f.kind == "enum")
     .map(
-      (f) =>
-        `defineEnumTextAttribute(${model.baseModel}, ${model.persistedModel}, "${f.name}");\n`
+      (f) => `defineEnumTextAttribute(${model.baseModel}, ${model.persistedModel}, "${f.name}");\n`
     )
     .join("");
 
@@ -60,8 +56,7 @@ const columnDefines = (model: ModelWrapper) =>
   model.fields
     .map((field) => {
       const type = field.typeName;
-      if (field.type == "Json")
-        return `    ${field.name}: ${model.baseModel}["${field.name}"]`;
+      if (field.type == "Json") return `    ${field.name}: ${model.baseModel}["${field.name}"]`;
 
       const m = field.model;
       if (field.relationName && field.isList && m) {
@@ -85,10 +80,7 @@ const columnDefines = (model: ModelWrapper) =>
     .join("\n");
 
 const enumFields = (field: FieldWrapper, type: string) => {
-  return [
-    `    ${field.name}: ${type};\n`,
-    `    ${field.name}Text: string;`,
-  ].join("");
+  return [`    ${field.name}: ${type};\n`, `    ${field.name}Text: string;`].join("");
 };
 
 const columnForPersist = (model: ModelWrapper) =>
