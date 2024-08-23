@@ -22,7 +22,7 @@ export class Query {
    * @returns The found record.
    * @throws An error if the record is not found.
    */
-  find<T, M extends ModelMeta>(this: Relation<T, M>, key: M["PrimaryKeys"]): T {
+  find<T, M extends ModelMeta>(this: Relation<T, M>, key: M["PrimaryKey"]): T {
     const keys = [key].flat();
     const where: any = {};
     let valid = true;
