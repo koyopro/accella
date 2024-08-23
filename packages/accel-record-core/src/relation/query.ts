@@ -24,12 +24,8 @@ export class Query {
    */
   find<T, M extends ModelMeta>(this: Relation<T, M>, key: M["PrimaryKey"]): T {
     const keys = [key].flat();
-    const where: any = {};
-    let valid = true;
-    this.model.primaryKeys.forEach((column, i) => {
-      if (typeof keys[i] === "number" && !isFinite(keys[i])) valid = false;
-      where[column] = keys[i];
-    });
+    const valid = keys.every((key) => typeof key !== "number" || isFinite(key));
+    const where = this.model.primaryKeys.toHash((col, i) => [col, keys[i]]);
     const instance = valid
       ? this.setOption("wheres", [where]).first()
       : undefined;
