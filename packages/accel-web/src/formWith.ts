@@ -72,7 +72,7 @@ export const formWith = (resource: Model, options?: { namespace?: string }) => {
         value: r[p.attr],
       }),
       []
-    ) as (props: { attr: string; collection: object }) => any,
+    ) as (props: { attr: string; collection: [string, string][] }) => any,
 
     Submit: extendCommponent<"button", {}>(button, () => ({ type: "submit" })),
   };
