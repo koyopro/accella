@@ -71,16 +71,12 @@ test("length", () => {
   const sample = $ValidateSample.build({ pattern: "a" });
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages).toContain(
-    "Pattern is too short (minimum is 2 characters)"
-  );
+  expect(sample.errors.fullMessages).toContain("Pattern is too short (minimum is 2 characters)");
 
   sample.pattern = "toolong";
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages).toContain(
-    "Pattern is too long (maximum is 5 characters)"
-  );
+  expect(sample.errors.fullMessages).toContain("Pattern is too long (maximum is 5 characters)");
 
   sample.pattern = "value";
 
@@ -93,9 +89,7 @@ test("length for hasMany", () => {
   user.posts = $post.buildList(5);
   user.validates("posts", { length: { maximum: 4 } });
 
-  expect(user.errors.fullMessages).toContain(
-    "Posts is too long (maximum is 4 characters)"
-  );
+  expect(user.errors.fullMessages).toContain("Posts is too long (maximum is 4 characters)");
 });
 
 test("validate associations", () => {
@@ -108,23 +102,16 @@ test("validate associations", () => {
   expect(user.save()).toBe(false);
   expect(user.isValid()).toBe(false);
 
-  expect(user.errors.fullMessages).toEqual([
-    "Posts is invalid",
-    "Setting is invalid",
-  ]);
+  expect(user.errors.fullMessages).toEqual(["Posts is invalid", "Setting is invalid"]);
   expect(post.errors.fullMessages).toEqual(["Title can't be blank"]);
-  expect(setting.errors.fullMessages).toEqual([
-    "Threshold must be greater than or equal to 0",
-  ]);
+  expect(setting.errors.fullMessages).toEqual(["Threshold must be greater than or equal to 0"]);
 });
 
 test("inclusion", () => {
   const sample = $ValidateSample.build({ size: "invalid" });
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages).toContain(
-    "Size is not included in the list"
-  );
+  expect(sample.errors.fullMessages).toContain("Size is not included in the list");
 
   sample.size = "small";
 
@@ -136,9 +123,7 @@ test("format", () => {
   const sample = $ValidateSample.build({ pattern: "VALUE" });
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages).toContain(
-    "Pattern only allows lowercase letters"
-  );
+  expect(sample.errors.fullMessages).toContain("Pattern only allows lowercase letters");
 
   sample.pattern = "value";
 
@@ -171,18 +156,14 @@ test("uniqueness by scope", () => {
 
   sample.size = "small";
   sample.validates("pattern", { uniqueness: { scope: ["size"] } });
-  expect(sample.errors.fullMessages).toEqual([
-    "Pattern has already been taken",
-  ]);
+  expect(sample.errors.fullMessages).toEqual(["Pattern has already been taken"]);
 });
 
 test("custom", () => {
   const sample = $ValidateSample.build({ key: "Value" });
   expect(sample.isValid()).toBe(false);
   expect(sample.errors.isEmpty()).toBe(false);
-  expect(sample.errors.fullMessages).toContain(
-    "Key should start with a lowercase letter"
-  );
+  expect(sample.errors.fullMessages).toContain("Key should start with a lowercase letter");
 
   sample.key = "value";
 

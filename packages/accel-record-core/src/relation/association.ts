@@ -37,10 +37,7 @@ export class Association {
    * @param input - The associations to join.
    * @returns A new `Relation` instance with the added join conditions.
    */
-  joins<T, M extends ModelMeta>(
-    this: Relations<T, M>,
-    input: M["JoinInput"]
-  ): Relation<T, M>;
+  joins<T, M extends ModelMeta>(this: Relations<T, M>, input: M["JoinInput"]): Relation<T, M>;
   /**
    * Adds join conditions to the relation.
    *
@@ -61,9 +58,7 @@ export class Association {
         : info.through
           ? this.hasManyThroughJoins(info)
           : this.hasOneOrHasManyJoins(info);
-      const nestedJoins = isBlankArray(value)
-        ? []
-        : info.model.joins(value).options.joins;
+      const nestedJoins = isBlankArray(value) ? [] : info.model.joins(value).options.joins;
       for (const join of joins.concat(nestedJoins)) {
         if (alreadyContains(newOptions["joins"], join)) continue;
 
@@ -98,18 +93,8 @@ export class Association {
   protected hasManyThroughJoins<T>(this: Relation<T, ModelMeta>, info: Info) {
     const { through, model, primaryKey, foreignKey, joinKey } = info;
     return [
-      [
-        through,
-        `${through}.${foreignKey}`,
-        "=",
-        `${this.model.tableName}.${primaryKey}`,
-      ],
-      [
-        model.tableName,
-        `${through}.${joinKey}`,
-        "=",
-        `${model.tableName}.${info.primaryKey}`,
-      ],
+      [through, `${through}.${foreignKey}`, "=", `${this.model.tableName}.${primaryKey}`],
+      [model.tableName, `${through}.${joinKey}`, "=", `${model.tableName}.${info.primaryKey}`],
     ];
   }
 

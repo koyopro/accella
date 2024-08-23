@@ -16,9 +16,7 @@ test("hasSecurePassword()", () => {
   account.password = validPassword;
   account.passwordConfirmation = "";
   expect(account.save()).toBe(false);
-  expect(account.errors.fullMessages).toEqual([
-    "PasswordConfirmation doesn't match Password",
-  ]);
+  expect(account.errors.fullMessages).toEqual(["PasswordConfirmation doesn't match Password"]);
 
   account.passwordConfirmation = validPassword;
   expect(account.save()).toBe(true);
@@ -54,9 +52,7 @@ test("validation on update", () => {
 
   account.password = "a".repeat(73);
   expect(account.isValid()).toBe(false);
-  expect(account.errors.fullMessages).toEqual([
-    "Password is too long (maximum is 72 characters)",
-  ]);
+  expect(account.errors.fullMessages).toEqual(["Password is too long (maximum is 72 characters)"]);
 });
 
 test("hasSecurePassword() with validations: false", () => {
@@ -137,9 +133,7 @@ describe("with i18n", () => {
     const account = $Account.build({});
     account.password = undefined;
     expect(account.save()).toBe(false);
-    expect(account.errors.fullMessages).toEqual([
-      "パスワード を入力してください",
-    ]);
+    expect(account.errors.fullMessages).toEqual(["パスワード を入力してください"]);
 
     account.password = validPassword;
     account.passwordConfirmation = "";

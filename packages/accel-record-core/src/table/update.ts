@@ -7,11 +7,7 @@ export class UpdateManager<T extends Model> {
 
   update() {
     const data = this.makeUpdateParams();
-    exec(
-      this.record.queryBuilder
-        .where(primaryKeysCondition(this.record))
-        .update(data)
-    );
+    exec(this.record.queryBuilder.where(primaryKeysCondition(this.record)).update(data));
     this.retriveUpdatedAt(data);
   }
 
@@ -24,10 +20,7 @@ export class UpdateManager<T extends Model> {
     const now = new Date();
     for (const field of this.record.columnFields) {
       const column = field.dbName as keyof T;
-      if (
-        this.record.isAttributeChanged(field.name) &&
-        this.record[column] !== undefined
-      ) {
+      if (this.record.isAttributeChanged(field.name) && this.record[column] !== undefined) {
         data[column as string] = this.record[column];
       }
       if (this.record.findField(column as string)?.isUpdatedAt) {

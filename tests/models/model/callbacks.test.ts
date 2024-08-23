@@ -52,8 +52,5 @@ test("add same callbacks to multiple methods", () => {
 
 test("add multiple callbacks to the same method", () => {
   const company = $Company.create({});
-  expect(company.data).toEqual([
-    "beforeCreateAndAfterSave",
-    "beforeCreateAndAfterSave",
-  ]);
+  expect(company.data).toEqual(["beforeCreateAndAfterSave", "beforeCreateAndAfterSave"]);
 });

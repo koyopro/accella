@@ -26,10 +26,7 @@ export class Persistence {
    * @param input - The input data used to build the model instance.
    * @returns A new instance of the model.
    */
-  static build<T extends typeof Model>(
-    this: T,
-    input: Partial<Meta<T>["CreateInput"]>
-  ): New<T> {
+  static build<T extends typeof Model>(this: T, input: Partial<Meta<T>["CreateInput"]>): New<T> {
     const obj = ModelInstanceBuilder.build(this as T, input);
     obj.storeOriginalValues();
     return obj;
@@ -43,10 +40,7 @@ export class Persistence {
    * @returns The created instance.
    * @throws Error if the instance fails to save.
    */
-  static create<T extends typeof Model>(
-    this: T,
-    input: Meta<T>["CreateInput"]
-  ): InstanceType<T> {
+  static create<T extends typeof Model>(this: T, input: Meta<T>["CreateInput"]): InstanceType<T> {
     const instance = this.build(input);
     if (instance.save()) {
       return instance as InstanceType<T>;
@@ -82,10 +76,7 @@ export class Persistence {
    * @param options.validate - A boolean indicating whether to validate the model instance before saving, default is `true`.
    * @returns Returns `true` if the model instance is successfully saved, `false` otherwise.
    */
-  save<T extends Model>(
-    this: T,
-    options?: { validate?: boolean }
-  ): this is Persisted<T> {
+  save<T extends Model>(this: T, options?: { validate?: boolean }): this is Persisted<T> {
     if ((options?.validate ?? true) && this.isInvalid()) return false;
     this.runBeforeCallbacks("save");
     const ret = this.createOrUpdate();
@@ -103,10 +94,7 @@ export class Persistence {
    * @param data - The data used to update the model instance.
    * @returns A boolean indicating whether the update operation was successful.
    */
-  update<T extends Model>(
-    this: T,
-    input: Partial<Meta<T>["CreateInput"]>
-  ): this is Persisted<T> {
+  update<T extends Model>(this: T, input: Partial<Meta<T>["CreateInput"]>): this is Persisted<T> {
     this.assignAttributes(input);
     return this.save();
   }

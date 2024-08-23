@@ -7,13 +7,8 @@ import { HasOneAssociation } from "./hasOneAssociation.js";
 
 const isHasOneOrBelongsTo = (
   association: any
-): association is
-  | HasOneAssociation<any, any>
-  | BelongsToAssociation<any, any> => {
-  return (
-    association instanceof HasOneAssociation ||
-    association instanceof BelongsToAssociation
-  );
+): association is HasOneAssociation<any, any> | BelongsToAssociation<any, any> => {
+  return association instanceof HasOneAssociation || association instanceof BelongsToAssociation;
 };
 
 export class ModelInstanceBuilder {
@@ -60,10 +55,7 @@ export class ModelInstanceBuilder {
     });
   }
 
-  private static initAssociations<T extends typeof Model>(
-    klass: T,
-    obj: Model
-  ) {
+  private static initAssociations<T extends typeof Model>(klass: T, obj: Model) {
     for (const [key, info] of Object.entries(klass.associations)) {
       if (info.isHasOne) {
         obj.associations.set(key, new HasOneAssociation(obj, info));

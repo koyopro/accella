@@ -18,9 +18,7 @@ const cautionComment = `/* eslint-disable */
 export const generateExportAllModels = (models: DMMF.Model[]) => {
   return models
     .map((model) =>
-      [
-        `import { ${model.name}Model } from './${toCamelCase(model.name)}.js'`,
-      ].join("\n")
+      [`import { ${model.name}Model } from './${toCamelCase(model.name)}.js'`].join("\n")
     )
     .join("\n");
 };

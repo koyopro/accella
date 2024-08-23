@@ -36,10 +36,7 @@ const models = (options: GeneratorOptions) => {
 const meta = (options: GeneratorOptions) =>
   options.dmmf.datamodel.models
     .map((model) => new ModelWrapper(model, options.dmmf.datamodel))
-    .map(
-      (model) =>
-        `T extends typeof ${model.baseModel} | ${model.baseModel} ? ${model.meta} :`
-    )
+    .map((model) => `T extends typeof ${model.baseModel} | ${model.baseModel} ? ${model.meta} :`)
     .join("\n               ");
 
 const enumData = (options: GeneratorOptions) => {

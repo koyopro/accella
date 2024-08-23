@@ -6,9 +6,7 @@ export class PostgresqlMigrator extends Migrator {
   async ensureDatabaseExists() {
     const [database, newConfig] = parseConfig();
     const knex = Knex(newConfig);
-    const exists = await knex.raw(
-      `SELECT 1 FROM pg_database WHERE datname='${database}'`
-    );
+    const exists = await knex.raw(`SELECT 1 FROM pg_database WHERE datname='${database}'`);
     if (exists.rows.length === 0) {
       console.log(`Creating database \`${database}\``);
       await knex.raw(`CREATE DATABASE "${database}"`);

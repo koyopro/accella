@@ -84,10 +84,7 @@ const assign = (target: object, source: object, key: string) => {
   const desc = Object.getOwnPropertyDescriptor(source, key);
   const targetDesc = findMethod(target, key);
 
-  if (
-    typeof targetDesc?.value == "function" &&
-    typeof desc?.value == "function"
-  ) {
+  if (typeof targetDesc?.value == "function" && typeof desc?.value == "function") {
     // already has a method, so we need to wrap it
     Object.defineProperty(target, key, {
       value: function (this: any, ...args: any[]) {
@@ -126,12 +123,7 @@ export const getStaticProperties = (cls: any) => {
 
   while (currentCls) {
     Object.getOwnPropertyNames(currentCls).forEach((prop) => {
-      if (
-        prop !== "constructor" &&
-        prop !== "prototype" &&
-        prop !== "length" &&
-        prop !== "name"
-      ) {
+      if (prop !== "constructor" && prop !== "prototype" && prop !== "length" && prop !== "name") {
         properties.set(prop, currentCls);
       }
     });

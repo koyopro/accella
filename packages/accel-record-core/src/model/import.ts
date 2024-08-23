@@ -51,9 +51,7 @@ export class Import {
     records: Meta<T>["Base"][] | Meta<T>["CreateInput"][],
     options: ImportOptions<T> = {}
   ): ImportResult<T> {
-    const _records = records.map((r) =>
-      r instanceof Model ? r : this.build(r)
-    );
+    const _records = records.map((r) => (r instanceof Model ? r : this.build(r)));
     const { params, failedInstances } = formatParams(_records, options);
     let q = this.queryBuilder.insert(params);
     q = addOnConflictMerge<T>(this, options, q);
@@ -65,10 +63,7 @@ export class Import {
   }
 }
 
-const formatParams = <T extends typeof Model>(
-  records: Model[],
-  options: ImportOptions<T>
-) => {
+const formatParams = <T extends typeof Model>(records: Model[], options: ImportOptions<T>) => {
   const failedInstances: Meta<T>["Base"][] = [];
   const params = records
     .map((record) => {
@@ -112,9 +107,7 @@ const addOnConflictMerge = <T extends typeof Model>(
       : q.onConflict();
     if (attributes === true) q = qb.merge();
     else {
-      const columns = attributes.map(
-        (a) => model.attributeToColumn(a as string)!
-      );
+      const columns = attributes.map((a) => model.attributeToColumn(a as string)!);
       q = qb.merge(columns);
     }
   }

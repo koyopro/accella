@@ -25,15 +25,9 @@ describe("Relation", () => {
     $user.create({ name: "fuga", age: 30 });
     $user.create({ name: "piyo", age: undefined });
     expect(User.all().where({ name: "fuga" }).first()?.name).toBe("fuga");
-    expect(User.all().where({ name: "hoge", age: 20 }).first()?.name).toBe(
-      "hoge"
-    );
-    expect(
-      User.all().where({ name: "fuga" }).where({ age: 20 }).first()
-    ).toBeUndefined();
-    expect(
-      User.all().where({ name: "fuga" }).where({ name: "hoge" }).first()
-    ).toBeUndefined();
+    expect(User.all().where({ name: "hoge", age: 20 }).first()?.name).toBe("hoge");
+    expect(User.all().where({ name: "fuga" }).where({ age: 20 }).first()).toBeUndefined();
+    expect(User.all().where({ name: "fuga" }).where({ name: "hoge" }).first()).toBeUndefined();
     expect(User.all().where({ age: undefined }).first()?.name).toBe("piyo");
     expect(User.all().where({ age: null }).first()?.name).toBe("piyo");
   });
@@ -64,12 +58,8 @@ describe("Relation", () => {
     const now = new Date();
     $user.create({ name: "hoge", createdAt: now });
     $user.create({ name: "fuga", createdAt: new Date(now.getTime() + 1000) });
-    expect(User.findBy({ createdAt: { "<=": now } })?.name).toStrictEqual(
-      "hoge"
-    );
-    expect(User.findBy({ createdAt: { ">": now } })?.name).toStrictEqual(
-      "fuga"
-    );
+    expect(User.findBy({ createdAt: { "<=": now } })?.name).toStrictEqual("hoge");
+    expect(User.findBy({ createdAt: { ">": now } })?.name).toStrictEqual("fuga");
   });
 
   test("#where() in", () => {
@@ -143,11 +133,7 @@ describe("Relation", () => {
         .count()
     ).toBe(2);
     expect(
-      User.all()
-        .where({ name: "hoge" })
-        .where({ age: 20 })
-        .or({ name: "fuga", age: 30 })
-        .count()
+      User.all().where({ name: "hoge" }).where({ age: 20 }).or({ name: "fuga", age: 30 }).count()
     ).toBe(2);
   });
 
@@ -258,10 +244,7 @@ describe("Relation", () => {
     $user.create({ name: "fuga", age: 30 });
 
     const column = User.attributeToColumn("name")!;
-    const r = User.where({ age: 20 })
-      .queryBuilder.select(column)
-      .groupBy(column)
-      .execute();
+    const r = User.where({ age: 20 }).queryBuilder.select(column).groupBy(column).execute();
     expect(r.length).toBe(1);
   });
 });

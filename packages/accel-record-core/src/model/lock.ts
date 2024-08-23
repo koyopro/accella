@@ -71,11 +71,7 @@ export class Lock {
    * });
    * ```
    */
-  withLock<T extends Model, R>(
-    this: T,
-    type: LockType,
-    callback: () => R
-  ): R | undefined;
+  withLock<T extends Model, R>(this: T, type: LockType, callback: () => R): R | undefined;
   withLock<T extends Model, R>(this: T, ...args: any[]): R | undefined {
     const type = (args.length >= 2 ? args[0] : "forUpdate") as LockType;
     const callback = args.at(-1) as () => R;
@@ -92,10 +88,7 @@ export class Lock {
  * @param lockType - The type of lock to apply.
  * @returns The modified query builder with the lock applied.
  */
-export const affectLock = (
-  queryBuilder: Knex.QueryBuilder,
-  lockType: LockType
-) => {
+export const affectLock = (queryBuilder: Knex.QueryBuilder, lockType: LockType) => {
   switch (lockType) {
     case "forShare":
       return queryBuilder.forShare();

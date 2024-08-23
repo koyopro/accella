@@ -90,9 +90,7 @@ export class Transaction {
   static transaction<F extends () => Promise<any>>(
     callback: F
   ): Promise<Awaited<ReturnType<F>> | undefined>;
-  static transaction<F extends () => any>(
-    callback: F
-  ): ReturnType<F> | undefined;
+  static transaction<F extends () => any>(callback: F): ReturnType<F> | undefined;
   static transaction<F extends () => any>(callback: F): any {
     if (callback.constructor.name === "AsyncFunction") {
       return this.transactionAsync(callback);
