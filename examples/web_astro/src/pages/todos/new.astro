@@ -1,5 +1,6 @@
 ---
 import { formWith } from "accel-web";
+import type { DefaultSlotArgs } from "accel-web/src/nativeComponents/collectionRadioButtons.astro";
 import Layout from "src/layouts/Layout.astro";
 import { Todo } from "src/models";
 
@@ -36,7 +37,16 @@ const { Form, Label, TextField, Submit } = f;
       </div>
       <div>
         <Label for="status" />
-        <f.CollectionRadioButtons attr="status" collection={Todo.status.options()} />
+        <f.CollectionRadioButtons attr="status" collection={Todo.status.options()}>
+          {
+            ({ text, Label, RadioButton }: DefaultSlotArgs) => (
+              <Label class="my-label">
+                <RadioButton class="my-radio-button" />
+                {text}
+              </Label>
+            )
+          }
+        </f.CollectionRadioButtons>
       </div>
       <Submit>作成</Submit>
     </Form>

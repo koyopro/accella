@@ -29,7 +29,7 @@ export const paginate = <T>(
   };
 };
 
-const ex = (base: any, defaults: any, removes: string[] = []): (() => any) => {
+export const ex = (base: any, defaults: any, removes: string[] = []): (() => any) => {
   return createComponent((...args) => {
     for (const remove of removes) {
       delete args[1][remove];
