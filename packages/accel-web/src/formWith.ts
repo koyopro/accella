@@ -5,6 +5,7 @@ import collectionRadioButtons from "./nativeComponents/collectionRadioButtons.as
 import form from "./nativeComponents/form.astro";
 import input from "./nativeComponents/input.astro";
 import label from "./nativeComponents/label.astro";
+import select from "./nativeComponents/select.astro";
 
 // eslint-disable-next-line max-lines-per-function
 export const formWith = (resource: Model, options?: { namespace?: string }) => {
@@ -53,6 +54,25 @@ export const formWith = (resource: Model, options?: { namespace?: string }) => {
         type: "date",
       }),
       ["attr"]
+    ),
+
+    Select: extendCommponent<
+      "select",
+      {
+        attr: string;
+        collection: [string, string | undefined][];
+        selected?: string;
+        includeBlank?: string;
+      }
+    >(
+      select,
+      (p) => ({
+        name: `${prefix}${p.attr}`,
+        collection: p.collection,
+        selected: p.selected ?? r[p.attr],
+        includeBlank: p.includeBlank,
+      }),
+      ["attr", "collection", "selected", "includeBlank"]
     ),
 
     RadioButton: extendCommponent<"input", { attr: string }>(

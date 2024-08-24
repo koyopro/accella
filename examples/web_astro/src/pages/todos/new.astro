@@ -48,6 +48,20 @@ const { Form, Label, TextField, Submit } = f;
           }
         </f.CollectionRadioButtons>
       </div>
+      <div>
+        <Label for="label" />
+        <f.Select
+          class="my-select"
+          attr="label"
+          collection={[
+            ["Open", "open"],
+            ["ToDo", "todo"],
+            ["Bug", "bug"],
+          ]}
+          selected="todo"
+          includeBlank="選択してください"
+        />
+      </div>
       <Submit>作成</Submit>
     </Form>
   </main>
