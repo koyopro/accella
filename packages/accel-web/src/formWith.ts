@@ -4,6 +4,7 @@ import button from "./nativeComponents/button.astro";
 import collectionRadioButtons from "./nativeComponents/collectionRadioButtons.astro";
 import form from "./nativeComponents/form.astro";
 import input from "./nativeComponents/input.astro";
+import textarea from "./nativeComponents/textarea.astro";
 import label from "./nativeComponents/label.astro";
 import select from "./nativeComponents/select.astro";
 
@@ -27,6 +28,12 @@ export const formWith = (resource: Model, options?: { namespace?: string }) => {
     TextField: extendCommponent<"input", { attr: string }>(
       input,
       (p) => ({ name: `${prefix}${p.attr}`, value: r[p.attr], type: "text" }),
+      ["attr"]
+    ),
+
+    Textarea: extendCommponent<"textarea", { attr: string }>(
+      textarea,
+      (p) => ({ name: `${prefix}${p.attr}`, value: r[p.attr] }),
       ["attr"]
     ),
 

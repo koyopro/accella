@@ -19,6 +19,7 @@ export const initI18n = async () => {
           "accelrecord.attributes.Todo.dueDate": "期日",
           "accelrecord.attributes.Todo.status": "ステータス",
           "accelrecord.attributes.Todo.available": "有効",
+          "accelrecord.attributes.Todo.description": "詳細",
 
           "enums.Status": "ステータス",
           "enums.Status.OPEN": "オープン",
