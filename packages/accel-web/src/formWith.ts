@@ -1,14 +1,21 @@
 import type { Model } from "accel-record";
 import { createComponent } from "astro/runtime/server/astro-component.js";
+import {
+  makeCheckbox,
+  makeDateField,
+  makeHiddenField,
+  makeNumberField,
+  makePasswordField,
+  makeRadioButton,
+  makeTextField,
+} from "./inputs";
 import button from "./nativeComponents/button.astro";
 import collectionRadioButtons from "./nativeComponents/collectionRadioButtons.astro";
 import form from "./nativeComponents/form.astro";
-import input from "./nativeComponents/input.astro";
-import textarea from "./nativeComponents/textarea.astro";
 import label from "./nativeComponents/label.astro";
 import select from "./nativeComponents/select.astro";
+import textarea from "./nativeComponents/textarea.astro";
 
-// eslint-disable-next-line max-lines-per-function
 export const formWith = (resource: Model, options?: { namespace?: string }) => {
   const namespace = options?.namespace || "";
   const prefix = namespace ? `${namespace}.` : "";
@@ -16,106 +23,27 @@ export const formWith = (resource: Model, options?: { namespace?: string }) => {
   return {
     Form: form,
 
-    Label: extendCommponent<"label", { for: string }>(
-      label,
-      (p) => ({
-        htmlFor: `${prefix}${p.for}`,
-        value: resource.class().humanAttributeName(p.for),
-      }),
-      ["for"]
-    ),
+    Label: makeLabel(prefix, resource),
 
-    TextField: extendCommponent<"input", { attr: string }>(
-      input,
-      (p) => ({ name: `${prefix}${p.attr}`, value: r[p.attr], type: "text" }),
-      ["attr"]
-    ),
+    TextField: makeTextField(prefix, r),
 
-    HiddenField: extendCommponent<"input", { attr: string }>(
-      input,
-      (p) => ({ name: `${prefix}${p.attr}`, value: r[p.attr], type: "hidden" }),
-      ["attr"]
-    ),
+    HiddenField: makeHiddenField(prefix, r),
 
-    Textarea: extendCommponent<"textarea", { attr: string }>(
-      textarea,
-      (p) => ({ name: `${prefix}${p.attr}`, value: r[p.attr] }),
-      ["attr"]
-    ),
+    PasswordField: makePasswordField(prefix),
 
-    PasswordField: extendCommponent<"input", { attr: string }>(
-      input,
-      (p) => ({ name: `${prefix}${p.attr}`, type: "password" }),
-      ["attr"]
-    ),
+    NumberField: makeNumberField(prefix, r),
 
-    NumberField: extendCommponent<"input", { attr: string }>(
-      input,
-      (p) => ({
-        name: `${prefix}${p.attr}`,
-        value: r[p.attr],
-        type: "number",
-      }),
-      ["attr"]
-    ),
+    DateField: makeDateField(prefix, r),
 
-    DateField: extendCommponent<"input", { attr: string }>(
-      input,
-      (p) => ({
-        name: `${prefix}${p.attr}`,
-        value: formatDate(r[p.attr]),
-        type: "date",
-      }),
-      ["attr"]
-    ),
+    Checkbox: makeCheckbox(prefix, r),
 
-    Checkbox: extendCommponent<"input", { attr: string }>(
-      input,
-      (p) => ({
-        name: `${prefix}${p.attr}`,
-        type: "checkbox",
-        checked: !!r[p.attr],
-      }),
-      ["attr"]
-    ),
+    RadioButton: makeRadioButton(prefix),
 
-    Select: extendCommponent<
-      "select",
-      {
-        attr: string;
-        collection: [string, string | undefined][];
-        selected?: string;
-        includeBlank?: string;
-      }
-    >(
-      select,
-      (p) => ({
-        name: `${prefix}${p.attr}`,
-        collection: p.collection,
-        selected: p.selected ?? r[p.attr],
-        includeBlank: p.includeBlank,
-      }),
-      ["attr", "collection", "selected", "includeBlank"]
-    ),
+    CollectionRadioButtons: makeCollectionRadioButtons(prefix, r),
 
-    RadioButton: extendCommponent<"input", { attr: string }>(
-      input,
-      (p) => ({
-        name: `${prefix}${p.attr}`,
-        type: "radio",
-      }),
-      ["attr"]
-    ),
+    Select: makeSelect(prefix, r),
 
-    CollectionRadioButtons: extendCommponent<"input", {}>(
-      collectionRadioButtons,
-      (p) => ({
-        collection: p.collection,
-        name: `${prefix}${p.attr}`,
-        value: r[p.attr],
-      }),
-      []
-    ) as (props: { attr: string; collection: [string, string][] }) => any,
+    Textarea: makeTextarea(prefix, r),
 
     Submit: extendCommponent<"button", {}>(button, () => ({ type: "submit" })),
   };
@@ -135,11 +63,56 @@ export const extendCommponent = <L extends keyof astroHTML.JSX.DefinedIntrinsicE
   }) as any;
 };
 
-const formatDate = (date: any) => {
-  if (date instanceof Date) {
-    if (isInvalidDate(date)) return "";
-    return date.toISOString().slice(0, 10);
-  }
-  return date;
+const makeSelect = (prefix: string, r: any) =>
+  extendCommponent<
+    "select",
+    {
+      attr: string;
+      collection: [string, string | undefined][];
+      selected?: string;
+      includeBlank?: string;
+    }
+  >(
+    select,
+    (p) => ({
+      name: `${prefix}${p.attr}`,
+      collection: p.collection,
+      selected: p.selected ?? r[p.attr],
+      includeBlank: p.includeBlank,
+    }),
+    ["attr", "collection", "selected", "includeBlank"]
+  );
+
+const makeCollectionRadioButtons = (
+  prefix: string,
+  r: any
+): ((props: { attr: string; collection: [string, string][] }) => any) => {
+  return extendCommponent<"input", {}>(
+    collectionRadioButtons,
+    (p) => ({
+      collection: p.collection,
+      name: `${prefix}${p.attr}`,
+      value: r[p.attr],
+    }),
+    []
+  );
 };
-const isInvalidDate = (date: Date) => Number.isNaN(date.getTime());
+
+const makeLabel = (prefix: string, resource: Model) => {
+  return extendCommponent<"label", { for: string }>(
+    label,
+    (p) => ({
+      htmlFor: `${prefix}${p.for}`,
+      value: resource.class().humanAttributeName(p.for),
+    }),
+    ["for"]
+  );
+};
+
+const makeTextarea = (prefix: string, r: any) => {
+  return extendCommponent<"textarea", { attr: string }>(
+    textarea,
+    (p) => ({ name: `${prefix}${p.attr}`, value: r[p.attr] }),
+    ["attr"]
+  );
+};
