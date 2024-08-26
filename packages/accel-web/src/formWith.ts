@@ -31,6 +31,12 @@ export const formWith = (resource: Model, options?: { namespace?: string }) => {
       ["attr"]
     ),
 
+    HiddenField: extendCommponent<"input", { attr: string }>(
+      input,
+      (p) => ({ name: `${prefix}${p.attr}`, value: r[p.attr], type: "hidden" }),
+      ["attr"]
+    ),
+
     Textarea: extendCommponent<"textarea", { attr: string }>(
       textarea,
       (p) => ({ name: `${prefix}${p.attr}`, value: r[p.attr] }),

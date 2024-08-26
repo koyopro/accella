@@ -23,6 +23,7 @@ const { Form, Label, TextField, Submit } = f;
       <div class="error-messages">
         {todo.errors.fullMessages.map((message) => <div>{message}</div>)}
       </div>
+      <f.HiddenField attr="secret" />
       <div>
         <Label for="title" />
         <TextField attr="title" />
