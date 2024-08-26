@@ -36,6 +36,10 @@ const { Form, Label, TextField, Submit } = f;
         <f.DateField attr="dueDate" />
       </div>
       <div>
+        <Label for="available" />
+        <f.Checkbox attr="available" />
+      </div>
+      <div>
         <Label for="status" />
         <f.CollectionRadioButtons attr="status" collection={Todo.status.options()}>
           {

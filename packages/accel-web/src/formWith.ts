@@ -56,6 +56,16 @@ export const formWith = (resource: Model, options?: { namespace?: string }) => {
       ["attr"]
     ),
 
+    Checkbox: extendCommponent<"input", { attr: string }>(
+      input,
+      (p) => ({
+        name: `${prefix}${p.attr}`,
+        type: "checkbox",
+        checked: !!r[p.attr],
+      }),
+      ["attr"]
+    ),
+
     Select: extendCommponent<
       "select",
       {
