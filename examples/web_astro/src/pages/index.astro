@@ -10,7 +10,11 @@ const page = Number(searchParams.p || 1);
 
 const q = Todo.where({ account: currentAccount }).search(searchParams.q);
 
-const pager = paginate(q.result(), { page, per: 10, window: 2 });
+const pager = paginate(q.result().order("id", "desc"), {
+  page,
+  per: 10,
+  window: 2,
+});
 const { LinkToNextPage, LinkToPrevPage, Nav, PageEntriesInfo } = pager;
 const f = searchFormFor(q);
 ---
@@ -34,6 +38,10 @@ const f = searchFormFor(q);
           <li>
             <span>{todo.id}</span>
             <span>{todo.title}</span>
+            {todo.estimate ? <span>｜{todo.estimate}</span> : null}
+            {todo.dueDate ? (
+              <span>{todo.dueDate.toISOString().slice(0, 10)}迄</span>
+            ) : null}
             <span>({todo.status})</span>
           </li>
         ))

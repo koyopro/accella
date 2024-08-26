@@ -28,12 +28,14 @@ enum Status {
 }
 
 model Todo {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   title     String
   content   String?
-  status    Status   @default(OPEN)
-  account   Account  @relation(fields: [accountId], references: [id])
+  estimate  Int?
+  dueDate   DateTime?
+  status    Status    @default(OPEN)
+  account   Account   @relation(fields: [accountId], references: [id])
   accountId Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }

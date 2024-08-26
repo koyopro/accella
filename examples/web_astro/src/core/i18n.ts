@@ -9,11 +9,21 @@ export const initI18n = async () => {
         translation: {
           "accelrecord.attributes.Account.email": "メールアドレス",
           "accelrecord.attributes.Account.password": "パスワード",
-          "accelrecord.attributes.Account.passwordConfirmation":
-            "パスワード(確認用)",
+          "accelrecord.attributes.Account.passwordConfirmation": "パスワード(確認用)",
 
           "accelrecord.attributes.SignIn.email": "メールアドレス",
           "accelrecord.attributes.SignIn.password": "パスワード",
+
+          "accelrecord.attributes.Todo.title": "タイトル",
+          "accelrecord.attributes.Todo.estimate": "見積もり",
+          "accelrecord.attributes.Todo.dueDate": "期日",
+          "accelrecord.attributes.Todo.status": "ステータス",
+          "accelrecord.attributes.Todo.available": "有効",
+          "accelrecord.attributes.Todo.description": "詳細",
+
+          "enums.Status": "ステータス",
+          "enums.Status.OPEN": "オープン",
+          "enums.Status.CLOSED": "クローズド",
 
           "errors.messages.blank": "を入力してください",
           "errors.messages.accepted": "をチェックしてください",
@@ -31,10 +41,8 @@ export const initI18n = async () => {
           "views.pagination.next": "次 &rsaquo;",
           "views.pagination.truncate": "&hellip;",
 
-          "helpers.pageEntriesInfo.onePage.displayEntries_zero":
-            "レコードが見つかりませんでした",
-          "helpers.pageEntriesInfo.onePage.displayEntries_other":
-            "<b>全{{total}}</b>件表示中",
+          "helpers.pageEntriesInfo.onePage.displayEntries_zero": "レコードが見つかりませんでした",
+          "helpers.pageEntriesInfo.onePage.displayEntries_other": "<b>全{{total}}</b>件表示中",
           "helpers.pageEntriesInfo.morePages.displayEntries":
             "<b>{{first}}-{{last}}</b>件 / {{total}}件中",
         },

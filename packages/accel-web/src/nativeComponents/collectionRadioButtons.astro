@@ -1,0 +1,38 @@
+---
+import input from "../nativeComponents/input.astro";
+import label from "../nativeComponents/label.astro";
+import { ex } from "../paginate";
+
+interface Props {
+  name: string;
+  collection: [string, string][];
+  value: any;
+}
+const { name, collection, value: currentValue } = Astro.props;
+export type DefaultSlotArgs = ReturnType<typeof slotArgs>;
+const slotArgs = (text: string, value: string) => ({
+  text,
+  value,
+  Label: ex(label, {}) as (props: astroHTML.JSX.DefinedIntrinsicElements["label"]) => any,
+  RadioButton: ex(input, {
+    type: "radio",
+    name,
+    value,
+    checked: value == currentValue,
+  }) as (props: astroHTML.JSX.DefinedIntrinsicElements["input"]) => any,
+});
+---
+
+{
+  collection.map(([text, value]) => {
+    const a = slotArgs(text, value);
+    return Astro.slots.has("default") ? (
+      <Fragment set:html={Astro.slots.render("default", [a])} />
+    ) : (
+      <a.Label>
+        <a.RadioButton />
+        {text}
+      </a.Label>
+    );
+  })
+}

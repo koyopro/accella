@@ -1,5 +1,6 @@
 ---
 import { formWith } from "accel-web";
+import type { DefaultSlotArgs } from "accel-web/src/nativeComponents/collectionRadioButtons.astro";
 import Layout from "src/layouts/Layout.astro";
 import { Todo } from "src/models";
 
@@ -7,20 +8,70 @@ const { params, currentAccount } = Astro.locals.helper;
 
 const todo = Todo.build({ account: currentAccount });
 if (Astro.request.method === "POST") {
-  if (todo.update(params.permit("title"))) {
+  if (todo.update(params.permit("title", "estimate", "dueDate", "status"))) {
     return Astro.redirect("/");
   }
 }
-const { Form, Label, TextField, Submit } = formWith(todo);
+const f = formWith(todo);
+const { Form, Label, TextField, Submit } = f;
 ---
 
 <Layout title="Add a new todo">
-  <Form method="post">
-    <div class="error-messages">
-      {todo.errors.fullMessages.map((message) => <div>{message}</div>)}
-    </div>
-    <Label for="title" />
-    <TextField attr="title" />
-    <Submit>作成</Submit>
-  </Form>
+  <main>
+    <h1>Create a new TODO</h1>
+    <Form method="post">
+      <div class="error-messages">
+        {todo.errors.fullMessages.map((message) => <div>{message}</div>)}
+      </div>
+      <f.HiddenField attr="secret" />
+      <div>
+        <Label for="title" />
+        <TextField attr="title" />
+      </div>
+      <div>
+        <Label for="description" />
+        <f.Textarea attr="description" />
+      </div>
+      <div>
+        <Label for="estimate" />
+        <f.NumberField attr="estimate" />
+      </div>
+      <div>
+        <Label for="dueDate" />
+        <f.DateField attr="dueDate" />
+      </div>
+      <div>
+        <Label for="available" />
+        <f.Checkbox attr="available" />
+      </div>
+      <div>
+        <Label for="status" />
+        <f.CollectionRadioButtons attr="status" collection={Todo.status.options()}>
+          {
+            ({ text, Label, RadioButton }: DefaultSlotArgs) => (
+              <Label class="my-label">
+                <RadioButton class="my-radio-button" />
+                {text}
+              </Label>
+            )
+          }
+        </f.CollectionRadioButtons>
+      </div>
+      <div>
+        <Label for="label" />
+        <f.Select
+          class="my-select"
+          attr="label"
+          collection={[
+            ["Open", "open"],
+            ["ToDo", "todo"],
+            ["Bug", "bug"],
+          ]}
+          selected="todo"
+          includeBlank="選択してください"
+        />
+      </div>
+      <Submit>作成</Submit>
+    </Form>
+  </main>
 </Layout>

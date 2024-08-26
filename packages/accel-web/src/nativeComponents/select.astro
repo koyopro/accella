@@ -1,0 +1,21 @@
+---
+interface Props {
+  collection: [string, string | undefined][];
+  selected?: string;
+  includeBlank?: string;
+}
+const { collection, selected, includeBlank, ...props } = Astro.props;
+---
+
+<select {...props}>
+  <slot>
+    {includeBlank && <option value="">{includeBlank}</option>}
+    {
+      collection.map(([text, value]) => (
+        <option value={value ?? text} selected={selected == value}>
+          {text}
+        </option>
+      ))
+    }
+  </slot>
+</select>

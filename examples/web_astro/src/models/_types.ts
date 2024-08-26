@@ -5,12 +5,8 @@
 
 import { AccountModel } from "./account.js";
 import { TodoModel } from "./todo.js";
-import {
-  registerModel,
-  type Collection,
-  type Filter,
-  type StringFilter,
-} from "accel-record";
+import { registerModel, type Collection, type Filter, type StringFilter } from "accel-record";
+import { Attribute, defineEnumTextAttribute } from "accel-record/enums";
 
 declare module "accel-record" {
   function meta<T>(model: T): Meta<T>;
@@ -65,6 +61,7 @@ type AccountMeta = {
   Base: AccountModel;
   New: NewAccount;
   Persisted: Account;
+  PrimaryKey: number;
   AssociationKey: AccountAssociationKey;
   JoinInput:
     | AccountAssociationKey
@@ -105,7 +102,10 @@ declare module "./todo" {
     id: number | undefined;
     title: string | undefined;
     content: string | undefined;
+    estimate: number | undefined;
+    dueDate: Date | undefined;
     status: Status;
+    statusText: string;
     account: Account | undefined;
     accountId: number | undefined;
     createdAt: Date | undefined;
@@ -113,7 +113,9 @@ declare module "./todo" {
   }
 }
 export interface NewTodo extends TodoModel {}
-export class Todo extends TodoModel {}
+export class Todo extends TodoModel {
+  static status = new Attribute(this, "Status", Status);
+}
 export interface Todo extends TodoModel {
   id: number;
   title: string;
@@ -123,13 +125,12 @@ export interface Todo extends TodoModel {
   updatedAt: Date;
 }
 type TodoAssociationKey = "account";
-type TodoCollection<T extends TodoModel> =
-  | Collection<T, TodoMeta>
-  | Collection<Todo, TodoMeta>;
+type TodoCollection<T extends TodoModel> = Collection<T, TodoMeta> | Collection<Todo, TodoMeta>;
 type TodoMeta = {
   Base: TodoModel;
   New: NewTodo;
   Persisted: Todo;
+  PrimaryKey: number;
   AssociationKey: TodoAssociationKey;
   JoinInput:
     | TodoAssociationKey
@@ -141,6 +142,8 @@ type TodoMeta = {
     id: number;
     title: string;
     content: string | undefined;
+    estimate: number | undefined;
+    dueDate: Date | undefined;
     status: Status;
     accountId: number;
     createdAt: Date;
@@ -150,6 +153,8 @@ type TodoMeta = {
     id?: number;
     title: string;
     content?: string;
+    estimate?: number;
+    dueDate?: Date;
     status?: Status;
     createdAt?: Date;
     updatedAt?: Date;
@@ -158,6 +163,8 @@ type TodoMeta = {
     id?: number | number[] | Filter<number> | null;
     title?: string | string[] | StringFilter | null;
     content?: string | string[] | StringFilter | null;
+    estimate?: number | number[] | Filter<number> | null;
+    dueDate?: Date | Date[] | Filter<Date> | null;
     status?: Status | Status[] | undefined | null;
     account?: Account | Account[] | AccountMeta["WhereInput"];
     accountId?: number | number[] | Filter<number> | null;
@@ -166,3 +173,4 @@ type TodoMeta = {
   };
 };
 registerModel(Todo);
+defineEnumTextAttribute(TodoModel, Todo, "status");
