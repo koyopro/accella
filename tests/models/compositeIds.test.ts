@@ -32,3 +32,13 @@ test("relation()", () => {
   expect((authors[1].Book as any).cache.length).toBe(1);
   expect((authors[2].Book as any).cache.length).toBe(0);
 });
+
+test("joins", () => {
+  const author0 = $Author.create({ firstName: "Jane", lastName: "A" });
+  $Book.create({ title: "Book0", author: author0 });
+  const author = $Author.create({ firstName: "Jane", lastName: "Doe" });
+  $Book.create({ title: "Book1", author });
+
+  expect(Book.joins("author").count()).toBe(2);
+  expect(Author.joins("Book").count()).toBe(2);
+});
