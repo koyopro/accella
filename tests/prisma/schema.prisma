@@ -110,3 +110,19 @@ model Account {
   email          String  @unique
   passwordDigest String?
 }
+
+model Author {
+  firstName String
+  lastName  String
+  books     Book[]
+
+  @@id([firstName, lastName])
+}
+
+model Book {
+  id              Int    @id @default(autoincrement())
+  title           String
+  author          Author @relation(fields: [authorFirstName, authorLastName], references: [firstName, lastName])
+  authorFirstName String
+  authorLastName  String
+}
