@@ -407,7 +407,7 @@ Accel Recordはスキーマ定義にPrismaを利用していますが、各機�
 | 機能                            | 記法        | サポート |
 | ------------------------------- | ----------- | -------- |
 | ID                              | @id         | ✅       |
-| Multi-field ID (Composite ID)   | @@id        | -        |
+| Multi-field ID (Composite ID)   | @@id        | ✅       |
 | Table name mapping              | @@map       | ✅       |
 | Column name mapping             | @map        | ✅       |
 | Default value                   | @default    | ✅       |
@@ -842,12 +842,7 @@ Vitestを使ったテストでは、以下のようなsetupファイルを用意
 ```ts
 // tests/vitest.setup.ts
 
-import {
-  DatabaseCleaner,
-  Migration,
-  initAccelRecord,
-  stopWorker,
-} from "accel-record";
+import { DatabaseCleaner, Migration, initAccelRecord, stopWorker } from "accel-record";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -1402,6 +1397,4 @@ user.update({ age: undefined });
 
 ## 今後予定されている機能追加
 
-- [accel-record-core] 複合IDの対応
-
-関連: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
+[Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)

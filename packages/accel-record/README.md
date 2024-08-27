@@ -406,7 +406,7 @@ Accel Record uses Prisma for schema definition, and the support status for each 
 | Feature                         | Notation    | Support |
 | ------------------------------- | ----------- | ------- |
 | ID                              | @id         | ✅      |
-| Multi-field ID (Composite ID)   | @@id        | -       |
+| Multi-field ID (Composite ID)   | @@id        | ✅      |
 | Table name mapping              | @@map       | ✅      |
 | Column name mapping             | @map        | ✅      |
 | Default value                   | @default    | ✅      |
@@ -841,12 +841,7 @@ In Vitest, you prepare a setup file like the following for testing.
 ```ts
 // tests/vitest.setup.ts
 
-import {
-  DatabaseCleaner,
-  Migration,
-  initAccelRecord,
-  stopWorker,
-} from "accel-record";
+import { DatabaseCleaner, Migration, initAccelRecord, stopWorker } from "accel-record";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -1401,6 +1396,4 @@ user.update({ age: undefined });
 
 ## Future Planned Features
 
-- [accel-record-core] Support for Composite IDs
-
-Related: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
+[Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
