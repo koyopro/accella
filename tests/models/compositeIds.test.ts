@@ -26,7 +26,7 @@ test("relation()", () => {
 
   expect(Book.includes("author").find(book.id).author.lastName).toBe("Doe");
 
-  const authors = Author.includes("books").toArray();
+  const authors = Author.includes("books").order("lastName").toArray();
   expect(authors.length).toBe(3);
   expect((authors[0].books as any).cache.length).toBe(1);
   expect((authors[1].books as any).cache.length).toBe(1);
