@@ -20,11 +20,10 @@ export class Association<O extends Model, T extends Model> {
   }
 
   scopeAttributes() {
-    const ret: any = {};
-    for (let i = 0; i < this.info.foreignKeyColumns.length; i++) {
-      ret[this.info.foreignKeyColumns[i]] = this.owner[this.info.primaryKeyColumns[i] as keyof O];
-    }
-    return ret;
+    return this.info.foreignKeyColumns.toHash((col, i) => [
+      col,
+      this.owner[this.info.primaryKeyColumns[i] as keyof O],
+    ]);
   }
 
   get ownerHasPrimary() {

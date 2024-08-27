@@ -24,10 +24,9 @@ export class BelongsToAssociation<O extends Model, T extends Model> extends Asso
   }
 
   override scopeAttributes() {
-    const ret: any = {};
-    for (let i = 0; i < this.info.foreignKeyColumns.length; i++) {
-      ret[this.info.primaryKeyColumns[i]] = this.owner[this.info.foreignKeyColumns[i] as keyof O];
-    }
-    return ret;
+    return this.info.primaryKeyColumns.toHash((col, i) => [
+      col,
+      this.owner[this.info.foreignKeyColumns[i] as keyof O],
+    ]);
   }
 }
