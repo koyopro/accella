@@ -120,7 +120,7 @@ model Account {
 model Author {
   firstName String
   lastName  String
-  Book      Book[]
+  books     Book[]
 
   @@id([firstName, lastName])
 }

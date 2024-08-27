@@ -671,8 +671,8 @@ declare module "./author" {
   interface AuthorModel {
     firstName: string | undefined;
     lastName: string | undefined;
-    get Book(): BookCollection<BookModel>;
-    set Book(value: BookModel[]);
+    get books(): BookCollection<BookModel>;
+    set books(value: BookModel[]);
   }
 }
 export interface NewAuthor extends AuthorModel {};
@@ -681,10 +681,10 @@ export class Author extends AuthorModel {
 export interface Author extends AuthorModel {
   firstName: string;
   lastName: string;
-  get Book(): BookCollection<Book>;
-  set Book(value: BookModel[]);
+  get books(): BookCollection<Book>;
+  set books(value: BookModel[]);
 };
-type AuthorAssociationKey = 'Book';
+type AuthorAssociationKey = 'books';
 type AuthorCollection<T extends AuthorModel> = Collection<T, AuthorMeta> | Collection<Author, AuthorMeta>;
 type AuthorMeta = {
   Base: AuthorModel;
@@ -693,7 +693,7 @@ type AuthorMeta = {
   PrimaryKey: [string, string];
   AssociationKey: AuthorAssociationKey;
   JoinInput: AuthorAssociationKey | AuthorAssociationKey[] | {
-    Book?: Meta<Book>['JoinInput'];
+    books?: Meta<Book>['JoinInput'];
   };
   Column: {
     firstName: string;
@@ -702,12 +702,12 @@ type AuthorMeta = {
   CreateInput: {
     firstName: string;
     lastName: string;
-    Book?: BookModel[];
+    books?: BookModel[];
   };
   WhereInput: {
     firstName?: string | string[] | StringFilter | null;
     lastName?: string | string[] | StringFilter | null;
-    Book?: BookMeta['WhereInput'];
+    books?: BookMeta['WhereInput'];
   };
 };
 registerModel(Author);
