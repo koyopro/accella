@@ -97,8 +97,8 @@ export class Association {
   protected hasManyThroughJoins<T>(this: Relation<T, ModelMeta>, info: Info) {
     const { through, model, primaryKey, foreignKey, joinKey } = info;
     return [
-      [through, `${through}.${foreignKey}`, "=", `${this.model.tableName}.${primaryKey}`],
-      [model.tableName, `${through}.${joinKey}`, "=", `${model.tableName}.${info.primaryKey}`],
+      [through, [[`${through}.${foreignKey}`, "=", `${this.model.tableName}.${primaryKey}`]]],
+      [model.tableName, [[`${through}.${joinKey}`, "=", `${model.tableName}.${info.primaryKey}`]]],
     ];
   }
 

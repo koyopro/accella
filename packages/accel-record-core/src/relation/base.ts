@@ -53,14 +53,9 @@ export class RelationBase {
   protected query<T>(this: Relation<T, ModelMeta>) {
     let q = this.model.queryBuilder.clone() as any;
     for (const join of this.options.joins) {
-      if (Array.isArray(join[1])) {
-        q = q.join(join[0], function (this: any) {
-          for (const j of join[1]) this.on(...j);
-        });
-      } else {
-        // TODO: remove this branch
-        q = q.join(...join);
-      }
+      q = q.join(join[0], function (this: any) {
+        for (const j of join[1]) this.on(...j);
+      });
     }
     for (const [query, bindings] of this.options.joinsRaw) {
       q = q.joinRaw(query, bindings);
