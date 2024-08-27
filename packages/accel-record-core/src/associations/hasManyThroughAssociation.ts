@@ -92,4 +92,8 @@ export class HasManyThroughAssociation<O extends Model, T extends Model> extends
   private get joinKey() {
     return this.info.joinKey;
   }
+
+  get ownersPrimary() {
+    return this.owner[this.info.primaryKey as keyof O];
+  }
 }

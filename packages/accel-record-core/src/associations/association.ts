@@ -22,20 +22,13 @@ export class Association<O extends Model, T extends Model> {
   scopeAttributes() {
     const ret: any = {};
     for (let i = 0; i < this.info.foreignKeyColumns.length; i++) {
-      ret[this.info.foreignKeyColumns[i]] =
-        this.owner[this.info.primaryKeyColumns[i] as keyof O];
+      ret[this.info.foreignKeyColumns[i]] = this.owner[this.info.primaryKeyColumns[i] as keyof O];
     }
     return ret;
   }
 
   get ownerHasPrimary() {
-    return this.info.primaryKeyColumns.every(
-      (col) => this.owner[col as keyof O] !== undefined
-    );
-  }
-
-  get ownersPrimary() {
-    return this.owner[this.info.primaryKey as keyof O];
+    return this.info.primaryKeyColumns.every((col) => this.owner[col as keyof O] !== undefined);
   }
 
   protected get connection() {
