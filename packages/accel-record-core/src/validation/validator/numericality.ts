@@ -48,6 +48,12 @@ export type NumericalityOptions = {
    */
   lessThanOrEqualTo?: number;
   /**
+   * Validates that the value is between the specified numbers.
+   *
+   * The message key is `between`. The default message is `must be between {{min}} and {{max}}`.
+   */
+  between?: [number, number];
+  /**
    * Validates that the value is other than the specified number.
    *
    * The message key is `otherThan`. The default message is `must be other than {{count}}`.
@@ -98,6 +104,8 @@ export class NumericalityValidator<T extends Model> extends Validator<T> {
 
     this.validateLessThan(num);
     this.validateLessThanOrEqualTo(num);
+
+    this.validateBetween(num);
 
     this.validateOdd(num);
     this.validateEven(num);
@@ -181,6 +189,18 @@ export class NumericalityValidator<T extends Model> extends Validator<T> {
       this.errors.add(this.attribute, this.options.message ?? "greaterThanOrEqualTo", {
         count: this.options.greaterThanOrEqualTo,
       });
+    }
+  }
+
+  private validateBetween(num: number) {
+    if (this.options.between != undefined) {
+      const [min, max] = this.options.between;
+      if (num < min || max < num) {
+        this.errors.add(this.attribute, this.options.message ?? "between", {
+          min,
+          max,
+        });
+      }
     }
   }
 }

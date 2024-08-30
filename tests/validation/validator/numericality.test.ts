@@ -71,6 +71,15 @@ describe("error message", () => {
     expect(subject()).toBe("Count must be less than or equal to -1");
   });
 
+  test("numericality between", () => {
+    sample.validates("pattern", { numericality: { between: [120, 123] } });
+    expect(subject()).toBeUndefined();
+    sample.validates("key", { numericality: { between: [-15.5, -12.3] } });
+    expect(subject()).toBeUndefined();
+    sample.validates("count", { numericality: { between: [0.1, 0.5] } });
+    expect(subject()).toBe("Count must be between 0.1 and 0.5");
+  });
+
   test("numericality otherThan", () => {
     sample.validates("pattern", { numericality: { otherThan: 0 } });
     expect(subject()).toBeUndefined();
