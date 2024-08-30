@@ -1397,4 +1397,6 @@ user.update({ age: undefined });
 
 ## Future Planned Features
 
-[Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
+- [accel-record-core] Form Object
+
+Related: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
