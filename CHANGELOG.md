@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/koyopro/accella/compare/1.13.0...1.14.0) (2024-08-31)
+
+### Features
+
+- Support for Composite IDs ([#43](https://github.com/koyopro/accella/pull/43))
+- add NumericalityValidator ([#44](https://github.com/koyopro/accella/pull/44))
+
 # [1.13.0](https://github.com/koyopro/accella/compare/1.12.0...1.13.0) (2024-08-24)
 
 ### Features
