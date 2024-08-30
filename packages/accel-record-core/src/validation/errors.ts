@@ -6,13 +6,25 @@ const defaultMessages: Record<string, string | undefined> = {
   accepted: "must be accepted",
   invalid: "is invalid",
   inclusion: "is not included in the list",
-  tooShort: "is too short (minimum is %{count} characters)",
-  tooLong: "is too long (maximum is %{count} characters)",
+  tooShort: "is too short (minimum is {{count}} characters)",
+  tooLong: "is too long (maximum is {{count}} characters)",
   taken: "has already been taken",
-  confirmation: "doesn't match %{attribute}",
+  confirmation: "doesn't match {{attribute}}",
+
+  notANumber: "is not a number",
+  notAnInteger: "must be an integer",
+  equalTo: "must be equal to {{count}}",
+  greaterThan: "must be greater than {{count}}",
+  greaterThanOrEqualTo: "must be greater than or equal to {{count}}",
+  lessThan: "must be less than {{count}}",
+  lessThanOrEqualTo: "must be less than or equal to {{count}}",
+  between: "must be between {{min}} and {{max}}",
+  otherThan: "must be other than {{count}}",
+  odd: "must be odd",
+  even: "must be even",
 };
 
-type Options = { count?: number; attribute?: string };
+type Options = Record<string, number | string | undefined>;
 
 /**
  * Represents an error object.
@@ -41,11 +53,10 @@ export class Error {
 
   get message() {
     let message = this.translatedMessage;
-    if (this.options.count) {
-      message = message.replace("%{count}", this.options.count.toString());
-    }
-    if (message.includes("%{attribute}")) {
-      message = message.replace("%{attribute}", this.options.attribute || "confirmation");
+    for (const [key, value] of Object.entries(this.options)) {
+      for (const placeholder of [`{{${key}}}`, `%{${key}}`]) {
+        message = message.replace(placeholder, value?.toString() || "");
+      }
     }
     return message;
   }

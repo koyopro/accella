@@ -1259,8 +1259,9 @@ i18next
 | uniqueness     | -          | 'taken'        | -      |
 | format         | -          | 'invalid'      | -      |
 | inclusion      | -          | 'inclusion'    | -      |
+| numericality   | 'equalTo'  | 'equalTo'      | count  |
 
-式展開が `count` になっているものは、エラーメッセージに `%{count}` を含むときにその部分がオプションで指定された値に置き換えられます。
+式展開が `count` になっているものは、エラーメッセージに `{{count}}` を含むときにその部分がオプションで指定された値に置き換えられます。
 
 ### Enumの翻訳
 

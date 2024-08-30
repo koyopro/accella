@@ -9,6 +9,10 @@ import { FormatOptions, FormatValidator } from "../validation/validator/format.j
 import { InclusionOptions, InclusionValidator } from "../validation/validator/inclusion.js";
 import { Validator } from "../validation/validator/index.js";
 import { LengthOptions, LengthValidator } from "../validation/validator/length.js";
+import {
+  NumericalityOptions,
+  NumericalityValidator,
+} from "../validation/validator/numericality.js";
 import { PresenceOptions, PresenceValidator } from "../validation/validator/presence.js";
 import { UniquenessValidator, UniqunessOptions } from "../validation/validator/uniqueness.js";
 
@@ -19,6 +23,7 @@ type ValidatesOptions<T> = {
   inclusion?: InclusionOptions;
   format?: FormatOptions;
   uniqueness?: UniqunessOptions<T>;
+  numericality?: NumericalityOptions;
 };
 
 /**
@@ -124,6 +129,9 @@ export class Validations {
 
       if (options.uniqueness)
         new UniquenessValidator(this, attribute, options.uniqueness).validate();
+
+      if (options.numericality)
+        new NumericalityValidator(this, attribute, options.numericality).validate();
     }
   }
 }

@@ -1249,17 +1249,18 @@ i18next
 
 The message keys corresponding to each validation are as follows:
 
-| Validation | Option    | Message Key | Interpolation |
-| ---------- | --------- | ----------- | ------------- |
-| acceptance | -         | 'accepted'  | -             |
-| presence   | -         | 'blank'     | -             |
-| length     | 'minimum' | 'tooShort'  | count         |
-| length     | 'maximum' | 'tooLong'   | count         |
-| uniqueness | -         | 'taken'     | -             |
-| format     | -         | 'invalid'   | -             |
-| inclusion  | -         | 'inclusion' | -             |
+| Validation   | Option    | Message Key | Interpolation |
+| ------------ | --------- | ----------- | ------------- |
+| acceptance   | -         | 'accepted'  | -             |
+| presence     | -         | 'blank'     | -             |
+| length       | 'minimum' | 'tooShort'  | count         |
+| length       | 'maximum' | 'tooLong'   | count         |
+| uniqueness   | -         | 'taken'     | -             |
+| format       | -         | 'invalid'   | -             |
+| inclusion    | -         | 'inclusion' | -             |
+| numericality | 'equalTo' | 'equalTo'   | count         |
 
-For those with interpolation set to `count`, that part will be replaced with the value specified in the option when the error message contains `%{count}`.
+For those with interpolation set to `count`, that part will be replaced with the value specified in the option when the error message contains `{{count}}`.
 
 ### Translation of Enums
 
