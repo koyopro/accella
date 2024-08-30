@@ -10,12 +10,6 @@ import { Relation, Relations } from "./index.js";
  * This class is intended to be inherited by the Relation class.
  */
 export class Query {
-  reset<T>(this: Relation<T, ModelMeta>) {
-    this.cache = undefined;
-    this.counter = 0;
-    return this;
-  }
-
   /**
    * Finds a record by its ID.
    * @param id - The ID of the record.

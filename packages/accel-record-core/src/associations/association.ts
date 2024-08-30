@@ -20,11 +20,14 @@ export class Association<O extends Model, T extends Model> {
   }
 
   scopeAttributes() {
-    return { [this.info.foreignKey]: this.ownersPrimary };
+    return this.info.foreignKeyColumns.toHash((col, i) => [
+      col,
+      this.owner[this.info.primaryKeyColumns[i] as keyof O],
+    ]);
   }
 
-  get ownersPrimary() {
-    return this.owner[this.info.primaryKey as keyof O];
+  get ownerHasPrimary() {
+    return this.info.primaryKeyColumns.every((col) => this.owner[col as keyof O] !== undefined);
   }
 
   protected get connection() {

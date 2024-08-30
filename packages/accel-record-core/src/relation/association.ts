@@ -72,9 +72,11 @@ export class Association {
     return [
       [
         info.model.tableName,
-        `${this.model.tableName}.${info.primaryKey}`,
-        "=",
-        `${info.model.tableName}.${info.foreignKey}`,
+        info.primaryKeyColumns.map((column, index) => [
+          `${this.model.tableName}.${column}`,
+          "=",
+          `${info.model.tableName}.${info.foreignKeyColumns[index]}`,
+        ]),
       ],
     ];
   }
@@ -83,9 +85,11 @@ export class Association {
     return [
       [
         info.model.tableName,
-        `${info.model.tableName}.${info.primaryKey}`,
-        "=",
-        `${this.model.tableName}.${info.foreignKey}`,
+        info.primaryKeyColumns.map((column, index) => [
+          `${info.model.tableName}.${column}`,
+          "=",
+          `${this.model.tableName}.${info.foreignKeyColumns[index]}`,
+        ]),
       ],
     ];
   }
@@ -93,8 +97,8 @@ export class Association {
   protected hasManyThroughJoins<T>(this: Relation<T, ModelMeta>, info: Info) {
     const { through, model, primaryKey, foreignKey, joinKey } = info;
     return [
-      [through, `${through}.${foreignKey}`, "=", `${this.model.tableName}.${primaryKey}`],
-      [model.tableName, `${through}.${joinKey}`, "=", `${model.tableName}.${info.primaryKey}`],
+      [through, [[`${through}.${foreignKey}`, "=", `${this.model.tableName}.${primaryKey}`]]],
+      [model.tableName, [[`${through}.${joinKey}`, "=", `${model.tableName}.${info.primaryKey}`]]],
     ];
   }
 
@@ -117,11 +121,7 @@ export class Association {
 }
 
 function alreadyContains(arrays: any[][], targetArray: any[]): boolean {
-  return arrays.some(
-    (array) =>
-      array.length === targetArray.length &&
-      array.every((value, index) => value === targetArray[index])
-  );
+  return arrays.some((array) => array[0] === targetArray[0]);
 }
 
 function formatJoinsInput(...input: any[]): object {

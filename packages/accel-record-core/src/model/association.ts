@@ -26,8 +26,8 @@ export class Association {
     relation: DMMF.Field,
     association: Field,
     primaryKeys: readonly string[],
-    foreignKeyColumns: string[],
-    primaryKeyColumns: string[]
+    public foreignKeyColumns: string[],
+    public primaryKeyColumns: string[]
   ) {
     this.klass = association.type;
     this.foreignKey = foreignKeyColumns[0] ?? "";

@@ -14,7 +14,7 @@ export class HasOneAssociation<O extends Model, T extends Model> extends Associa
   }
 
   setter(record: T | undefined) {
-    if (this.ownersPrimary) this.reader();
+    if (this.ownerHasPrimary) this.reader();
     if (!record) {
       this.target?.destroy();
       this.target = undefined;
@@ -23,7 +23,7 @@ export class HasOneAssociation<O extends Model, T extends Model> extends Associa
       const success = Model.transaction(() => {
         this.target?.destroy();
         this.target = record;
-        if (this.ownersPrimary && !this.persist()) {
+        if (this.ownerHasPrimary && !this.persist()) {
           throw new Rollback();
         }
         return true;
@@ -46,8 +46,12 @@ export class HasOneAssociation<O extends Model, T extends Model> extends Associa
    */
   persist(): boolean {
     if (!this.target) return false;
-    if (!this.ownersPrimary) return false;
-    this.target[this.info.foreignKey as keyof T] = this.ownersPrimary as any;
+    if (!this.ownerHasPrimary) return false;
+    this.info.foreignKeyColumns.forEach((column, i) => {
+      this.target![column as keyof T] = this.owner[
+        this.info.primaryKeyColumns[i] as keyof O
+      ] as any;
+    });
     if (!this.target.isNewRecord && !this.target.isChanged()) return true;
     return this.target.save();
   }

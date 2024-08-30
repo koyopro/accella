@@ -12,6 +12,12 @@ import { Options } from "./options.js";
  * This class is intended to be inherited by the Relation class.
  */
 export class RelationBase {
+  reset<T>(this: Relation<T, ModelMeta>) {
+    this.cache = undefined;
+    this.counter = 0;
+    return this;
+  }
+
   setOption<T>(this: Relation<T, ModelMeta>, key: keyof Options, value: any) {
     (this.options as any)[key] = value;
     return this;
@@ -47,7 +53,9 @@ export class RelationBase {
   protected query<T>(this: Relation<T, ModelMeta>) {
     let q = this.model.queryBuilder.clone() as any;
     for (const join of this.options.joins) {
-      q = q.join(...join);
+      q = q.join(join[0], function (this: any) {
+        for (const j of join[1]) this.on(...j);
+      });
     }
     for (const [query, bindings] of this.options.joinsRaw) {
       q = q.joinRaw(query, bindings);
