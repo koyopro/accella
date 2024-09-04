@@ -44,8 +44,7 @@
   ],
   "files": [
     "README.md",
-    "index.js",
-    "index.d.ts"
+    "dist"
   ],
   "author": "koyopro",
   "license": "Apache-2.0",
