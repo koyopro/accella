@@ -1,3 +1,4 @@
+import { attributes } from "accel-record/attributes";
 import { ApplicationRecord } from "./applicationRecord.js";
 
 type SettingData = {
@@ -11,6 +12,8 @@ export class SettingModel extends ApplicationRecord {
   data: SettingData = {
     key1: "hoge",
   };
+
+  counter = attributes.integer(0);
 
   override validateAttributes() {
     if (this.threshold && this.threshold < 0) {
