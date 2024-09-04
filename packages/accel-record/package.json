@@ -10,6 +10,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./attributes": {
+      "types": "./dist/attributes.d.ts",
+      "default": "./dist/attributes.js"
+    },
     "./enums": {
       "types": "./dist/enums.d.ts",
       "default": "./dist/enums.js"
