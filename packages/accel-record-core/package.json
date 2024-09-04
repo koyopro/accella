@@ -1,6 +1,6 @@
 {
   "name": "accel-record-core",
-  "version": "1.14.0",
+  "version": "1.14.1",
   "description": "",
   "type": "module",
   "main": "dist/index.js",

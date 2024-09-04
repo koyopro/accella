@@ -1,3 +1,9 @@
+# [1.14.1](https://github.com/koyopro/accella/compare/1.14.0...1.14.1) (2024-09-04)
+
+### Bug Fixes
+
+- append files of accel-record package ([#46](https://github.com/koyopro/accella/pull/46))
+
 # [1.14.0](https://github.com/koyopro/accella/compare/1.13.0...1.14.0) (2024-08-31)
 
 ### Features
