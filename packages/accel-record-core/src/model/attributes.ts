@@ -7,7 +7,7 @@ export class Attributes {
   protected transformAttributeProperties() {
     for (const key of Object.getOwnPropertyNames(this) as (keyof this)[]) {
       if (this[key] instanceof AttributeType) {
-        const type = this[key];
+        const type = this[key] as AttributeType<any>;
         Object.defineProperty(this, key, {
           get() {
             return type.value;
