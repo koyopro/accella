@@ -38,6 +38,7 @@ It can be used with MySQL, PostgreSQL, and SQLite.
 - [Lock](#lock)
 - [Internationalization (I18n)](#internationalization-i18n)
 - [Password Authentication](#password-authentication)
+- [Form Objects](#form-objects)
 - [Nullable Values Handling](#nullable-values-handling)
 - [Future Planned Features](#future-planned-features)
 
@@ -1371,6 +1372,51 @@ export class UserModel extends Mix(
 ) {}
 ```
 
+## Form Objects
+
+Form objects are a design pattern that allows you to separate validation and saving logic from regular models. They are used for handling processes that span multiple models or for handling form processing that doesn't correspond to regular models.
+By inheriting from the `FormModel` class, you can define attributes and perform validations just like regular models, even though the form object is not directly related to a database table.
+
+```ts
+import { FormModel } from "accel-record";
+import { attributes } from "accel-record/attributes";
+
+class MyForm extends FormModel {
+  title = attributes.string();
+  priority = attributes.integer(3);
+  dueDate = attributes.date();
+
+  override validateAttributes() {
+    this.validates("title", { presence: true });
+    this.validates("priority", { numericality: { between: [1, 5] } });
+  }
+
+  save() {
+    if (this.isInvalid()) return false;
+
+    // Perform actions when validation succeeds
+    // Save values to models, etc.
+    // ...
+    return true;
+  }
+}
+```
+
+```ts
+// Receive form input values
+const myFormParams = { title: "Task", priority: "2", dueDate: "2022-12-31" };
+const form = MyForm.build(myFormParams);
+if (form.save()) {
+  // Actions to take on successful save
+  /* ... */
+} else {
+  // Actions to take on save failure
+  const errorMessages = form.errors.fullMessages();
+  // Display error messages, etc.
+  /* ... */
+}
+```
+
 ## Nullable Values Handling
 
 Regarding nullable values, TypeScript, like JavaScript, has two options: undefined and null. \
@@ -1397,6 +1443,4 @@ user.update({ age: undefined });
 
 ## Future Planned Features
 
-- [accel-record-core] Form Object
-
-Related: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
+[Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)

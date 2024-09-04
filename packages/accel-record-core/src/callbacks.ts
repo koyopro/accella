@@ -49,7 +49,7 @@ export class Callbacks {
    * Runs the before callbacks for a given method.
    * @param method - The method for which to run the before callbacks.
    */
-  protected runBeforeCallbacks(method: CallbackMethod) {
+  runBeforeCallbacks<T extends Callbacks>(this: T, method: CallbackMethod) {
     for (const cb of this.callbacks.before[method]) {
       cb.call(this);
     }
@@ -59,7 +59,7 @@ export class Callbacks {
    * Runs the after callbacks for a given method.
    * @param method - The method for which to run the after callbacks.
    */
-  protected runAfterCallbacks(method: CallbackMethod) {
+  runAfterCallbacks(method: CallbackMethod) {
     for (const cb of this.callbacks.after[method]) {
       cb.call(this);
     }

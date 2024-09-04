@@ -1,9 +1,8 @@
 import { HasManyAssociation } from "./associations/hasManyAssociation.js";
 import { HasOneAssociation } from "./associations/hasOneAssociation.js";
-import { ModelInstanceBuilder } from "./associations/modelInstanceBuilder.js";
 import { exec } from "./database.js";
 import { Collection, Model } from "./index.js";
-import { Meta, New, Persisted } from "./meta.js";
+import { Meta, Persisted } from "./meta.js";
 import { LockType } from "./model/lock.js";
 import { InsertManager } from "./table/insert.js";
 import { UpdateManager } from "./table/update.js";
@@ -18,20 +17,6 @@ export class Persistence {
   isNewRecord: boolean = true;
   isReadonly: boolean = false;
   isDestroyed: boolean = false;
-
-  /**
-   * Builds a new instance of the model using the provided input.
-   *
-   * @template T - The type of the model.
-   * @param input - The input data used to build the model instance.
-   * @returns A new instance of the model.
-   */
-  static build<T extends typeof Model>(this: T, input: Partial<Meta<T>["CreateInput"]>): New<T> {
-    const obj = ModelInstanceBuilder.build(this as T, input);
-    obj.storeOriginalValues();
-    return obj;
-  }
-
   /**
    * Creates a new instance of the model and saves it to the database.
    *

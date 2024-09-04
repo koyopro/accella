@@ -1,16 +1,13 @@
-import { Association } from "./associations/association.js";
 import { Collection } from "./associations/collectionProxy.js";
 import { HasManyAssociation } from "./associations/hasManyAssociation.js";
 import { HasOneAssociation } from "./associations/hasOneAssociation.js";
-import { AttributeAssignment } from "./attributeAssignment.js";
-import { Callbacks } from "./callbacks.js";
 import { Connection } from "./connection.js";
 import { Fields } from "./fields.js";
 import { ModelMeta } from "./meta.js";
+import { ModelBase, RecordBase } from "./model/base.js";
 import { Dirty } from "./model/dirty.js";
 import { Import } from "./model/import.js";
 import { Lock, LockType } from "./model/lock.js";
-import { Naming } from "./model/naming.js";
 import { Searchable } from "./model/search.js";
 import { Serialization } from "./model/serialization.js";
 import { Validations } from "./model/validations.js";
@@ -24,6 +21,7 @@ export { Collection } from "./associations/collectionProxy.js";
 export { after, before } from "./callbacks.js";
 export { getConfig, initAccelRecord, stopRpcClient as stopWorker } from "./database.js";
 export { Migration } from "./migration.js";
+export { ModelBase } from "./model/base.js";
 export { hasSecurePassword } from "./model/securePassword.js";
 export { Relation } from "./relation/index.js";
 export { scope } from "./scope.js";
@@ -59,15 +57,21 @@ export const registerModel = (model: any) => {
   Models[model.name] = model;
 };
 
+/**
+ * Model for creating form objects
+ */
+export class FormModel extends Mix(ModelBase, Validations) {}
+
+/**
+ * Model for creating records
+ */
 export class Model extends Mix(
-  AttributeAssignment,
-  Callbacks,
+  RecordBase,
   Connection,
   Dirty,
   Fields,
   Import,
   Lock,
-  Naming,
   Persistence,
   Query,
   Searchable,
@@ -75,17 +79,6 @@ export class Model extends Mix(
   Transaction,
   Validations
 ) {
-  associations: Map<string, Association<Model, Model>> = new Map();
-
-  /**
-   * Returns the model class for the current instance.
-   *
-   * @returns The model class.
-   */
-  class<T extends typeof Model>(this: InstanceType<T>): T {
-    return this.constructor as T;
-  }
-
   /**
    * Checks if the current instance is equal to another instance of the same type.
    * @param other The other instance to compare with.

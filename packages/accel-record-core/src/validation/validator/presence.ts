@@ -1,10 +1,10 @@
 import { Collection } from "../../associations/collectionProxy.js";
-import { Model } from "../../index.js";
+import { Validations } from "../../model/validations.js";
 import { DefualtOptions, Validator } from "./index.js";
 
 export type PresenceOptions = boolean | DefualtOptions;
 
-export class PresenceValidator<T extends Model> extends Validator<T> {
+export class PresenceValidator<T extends Validations> extends Validator<T> {
   constructor(
     record: T,
     private attribute: keyof T & string,
