@@ -39,6 +39,7 @@ MySQL, PostgreSQL, SQLiteでの利用が可能です。
 - [ロック](#ロック)
 - [国際化(I18n)](#国際化i18n)
 - [パスワード認証](#パスワード認証)
+- [Formオブジェクト](#formオブジェクト)
 - [Nullableな値の扱いについて](#nullableな値の扱いについて)
 - [今後予定されている機能追加](#今後予定されている機能追加)
 
@@ -1372,6 +1373,51 @@ export class UserModel extends Mix(
 ) {}
 ```
 
+## Formオブジェクト
+
+Formオブジェクトは、通常のモデルとは切り分けてバリデーションや保存処理などを行えるデザインパターンです。複数のモデルにまたがる処理や、通常のモデルと対応しないようなフォームの処理を行うために利用されます。
+`FormModel` クラスを継承することで、テーブルとは無関係なクラスでありながら通常のモデルと同様にattributeを持たせた上でバリデーションも行うことができます。
+
+```ts
+import { FormModel } from "accel-record";
+import { attributes } from "accel-record/attributes";
+
+class MyForm extends FormModel {
+  title = attributes.string();
+  priority = attributes.integer(3);
+  dueDate = attributes.date();
+
+  override validateAttributes() {
+    this.validates("title", { presence: true });
+    this.validates("priority", { numericality: { between: [1, 5] } });
+  }
+
+  save() {
+    if (this.isInvalid()) return false;
+
+    // バリデーションが成功した場合の処理
+    // 各値をモデルに保存するなど
+    // ...
+    return true;
+  }
+}
+```
+
+```ts
+// フォームの入力値を受け取る
+const myFormParams = { title: "Task", priority: "2", dueDate: "2022-12-31" };
+const form = MyForm.build(myFormParams);
+if (form.save()) {
+  // 保存成功時の処理
+  /* ... */
+} else {
+  // 保存失敗時の処理
+  const errorMessages = form.errors.fullMessages();
+  // エラーメッセージを表示するなど
+  /* ... */
+}
+```
+
 ## Nullableな値の扱いについて
 
 Nullableな値について、TypeScriptではJavaScriptと同様にundefinedとnullの2つが存在します。 \
@@ -1398,6 +1444,4 @@ user.update({ age: undefined });
 
 ## 今後予定されている機能追加
 
-- [accel-record-core] Formオブジェクト
-
-関連: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
+[Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
