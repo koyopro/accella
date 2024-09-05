@@ -2,17 +2,15 @@
   "name": "minimal-sample",
   "version": "0.0.1",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "check": "npm update accel-record && npx tsx src/index.ts"
+    "check": "npm update accel-record && tsc && node dist/index.js"
   },
   "author": "koyopro <koyopro2.0@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
     "accel-record": "^1.14.1",
     "mysql2": "^3.11.0"
-  },
-  "devDependencies": {
-    "tsx": "^4.19.0"
   }
 }
