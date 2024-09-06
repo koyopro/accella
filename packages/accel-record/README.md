@@ -1444,3 +1444,12 @@ user.update({ age: undefined });
 ## Future Planned Features
 
 [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
+
+## Background of Design and Development
+
+Introducing articles about the motivation behind the design and development of Accel Record.
+
+- [Introduction to "Accel Record": A TypeScript ORM Using the Active Record Pattern](https://dev.to/koyopro/introduction-to-accel-record-a-typescript-orm-using-the-active-record-pattern-2oeh)
+- [Seeking a Type-Safe Ruby on Rails in TypeScript, I Started Developing an ORM](https://dev.to/koyopro/seeking-a-type-safe-ruby-on-rails-in-typescript-i-started-developing-an-orm-1of5)
+- [Why We Adopted a Synchronous API for the New TypeScript ORM](https://dev.to/koyopro/why-we-adopted-a-synchronous-api-for-the-new-typescript-orm-1jm)
+- [Even Server-Side TypeScript Needs the Option to Avoid Asynchronous Processing](https://dev.to/koyopro/even-server-side-typescript-needs-the-option-to-avoid-asynchronous-processing-1opm)
