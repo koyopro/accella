@@ -1445,3 +1445,12 @@ user.update({ age: undefined });
 ## 今後予定されている機能追加
 
 [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
+
+## 設計と開発の背景
+
+Accel Recordの設計や開発の動機などに関する記事を紹介します。
+
+- [Active Recordパターンを採用したTypeScript用ORM「Accel Record」の紹介](https://qiita.com/koyopro/items/917c2c98db3de7518849)
+- [TypeScriptで書ける型安全なRuby on Railsを求め、ORMの開発を始めた](https://qiita.com/koyopro/items/748ddd27aa32ff14c95f)
+- [TypeScriptの新しいORMに同期APIを採用した理由](https://qiita.com/koyopro/items/b11be652ee95426f244e)
+- [サーバーサイドTypeScriptでも、非同期処理を使わないという選択肢が必要なのではないか](https://qiita.com/koyopro/items/2724c764181cbc60b236)
