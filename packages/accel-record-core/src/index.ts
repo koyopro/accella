@@ -114,6 +114,10 @@ export class Model extends Mix(
     }
     return this;
   }
+
+  build(attribute: string, value: any) {
+    return this.associations.get(attribute)!.build(value);
+  }
 }
 
 declare module "knex" {

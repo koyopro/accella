@@ -92,6 +92,13 @@ describe("hasOne", () => {
     expect(User.connection.queryCount).toBe(beforeCount);
   });
 
+  test("build association", () => {
+    const user = $user.create();
+    const setting = user.build("setting", { threshold: 0.5 });
+    expect(setting.userId).toBe(user.id);
+    expect(setting.threshold).toBeCloseTo(0.5);
+  });
+
   describe("getter/setter types", () => {
     test("persisted & new", () => {
       const user = $user.create();
