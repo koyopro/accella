@@ -3,16 +3,6 @@ import { $setting } from "../factories/setting";
 import { $user } from "../factories/user";
 
 describe("hasOne", () => {
-  test.skip(".associations()", () => {
-    expect(Setting.associations.user).toEqual({
-      klass: "User",
-      foreignKey: "userId",
-      primaryKey: "id",
-      table: "user",
-      field: expect.anything(),
-    });
-  });
-
   test(".create()", () => {
     const user = $user.create();
     $setting.create({ threshold: 0.5, userId: user.id });
