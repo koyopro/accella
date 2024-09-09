@@ -1,3 +1,9 @@
+# [1.15.0](https://github.com/koyopro/accella/compare/1.14.1...1.15.0) (2024-09-09)
+
+### Features
+
+- Form Objects ([#45](https://github.com/koyopro/accella/pull/45))
+
 # [1.14.1](https://github.com/koyopro/accella/compare/1.14.0...1.14.1) (2024-09-04)
 
 ### Bug Fixes
