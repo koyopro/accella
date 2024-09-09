@@ -18,6 +18,7 @@ type ${model.meta} = {
   Persisted: ${model.persistedModel};
   PrimaryKey: ${model.primaryKeys};
   AssociationKey: ${model.associationKey};
+  Associations: {${associations(model)}};
   JoinInput: ${model.associationKey} | ${model.associationKey}[]${joinInputs(model)};
   Column: {${columnMeta(model)}};
   CreateInput: {${createInputs(model)}}${associationColumns(model)};
@@ -25,6 +26,15 @@ type ${model.meta} = {
 };
 registerModel(${model.persistedModel});
 ${defineEnumTextAttributes(model)}`;
+
+export const associations = (model: ModelWrapper) => {
+  const isHasOne = (f: FieldWrapper) =>
+    f.relationName && !f.isList && f.relationFromFields?.length == 0;
+  const fields = model.fields.filter(isHasOne);
+  if (fields.length == 0) return "";
+  const types = fields.map((f) => `\n    ${f.name}: Meta<${f.model!.persistedModel}>;`).join("");
+  return `${types}\n  `;
+};
 
 const defineEnumTextTypes = (model: ModelWrapper) =>
   model.fields

@@ -115,7 +115,11 @@ export class Model extends Mix(
     return this;
   }
 
-  build(attribute: string, value: any) {
+  build<T extends Model, A extends keyof Meta<T>["Associations"] & string>(
+    this: T,
+    attribute: A,
+    value: Partial<Meta<T>["Associations"][A]["CreateInput"]>
+  ): Meta<T>["Associations"][A]["New"] {
     return this.associations.get(attribute)!.build(value);
   }
 }
