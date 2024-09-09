@@ -9,6 +9,7 @@ export const generateTypes = async (options: GeneratorOptions) => {
   type Collection,
   type Filter,
   type StringFilter,
+  type OmitCreateInputKey,
 } from "accel-record";
 import {
   Attribute,

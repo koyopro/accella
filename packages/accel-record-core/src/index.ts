@@ -51,6 +51,10 @@ export type StringFilter = Filter<string> & {
   like?: string;
 };
 
+export type OmitCreateInputKey<T, S extends string> = Omit<Meta<T>, "CreateInput"> & {
+  CreateInput: Omit<Meta<T>["CreateInput"], S>;
+};
+
 export const Models: Record<string, typeof Model> = {};
 
 export const registerModel = (model: any) => {

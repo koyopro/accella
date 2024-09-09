@@ -32,7 +32,13 @@ export const associations = (model: ModelWrapper) => {
     f.relationName && !f.isList && f.relationFromFields?.length == 0;
   const fields = model.fields.filter(isHasOne);
   if (fields.length == 0) return "";
-  const types = fields.map((f) => `\n    ${f.name}: Meta<${f.model!.persistedModel}>;`).join("");
+  const types = fields
+    .map((f) => {
+      const removeKeys =
+        f.model?.fields.find((f_) => f_.relationName === f.relationName)?.relationFromFields ?? [];
+      return `\n    ${f.name}: OmitCreateInputKey<${f.model?.persistedModel}, '${removeKeys.join("' | '")}'>;`;
+    })
+    .join("");
   return `${types}\n  `;
 };
 

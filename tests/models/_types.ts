@@ -21,6 +21,7 @@ import {
   type Collection,
   type Filter,
   type StringFilter,
+  type OmitCreateInputKey,
 } from "accel-record";
 import {
   Attribute,
@@ -105,8 +106,8 @@ type UserMeta = {
   PrimaryKey: number;
   AssociationKey: UserAssociationKey;
   Associations: {
-    setting: Meta<Setting>;
-    Profile: Meta<Profile>;
+    setting: OmitCreateInputKey<Setting, 'userId'>;
+    Profile: OmitCreateInputKey<Profile, 'userId'>;
   };
   JoinInput: UserAssociationKey | UserAssociationKey[] | {
     posts?: Meta<Post>['JoinInput'];
