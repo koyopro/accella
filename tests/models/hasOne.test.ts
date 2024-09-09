@@ -99,6 +99,14 @@ describe("hasOne", () => {
     expect(setting.threshold).toBeCloseTo(0.5);
   });
 
+  test("create association", () => {
+    const user = $user.create();
+    const profile = user.create("Profile", { bio: "Hello" });
+    expect(profile.isPersisted()).toBe(true);
+    expect(profile.userId).toBe(user.id);
+    expect(profile.bio).toBe("Hello");
+  });
+
   describe("getter/setter types", () => {
     test("persisted & new", () => {
       const user = $user.create();

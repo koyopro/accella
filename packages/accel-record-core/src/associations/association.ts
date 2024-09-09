@@ -32,6 +32,12 @@ export class Association<O extends Model, T extends Model> {
     return this.target;
   }
 
+  create(attributes: Record<string, any>) {
+    this.build(attributes);
+    this.target?.save();
+    return this.target;
+  }
+
   get ownerHasPrimary() {
     return this.info.primaryKeyColumns.every((col) => this.owner[col as keyof O] !== undefined);
   }

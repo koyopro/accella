@@ -122,6 +122,14 @@ export class Model extends Mix(
   ): Meta<T>["Associations"][A]["New"] {
     return this.associations.get(attribute)!.build(value);
   }
+
+  create<T extends Model, A extends keyof Meta<T>["Associations"] & string>(
+    this: T,
+    attribute: A,
+    value: Meta<T>["Associations"][A]["CreateInput"]
+  ): Meta<T>["Associations"][A]["Persisted"] {
+    return this.associations.get(attribute)!.create(value);
+  }
 }
 
 declare module "knex" {
