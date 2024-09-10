@@ -108,6 +108,14 @@ describe("hasOne", () => {
     expect(profile.bio).toBe("Hello");
   });
 
+  test("reset association", () => {
+    const user = $user.create({ setting: $setting.build() });
+    expect(user.setting).not.toBeUndefined();
+    expect(user.associations.get("setting")?.["target"]).not.toBeUndefined();
+    user.reset("setting");
+    expect(user.associations.get("setting")?.["target"]).toBeUndefined();
+  });
+
   describe("getter/setter types", () => {
     test("persisted & new", () => {
       const user = $user.create();
