@@ -1,7 +1,7 @@
 import { Collection } from "../associations/collectionProxy.js";
 import { HasManyAssociation } from "../associations/hasManyAssociation.js";
 import { HasOneAssociation } from "../associations/hasOneAssociation.js";
-import { Model } from "../index.js";
+import { Model, ModelBase } from "../index.js";
 import { Meta } from "../meta.js";
 import { Errors } from "../validation/errors.js";
 import { AcceptanceOptions, AcceptanceValidator } from "../validation/validator/acceptance.js";
@@ -42,7 +42,7 @@ export class Validations {
    * Checks if the model is valid by performing attribute and association validations.
    * @returns A boolean indicating whether the model is valid or not.
    */
-  isValid<T extends Model>(this: T): boolean {
+  isValid<T extends ModelBase & Validations>(this: T): boolean {
     this.runBeforeCallbacks("validation");
     this.errors.clearAll();
     this.validateAttributes();
@@ -51,7 +51,7 @@ export class Validations {
     return this.errors.isEmpty();
   }
 
-  private validateAssociations<T extends Model>(this: T) {
+  private validateAssociations<T extends ModelBase & Validations>(this: T) {
     for (const [key, association] of this.associations) {
       if (association instanceof HasOneAssociation) {
         if (association.isValid() === false) {
@@ -104,7 +104,7 @@ export class Validations {
    * @param attribute - The attribute(s) to validate.
    * @param options - The validation options.
    */
-  validates<T extends Model, K extends keyof Meta<T>["CreateInput"] & keyof T & string>(
+  validates<T extends Validations, K extends keyof Meta<T>["CreateInput"] & keyof T & string>(
     this: T,
     attribute: K | K[],
     options: ValidatesOptions<T>

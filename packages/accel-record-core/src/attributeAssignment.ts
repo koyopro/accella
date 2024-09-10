@@ -1,5 +1,3 @@
-import { Model } from "./index.js";
-
 /**
  * Represents a class that assigns attributes to the corresponding fields of an object.
  *
@@ -11,9 +9,9 @@ export class AttributeAssignment {
    *
    * @param attributes - The attributes to assign.
    */
-  assignAttributes<T extends Model>(this: T, attributes: Record<string, any>) {
+  assignAttributes(attributes: Record<string, any>) {
     for (const [key, value] of Object.entries(attributes)) {
-      this[key as keyof T] = value;
+      this[key as keyof this] = value;
     }
   }
 }

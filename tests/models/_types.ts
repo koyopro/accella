@@ -14,6 +14,8 @@ import { CompanyModel } from './company.js'
 import { EmployeeModel } from './employee.js'
 import { ValidateSampleModel } from './validateSample.js'
 import { AccountModel } from './account.js'
+import { AuthorModel } from './author.js'
+import { BookModel } from './book.js'
 import {
   registerModel,
   type Collection,
@@ -45,6 +47,8 @@ type Meta<T> = T extends typeof UserModel | UserModel ? UserMeta :
                T extends typeof EmployeeModel | EmployeeModel ? EmployeeMeta :
                T extends typeof ValidateSampleModel | ValidateSampleModel ? ValidateSampleMeta :
                T extends typeof AccountModel | AccountModel ? AccountMeta :
+               T extends typeof AuthorModel | AuthorModel ? AuthorMeta :
+               T extends typeof BookModel | BookModel ? BookMeta :
                any;
 
 export namespace $Enums {
@@ -662,3 +666,98 @@ type AccountMeta = {
   };
 };
 registerModel(Account);
+
+declare module "./author" {
+  interface AuthorModel {
+    firstName: string | undefined;
+    lastName: string | undefined;
+    get books(): BookCollection<BookModel>;
+    set books(value: BookModel[]);
+  }
+}
+export interface NewAuthor extends AuthorModel {};
+export class Author extends AuthorModel {
+};
+export interface Author extends AuthorModel {
+  firstName: string;
+  lastName: string;
+  get books(): BookCollection<Book>;
+  set books(value: BookModel[]);
+};
+type AuthorAssociationKey = 'books';
+type AuthorCollection<T extends AuthorModel> = Collection<T, AuthorMeta> | Collection<Author, AuthorMeta>;
+type AuthorMeta = {
+  Base: AuthorModel;
+  New: NewAuthor;
+  Persisted: Author;
+  PrimaryKey: [string, string];
+  AssociationKey: AuthorAssociationKey;
+  JoinInput: AuthorAssociationKey | AuthorAssociationKey[] | {
+    books?: Meta<Book>['JoinInput'];
+  };
+  Column: {
+    firstName: string;
+    lastName: string;
+  };
+  CreateInput: {
+    firstName: string;
+    lastName: string;
+    books?: BookModel[];
+  };
+  WhereInput: {
+    firstName?: string | string[] | StringFilter | null;
+    lastName?: string | string[] | StringFilter | null;
+    books?: BookMeta['WhereInput'];
+  };
+};
+registerModel(Author);
+
+declare module "./book" {
+  interface BookModel {
+    id: number | undefined;
+    title: string | undefined;
+    author: Author | undefined;
+    authorFirstName: string | undefined;
+    authorLastName: string | undefined;
+  }
+}
+export interface NewBook extends BookModel {};
+export class Book extends BookModel {
+};
+export interface Book extends BookModel {
+  id: number;
+  title: string;
+  author: Author;
+  authorFirstName: string;
+  authorLastName: string;
+};
+type BookAssociationKey = 'author';
+type BookCollection<T extends BookModel> = Collection<T, BookMeta> | Collection<Book, BookMeta>;
+type BookMeta = {
+  Base: BookModel;
+  New: NewBook;
+  Persisted: Book;
+  PrimaryKey: number;
+  AssociationKey: BookAssociationKey;
+  JoinInput: BookAssociationKey | BookAssociationKey[] | {
+    author?: Meta<Author>['JoinInput'];
+  };
+  Column: {
+    id: number;
+    title: string;
+    authorFirstName: string;
+    authorLastName: string;
+  };
+  CreateInput: {
+    id?: number;
+    title: string;
+  } & ({ author: Author } | { authorFirstName: string, authorLastName: string });
+  WhereInput: {
+    id?: number | number[] | Filter<number> | null;
+    title?: string | string[] | StringFilter | null;
+    author?: Author | Author[] | AuthorMeta['WhereInput'];
+    authorFirstName?: string | string[] | StringFilter | null;
+    authorLastName?: string | string[] | StringFilter | null;
+  };
+};
+registerModel(Book);

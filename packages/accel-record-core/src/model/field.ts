@@ -1,6 +1,6 @@
 import { createId as cuid } from "@paralleldrive/cuid2";
 import { DMMF } from "prisma/prisma-client/runtime/library.js";
-import { isBlank } from "../validation/validator/presence.js";
+import { BooleanType, DateType, FloatType, IntegerType, StringType } from "./attributes.js";
 
 /**
  * Represents a field in a database table.
@@ -74,9 +74,9 @@ export class Field {
     this.isRequired = !!field.isRequired;
     this.kind = field.kind.toString() as "scalar" | "object" | "enum" | "unsupported";
     this.isUpdatedAt = !!field.isUpdatedAt;
-    this.default = field.default?.valueOf() ?? undefined;
     this.foreignKeys = field.relationFromFields?.map((f) => f) ?? [];
     this.primaryKeys = field.relationToFields?.map((f) => f) ?? [];
+    this.default = field.default?.valueOf() ?? undefined;
   }
 
   /**
@@ -133,19 +133,18 @@ export class Field {
     if (value == undefined) return value;
     switch (this.type) {
       case "BigInt":
+      case "Int":
+        return new IntegerType(value).value;
       case "Decimal":
       case "Float":
-      case "Int":
-        return castNumber(value);
+        return new FloatType(value).value;
       case "Bytes":
       case "String":
-        return String(value);
+        return new StringType(value).value;
       case "Boolean":
-        return !!value;
-      case "DateTime": {
-        const date = new Date(value);
-        return isInvalidDate(date) ? undefined : date;
-      }
+        return new BooleanType(value).value;
+      case "DateTime":
+        return new DateType(value).value;
       case "JSON":
         return JSON.parse(value);
       default:
@@ -153,11 +152,3 @@ export class Field {
     }
   }
 }
-
-const castNumber = (value: any) => {
-  if (isBlank(value)) return undefined;
-  const num = Number(value);
-  return Number.isFinite(num) ? num : undefined;
-};
-
-const isInvalidDate = (date: Date) => Number.isNaN(date.getTime());

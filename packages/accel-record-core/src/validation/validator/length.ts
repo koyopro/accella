@@ -1,4 +1,4 @@
-import { Model } from "../../index.js";
+import { Validations } from "../../model/validations.js";
 import { DefualtOptions, Validator } from "./index.js";
 
 export type LengthOptions = {
@@ -6,7 +6,7 @@ export type LengthOptions = {
   maximum?: number;
 } & DefualtOptions;
 
-export class LengthValidator<T extends Model> extends Validator<T> {
+export class LengthValidator<T extends Validations> extends Validator<T> {
   constructor(
     record: T,
     private attribute: keyof T & string,

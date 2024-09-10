@@ -38,6 +38,7 @@ It can be used with MySQL, PostgreSQL, and SQLite.
 - [Lock](#lock)
 - [Internationalization (I18n)](#internationalization-i18n)
 - [Password Authentication](#password-authentication)
+- [Form Objects](#form-objects)
 - [Nullable Values Handling](#nullable-values-handling)
 - [Future Planned Features](#future-planned-features)
 
@@ -406,7 +407,7 @@ Accel Record uses Prisma for schema definition, and the support status for each 
 | Feature                         | Notation    | Support |
 | ------------------------------- | ----------- | ------- |
 | ID                              | @id         | ✅      |
-| Multi-field ID (Composite ID)   | @@id        | -       |
+| Multi-field ID (Composite ID)   | @@id        | ✅      |
 | Table name mapping              | @@map       | ✅      |
 | Column name mapping             | @map        | ✅      |
 | Default value                   | @default    | ✅      |
@@ -1371,6 +1372,51 @@ export class UserModel extends Mix(
 ) {}
 ```
 
+## Form Objects
+
+Form objects are a design pattern that allows you to separate validation and saving logic from regular models. They are used for handling processes that span multiple models or for handling form processing that doesn't correspond to regular models.
+By inheriting from the `FormModel` class, you can define attributes and perform validations just like regular models, even though the form object is not directly related to a database table.
+
+```ts
+import { FormModel } from "accel-record";
+import { attributes } from "accel-record/attributes";
+
+class MyForm extends FormModel {
+  title = attributes.string();
+  priority = attributes.integer(3);
+  dueDate = attributes.date();
+
+  override validateAttributes() {
+    this.validates("title", { presence: true });
+    this.validates("priority", { numericality: { between: [1, 5] } });
+  }
+
+  save() {
+    if (this.isInvalid()) return false;
+
+    // Perform actions when validation succeeds
+    // Save values to models, etc.
+    // ...
+    return true;
+  }
+}
+```
+
+```ts
+// Receive form input values
+const myFormParams = { title: "Task", priority: "2", dueDate: "2022-12-31" };
+const form = MyForm.build(myFormParams);
+if (form.save()) {
+  // Actions to take on successful save
+  /* ... */
+} else {
+  // Actions to take on save failure
+  const errorMessages = form.errors.fullMessages();
+  // Display error messages, etc.
+  /* ... */
+}
+```
+
 ## Nullable Values Handling
 
 Regarding nullable values, TypeScript, like JavaScript, has two options: undefined and null. \
@@ -1397,6 +1443,13 @@ user.update({ age: undefined });
 
 ## Future Planned Features
 
-- [accel-record-core] Support for Composite IDs
+[Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
 
-Related: [Accel Record Roadmap](https://github.com/koyopro/accella/issues/1)
+## Background of Design and Development
+
+Introducing articles about the motivation behind the design and development of Accel Record.
+
+- [Introduction to "Accel Record": A TypeScript ORM Using the Active Record Pattern](https://dev.to/koyopro/introduction-to-accel-record-a-typescript-orm-using-the-active-record-pattern-2oeh)
+- [Seeking a Type-Safe Ruby on Rails in TypeScript, I Started Developing an ORM](https://dev.to/koyopro/seeking-a-type-safe-ruby-on-rails-in-typescript-i-started-developing-an-orm-1of5)
+- [Why We Adopted a Synchronous API for the New TypeScript ORM](https://dev.to/koyopro/why-we-adopted-a-synchronous-api-for-the-new-typescript-orm-1jm)
+- [Even Server-Side TypeScript Needs the Option to Avoid Asynchronous Processing](https://dev.to/koyopro/even-server-side-typescript-needs-the-option-to-avoid-asynchronous-processing-1opm)

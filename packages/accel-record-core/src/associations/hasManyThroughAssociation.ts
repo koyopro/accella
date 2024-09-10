@@ -66,9 +66,13 @@ export class HasManyThroughAssociation<O extends Model, T extends Model> extends
       joins: [
         [
           this.info.through,
-          `${this.info.field.type}.${this.info.primaryKey}`,
-          "=",
-          `${this.info.through}.${this.joinKey}`,
+          [
+            [
+              `${this.info.field.type}.${this.info.primaryKey}`,
+              "=",
+              `${this.info.through}.${this.joinKey}`,
+            ],
+          ],
         ],
       ],
       wheres: [
@@ -87,5 +91,9 @@ export class HasManyThroughAssociation<O extends Model, T extends Model> extends
 
   private get joinKey() {
     return this.info.joinKey;
+  }
+
+  get ownersPrimary() {
+    return this.owner[this.info.primaryKey as keyof O];
   }
 }

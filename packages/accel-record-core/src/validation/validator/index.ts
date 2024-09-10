@@ -1,4 +1,4 @@
-import { Model } from "../../index.js";
+import { Validations } from "../../model/validations.js";
 import { Errors } from "../errors.js";
 
 /**
@@ -6,7 +6,7 @@ import { Errors } from "../errors.js";
  * @template T - The type of record being validated.
  */
 export abstract class Validator<T> {
-  constructor(protected record: T & Model) {}
+  constructor(protected record: T & Validations) {}
 
   /**
    * Gets the errors associated with the record being validated.

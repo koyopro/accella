@@ -18,12 +18,13 @@ const defaultMessages: Record<string, string | undefined> = {
   greaterThanOrEqualTo: "must be greater than or equal to {{count}}",
   lessThan: "must be less than {{count}}",
   lessThanOrEqualTo: "must be less than or equal to {{count}}",
+  between: "must be between {{min}} and {{max}}",
   otherThan: "must be other than {{count}}",
   odd: "must be odd",
   even: "must be even",
 };
 
-type Options = { count?: number; attribute?: string };
+type Options = Record<string, number | string | undefined>;
 
 /**
  * Represents an error object.
@@ -52,14 +53,9 @@ export class Error {
 
   get message() {
     let message = this.translatedMessage;
-    if (this.options.count != undefined) {
-      for (const key of ["{{count}}", "%{count}"]) {
-        message = message.replace(key, this.options.count.toString());
-      }
-    }
-    if (message.includes("{attribute}")) {
-      for (const key of ["{{attribute}}", "%{attribute}"]) {
-        message = message.replace(key, this.options.attribute || "confirmation");
+    for (const [key, value] of Object.entries(this.options)) {
+      for (const placeholder of [`{{${key}}}`, `%{${key}}`]) {
+        message = message.replace(placeholder, value?.toString() || "");
       }
     }
     return message;
