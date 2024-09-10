@@ -8,7 +8,7 @@ export class Parameters {
     return this.parse(z.object(keys.toHash((key) => [key, z.string()])));
   }
 
-  parse(z: any) {
+  parse(z: z.ZodObject<any>) {
     return formDataToObject(this.data, z);
   }
 }
