@@ -1,13 +1,21 @@
+import { formDataToObject } from "astro/actions/runtime/virtual/server.js";
+import { z } from "astro/zod";
 import { parseFormData } from "parse-nested-form-data";
 
 export class Parameters {
   data: ReturnType<typeof parseFormData>;
+  formData: FormData;
 
   constructor(data: FormData) {
     this.data = parseFormData(data);
+    this.formData = data;
   }
 
-  permit<T extends string[]>(...keys: T): { [K in T[number]]: any } {
-    return keys.toHash((name) => [name, this.data[name]]) as any;
+  permit<T extends string[]>(...keys: T) {
+    return this.parse(z.object(keys.toHash((key) => [key, z.string()])));
+  }
+
+  parse(z: any) {
+    return formDataToObject(this.formData, z);
   }
 }
