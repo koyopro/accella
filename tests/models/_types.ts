@@ -37,6 +37,7 @@ declare module "accel-record" {
   }
 }
 
+type IsPersisted<T> = T extends { isPersisted(): infer R } ? R : never;
 type Meta<T> = T extends typeof UserModel | UserModel ? UserMeta :
                T extends typeof TeamModel | TeamModel ? TeamMeta :
                T extends typeof UserTeamModel | UserTeamModel ? UserTeamMeta :
@@ -84,6 +85,7 @@ export interface NewUser extends UserModel {};
 export class User extends UserModel {
 };
 export interface User extends UserModel {
+  __persisted: true;
   id: number;
   email: string;
   get posts(): PostCollection<Post>;

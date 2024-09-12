@@ -27,9 +27,9 @@ export class Association<O extends Model, T extends Model> {
   }
 
   build(attributes: Record<string, any>) {
-    this.target = this.info.model.build(attributes) as T;
-    this.target.assignAttributes(this.scopeAttributes());
-    return this.target;
+    const instance = this.info.model.build(attributes) as T;
+    instance.assignAttributes(this.scopeAttributes());
+    return instance;
   }
 
   create(attributes: Record<string, any>) {

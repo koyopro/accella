@@ -119,7 +119,7 @@ export class Model extends Mix(
     return this;
   }
 
-  build<T extends Model, A extends keyof Meta<T>["Associations"] & string>(
+  build<T extends PersistedModel, A extends keyof Meta<T>["Associations"] & string>(
     this: T,
     attribute: A,
     value: Partial<Meta<T>["Associations"][A]["CreateInput"]>
@@ -127,7 +127,7 @@ export class Model extends Mix(
     return this.associations.get(attribute)!.build(value);
   }
 
-  create<T extends Model, A extends keyof Meta<T>["Associations"] & string>(
+  create<T extends Model & { _persisted: true }, A extends keyof Meta<T>["Associations"] & string>(
     this: T,
     attribute: A,
     value: Meta<T>["Associations"][A]["CreateInput"]
@@ -147,3 +147,5 @@ declare module "knex" {
     }
   }
 }
+
+type PersistedModel = Model & { __persisted: true };

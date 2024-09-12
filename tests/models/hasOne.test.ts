@@ -93,11 +93,16 @@ describe("hasOne", () => {
   });
 
   test("build association", () => {
+    $user.build().build("setting", { threshold: 0.5 });
     const user = $user.create();
     const setting = user.build("setting", { threshold: 0.5 });
+    expect(user.associations.get("setting")?.["target"]).toBeUndefined();
+    expect(user.setting).toBeUndefined();
     expect(setting.isPersisted()).toBe(false);
     expect(setting.userId).toBe(user.id);
     expect(setting.threshold).toBeCloseTo(0.5);
+    expect(setting.save()).toBe(true);
+    expect(user.reload().setting).not.toBeUndefined();
   });
 
   test("create association", () => {
