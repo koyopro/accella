@@ -16,33 +16,44 @@ const { Form, Submit, Label, TextField, PasswordField } = formWith(account);
 ---
 
 <Layout title="新規登録">
-  <h1>新規登録</h1>
-  <Form method="post">
-    <div class="error-messages">
-      {account.errors.fullMessages.map((message) => <div>{message}</div>)}
-    </div>
-    <div>
-      <Label for="email">Eメール</Label>
-      <TextField attr="email" />
-    </div>
-    <div>
-      <Label for="password" />
-      <PasswordField attr="password" />
-    </div>
-    <div>
-      <Label for="passwordConfirmation" />
-      <PasswordField attr="passwordConfirmation" />
-    </div>
-    <div>
-      <Submit>登録</Submit>
-    </div>
-  </Form>
-  <a href="/signin">ログイン</a>
+  <main class="grid-container" style="max-width: 700px; min-width: 400px;">
+    <h1>新規登録</h1>
+    <Form method="post" class="grid-x grid-margin-x">
+      {
+        account.errors.fullMessages.length > 0 && (
+          <div class="cell small-12 callout alert error-messages">
+            {account.errors.fullMessages.map((message) => (
+              <div>{message}</div>
+            ))}
+          </div>
+        )
+      }
+      <div class="cell small-12">
+        <Label for="email">Eメール</Label>
+        <TextField attr="email" />
+      </div>
+      <div class="cell small-12">
+        <Label for="password" />
+        <PasswordField attr="password" />
+      </div>
+      <div class="cell small-12">
+        <Label for="passwordConfirmation" />
+        <PasswordField attr="passwordConfirmation" />
+      </div>
+      <div class="cell small-6">
+        <Submit class="button">登録</Submit>
+      </div>
+      <div class="cell small-6 text-right">
+        <a href="/signin" class="clear button">ログインへ</a>
+      </div>
+    </Form>
+  </main>
 </Layout>
 
 <style>
   .error-messages {
-    background: yellow;
-    color: red;
+    background: rgb(235, 102, 102);
+    color: white;
+    font-weight: bold;
   }
 </style>
