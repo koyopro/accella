@@ -20,12 +20,18 @@ const f = searchFormFor(q);
 ---
 
 <Layout title="Welcome to Astro.">
-  <main>
-    <h1>All TODOs</h1>
-    <form method="get">
-      <f.NumberField attr="id_eq" placeholder="Search by ID" />
-      <f.TextField attr="title_cont" placeholder="Search by Title" />
-      <button type="submit">検索</button>
+  <main class="grid-container" style="max-width: 700px;">
+    <h1 class="text-center">All TODOs</h1>
+    <form method="get" class="grid-x grid-margin-x grid-margin-y">
+      <div class="cell small-12 medium-5">
+        <f.NumberField attr="id_eq" placeholder="Search by ID" class="input-group-field" />
+      </div>
+      <div class="cell small-12 medium-5">
+        <f.TextField attr="title_cont" placeholder="Search by Title" class="input-group-field" />
+      </div>
+      <div class="cell small-12 medium-2">
+        <button type="submit" class="button">検索</button>
+      </div>
     </form>
     <a href="/todos/new">Add a new todo</a>
     <div>
@@ -39,9 +45,7 @@ const f = searchFormFor(q);
             <span>{todo.id}</span>
             <span>{todo.title}</span>
             {todo.estimate ? <span>｜{todo.estimate}</span> : null}
-            {todo.dueDate ? (
-              <span>{todo.dueDate.toISOString().slice(0, 10)}迄</span>
-            ) : null}
+            {todo.dueDate ? <span>{todo.dueDate.toISOString().slice(0, 10)}迄</span> : null}
             <span>({todo.status})</span>
           </li>
         ))
