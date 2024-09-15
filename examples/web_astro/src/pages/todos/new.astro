@@ -17,9 +17,9 @@ const { Form, Label, TextField, Submit } = f;
 ---
 
 <Layout title="Add a new todo">
-  <main>
+  <main class="grid-container">
     <h1>Create a new TODO</h1>
-    <Form method="post">
+    <Form method="post" style="max-width: 500px;">
       <div class="error-messages">
         {todo.errors.fullMessages.map((message) => <div>{message}</div>)}
       </div>
@@ -41,18 +41,18 @@ const { Form, Label, TextField, Submit } = f;
         <f.DateField attr="dueDate" />
       </div>
       <div>
-        <Label for="available" />
         <f.Checkbox attr="available" />
+        <Label for="available" />
       </div>
       <div>
         <Label for="status" />
         <f.CollectionRadioButtons attr="status" collection={Todo.status.options()}>
           {
             ({ text, Label, RadioButton }: DefaultSlotArgs) => (
-              <Label class="my-label">
+              <>
                 <RadioButton class="my-radio-button" />
-                {text}
-              </Label>
+                <Label class="my-label">{text}</Label>
+              </>
             )
           }
         </f.CollectionRadioButtons>
@@ -71,7 +71,7 @@ const { Form, Label, TextField, Submit } = f;
           includeBlank="選択してください"
         />
       </div>
-      <Submit>作成</Submit>
+      <Submit class="button">作成</Submit>
     </Form>
   </main>
 </Layout>
