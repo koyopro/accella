@@ -20,20 +20,20 @@ const f = searchFormFor(q);
 ---
 
 <Layout title="Welcome to Astro.">
-  <main class="grid-container" style="max-width: 700px;">
+  <main class="container" style="max-width: 700px;">
     <h1 class="text-center">All TODOs</h1>
-    <form method="get" class="grid-x grid-margin-x grid-margin-y">
-      <div class="cell small-12 medium-5">
-        <f.NumberField attr="id_eq" placeholder="Search by ID" class="input-group-field" />
+    <form method="get" class="row">
+      <div class="col mb-3">
+        <f.NumberField attr="id_eq" placeholder="Search by ID" class="form-control" />
       </div>
-      <div class="cell small-12 medium-5">
-        <f.TextField attr="title_cont" placeholder="Search by Title" class="input-group-field" />
+      <div class="col mb-3">
+        <f.TextField attr="title_cont" placeholder="Search by Title" class="form-control" />
       </div>
-      <div class="cell small-12 medium-2">
-        <button type="submit" class="button">検索</button>
+      <div class="col-md-auto mb-3">
+        <button type="submit" class="btn btn-dark">検索</button>
       </div>
     </form>
-    <a href="/todos/new">Add a new todo</a>
+    <a href="/todos/new" class="btn btn-link">Add a new todo</a>
     <div>
       {page > 1 && <LinkToPrevPage />}
       <LinkToNextPage />
