@@ -32,6 +32,17 @@ const { title } = Astro.props;
 </html>
 
 <style is:global>
+  body {
+    background-image: url("/bg.jpg");
+    background-size: cover;
+    min-height: 100vh;
+  }
+  main {
+    background: #fff;
+    border-radius: 5px;
+    padding: 30px 20px;
+    margin-top: 20px;
+  }
   .error-messages {
     background: yellow;
     color: red;
