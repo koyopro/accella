@@ -20,7 +20,7 @@ const f = searchFormFor(q);
 ---
 
 <Layout title="Welcome to Astro.">
-  <main class="container" style="max-width: 700px;">
+  <main class="container" style="max-width: 700px; min-width: 550px;">
     <h1 class="text-center">All TODOs</h1>
     <form method="get" class="row">
       <div class="col mb-3">
@@ -31,6 +31,7 @@ const f = searchFormFor(q);
       </div>
       <div class="col-md-auto mb-3">
         <button type="submit" class="btn btn-dark">検索</button>
+        <a href="/" class="btn btn-secondary">クリア</a>
       </div>
     </form>
     <a href="/todos/new" class="btn btn-link">Add a new todo</a>
