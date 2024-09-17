@@ -5,13 +5,7 @@
 
 import { AccountModel } from "./account.js";
 import { TodoModel } from "./todo.js";
-import {
-  registerModel,
-  type Collection,
-  type Filter,
-  type StringFilter,
-  type OmitCreateInputKey,
-} from "accel-record";
+import { registerModel, type Collection, type Filter, type StringFilter } from "accel-record";
 import { Attribute, defineEnumTextAttribute } from "accel-record/enums";
 
 declare module "accel-record" {
@@ -69,7 +63,6 @@ type AccountMeta = {
   Persisted: Account;
   PrimaryKey: number;
   AssociationKey: AccountAssociationKey;
-  Associations: {};
   JoinInput:
     | AccountAssociationKey
     | AccountAssociationKey[]
@@ -139,7 +132,6 @@ type TodoMeta = {
   Persisted: Todo;
   PrimaryKey: number;
   AssociationKey: TodoAssociationKey;
-  Associations: {};
   JoinInput:
     | TodoAssociationKey
     | TodoAssociationKey[]
