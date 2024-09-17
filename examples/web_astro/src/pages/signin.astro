@@ -5,8 +5,7 @@ import Layout from "../layouts/Layout.astro";
 import { Account } from "../models";
 import { Helper } from "src/core/helper";
 
-const { params, logIn, currentAccount } =
-  Astro.locals.helper ?? (await Helper.init(Astro));
+const { params, logIn, currentAccount } = Astro.locals.helper ?? (await Helper.init(Astro));
 
 if (currentAccount) return Astro.redirect("/");
 
@@ -35,29 +34,30 @@ const { Form, Submit, Label, TextField, PasswordField } = formWith(signin);
 ---
 
 <Layout title="ログイン">
-  <h1>ログイン</h1>
-  <Form method="post">
-    <div class="error-messages">
-      {messages.map((message) => <div>{message}</div>)}
-    </div>
-    <div>
-      <Label for="email" />
-      <TextField attr="email" />
-    </div>
-    <div>
-      <Label for="password" />
-      <PasswordField attr="password" />
-    </div>
-    <div>
-      <Submit>ログイン</Submit>
-    </div>
-  </Form>
-  <a href="/signup">新規登録</a>
+  <main class="container" style="max-width: 700px; min-width: 400px;">
+    <h1>ログイン</h1>
+    <Form method="post" class="grid-x grid-margin-x">
+      {
+        messages.length > 0 && (
+          <div class="alert alert-danger">
+            {messages.map((message) => (
+              <div>{message}</div>
+            ))}
+          </div>
+        )
+      }
+      <div class="mb-3">
+        <Label for="email" class="form-label" />
+        <TextField attr="email" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <Label for="password" class="form-label" />
+        <PasswordField attr="password" class="form-control" />
+      </div>
+      <div class="d-flex justify-content-between">
+        <Submit class="btn btn-secondary">ログイン</Submit>
+        <a href="/signup" class="btn btn-link">新規登録へ</a>
+      </div>
+    </Form>
+  </main>
 </Layout>
-
-<style>
-  .error-messages {
-    background: yellow;
-    color: red;
-  }
-</style>

@@ -7,10 +7,11 @@ interface Props {
 const { page } = Astro.props;
 ---
 
-<span class="next">
+<li class="page-item next">
   <a
     rel="next"
     href={buildPageLink(Astro, page + 1)}
+    class="page-link"
     set:html={I18n.t("views.pagination.next", "Next &rsaquo;")}
   />
-</span>
+</li>

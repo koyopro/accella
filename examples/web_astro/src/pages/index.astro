@@ -20,18 +20,27 @@ const f = searchFormFor(q);
 ---
 
 <Layout title="Welcome to Astro.">
-  <main>
-    <h1>All TODOs</h1>
-    <form method="get">
-      <f.NumberField attr="id_eq" placeholder="Search by ID" />
-      <f.TextField attr="title_cont" placeholder="Search by Title" />
-      <button type="submit">検索</button>
+  <main class="container" style="max-width: 700px; min-width: 550px;">
+    <h1 class="text-center">All TODOs</h1>
+    <form method="get" class="row">
+      <div class="col mb-3">
+        <f.NumberField attr="id_eq" placeholder="Search by ID" class="form-control" />
+      </div>
+      <div class="col mb-3">
+        <f.TextField attr="title_cont" placeholder="Search by Title" class="form-control" />
+      </div>
+      <div class="col-md-auto mb-3">
+        <button type="submit" class="btn btn-dark">検索</button>
+        <a href="/" class="btn btn-secondary">クリア</a>
+      </div>
     </form>
-    <a href="/todos/new">Add a new todo</a>
-    <div>
-      {page > 1 && <LinkToPrevPage />}
-      <LinkToNextPage />
-    </div>
+    <a href="/todos/new" class="btn btn-link">Add a new todo</a>
+    <nav>
+      <ul class="pagination">
+        {page > 1 && <LinkToPrevPage />}
+        <LinkToNextPage />
+      </ul>
+    </nav>
     <ul>
       {
         pager.records.map((todo) => (
@@ -39,15 +48,17 @@ const f = searchFormFor(q);
             <span>{todo.id}</span>
             <span>{todo.title}</span>
             {todo.estimate ? <span>｜{todo.estimate}</span> : null}
-            {todo.dueDate ? (
-              <span>{todo.dueDate.toISOString().slice(0, 10)}迄</span>
-            ) : null}
+            {todo.dueDate ? <span>{todo.dueDate.toISOString().slice(0, 10)}迄</span> : null}
             <span>({todo.status})</span>
           </li>
         ))
       }
     </ul>
-    <Nav />
-    <PageEntriesInfo />
+    <div class="d-flex justify-content-center">
+      <Nav />
+    </div>
+    <div class="d-flex justify-content-center">
+      <PageEntriesInfo />
+    </div>
   </main>
 </Layout>
