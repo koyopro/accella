@@ -2,4 +2,6 @@
 import I18n from "i18next";
 ---
 
-<span class="gap" set:html={I18n.t("views.pagination.truncate", "&hellip;")} />
+<li class="page-item disabled gap">
+  <span class="page-link" set:html={I18n.t("views.pagination.truncate", "&hellip;")} />
+</li>
