@@ -6,7 +6,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "devDependencies": {},
-  "scripts": {},
+  "scripts": {
+    "build": "tsc && cd src/ && find . -name '*.astro' -print0 | cpio -pd0 ../dist/"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/koyopro/accella"
