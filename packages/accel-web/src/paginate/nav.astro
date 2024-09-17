@@ -1,0 +1,44 @@
+---
+import I18n from "i18next";
+import { buildPageLink } from "./common";
+import Gap from "./gap.astro";
+import LinkToNextPage from "./linkToNextPage.astro";
+import LinkToPrevPage from "./linkToPrevPage.astro";
+import PageLink from "./pageLink.astro";
+
+interface Props {
+  page: number;
+  totalPages: number;
+  window: number;
+}
+const { page, totalPages, window } = Astro.props;
+const min = page - window;
+const max = page + window;
+const pages = Array.from({ length: max - min + 1 }, (_, i) => min + i).filter(
+  (i) => 0 < i && i <= totalPages
+);
+---
+
+<nav>
+  <ul class="pagination">
+    <li class="page-item first">
+      <a
+        href={buildPageLink(Astro, 1)}
+        class="page-link"
+        set:html={I18n.t("views.pagination.first", "&laquo; First")}
+      />
+    </li>
+    {page > 1 && <LinkToPrevPage {page} />}
+    {pages[0] !== 1 && <Gap />}
+    {pages.map((i) => <PageLink i={i} {page} />)}
+    {pages[pages.length - 1] !== totalPages && <Gap />}
+    {page < totalPages && <LinkToNextPage {page} />}
+    <li class="page-item last">
+      <a
+        href={buildPageLink(Astro, totalPages)}
+        class="page-link"
+        set:html={I18n.t("views.pagination.last", "Last &raquo;")}
+      />
+    </li>
+  </ul>
+</nav>

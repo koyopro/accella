@@ -1,0 +1,20 @@
+---
+import { buildPageLink } from "./common";
+interface Props {
+  i: number;
+  page: number;
+}
+const { i, page } = Astro.props;
+---
+
+<li class={`page-item page ${i === page ? "active" : ""}`}>
+  {
+    i === page ? (
+      <span class="page-link">{i}</span>
+    ) : (
+      <a href={buildPageLink(Astro, i)} class="page-link">
+        {i}
+      </a>
+    )
+  }
+</li>

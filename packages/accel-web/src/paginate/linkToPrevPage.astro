@@ -1,0 +1,17 @@
+---
+import I18n from "i18next";
+import { buildPageLink } from "./common";
+interface Props {
+  page: number;
+}
+const { page } = Astro.props;
+---
+
+<li class="page-item prev">
+  <a
+    rel="prev"
+    href={buildPageLink(Astro, page - 1)}
+    class="page-link"
+    set:html={I18n.t("views.pagination.previous", "&lsaquo; Prev")}
+  />
+</li>
