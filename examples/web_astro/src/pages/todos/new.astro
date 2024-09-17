@@ -17,50 +17,56 @@ const { Form, Label, TextField, Submit } = f;
 ---
 
 <Layout title="Add a new todo">
-  <main class="grid-container">
-    <h1>Create a new TODO</h1>
-    <Form method="post" style="max-width: 500px;">
-      <div class="error-messages">
-        {todo.errors.fullMessages.map((message) => <div>{message}</div>)}
-      </div>
+  <main class="container" style="max-width: 700px; min-width: 400px">
+    <h1 class="mt-4">Create a new TODO</h1>
+    <Form method="post" class="mt-3">
+      {
+        todo.errors.fullMessages.length > 0 && (
+          <div class="alert alert-danger" role="alert">
+            {todo.errors.fullMessages.map((message) => (
+              <div>{message}</div>
+            ))}
+          </div>
+        )
+      }
       <f.HiddenField attr="secret" />
-      <div>
+      <div class="mb-3">
         <Label for="title" />
-        <TextField attr="title" />
+        <TextField attr="title" class="form-control" />
       </div>
-      <div>
+      <div class="mb-3">
         <Label for="description" />
-        <f.Textarea attr="description" />
+        <f.Textarea attr="description" class="form-control" />
       </div>
-      <div>
+      <div class="mb-3">
         <Label for="estimate" />
-        <f.NumberField attr="estimate" />
+        <f.NumberField attr="estimate" class="form-control" />
       </div>
-      <div>
+      <div class="mb-3">
         <Label for="dueDate" />
-        <f.DateField attr="dueDate" />
+        <f.DateField attr="dueDate" class="form-control" />
       </div>
-      <div>
-        <f.Checkbox attr="available" />
-        <Label for="available" />
+      <div class="form-check mb-3">
+        <f.Checkbox attr="available" class="form-check-input" />
+        <Label for="available" class="form-check-label" />
       </div>
-      <div>
+      <div class="mb-3">
         <Label for="status" />
         <f.CollectionRadioButtons attr="status" collection={Todo.status.options()}>
           {
             ({ text, Label, RadioButton }: DefaultSlotArgs) => (
-              <>
-                <RadioButton class="my-radio-button" />
-                <Label class="my-label">{text}</Label>
-              </>
+              <div class="form-check">
+                <RadioButton class="form-check-input" />
+                <Label class="form-check-label">{text}</Label>
+              </div>
             )
           }
         </f.CollectionRadioButtons>
       </div>
-      <div>
+      <div class="mb-3">
         <Label for="label" />
         <f.Select
-          class="my-select"
+          class="form-select"
           attr="label"
           collection={[
             ["Open", "open"],
@@ -71,7 +77,10 @@ const { Form, Label, TextField, Submit } = f;
           includeBlank="選択してください"
         />
       </div>
-      <Submit class="button">作成</Submit>
+      <div class="d-flex justify-content-between">
+        <Submit class="btn btn-dark">作成</Submit>
+        <a href="/" class="btn btn-secondary">キャンセル</a>
+      </div>
     </Form>
   </main>
 </Layout>
