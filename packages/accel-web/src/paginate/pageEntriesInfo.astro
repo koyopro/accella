@@ -1,5 +1,8 @@
 ---
 import I18n from "i18next";
+
+I18n.isInitialized || (await I18n.init());
+
 interface Props {
   offset: number;
   per: number;
@@ -26,14 +29,10 @@ const defaultValue = () => {
 
 <div
   class="page-entries-info"
-  set:html={I18n.t(
-    `helpers.pageEntriesInfo.${key}.displayEntries`,
-    defaultValue(),
-    {
-      first,
-      last,
-      total,
-      count: total,
-    }
-  )}
+  set:html={I18n.t(`helpers.pageEntriesInfo.${key}.displayEntries`, defaultValue(), {
+    first,
+    last,
+    total,
+    count: total,
+  })}
 />

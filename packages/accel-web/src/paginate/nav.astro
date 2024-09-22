@@ -6,6 +6,8 @@ import LinkToNextPage from "./linkToNextPage.astro";
 import LinkToPrevPage from "./linkToPrevPage.astro";
 import PageLink from "./pageLink.astro";
 
+I18n.isInitialized || (await I18n.init());
+
 interface Props {
   page: number;
   totalPages: number;
