@@ -1,0 +1,25 @@
+{
+  "name": "examples-astro",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.8.1",
+    "@astrojs/node": "^8.3.2",
+    "accel-web": "^0.0.1",
+    "astro": "^4.11.5",
+    "dotenv": "^16.4.5",
+    "mysql2": "^3.9.8",
+    "typescript": "^5.5.3"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1"
+  }
+}
