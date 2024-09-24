@@ -1,5 +1,5 @@
 // src/synclib.ts
-import path2 from "path";
+import { buildSync } from "esbuild";
 import { fileURLToPath as fileURLToPath2 } from "url";
 
 // packages/accel-record-core/src/sync-rpc/index.js
@@ -161,15 +161,13 @@ var stop = function() {
 var sync_rpc_default = createClient;
 
 // src/synclib.ts
-import { buildSync } from "esbuild";
-var __dirname2 = path2.dirname(fileURLToPath2(import.meta.url));
-var defineRpcSyncActions = (actions) => {
+var defineRpcSyncActions = (filename, actions) => {
   const ret = () => async function(params) {
     const { method, args } = params || {};
     return actions[method]?.(...args || []);
   };
   ret.launch = () => {
-    const source = path2.resolve(__dirname2, "./worker.ts");
+    const source = filename.startsWith("file://") ? fileURLToPath2(filename) : filename;
     const outfile = `${source}.mjs`;
     buildFile(source, outfile);
     const s = sync_rpc_default(outfile, {});
@@ -196,7 +194,7 @@ function buildFile(filePath, outfile) {
 }
 
 // src/worker.ts
-var worker_default = defineRpcSyncActions({
+var worker_default = defineRpcSyncActions(import.meta.filename, {
   incr: async (a) => a + 1,
   ping: () => "pong!!"
 });
