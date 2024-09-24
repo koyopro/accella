@@ -4,7 +4,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // @ts-ignore
 import SyncRpc, { stop } from "../packages/accel-record-core/src/sync-rpc/index.js";
 
-const client = SyncRpc(path.resolve(__dirname, "./worker.cjs"), {});
+const client = SyncRpc(path.resolve(__dirname, "./worker.mjs"), {});
 
 const ret = client();
 console.log(ret);
