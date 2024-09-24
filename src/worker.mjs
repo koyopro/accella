@@ -1,5 +1,5 @@
 function init() {
-  return function (params) {
+  return async function (params) {
     // console.log(params);
     const { method, args } = params || {};
     if (actions[method]) {
@@ -10,7 +10,7 @@ function init() {
 }
 
 export const actions = {
-  incr: (a) => a + 1,
+  incr: async (a) => a + 1,
   ping: () => "pong",
 };
 
