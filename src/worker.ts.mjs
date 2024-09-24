@@ -170,11 +170,11 @@ var defineRpcSyncActions = (filename, actions) => {
     const source = filename.startsWith("file://") ? fileURLToPath2(filename) : filename;
     const outfile = `${source}.mjs`;
     buildFile(source, outfile);
-    const s = sync_rpc_default(outfile, {});
+    const s2 = sync_rpc_default(outfile, {});
     for (const method in actions) {
-      s[method] = (...args) => s({ method, args });
+      s2[method] = (...args) => s2({ method, args });
     }
-    return s;
+    return s2;
   };
   ret.stop = stop;
   return ret;
@@ -194,8 +194,10 @@ function buildFile(filePath, outfile) {
 }
 
 // src/worker.ts
+var s = 0;
 var worker_default = defineRpcSyncActions(import.meta.filename, {
   incr: async (a) => a + 1,
+  magic: (t) => ++s + t,
   ping: () => "pong!!"
 });
 export {
