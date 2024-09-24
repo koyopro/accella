@@ -6,7 +6,7 @@ import SyncRpc, { stop } from "../packages/accel-record-core/src/sync-rpc/index.
 
 const client = SyncRpc(path.resolve(__dirname, "./worker.mjs"), {});
 
-const ret = client();
-console.log(ret);
+console.log(client());
+console.log(client("ping"));
 
 stop();

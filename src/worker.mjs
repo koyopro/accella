@@ -1,5 +1,8 @@
 function init() {
-  return function () {
+  return function (method) {
+    if (method === "ping") {
+      return "pong";
+    }
     return "from mjs worker";
   };
 }
