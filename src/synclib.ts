@@ -16,7 +16,11 @@ export const defineRpcSyncActions = (actions: Actions) => {
     const source = path.resolve(__dirname, "./worker.ts");
     const outfile = `${source}.mjs`;
     buildFile(source, outfile);
-    return SyncRpc(outfile, {});
+    const s = SyncRpc(outfile, {});
+    for (const method in actions) {
+      s[method] = (...args: any[]) => s({ method, args });
+    }
+    return s;
   };
   ret.stop = stop;
   return ret;
