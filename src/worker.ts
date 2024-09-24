@@ -1,14 +1,9 @@
-const defineRpcSyncActions = (actions: Record<string, ((...args: any[]) => any) | undefined>) => {
-  return () => {
-    return async function (params: { method: string; args: any[] }) {
-      // console.log(params);
-      const { method, args } = params || {};
-      const action = actions[method as keyof typeof actions];
-      if (action) {
-        return action(...(args || []));
-      }
-      return "from mjs worker";
-    };
+export type Actions = Record<string, ((...args: any[]) => any) | undefined>;
+
+const defineRpcSyncActions = (actions: Actions) => () => {
+  return async function (params: { method: keyof Actions; args: any[] }) {
+    const { method, args } = params || {};
+    return actions[method]?.(args);
   };
 };
 

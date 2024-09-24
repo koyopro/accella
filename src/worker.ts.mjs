@@ -1,14 +1,8 @@
 // src/worker.ts
-var defineRpcSyncActions = (actions) => {
-  return () => {
-    return async function(params) {
-      const { method, args } = params || {};
-      const action = actions[method];
-      if (action) {
-        return action(...args || []);
-      }
-      return "from mjs worker";
-    };
+var defineRpcSyncActions = (actions) => () => {
+  return async function(params) {
+    const { method, args } = params || {};
+    return actions[method]?.(args);
   };
 };
 var worker_default = defineRpcSyncActions({
