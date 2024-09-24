@@ -5,14 +5,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import SyncRpc, { stop } from "../packages/accel-record-core/src/sync-rpc/index.js";
 import { buildSync } from "esbuild";
 
-export type Actions = Record<string, ((...args: any[]) => any) | undefined>;
-export const defineRpcSyncActions = (actions: Actions) => {
+export type Actions = Record<string, (...args: any[]) => any>;
+type AwaitedFunc<F extends Actions, K extends keyof F> = (
+  ...args: Parameters<F[K]>
+) => Awaited<ReturnType<F[K]>>;
+export const defineRpcSyncActions = <F extends Actions>(actions: F) => {
   const ret = () =>
-    async function (params: { method: keyof Actions; args: any[] }) {
+    async function (params: { method: keyof F; args: any[] }) {
       const { method, args } = params || {};
       return actions[method]?.(...(args || []));
     };
-  ret.launch = () => {
+  ret.launch = (): { [K in keyof F]: AwaitedFunc<F, K> } => {
     const source = path.resolve(__dirname, "./worker.ts");
     const outfile = `${source}.mjs`;
     buildFile(source, outfile);
