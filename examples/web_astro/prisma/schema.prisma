@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator custom_generator {
+  provider    = "prisma-generator-accel-record"
+  output      = "../src/models"
+  factoryPath = "../tests/factories"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
+  passwordDigest String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

@@ -1,0 +1,33 @@
+{
+  "name": "accel-web",
+  "version": "0.0.1",
+  "description": "A library for integrating Astro and Accel Record.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {},
+  "scripts": {
+    "build": "tsc && cd src/ && find . -name '*.astro' -print0 | cpio -pd0 ../dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koyopro/accella"
+  },
+  "bugs": {
+    "url": "https://github.com/koyopro/accella/issues"
+  },
+  "homepage": "https://github.com/koyopro/accella",
+  "keywords": [
+    "accella",
+    "accel-record"
+  ],
+  "files": [
+    "dist"
+  ],
+  "author": "koyopro",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "accel-record": "^1.15.0",
+    "astro": "^4.0.0"
+  }
+}
