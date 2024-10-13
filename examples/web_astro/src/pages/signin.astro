@@ -1,0 +1,31 @@
+---
+Astro.locals.session;
+---
+
+<Layout title="ログイン">
+  <h1>ログイン</h1>
+  <Form method="post">
+    <div class="error-messages">
+      {messages.map((message) => <div>{message}</div>)}
+    </div>
+    <div>
+      <Label for="email" />
+      <TextField attr="email" />
+    </div>
+    <div>
+      <Label for="password" />
+      <PasswordField attr="password" />
+    </div>
+    <div>
+      <Submit>ログイン</Submit>
+    </div>
+  </Form>
+  <a href="/signup">新規登録</a>
+</Layout>
+
+<style>
+  .error-messages {
+    background: yellow;
+    color: red;
+  }
+</style>

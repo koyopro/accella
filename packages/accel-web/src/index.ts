@@ -1,1 +1,1 @@
-export { createCookieSessionStorage } from "./session.js";
+export { createCookieSessionStorage, Session } from "./session.js";
