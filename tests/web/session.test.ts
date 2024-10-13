@@ -18,11 +18,17 @@ type SessionData = {
   user: User;
 };
 
-test("", () => {
+test("Session with Model", () => {
   const { getSession } = createCookieSessionStorage<SessionData>();
   const session = getSession(mockAstroCookies);
 
   const user = $user.create();
   session.user = user;
+
   expect(session.user?.equals(user)).toBeTruthy();
+
+  const beforeCount = User.connection.queryCount;
+  session.user; // Use cache and should not execute any query
+  const afterCount = User.connection.queryCount;
+  expect(afterCount).toBe(beforeCount);
 });
