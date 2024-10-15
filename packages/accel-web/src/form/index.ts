@@ -1,4 +1,4 @@
-import type { Model } from "accel-record";
+import { Model } from "accel-record";
 import "astro/astro-jsx";
 import { createComponent } from "astro/runtime/server/astro-component.js";
 import {
@@ -18,34 +18,33 @@ import label from "./label.astro";
 import select from "./select.astro";
 import textarea from "./textarea.astro";
 
-export const formFor = (resource: Model, options?: { namespace?: string }) => {
+export const formFor = (resource: any, options?: { namespace?: string }) => {
   const namespace = options?.namespace || "";
   const prefix = namespace ? `${namespace}.` : "";
-  const r = resource as any;
   return {
     Form: form,
 
     Label: makeLabel(prefix, resource),
 
-    TextField: makeTextField(prefix, r),
+    TextField: makeTextField(prefix, resource),
 
-    HiddenField: makeHiddenField(prefix, r),
+    HiddenField: makeHiddenField(prefix, resource),
 
     PasswordField: makePasswordField(prefix),
 
-    NumberField: makeNumberField(prefix, r),
+    NumberField: makeNumberField(prefix, resource),
 
-    DateField: makeDateField(prefix, r),
+    DateField: makeDateField(prefix, resource),
 
-    Checkbox: makeCheckbox(prefix, r),
+    Checkbox: makeCheckbox(prefix, resource),
 
     RadioButton: makeRadioButton(prefix),
 
-    CollectionRadioButtons: makeCollectionRadioButtons(prefix, r),
+    CollectionRadioButtons: makeCollectionRadioButtons(prefix, resource),
 
-    Select: makeSelect(prefix, r),
+    Select: makeSelect(prefix, resource),
 
-    Textarea: makeTextarea(prefix, r),
+    Textarea: makeTextarea(prefix, resource),
 
     Submit: extendCommponent<"button", {}>(button, () => ({ type: "submit" })),
   };
@@ -100,12 +99,12 @@ const makeCollectionRadioButtons = (
   );
 };
 
-const makeLabel = (prefix: string, resource: Model) => {
+const makeLabel = (prefix: string, resource: any) => {
   return extendCommponent<"label", { for: string }>(
     label,
     (p) => ({
       htmlFor: `${prefix}${p.for}`,
-      value: resource.class().humanAttributeName(p.for),
+      value: resource instanceof Model ? resource.class().humanAttributeName(p.for) : undefined,
     }),
     ["for"]
   );
