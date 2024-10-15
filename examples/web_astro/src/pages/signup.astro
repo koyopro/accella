@@ -1,0 +1,49 @@
+---
+import { formWith, Parameters } from "accel-web";
+import Layout from "../layouts/Layout.astro";
+import { Account } from "../models";
+
+const account = Account.build({});
+
+if (Astro.request.method === "POST") {
+  const params = new Parameters(await Astro.request.clone().formData());
+  const p = params.permit("email", "password", "passwordConfirmation");
+  if (account.update(p)) {
+    return Astro.redirect("/");
+  }
+}
+const { Form, Submit, Label, TextField, PasswordField } = formWith(account);
+---
+
+<Layout title="Sign Up">
+  <main class="container" style="max-width: 700px; min-width: 400px;">
+    <h1>Sign Up</h1>
+    <Form method="post" class="form">
+      {
+        account.errors.fullMessages.length > 0 && (
+          <div class="alert alert-danger">
+            {account.errors.fullMessages.map((message) => (
+              <div>{message}</div>
+            ))}
+          </div>
+        )
+      }
+      <div class="mb-3">
+        <Label for="email" />
+        <TextField attr="email" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <Label for="password" />
+        <PasswordField attr="password" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <Label for="passwordConfirmation" />
+        <PasswordField attr="passwordConfirmation" class="form-control" />
+      </div>
+      <div class="d-flex justify-content-between">
+        <Submit class="btn btn-secondary">Sign Up</Submit>
+        <a href="/" class="btn btn-link">Back</a>
+      </div>
+    </Form>
+  </main>
+</Layout>
