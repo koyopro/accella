@@ -10,14 +10,15 @@ import {
   makeRadioButton,
   makeTextField,
 } from "./inputs.js";
-import button from "./nativeComponents/button.astro";
-import collectionRadioButtons from "./nativeComponents/collectionRadioButtons.astro";
-import form from "./nativeComponents/form.astro";
-import label from "./nativeComponents/label.astro";
-import select from "./nativeComponents/select.astro";
-import textarea from "./nativeComponents/textarea.astro";
 
-export const formWith = (resource: Model, options?: { namespace?: string }) => {
+import button from "./button.astro";
+import collectionRadioButtons from "./collectionRadioButtons.astro";
+import form from "./form.astro";
+import label from "./label.astro";
+import select from "./select.astro";
+import textarea from "./textarea.astro";
+
+export const formFor = (resource: Model, options?: { namespace?: string }) => {
   const namespace = options?.namespace || "";
   const prefix = namespace ? `${namespace}.` : "";
   const r = resource as any;

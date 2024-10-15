@@ -1,5 +1,5 @@
-import { extendCommponent } from "./formWith.js";
-import input from "./nativeComponents/input.astro";
+import { extendCommponent } from "./index.js";
+import input from "./input.astro";
 
 export const makeTextField = (prefix: string, r: any) => {
   return extendCommponent<"input", { attr: string }>(
