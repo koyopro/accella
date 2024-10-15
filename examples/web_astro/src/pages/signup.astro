@@ -1,5 +1,5 @@
 ---
-import { formWith, Parameters } from "accel-web";
+import { formFor, Parameters } from "accel-web";
 import Layout from "../layouts/Layout.astro";
 import { Account } from "../models";
 
@@ -12,7 +12,7 @@ if (Astro.request.method === "POST") {
     return Astro.redirect("/");
   }
 }
-const { Form, Submit, Label, TextField, PasswordField } = formWith(account);
+const { Form, Submit, Label, TextField, PasswordField } = formFor(account);
 ---
 
 <Layout title="Sign Up">
