@@ -1,7 +1,50 @@
 ---
+import { paginate } from "accel-web";
+import { Account } from "src/models";
 import Layout from "../layouts/Layout.astro";
+
+const url = new URL(Astro.request.url);
+const searchParams = url.searchParams;
+const page = Number(searchParams.get("p")) || 1;
+
+const q = Account.all();
+
+const pager = paginate(q.order("id", "desc"), {
+  page,
+  per: 10,
+  window: 2,
+});
+const { LinkToNextPage, LinkToPrevPage, Nav, PageEntriesInfo } = pager;
 ---
 
-<Layout title="Index">
-  <main class="container" style="max-width: 700px; min-width: 550px;">Index Page</main>
+<Layout title="All Accounts">
+  <main class="container" style="max-width: 700px; min-width: 550px;">
+    <h1 class="text-center">All Accounts</h1>
+    <nav>
+      <ul class="pagination">
+        {page > 1 && <LinkToPrevPage />}
+        <LinkToNextPage />
+      </ul>
+    </nav>
+    <div class="d-flex flex-column gap-2 mb-3" style="padding: 20px">
+      <div class="d-flex gap-3">
+        <div>ID</div>
+        <div>Email</div>
+      </div>
+      {
+        pager.records.map((account) => (
+          <div class="d-flex gap-3">
+            <div>{account.id}</div>
+            <div>{account.email}</div>
+          </div>
+        ))
+      }
+    </div>
+    <div class="d-flex justify-content-center">
+      <Nav />
+    </div>
+    <div class="d-flex justify-content-center">
+      <PageEntriesInfo />
+    </div>
+  </main>
 </Layout>

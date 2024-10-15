@@ -28,6 +28,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "accel-record": "^1.15.0",
-    "astro": "^4.0.0"
+    "astro": ">=4.0.0",
+    "i18next": ">=23.0.0"
   }
 }

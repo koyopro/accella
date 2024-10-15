@@ -1,0 +1,36 @@
+---
+import I18n from "i18next";
+
+interface Props {
+  offset: number;
+  per: number;
+  total: number;
+}
+const { offset, per, total } = Astro.props;
+const first = offset + 1;
+const last = Math.min(first + per - 1, total);
+const key = total <= per ? "onePage" : "morePages";
+const defaultValue = () => {
+  if (key == "morePages") {
+    return "Displaying <b>{{first}}&nbsp;-&nbsp;{{last}}</b> of <b>{{total}}</b> in total";
+  }
+  switch (total) {
+    case 0:
+      return "No entries found";
+    case 1:
+      return "Displaying <b>{{total}}</b> entry";
+    default:
+      return "Displaying <b>all {{total}}</b> entries";
+  }
+};
+---
+
+<div
+  class="page-entries-info"
+  set:html={I18n.t(`helpers.pageEntriesInfo.${key}.displayEntries`, defaultValue(), {
+    first,
+    last,
+    total,
+    count: total,
+  })}
+/>
