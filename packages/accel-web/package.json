@@ -5,7 +5,6 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "devDependencies": {},
   "scripts": {
     "build": "tsc && cd src/ && find . -name '*.astro' -print0 | cpio -pd0 ../dist/"
   },
@@ -30,6 +29,7 @@
   "dependencies": {
     "accel-record": "^1.15.0",
     "astro": ">=4.0.0",
-    "i18next": ">=23.0.0"
+    "i18next": ">=23.0.0",
+    "parse-nested-form-data": "^1.0.0"
   }
 }
