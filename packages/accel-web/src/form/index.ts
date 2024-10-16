@@ -20,7 +20,11 @@ import textarea from "./textarea.astro";
 
 export const formFor = (resource: any, options?: { namespace?: string }) => {
   const namespace = options?.namespace || "";
-  const prefix = namespace ? `${namespace}.` : "";
+  const prefix = namespace
+    ? `${namespace}.`
+    : resource instanceof Model
+      ? `${toCamelCase(resource.class().name)}.`
+      : "";
   return {
     Form: form,
 
@@ -117,3 +121,7 @@ const makeTextarea = (prefix: string, r: any) => {
     ["attr"]
   );
 };
+
+function toCamelCase(str: string): string {
+  return str.charAt(0).toLowerCase() + str.slice(1);
+}
