@@ -1,13 +1,13 @@
 ---
-import { formFor, Parameters } from "accel-web";
+import { formFor, RequestParameters } from "accel-web";
 import Layout from "../layouts/Layout.astro";
 import { Account } from "../models";
 
 const account = Account.build({});
 
 if (Astro.request.method === "POST") {
-  const params = new Parameters(await Astro.request.clone().formData());
-  const p = params.permit("email", "password", "passwordConfirmation");
+  const params = await RequestParameters.parse(Astro.request);
+  const p = params.require("account").permit("email", "password", "passwordConfirmation");
   if (account.update(p)) {
     return Astro.redirect("/");
   }
