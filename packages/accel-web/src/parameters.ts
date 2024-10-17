@@ -1,3 +1,4 @@
+import { isBlank } from "accel-record-core/dist/validation/validator/presence";
 import { parseFormData } from "parse-nested-form-data";
 
 type JsonObject = ReturnType<typeof parseFormData>;
@@ -17,7 +18,19 @@ export class RequestParameters {
     new URL(request.url).searchParams.forEach((value, key) => {
       data.append(key, value);
     });
-    return new RequestParameters(parseFormData(data));
+    return new RequestParameters(
+      parseFormData(data, {
+        transformEntry: ([path, value], defaultTransform) => {
+          const ret = defaultTransform([path, value]);
+          if (path.startsWith("+")) {
+            if (isBlank(value) || !Number.isFinite(ret.value)) {
+              ret.value = undefined as any;
+            }
+          }
+          return ret;
+        },
+      })
+    );
   }
   permit<T extends string[]>(...keys: T): { [K in T[number]]: any } {
     return keys.toHash((name) => [name, this.data[name]]) as any;
