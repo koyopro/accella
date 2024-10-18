@@ -1,6 +1,21 @@
 import { ParameterMissing, RequestParameters } from "accel-web";
 import z from "zod";
 
+const buildParams = async () => {
+  const data = new FormData();
+  data.append("account.name", "John");
+  data.append("+account.age", "30");
+  data.append("tags[]", "good");
+  data.append("tags[]", "human");
+  data.append("+priority", "");
+  const request = new Request("http://example.com?page=1", {
+    method: "POST",
+    body: data,
+  });
+  const params = await RequestParameters.parse(request);
+  return params;
+};
+
 test("RequestParameters", async () => {
   const data = new FormData();
   data.append("account.name", "John");
@@ -51,5 +66,26 @@ test("RequestParameters", async () => {
       page: "1",
       tags: ["good", "human"],
     });
+  }
+});
+
+test("RequestParameters safeParseWith()", async () => {
+  const params = await buildParams();
+  {
+    const result = params.safeParseWith(
+      z.object({
+        priority: z.number(),
+      })
+    );
+    expect(result.success).toBe(false);
+  }
+  {
+    const result = params.safeParseWith(
+      z.object({
+        priority: z.number().optional(),
+      })
+    );
+    expect(result.success).toBe(true);
+    expect(result.data).toEqual({ priority: undefined });
   }
 });

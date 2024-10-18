@@ -50,4 +50,7 @@ export class RequestParameters {
   parseWith<T extends z.ZodType<any, any>>(schema: T): z.infer<T> {
     return schema.parse(this.data);
   }
+  safeParseWith<T extends z.ZodType<any, any>>(schema: T) {
+    return schema.safeParse(this.data);
+  }
 }
