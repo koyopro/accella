@@ -1,5 +1,6 @@
 import { isBlank } from "accel-record-core/dist/validation/validator/presence";
 import { parseFormData } from "parse-nested-form-data";
+import z from "zod";
 
 type JsonObject = ReturnType<typeof parseFormData>;
 
@@ -44,5 +45,9 @@ export class RequestParameters {
   }
   toHash(): JsonObject {
     return this.data;
+  }
+
+  parseWith<T extends z.ZodType<any, any>>(schema: T): z.infer<T> {
+    return schema.parse(this.data);
   }
 }
