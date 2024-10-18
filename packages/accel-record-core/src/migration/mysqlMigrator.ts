@@ -11,8 +11,8 @@ export class MySQLMigrator extends Migrator {
       console.log(`Creating database \`${database}\``);
       try {
         await knex.raw(`CREATE DATABASE ${database};`);
-      } catch (e) {
-        if ((e as any).code != "ER_DB_CREATE_EXISTS") throw e;
+      } catch {
+        // ignore
       }
     }
     knex.destroy();
