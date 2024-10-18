@@ -28,7 +28,7 @@ export const makeNumberField = (prefix: string, r: any) => {
   return extendCommponent<"input", { attr: string }>(
     input,
     (p) => ({
-      name: `${prefix}${p.attr}`,
+      name: `+${prefix}${p.attr}`,
       value: r[p.attr],
       type: "number",
     }),
