@@ -17,17 +17,7 @@ const buildParams = async () => {
 };
 
 test("RequestParameters", async () => {
-  const data = new FormData();
-  data.append("account.name", "John");
-  data.append("+account.age", "30");
-  data.append("tags[]", "good");
-  data.append("tags[]", "human");
-  data.append("+priority", "");
-  const request = new Request("http://example.com?page=1", {
-    method: "POST",
-    body: data,
-  });
-  const params = await RequestParameters.parse(request);
+  const params = await buildParams();
 
   expect(params.permit("page", "tags", "priority", "foo")).toEqual({
     page: "1",
@@ -49,6 +39,10 @@ test("RequestParameters", async () => {
     page: "1",
     tags: ["good", "human"],
   });
+});
+
+test("RequestParameters parseWith()", async () => {
+  const params = await buildParams();
 
   {
     const result = params.parseWith(
