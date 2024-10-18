@@ -82,8 +82,9 @@ export class Migration {
       if (statement.trim() == "") continue;
       try {
         await this.knex.raw(statement);
-      } catch {
-        // ignore
+      } catch (e) {
+        if (isDuplicateError(e)) continue;
+        throw e;
       }
     }
     await this.knex(logsTable).insert({
@@ -114,4 +115,10 @@ export class Migration {
 
 const sha256hash = (buffer: Buffer) => {
   return crypto.createHash("sha256").update(buffer).digest("hex");
+};
+
+const isDuplicateError = (e: any) => {
+  const keywords = ["already", "duplicate"];
+  const message = (e.sqlMessage || e.detail).toLowerCase();
+  return keywords.some((keyword) => message.includes(keyword));
 };
