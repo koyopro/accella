@@ -9,7 +9,11 @@ export class MySQLMigrator extends Migrator {
     const exists = await knex.raw(`SHOW DATABASES LIKE "${database}";`);
     if (exists[0].length == 0) {
       console.log(`Creating database \`${database}\``);
-      await knex.raw(`CREATE DATABASE ${database};`);
+      try {
+        await knex.raw(`CREATE DATABASE ${database};`);
+      } catch (e) {
+        if ((e as any).code != "ER_DB_CREATE_EXISTS") throw e;
+      }
     }
     knex.destroy();
   }
