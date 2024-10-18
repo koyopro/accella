@@ -5,7 +5,7 @@ describe("initAccelRecord", () => {
   test("should not throw error even if called multiple times", async () => {
     const subject = () => initAccelRecord(dbConfig());
     // for afterEach
-    const restartTx = () => Model.startTransaction();
+    const restartTx = () => Model.startNestableTransaction();
 
     expect(async () => await subject()).not.toThrow();
     restartTx();

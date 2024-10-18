@@ -102,6 +102,8 @@ let _config: Config = { type: "sqlite" };
 let _rpcClient: any;
 let _queryCount: number = 0;
 export const initAccelRecord = async (config: Config) => {
+  if (_rpcClient) return;
+
   _config = config;
   _config.logLevel ??= "WARN";
 
@@ -164,5 +166,7 @@ const formatByEngine = (ret: any) => {
 };
 
 export const stopRpcClient = () => {
+  if (!_rpcClient) return;
+  _rpcClient = undefined;
   stop();
 };
