@@ -80,7 +80,11 @@ export class Migration {
     console.log(`Applying migration \`${dir}\``);
     for (const statement of buffer.toString().split(";")) {
       if (statement.trim() == "") continue;
-      await this.knex.raw(statement);
+      try {
+        await this.knex.raw(statement);
+      } catch {
+        // ignore
+      }
     }
     await this.knex(logsTable).insert({
       id: crypto.randomUUID(),
