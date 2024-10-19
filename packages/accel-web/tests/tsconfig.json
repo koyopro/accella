@@ -3,13 +3,18 @@
     "target": "es2016",
     "module": "es2020",
     "moduleResolution": "bundler",
+    "types": ["vitest/globals"],
     "declaration": true,
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "jsx": "preserve",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "src/*": ["../src/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["**/*"]
 }

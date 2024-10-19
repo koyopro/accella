@@ -20,12 +20,15 @@ const { LinkToNextPage, LinkToPrevPage, Nav, PageEntriesInfo } = pager;
 <Layout title="All Accounts">
   <main class="container" style="max-width: 700px; min-width: 550px;">
     <h1 class="text-center">All Accounts</h1>
-    <nav>
-      <ul class="pagination">
-        {page > 1 && <LinkToPrevPage />}
-        <LinkToNextPage />
-      </ul>
-    </nav>
+    <div class="d-flex justify-content-between">
+      <nav>
+        <ul class="pagination">
+          {page > 1 && <LinkToPrevPage />}
+          <LinkToNextPage />
+        </ul>
+      </nav>
+      <a href="/signup" class="btn btn-link">Add New Account</a>
+    </div>
     <div class="d-flex flex-column gap-2 mb-3" style="padding: 20px">
       <div class="d-flex gap-3">
         <div>ID</div>

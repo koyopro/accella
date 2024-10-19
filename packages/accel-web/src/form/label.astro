@@ -1,0 +1,9 @@
+---
+const { value, ...props } = Astro.props;
+---
+
+<label {...props}>
+  <slot>
+    {value}
+  </slot>
+</label>
