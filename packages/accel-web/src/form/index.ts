@@ -18,6 +18,28 @@ import label from "./label.astro";
 import select from "./select.astro";
 import textarea from "./textarea.astro";
 
+/**
+ * Generates a set of form components for a given resource.
+ *
+ * @param resource - The resource for which the form components are generated.
+ * @param options - Optional configuration for the form components.
+ * @param options.namespace - An optional namespace to prefix the form fields.
+ *
+ * @returns An object containing various form components:
+ * - `Form`: The form component.
+ * - `Label`: A label component for the form fields.
+ * - `TextField`: A text input field component.
+ * - `HiddenField`: A hidden input field component.
+ * - `PasswordField`: A password input field component.
+ * - `NumberField`: A number input field component.
+ * - `DateField`: A date input field component.
+ * - `Checkbox`: A checkbox input field component.
+ * - `RadioButton`: A radio button input field component.
+ * - `CollectionRadioButtons`: A collection of radio button input field components.
+ * - `Select`: A select dropdown component.
+ * - `Textarea`: A textarea input field component.
+ * - `Submit`: A submit button component.
+ */
 export const formFor = (resource: any, options?: { namespace?: string }) => {
   const namespace = options?.namespace || "";
   const prefix = namespace
