@@ -3,7 +3,7 @@ import { RequestParameters } from "src/parameters";
 
 test("RequestParameters", async () => {
   const request = new Request("http://example.com?page=1");
-  const params = await RequestParameters.parse(request);
+  const params = await RequestParameters.from(request);
 
   {
     const result = params.parseWith(

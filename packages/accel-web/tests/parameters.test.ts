@@ -12,7 +12,7 @@ const buildParams = async () => {
     method: "POST",
     body: data,
   });
-  const params = await RequestParameters.parse(request);
+  const params = await RequestParameters.from(request);
   return params;
 };
 

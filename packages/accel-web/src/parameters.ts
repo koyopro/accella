@@ -9,7 +9,7 @@ export class ParameterMissing extends Error {}
 export class RequestParameters {
   constructor(protected data: JsonObject) {}
 
-  static async parse(request: Request): Promise<RequestParameters> {
+  static async from(request: Request): Promise<RequestParameters> {
     let data = new FormData();
     try {
       data = await request.clone().formData();

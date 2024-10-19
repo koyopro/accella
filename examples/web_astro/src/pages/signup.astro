@@ -6,7 +6,7 @@ import { Account } from "../models";
 const account = Account.build({});
 
 if (Astro.request.method === "POST") {
-  const params = await RequestParameters.parse(Astro.request);
+  const params = await RequestParameters.from(Astro.request);
   const p = params.require("account").permit("email", "password", "passwordConfirmation");
   if (account.update(p)) {
     return Astro.redirect("/");
