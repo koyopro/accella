@@ -48,7 +48,7 @@ export const formFor = (resource: any, options?: { namespace?: string }) => {
       ? `${toCamelCase(resource.class().name)}.`
       : "";
   return {
-    Form: form,
+    Form: form as (props: astroHTML.JSX.FormHTMLAttributes) => any,
 
     Label: makeLabel(prefix, resource),
 
