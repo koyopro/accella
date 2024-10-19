@@ -4,6 +4,7 @@
  ***************************************************************/
 
 import { AccountModel } from "./account.js";
+import { TodoModel } from "./todo.js";
 import { registerModel, type Collection, type Filter, type StringFilter } from "accel-record";
 import { Attribute, defineEnumTextAttribute } from "accel-record/enums";
 
@@ -13,7 +14,22 @@ declare module "accel-record" {
   interface Relation<T, M> {}
 }
 
-type Meta<T> = T extends typeof AccountModel | AccountModel ? AccountMeta : any;
+type Meta<T> = T extends typeof AccountModel | AccountModel
+  ? AccountMeta
+  : T extends typeof TodoModel | TodoModel
+    ? TodoMeta
+    : any;
+
+export namespace $Enums {
+  export const Status = {
+    OPEN: "OPEN",
+    CLOSED: "CLOSED",
+  } as const;
+  export type Status = (typeof Status)[keyof typeof Status];
+}
+
+export type Status = $Enums.Status;
+export const Status = $Enums.Status;
 
 declare module "./account" {
   interface AccountModel {
@@ -69,3 +85,69 @@ type AccountMeta = {
   };
 };
 registerModel(Account);
+
+declare module "./todo" {
+  interface TodoModel {
+    id: number | undefined;
+    title: string | undefined;
+    content: string | undefined;
+    estimate: number | undefined;
+    dueDate: Date | undefined;
+    status: Status;
+    statusText: string;
+    createdAt: Date | undefined;
+    updatedAt: Date | undefined;
+  }
+}
+export interface NewTodo extends TodoModel {}
+export class Todo extends TodoModel {
+  static status = new Attribute(this, "Status", Status);
+}
+export interface Todo extends TodoModel {
+  id: number;
+  title: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+type TodoAssociationKey = never;
+type TodoCollection<T extends TodoModel> = Collection<T, TodoMeta> | Collection<Todo, TodoMeta>;
+type TodoMeta = {
+  Base: TodoModel;
+  New: NewTodo;
+  Persisted: Todo;
+  PrimaryKey: number;
+  AssociationKey: TodoAssociationKey;
+  JoinInput: TodoAssociationKey | TodoAssociationKey[];
+  Column: {
+    id: number;
+    title: string;
+    content: string | undefined;
+    estimate: number | undefined;
+    dueDate: Date | undefined;
+    status: Status;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  CreateInput: {
+    id?: number;
+    title: string;
+    content?: string;
+    estimate?: number;
+    dueDate?: Date;
+    status?: Status;
+    createdAt?: Date;
+    updatedAt?: Date;
+  };
+  WhereInput: {
+    id?: number | number[] | Filter<number> | null;
+    title?: string | string[] | StringFilter | null;
+    content?: string | string[] | StringFilter | null;
+    estimate?: number | number[] | Filter<number> | null;
+    dueDate?: Date | Date[] | Filter<Date> | null;
+    status?: Status | Status[] | undefined | null;
+    createdAt?: Date | Date[] | Filter<Date> | null;
+    updatedAt?: Date | Date[] | Filter<Date> | null;
+  };
+};
+registerModel(Todo);
+defineEnumTextAttribute(TodoModel, Todo, "status");

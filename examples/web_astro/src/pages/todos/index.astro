@@ -1,0 +1,38 @@
+---
+import { paginate, RequestParameters } from "accel-web";
+import { Todo } from "src/models";
+import Layout from "../../layouts/Layout.astro";
+
+const params = (await RequestParameters.from(Astro.request)).permit("p");
+const page = Number(params.p) || 1;
+
+const { Nav, PageEntriesInfo, records } = paginate(Todo.order("id", "desc"), { page });
+---
+
+<Layout title="TODOs">
+  <main class="container" style="max-width: 700px; min-width: 550px;">
+    <h1 class="text-center">All TODOs</h1>
+    <div class="d-flex justify-content-end">
+      <a href="/todos/new" class="btn btn-link">Add a new todo</a>
+    </div>
+    <ul>
+      {
+        records.map((todo) => (
+          <li>
+            <span>{todo.id}</span>
+            <span>{todo.title}</span>
+            {todo.estimate ? <span>｜{todo.estimate}</span> : null}
+            {todo.dueDate ? <span>{todo.dueDate.toISOString().slice(0, 10)}迄</span> : null}
+            <span>({todo.status})</span>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="d-flex justify-content-center">
+      <Nav />
+    </div>
+    <div class="d-flex justify-content-center">
+      <PageEntriesInfo />
+    </div>
+  </main>
+</Layout>
