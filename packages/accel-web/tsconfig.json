@@ -10,7 +10,11 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "jsx": "preserve",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "src/*": ["./src/*"]
+    }
   },
   "include": ["src", "**/tests"]
 }

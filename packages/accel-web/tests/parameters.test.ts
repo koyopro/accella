@@ -1,4 +1,4 @@
-import { ParameterMissing, RequestParameters } from "accel-web";
+import { ParameterMissing, RequestParameters } from "src/parameters";
 import z from "zod";
 
 const buildParams = async () => {

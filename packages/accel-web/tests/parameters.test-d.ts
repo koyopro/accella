@@ -1,5 +1,5 @@
-import { RequestParameters } from "accel-web";
 import z from "zod";
+import { RequestParameters } from "src/parameters";
 
 test("RequestParameters", async () => {
   const request = new Request("http://example.com?page=1");
