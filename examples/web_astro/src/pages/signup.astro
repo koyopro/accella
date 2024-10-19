@@ -1,17 +1,30 @@
 ---
+// src/pages/signup.astro
 import { formFor, RequestParameters } from "accel-web";
 import Layout from "../layouts/Layout.astro";
 import { Account } from "../models";
+import { z } from "astro/zod";
 
 const account = Account.build({});
 
 if (Astro.request.method === "POST") {
   const params = await RequestParameters.from(Astro.request);
-  const p = params.require("account").permit("email", "password", "passwordConfirmation");
-  if (account.update(p)) {
+  // Using zod, you can validate request parameters and extract them with type information
+  const accountParams = params.require("account").parseWith(
+    z.object({
+      email: z.string(),
+      password: z.string(),
+      passwordConfirmation: z.string(),
+    })
+  );
+  // If strict type information is not required, you can write it as follows
+  // const accountParams = params.require("account").permit("email", "password", "passwordConfirmation");
+  if (account.update(accountParams)) {
     return Astro.redirect("/");
   }
 }
+
+// `formFor` is a helper function that creates a form object for the model
 const { Form, Submit, Label, TextField, PasswordField } = formFor(account);
 ---
 
@@ -29,7 +42,12 @@ const { Form, Submit, Label, TextField, PasswordField } = formFor(account);
         )
       }
       <div class="mb-3">
+        <!--
+          The value of Label will be set according to the i18n settings configured in i18next.
+          `accelrecord.attributes.Account.email` is the key to be translated.
+        -->
         <Label for="email" />
+        <!-- The value of TextField will be pre-filled with the value of account.email -->
         <TextField attr="email" class="form-control" />
       </div>
       <div class="mb-3">
