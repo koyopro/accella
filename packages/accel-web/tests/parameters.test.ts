@@ -31,6 +31,17 @@ test("RequestParameters", async () => {
 
   expect(() => params.require("foo")).toThrowError(ParameterMissing);
 
+  expect(params["page"]).toEqual("1");
+  expect(params["tags"]).toEqual(["good", "human"]);
+  expect(params["account"]).toEqual({ name: "John", age: 30 });
+  expect(params["foo"]).toBeUndefined();
+});
+
+test("RequestParameters errors", async () => {});
+
+test("RequestParameters toHash()", async () => {
+  const params = await buildParams();
+
   expect(params.toHash()).toEqual({
     account: {
       age: 30,
@@ -39,11 +50,6 @@ test("RequestParameters", async () => {
     page: "1",
     tags: ["good", "human"],
   });
-
-  expect(params["page"]).toEqual("1");
-  expect(params["tags"]).toEqual(["good", "human"]);
-  expect(params["account"]).toEqual({ name: "John", age: 30 });
-  expect(params["foo"]).toBeUndefined();
 });
 
 test("RequestParameters parseWith()", async () => {
