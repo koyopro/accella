@@ -3,8 +3,8 @@ import { paginate, RequestParameters } from "accel-web";
 import { Todo } from "src/models";
 import Layout from "../../layouts/Layout.astro";
 
-const params = (await RequestParameters.from(Astro.request)).permit("p");
-const page = Number(params.p) || 1;
+const params = await RequestParameters.from(Astro.request);
+const page = Number(params["p"]) || 1;
 
 const { Nav, PageEntriesInfo, records } = paginate(Todo.order("id", "desc"), { page });
 ---
