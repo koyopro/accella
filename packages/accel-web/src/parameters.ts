@@ -10,11 +10,16 @@ export class ParameterMissing extends Error {}
  * Class representing request parameters.
  */
 export class RequestParameters {
+  readonly [key: string]: any;
   /**
    * Creates an instance of RequestParameters.
    * @param data - The JSON object containing the request data.
    */
-  constructor(protected data: JsonObject) {}
+  constructor(protected data: JsonObject) {
+    Object.entries(data).forEach(([key, value]) => {
+      (this as any)[key] ??= value;
+    });
+  }
 
   /**
    * Creates an instance of RequestParameters from a Request object.

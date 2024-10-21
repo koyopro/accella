@@ -22,4 +22,5 @@ test("RequestParameters", async () => {
       tags: string[];
     }>();
   }
+  expectTypeOf(params["page"]).toEqualTypeOf<any>();
 });
