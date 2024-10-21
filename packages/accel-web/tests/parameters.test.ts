@@ -1,4 +1,5 @@
-import { ParameterMissing, RequestParameters } from "src/parameters";
+import { ZodError } from "astro/zod";
+import { RequestParameters } from "src/parameters";
 import z from "zod";
 
 const buildParams = async () => {
@@ -29,15 +30,11 @@ test("RequestParameters", async () => {
   const account = params.require("account").permit("name", "age");
   expect(account).toEqual({ name: "John", age: 30 });
 
-  expect(() => params.require("foo")).toThrowError(ParameterMissing);
-
   expect(params["page"]).toEqual("1");
   expect(params["tags"]).toEqual(["good", "human"]);
   expect(params["account"]).toEqual({ name: "John", age: 30 });
   expect(params["foo"]).toBeUndefined();
 });
-
-test("RequestParameters errors", async () => {});
 
 test("RequestParameters toHash()", async () => {
   const params = await buildParams();
@@ -93,4 +90,15 @@ test("RequestParameters safeParseWith()", async () => {
     expect(result.success).toBe(true);
     expect(result.data).toEqual({ priority: undefined });
   }
+});
+
+test("RequestParameters errors", async () => {
+  const params = await buildParams();
+
+  expect(() => params.require("foo")).toThrowError(ZodError);
+  expect(() => params.require("page")).not.toThrowError();
+
+  expect(() => {
+    params.parseWith(z.object({ foo: z.string() }));
+  }).toThrowError(ZodError);
 });

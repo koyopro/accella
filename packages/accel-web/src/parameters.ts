@@ -4,8 +4,6 @@ import z from "zod";
 
 type JsonObject = ReturnType<typeof parseFormData>;
 
-export class ParameterMissing extends Error {}
-
 /**
  * Class representing request parameters.
  */
@@ -62,14 +60,13 @@ export class RequestParameters {
    * Requires a specific key to be present in the parameters.
    * @param key - The key to require.
    * @returns A new instance of RequestParameters containing the required key's value.
-   * @throws ParameterMissing if the key is missing or its value is empty.
    */
   require(key: string): RequestParameters {
-    const value = this.data[key];
-    if (typeof value !== "object") {
-      throw new ParameterMissing(`param is missing or the value is empty: ${key}`);
-    }
-    return new RequestParameters(value as JsonObject);
+    // Ensure the key exists
+    z.any()
+      .refine((v) => key in v, { message: "Required", path: [key] })
+      .parse(this.data);
+    return new RequestParameters(this.data[key] as any);
   }
   /**
    * Converts the parameters to a JSON object.
