@@ -1,36 +1,28 @@
 ---
-import { formFor, RequestParameters } from "accel-web";
-import { z } from "astro/zod";
+import { formFor } from "accel-web";
 import { SignIn } from "src/forms/signIn";
 import Layout from "../layouts/Layout.astro";
 
-const { session } = Astro.locals;
+const { session, params } = Astro.locals;
 
 if (session.account) return Astro.redirect("/");
 
-const signin = new SignIn();
+const signIn = SignIn.build({});
 const messages: string[] = [];
 
 if (Astro.request.method === "POST") {
-  const params = await RequestParameters.from(Astro.request);
-  const { email, password } = params.require("signIn").parseWith(
-    z.object({
-      email: z.string(),
-      password: z.string(),
-    })
-  );
-  signin.assignAttributes({ email, password });
+  const sinInParams = params.require("signIn").permit("email", "password");
+  signIn.assignAttributes(sinInParams);
 
-  const account = signin.authenticate();
+  const account = signIn.authenticate();
   if (account) {
     session.account = account;
     return Astro.redirect("/");
-  } else {
-    messages.push("The email address or password is incorrect");
   }
+  messages.push("The email address or password is incorrect");
 }
 
-const { Form, Submit, Label, TextField, PasswordField } = formFor(signin);
+const { Form, Submit, Label, TextField, PasswordField } = formFor(signIn);
 ---
 
 <Layout title="Sign In">
