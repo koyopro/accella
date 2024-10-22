@@ -4,6 +4,7 @@ interface Props {
 }
 
 const { title } = Astro.props;
+const { session } = Astro.locals;
 ---
 
 <!doctype html>
@@ -23,6 +24,20 @@ const { title } = Astro.props;
     />
   </head>
   <body>
+    <header>
+      {
+        session.account ? (
+          <div>
+            <span>ID: {session.account.email}</span>
+            <a href="/signout">Sign Out</a>
+          </div>
+        ) : (
+          <div>
+            <a href="/signin">Sign In</a> / <a href="/signup">Sign Up</a>
+          </div>
+        )
+      }
+    </header>
     <slot />
     <script
       is:inline
@@ -43,6 +58,12 @@ const { title } = Astro.props;
     border-radius: 5px;
     padding: 30px 20px;
     margin: 20px auto;
+  }
+  header {
+    background: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: right;
   }
   .error-messages {
     background: yellow;
