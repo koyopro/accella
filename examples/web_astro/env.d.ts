@@ -3,7 +3,7 @@
 declare global {
   namespace App {
     interface Locals {
-      helper: import("./src/core/helper").Helper;
+      session: import("./src/session").Session;
     }
   }
 }
