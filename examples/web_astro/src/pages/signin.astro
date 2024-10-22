@@ -1,0 +1,63 @@
+---
+import { formFor, RequestParameters } from "accel-web";
+import { z } from "astro/zod";
+import { SignIn } from "src/forms/signIn";
+import Layout from "../layouts/Layout.astro";
+
+const { session } = Astro.locals;
+
+if (session.account) return Astro.redirect("/");
+
+const signin = new SignIn();
+const messages: string[] = [];
+
+if (Astro.request.method === "POST") {
+  const params = await RequestParameters.from(Astro.request);
+  const { email, password } = params.require("signIn").parseWith(
+    z.object({
+      email: z.string(),
+      password: z.string(),
+    })
+  );
+  signin.assignAttributes({ email, password });
+
+  const account = signin.authenticate();
+  if (account) {
+    session.account = account;
+    return Astro.redirect("/");
+  } else {
+    messages.push("The email address or password is incorrect");
+  }
+}
+
+const { Form, Submit, Label, TextField, PasswordField } = formFor(signin);
+---
+
+<Layout title="Sign In">
+  <main class="container" style="max-width: 700px; min-width: 400px;">
+    <h1>Sign In</h1>
+    <Form method="post" class="grid-x grid-margin-x">
+      {
+        messages.length > 0 && (
+          <div class="alert alert-danger">
+            {messages.map((message) => (
+              <div>{message}</div>
+            ))}
+          </div>
+        )
+      }
+      <div class="mb-3">
+        <Label for="email" class="form-label" />
+        <TextField attr="email" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <Label for="password" class="form-label" />
+        <PasswordField attr="password" class="form-control" />
+      </div>
+      <div class="d-flex justify-content-between">
+        <Submit class="btn btn-secondary">Sign In</Submit>
+        <a href="/signup" class="btn btn-link">Go to Sign Up</a>
+      </div>
+    </Form>
+  </main>
+</Layout>
