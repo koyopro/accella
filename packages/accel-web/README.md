@@ -145,3 +145,65 @@ const { Form, Submit, Label, TextField, PasswordField } = formFor(account);
   </main>
 </Layout>
 ```
+
+## Session
+
+`createCookieSessionStorage` is a function that generates a session storage object. This is a thin wrapper around the function of the same name provided by [astro-cookie-session](https://www.npmjs.com/package/astro-cookie-session), so please refer to its documentation for basic usage. The difference from the original is that it adds the ability to save Accel Record models as sessions.
+
+```ts
+// src/session.ts
+import { createCookieSessionStorage } from "accel-web";
+import type { Account } from "./models";
+
+export type SessionData = {
+  // You can store the Accel Record model in the session
+  account: Account;
+};
+
+export const { getSession } = createCookieSessionStorage<SessionData>();
+
+export type Session = ReturnType<typeof getSession>;
+```
+
+```astro
+---
+// src/pages/login.astro
+import { getSession } from "../session";
+import { Account } from "../models";
+
+const session = getSession(Astro.cookies);
+// Read an Account model from the session
+if (session.account) {
+  return Astro.redirect("/");
+}
+let message = '';
+
+if (Astro.request.method === "POST") {
+  const params = await RequestParameters.from(Astro.request);
+  // Account model is assumed to have password authentication implemented.
+  // https://github.com/koyopro/accella/tree/main/packages/accel-record#password-authentication
+  const account = Account.findBy({ email: params['email'] });
+  if (account?.authenticate(params['password'])) {
+    // Save an Account model in the session
+    session.account = account;
+    return Astro.redirect("/");
+  } else {
+    message = "Invalid email or password";
+  }
+}
+---
+<form method="post">
+  {message && <div>{message}</div>}
+  <div>
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required />
+  </div>
+  <div>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required />
+  </div>
+  <div>
+    <button type="submit">Login</button>
+  </div>
+</form>
+```
