@@ -1,6 +1,6 @@
 {
   "name": "accel-web",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A library for integrating Astro and Accel Record.",
   "type": "module",
   "main": "dist/index.js",

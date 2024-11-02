@@ -1,6 +1,12 @@
 # Accel Web
 
-## [0.2.0](https://github.com/koyopro/accella/compare/0.1.0...0.2.0) (2024-10-22)
+## 0.3.0 (2024-11-02)
+
+### Features
+
+- Session ([#59](https://github.com/koyopro/accella/pull/59))
+
+## 0.2.0 (2024-10-22)
 
 ### Features
 
