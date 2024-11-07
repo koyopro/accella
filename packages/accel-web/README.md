@@ -146,6 +146,75 @@ const { Form, Submit, Label, TextField, PasswordField } = formFor(account);
 </Layout>
 ```
 
+### SearchFormFor
+
+`searchFormFor` is a function that generates a search form component.
+
+The following is an example of a search form using `searchFormFor`. You can implement a search form and pagination by combining it with the previously introduced `paginate`.
+
+```astro
+---
+// src/pages/todos/index.astro
+import { paginate, RequestParameters, searchFormFor } from "accel-web";
+import { Todo } from "src/models";
+import Layout from "../../layouts/Layout.astro";
+
+const params = await RequestParameters.from(Astro.request);
+const page = Number(params.p) || 1;
+
+// Model.search() returns a search object.
+// params.q is a search query object from query parameters.
+// Example:
+//  Path like "/todos?q.id_eq=1&q.title_cont=foo" is parsed as follows:
+//  { q: { id_eq: 1, title_cont: "foo" } }
+const search = Todo.search(params.q);
+// searchFormFor() returns form fields for search.
+const { NumberField, TextField } = searchFormFor(search);
+
+const { Nav, PageEntriesInfo, records } = paginate(search.result().order("id", "desc"), { page });
+---
+
+<Layout title="TODOs">
+  <main class="container" style="max-width: 700px; min-width: 550px;">
+    <h1 class="text-center">All TODOs</h1>
+    <div class="d-flex justify-content-end">
+      <a href="/todos/new" class="btn btn-link">Add a new todo</a>
+    </div>
+    <form method="get" class="row">
+      <div class="col mb-3">
+        <NumberField attr="id_eq" placeholder="Search by ID" class="form-control" />
+      </div>
+      <div class="col mb-3">
+        <TextField attr="title_cont" placeholder="Search by Title" class="form-control" />
+      </div>
+      <div class="col-md-auto mb-3">
+        <button type="submit" class="btn btn-dark">Search</button>
+        <a href="/todos" class="btn btn-secondary">Clear</a>
+      </div>
+    </form>
+    <ul>
+      {
+        records.map((todo) => (
+          <li>
+            <span>{todo.id}</span>
+            <span>{todo.title}</span>
+            {todo.estimate ? <span>｜{todo.estimate}</span> : null}
+            {todo.dueDate ? <span>{todo.dueDate.toISOString().slice(0, 10)}迄</span> : null}
+            <span>({todo.status})</span>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="d-flex justify-content-center">
+      <Nav />
+    </div>
+    <div class="d-flex justify-content-center">
+      <PageEntriesInfo />
+    </div>
+  </main>
+</Layout>
+```
+
 ## Session
 
 `createCookieSessionStorage` is a function that generates a session storage object. This is a thin wrapper around the function of the same name provided by [astro-cookie-session](https://www.npmjs.com/package/astro-cookie-session), so please refer to its documentation for basic usage. The difference from the original is that it adds the ability to save Accel Record models as sessions.
