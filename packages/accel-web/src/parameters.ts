@@ -22,31 +22,33 @@ export class RequestParameters {
   /**
    * Creates an instance of RequestParameters from a Request object.
    * @param request - The Request object to extract parameters from.
+   * @param params - Additional parameters to include.
    * @returns A promise that resolves to an instance of RequestParameters.
    */
-  static async from(request: Request): Promise<RequestParameters> {
-    let data = new FormData();
+  static async from(
+    request: Request,
+    params: Record<string, string | undefined> = {}
+  ): Promise<RequestParameters> {
+    let formData = new FormData();
     try {
-      data = await request.clone().formData();
+      formData = await request.clone().formData();
     } catch {
       // noop
     }
     new URL(request.url).searchParams.forEach((value, key) => {
-      data.append(key, value);
+      formData.append(key, value);
     });
-    return new RequestParameters(
-      parseFormData(data, {
-        transformEntry: ([path, value], defaultTransform) => {
-          const ret = defaultTransform([path, value]);
-          if (path.startsWith("+")) {
-            if (isBlank(value) || !Number.isFinite(ret.value)) {
-              ret.value = undefined as any;
-            }
-          }
-          return ret;
-        },
-      })
-    );
+    const data = parseFormData(formData, {
+      transformEntry: ([path, value], defaultTransform) => {
+        const ret = defaultTransform([path, value]);
+        if (path.startsWith("+") && (isBlank(value) || !Number.isFinite(ret.value))) {
+          ret.value = undefined as any;
+        }
+        return ret;
+      },
+    });
+    Object.assign(data, params);
+    return new RequestParameters(data);
   }
   /**
    * Filters the parameters to include only the specified keys.

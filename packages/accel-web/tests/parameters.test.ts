@@ -13,17 +13,20 @@ const buildParams = async () => {
     method: "POST",
     body: data,
   });
-  const params = await RequestParameters.from(request);
+  const params = await RequestParameters.from(request, {
+    id: "2",
+  });
   return params;
 };
 
 test("RequestParameters", async () => {
   const params = await buildParams();
 
-  expect(params.permit("page", "tags", "priority", "foo")).toEqual({
+  expect(params.permit("page", "tags", "priority", "id", "foo")).toEqual({
     page: "1",
     tags: ["good", "human"],
     priority: undefined,
+    id: "2",
     foo: undefined,
   });
 
@@ -44,6 +47,7 @@ test("RequestParameters toHash()", async () => {
       age: 30,
       name: "John",
     },
+    id: "2",
     page: "1",
     tags: ["good", "human"],
   });
