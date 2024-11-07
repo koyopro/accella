@@ -78,7 +78,7 @@ export class Searchable {
    * ```
    */
   static search<T extends typeof Model>(this: T, params: Record<string, any> | undefined) {
-    return new Search(this, params);
+    return new Search<InstanceType<T>>(this, params);
   }
 
   /**

@@ -79,6 +79,6 @@ export class Searchable {
    * ```
    */
   search<T, M extends ModelMeta>(this: Relation<T, M>, params: Record<string, any> | undefined) {
-    return new Search(this.model, params, this);
+    return new Search<T>(this.model, params, this);
   }
 }

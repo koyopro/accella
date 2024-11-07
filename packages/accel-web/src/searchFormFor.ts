@@ -21,6 +21,6 @@ import { formFor } from "./form/index.js";
  * </Form>
  * ```
  */
-export const searchFormFor = (s: Search) => {
+export const searchFormFor = (s: Search<any>) => {
   return formFor(s, { namespace: "q" });
 };
