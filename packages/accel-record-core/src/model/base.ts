@@ -19,15 +19,6 @@ type DefinedProperties<T> = Omit<FieldsOnly<T>, "errors" | "associations" | "cal
  */
 class Base extends Mix(Attributes, AttributeAssignment, Callbacks, Naming) {
   associations: Map<string, Association<Model, Model>> = new Map();
-
-  /**
-   * Returns the model class for the current instance.
-   *
-   * @returns The model class.
-   */
-  class<T extends typeof Model>(this: InstanceType<T>): T {
-    return this.constructor as T;
-  }
 }
 
 /**
