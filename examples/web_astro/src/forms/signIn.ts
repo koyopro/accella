@@ -1,7 +1,7 @@
-import { Model } from "accel-record";
+import { FormModel } from "accel-record";
 import { Account } from "src/models";
 
-export class SignIn extends Model {
+export class SignIn extends FormModel {
   email: string = "";
   password: string = "";
 
