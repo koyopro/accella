@@ -87,7 +87,7 @@ import { z } from "astro/zod";
 const account = Account.build({});
 
 if (Astro.request.method === "POST") {
-  const params = await RequestParameters.from(Astro.request);
+  const params = await RequestParameters.from(Astro.request, Astro.params);
   // Using zod, you can validate request parameters and extract them with type information
   const accountParams = params.require("account").parseWith(
     z.object({
@@ -179,7 +179,7 @@ if (session.account) {
 let message = '';
 
 if (Astro.request.method === "POST") {
-  const params = await RequestParameters.from(Astro.request);
+  const params = await RequestParameters.from(Astro.request, Astro.params);
   // Account model is assumed to have password authentication implemented.
   // https://github.com/koyopro/accella/tree/main/packages/accel-record#password-authentication
   const account = Account.findBy({ email: params['email'] });
