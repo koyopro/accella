@@ -60,7 +60,14 @@ export const registerModel = (model: any) => {
 /**
  * Model for creating form objects
  */
-export class FormModel extends Mix(ModelBase, Validations) {}
+export class FormModel extends Mix(ModelBase, Validations) {
+  /**
+   * Returns the model class for the current instance.
+   */
+  class<T extends typeof FormModel>(this: InstanceType<T>): T {
+    return this.constructor as T;
+  }
+}
 
 /**
  * Model for creating records
@@ -79,6 +86,15 @@ export class Model extends Mix(
   Transaction,
   Validations
 ) {
+  /**
+   * Returns the model class for the current instance.
+   *
+   * @returns The model class.
+   */
+  class<T extends typeof Model>(this: InstanceType<T>): T {
+    return this.constructor as T;
+  }
+
   /**
    * Checks if the current instance is equal to another instance of the same type.
    * @param other The other instance to compare with.
