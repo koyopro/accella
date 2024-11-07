@@ -1,3 +1,9 @@
+# 1.15.1 (2024-11-07)
+
+## Patch Changes
+
+- improve type of Search ([#62](https://github.com/koyopro/accella/pull/62))
+
 # [1.15.0](https://github.com/koyopro/accella/compare/1.14.1...1.15.0) (2024-09-09)
 
 ## Features
