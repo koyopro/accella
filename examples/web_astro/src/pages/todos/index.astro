@@ -1,12 +1,22 @@
 ---
-import { paginate, RequestParameters } from "accel-web";
+// src/pages/todos/index.astro
+import { paginate, RequestParameters, searchFormFor } from "accel-web";
 import { Todo } from "src/models";
 import Layout from "../../layouts/Layout.astro";
 
 const params = await RequestParameters.from(Astro.request);
-const page = Number(params["p"]) || 1;
+const page = Number(params.p) || 1;
 
-const { Nav, PageEntriesInfo, records } = paginate(Todo.order("id", "desc"), { page });
+// Model.search() returns a search object.
+// params.q is a search query object from query parameters.
+// Example:
+//  Path like "/todos?q.id_eq=1&q.title_cont=foo" is parsed as follows:
+//  { q: { id_eq: 1, title_cont: "foo" } }
+const search = Todo.search(params.q);
+// searchFormFor() returns form fields for search.
+const { NumberField, TextField } = searchFormFor(search);
+
+const { Nav, PageEntriesInfo, records } = paginate(search.result().order("id", "desc"), { page });
 ---
 
 <Layout title="TODOs">
@@ -15,6 +25,18 @@ const { Nav, PageEntriesInfo, records } = paginate(Todo.order("id", "desc"), { p
     <div class="d-flex justify-content-end">
       <a href="/todos/new" class="btn btn-link">Add a new todo</a>
     </div>
+    <form method="get" class="row">
+      <div class="col mb-3">
+        <NumberField attr="id_eq" placeholder="Search by ID" class="form-control" />
+      </div>
+      <div class="col mb-3">
+        <TextField attr="title_cont" placeholder="Search by Title" class="form-control" />
+      </div>
+      <div class="col-md-auto mb-3">
+        <button type="submit" class="btn btn-dark">Search</button>
+        <a href="/todos" class="btn btn-secondary">Clear</a>
+      </div>
+    </form>
     <ul>
       {
         records.map((todo) => (
