@@ -1,10 +1,10 @@
 import { AttributeNotFound } from "../errors.js";
-import type { Model } from "../index.js";
+import type { Meta, Model } from "../index.js";
 import type { Relation } from "../relation/index.js";
 import { isBlank } from "../validation/validator/presence.js";
 import { RelationUpdater } from "./relation.js";
 
-export class Search {
+export class Search<T> {
   readonly params: Record<string, any>;
   readonly [key: string]: any;
 
@@ -29,7 +29,7 @@ export class Search {
   /**
    * Retrieves the search result based on the specified parameters.
    */
-  result() {
+  result(): Relation<T, Meta<T>> {
     let relation = this.relation ?? this.model.all();
     for (const [key, value] of Object.entries(this.params)) {
       try {
@@ -40,6 +40,6 @@ export class Search {
         } else throw e;
       }
     }
-    return relation;
+    return relation as Relation<T, Meta<T>>;
   }
 }
