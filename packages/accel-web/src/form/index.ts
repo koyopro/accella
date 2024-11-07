@@ -1,4 +1,4 @@
-import { Model } from "accel-record";
+import { FormModel, Model } from "accel-record";
 import "astro/astro-jsx";
 import { createComponent } from "astro/runtime/server/astro-component.js";
 import {
@@ -130,7 +130,7 @@ const makeLabel = (prefix: string, resource: any) => {
     label,
     (p) => ({
       htmlFor: `${prefix}${p.for}`,
-      value: resource instanceof Model ? resource.class().humanAttributeName(p.for) : undefined,
+      value: humanAttributeName(resource, p.for),
     }),
     ["for"]
   );
@@ -147,3 +147,13 @@ const makeTextarea = (prefix: string, r: any) => {
 function toCamelCase(str: string): string {
   return str.charAt(0).toLowerCase() + str.slice(1);
 }
+
+const humanAttributeName = (resource: any, name: string) => {
+  if (resource instanceof Model) {
+    return resource.class().humanAttributeName(name);
+  }
+  if (resource instanceof FormModel) {
+    return resource.class().humanAttributeName(name);
+  }
+  return undefined;
+};
