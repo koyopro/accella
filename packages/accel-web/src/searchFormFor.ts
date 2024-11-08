@@ -1,5 +1,5 @@
 import { Search } from "accel-record/search";
-import { formFor } from "./form/index.js";
+import { formFor, FormForOptions } from "./form/index.js";
 
 /**
  * Generates a search form for the given search object.
@@ -21,6 +21,6 @@ import { formFor } from "./form/index.js";
  * </Form>
  * ```
  */
-export const searchFormFor = (s: Search<any>) => {
-  return formFor(s, { namespace: "q" });
+export const searchFormFor = (s: Search<any>, options: FormForOptions) => {
+  return formFor(s, { namespace: "q", ...options });
 };

@@ -18,6 +18,11 @@ import label from "./label.astro";
 import select from "./select.astro";
 import textarea from "./textarea.astro";
 
+export type FormForOptions = {
+  /** Prefix of form field */
+  namespace?: string;
+};
+
 /**
  * Generates a set of form components for a given resource.
  *
@@ -40,7 +45,7 @@ import textarea from "./textarea.astro";
  * - `Textarea`: A textarea input field component.
  * - `Submit`: A submit button component.
  */
-export const formFor = (resource: any, options?: { namespace?: string }) => {
+export const formFor = (resource: any, options?: FormForOptions) => {
   const namespace = options?.namespace || "";
   const prefix = namespace
     ? `${namespace}.`

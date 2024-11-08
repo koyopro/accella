@@ -14,9 +14,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   const path = new URL(request.url).pathname;
   if (!locals.session.account && !path.startsWith("/sign")) {
-    redirect("/signin");
-    return;
+    return redirect("/signin");
   }
 
-  next();
+  return next();
 });
