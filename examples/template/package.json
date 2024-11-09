@@ -14,5 +14,8 @@
     "accel-web": "^0.4.0",
     "astro": "^4.16.10",
     "typescript": "^5.6.3"
+  },
+  "prisma": {
+    "schema": "./db/schema/"
   }
 }
