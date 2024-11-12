@@ -7,7 +7,6 @@
   "bin": {
     "create-accella": "./src/index.js"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/koyopro/accella/issues"
   },
-  "homepage": "https://github.com/koyopro/accella#readme"
+  "homepage": "https://github.com/koyopro/accella#readme",
+  "dependencies": {
+    "giget": "^1.2.3"
+  }
 }
