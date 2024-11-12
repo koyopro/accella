@@ -1,27 +1,16 @@
 import { execSync } from "child_process";
-import path from "path";
-import fs from "fs";
+import { downloadTemplate } from "giget";
 
-// プロジェクト名を取得
-const projectName = process.argv[2] || "accella-project";
-const projectPath = path.join(process.cwd(), projectName);
+(async () => {
+  const project = process.argv[2] || "hello-accella";
 
-// プロジェクトディレクトリを作成
-if (!fs.existsSync(projectPath)) {
-  fs.mkdirSync(projectPath);
-}
+  await downloadTemplate("github:koyopro/accella/examples/template#feature/accella", {
+    dir: project,
+  });
 
-// テンプレートプロジェクトをクローン
-const templateRepo = "git@github.com:koyopro/astro-cookie-session.git";
-execSync(`git clone ${templateRepo} ${projectPath}`, { stdio: "inherit" });
+  // パッケージのインストール
+  process.chdir(project);
+  execSync("npm install", { stdio: "inherit" });
 
-// プロジェクトディレクトリに移動
-process.chdir(projectPath);
-
-// Gitディレクトリを削除
-fs.rmSync(path.join(projectPath, ".git"), { recursive: true, force: true });
-
-// パッケージのインストール
-// execSync("npm install", { stdio: "inherit" });
-
-console.log(`Project ${projectName} has been created successfully.`);
+  console.log(`Project ${project} has been created successfully.`);
+})();
