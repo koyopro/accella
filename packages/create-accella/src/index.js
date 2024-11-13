@@ -4,7 +4,7 @@ import { downloadTemplate } from "giget";
 (async () => {
   const project = process.argv[2] || "hello-accella";
 
-  await downloadTemplate("github:koyopro/accella/examples/basics#feature/accella", {
+  await downloadTemplate("github:koyopro/accella/examples/basics", {
     dir: project,
   });
 
