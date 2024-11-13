@@ -8,7 +8,6 @@ import { downloadTemplate } from "giget";
     dir: project,
   });
 
-  // パッケージのインストール
   process.chdir(project);
   execSync("npm install", { stdio: "inherit" });
 
