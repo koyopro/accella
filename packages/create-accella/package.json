@@ -1,0 +1,26 @@
+{
+  "name": "create-accella",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "create-accella": "./src/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koyopro/accella.git"
+  },
+  "author": "koyopro <koyopro2.0@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/koyopro/accella/issues"
+  },
+  "homepage": "https://github.com/koyopro/accella#readme",
+  "dependencies": {
+    "giget": "^1.2.3"
+  }
+}

@@ -39,7 +39,8 @@
     "packages/prisma-generator-accel-record",
     "packages/accel-web",
     "examples/web_astro",
-    "packages/accella"
+    "packages/accella",
+    "packages/create-accella"
   ],
   "devDependencies": {
     "@eslint/js": "^9.9.0",
