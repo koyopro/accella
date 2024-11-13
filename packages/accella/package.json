@@ -1,0 +1,27 @@
+{
+  "name": "accella",
+  "version": "0.0.1",
+  "description": "A web framework built with Astro and Accel Record",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {},
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koyopro/accella.git"
+  },
+  "keywords": [
+    "accella",
+    "accel-record",
+    "astro"
+  ],
+  "files": [
+    "dist"
+  ],
+  "author": "koyopro <koyopro2.0@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/koyopro/accella/issues"
+  },
+  "homepage": "https://github.com/koyopro/accella#readme"
+}
