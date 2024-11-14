@@ -1,13 +1,13 @@
 import { initAccelRecord } from "accel-record";
-import { Accel } from "./application";
+import { Accel } from "accella";
 
 export const setupDatabase = async () => {
-  const sqlitePath = Accel.root.join(
+  const sqlitePath = Accel.root.child(
     "./db/schema/",
     import.meta.env.DATABASE_URL.replace("file:", "")
   );
   await initAccelRecord({
     type: "sqlite",
-    datasourceUrl: sqlitePath.path,
+    datasourceUrl: sqlitePath.toString(),
   });
 };
