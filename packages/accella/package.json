@@ -4,8 +4,9 @@
   "description": "A web framework built with Astro and Accel Record",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "devDependencies": {},
-  "scripts": {},
+  "scripts": {
+    "build": "tsc"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/koyopro/accella.git"
@@ -23,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/koyopro/accella/issues"
   },
-  "homepage": "https://github.com/koyopro/accella#readme"
+  "homepage": "https://github.com/koyopro/accella#readme",
+  "dependencies": {
+    "@mojojs/path": "^1.7.0"
+  }
 }
