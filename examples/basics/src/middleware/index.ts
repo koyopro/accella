@@ -1,12 +1,9 @@
-import { defineMiddleware, sequence } from "astro:middleware";
+import { defineMiddleware } from "astro:middleware";
 import { setupDatabase } from "../config/database";
-import { getSession } from "../config/session";
 
 await setupDatabase();
 
-const accelWeb = defineMiddleware(async ({ locals, cookies }, next) => {
-  locals.session = getSession(cookies);
+export const onRequest = defineMiddleware(async (_, next) => {
+  // You can add your own middleware logic here
   return next();
 });
-
-export const onRequest = sequence(accelWeb);

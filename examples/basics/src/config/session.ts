@@ -1,8 +1,8 @@
-import { createCookieSessionStorage } from "accel-web";
+import { type Session as BaseSession } from "accella/session";
 
 // You can define the type of the session object here
-export type Session = {
+export type SessionData = {
   [key: string]: any;
 };
 
-export const { getSession } = createCookieSessionStorage<Session>();
+export type Session = BaseSession & Partial<SessionData>;
