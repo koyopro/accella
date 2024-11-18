@@ -2,14 +2,12 @@
   "name": "create-accella",
   "version": "0.0.1",
   "type": "module",
-  "description": "",
-  "main": "index.js",
+  "description": "Scaffolding for Accella projects",
+  "main": "src/index.js",
   "bin": {
-    "create-accella": "./src/index.js"
+    "create-accella": "src/index.js"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/koyopro/accella.git"
@@ -19,7 +17,14 @@
   "bugs": {
     "url": "https://github.com/koyopro/accella/issues"
   },
-  "homepage": "https://github.com/koyopro/accella#readme",
+  "homepage": "https://github.com/koyopro/accella/tree/main/packages/create-accella",
+  "keywords": [
+    "accella"
+  ],
+  "files": [
+    "README.md",
+    "src"
+  ],
   "dependencies": {
     "giget": "^1.2.3"
   }
