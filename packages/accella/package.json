@@ -2,10 +2,30 @@
   "name": "accella",
   "version": "0.0.1",
   "description": "A web framework built with Astro and Accel Record",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "devDependencies": {},
-  "scripts": {},
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./session": {
+      "types": "./dist/session.d.ts",
+      "default": "./dist/session.js"
+    },
+    "./middleware": {
+      "types": "./dist/middleware.d.ts",
+      "default": "./dist/middleware.js"
+    },
+    "./integration": {
+      "types": "./dist/integration.d.ts",
+      "default": "./dist/integration.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/koyopro/accella.git"
@@ -23,5 +43,9 @@
   "bugs": {
     "url": "https://github.com/koyopro/accella/issues"
   },
-  "homepage": "https://github.com/koyopro/accella#readme"
+  "homepage": "https://github.com/koyopro/accella#readme",
+  "dependencies": {
+    "@mojojs/path": "^1.7.0",
+    "accel-web": "^0.4.0"
+  }
 }
