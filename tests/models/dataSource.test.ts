@@ -52,16 +52,21 @@ test("getDatabaseConfig()", () => {
       expect(config).toMatchObject({
         type: "mysql",
         datasourceUrl: "mysql://root:@localhost:3306/accel_test1",
+        prismaDir: new RegExp("/.+/tests/prisma_mysql"),
       });
       break;
     case "sqlite":
-      expect(config.type).toBe("sqlite");
-      expect(config.datasourceUrl ?? "").toMatch(new RegExp("/.+/tests/prisma/test.db"));
+      expect(config).toMatchObject({
+        type: "sqlite",
+        datasourceUrl: new RegExp("/.+/tests/prisma/test.db"),
+        prismaDir: new RegExp("/.+/tests/prisma"),
+      });
       break;
     case "postgresql":
       expect(config).toMatchObject({
         type: "postgresql",
         datasourceUrl: "postgresql://test:password@localhost:5432/accel_test1",
+        prismaDir: new RegExp("/.+/tests/prisma_pg"),
       });
       break;
   }
