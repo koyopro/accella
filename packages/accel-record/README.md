@@ -173,12 +173,9 @@ model User {
 ```ts
 // src/index.ts
 import { initAccelRecord } from "accel-record";
-import { User } from "./models/index.js";
+import { getDatabaseConfig, User } from "./models/index.js";
 
-initAccelRecord({
-  type: "mysql",
-  datasourceUrl: process.env.DATABASE_URL,
-}).then(() => {
+initAccelRecord(getDatabaseConfig()).then(() => {
   User.create({
     firstName: "John",
     lastName: "Doe",
@@ -846,19 +843,17 @@ import { DatabaseCleaner, Migration, initAccelRecord, stopWorker } from "accel-r
 import path from "path";
 import { fileURLToPath } from "url";
 
-import "../src/models/index.js";
+import { getDatabaseConfig } from "../src/models/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 beforeAll(async () => {
   await initAccelRecord({
-    type: "mysql",
+    ...getDatabaseConfig(), // type and prismaDir are automatically set based on the schema.prisma file.
+
     // Vitest usually performs tests in a multi-threaded manner.
     // To use different databases in each thread, separate the databases using VITEST_POOL_ID.
     datasourceUrl: `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`,
-    // Specify the directory of the Prisma schema file.
-    // This is necessary for performing database migration before running the tests.
-    prismaDir: path.resolve(__dirname, "../prisma"),
   });
   // If prismaDir is specified in initAccelRecord, you can execute pending migrations.
   await Migration.migrate();

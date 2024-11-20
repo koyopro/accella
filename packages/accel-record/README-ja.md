@@ -174,12 +174,9 @@ model User {
 ```ts
 // src/index.ts
 import { initAccelRecord } from "accel-record";
-import { User } from "../tests/models/index.js";
+import { getDatabaseConfig, User } from "./models/index.js";
 
-initAccelRecord({
-  type: "mysql",
-  datasourceUrl: process.env.DATABASE_URL,
-}).then(() => {
+initAccelRecord(getDatabaseConfig()).then(() => {
   User.create({
     firstName: "John",
     lastName: "Doe",
@@ -847,19 +844,17 @@ import { DatabaseCleaner, Migration, initAccelRecord, stopWorker } from "accel-r
 import path from "path";
 import { fileURLToPath } from "url";
 
-import "../src/models/index.js";
+import { getDatabaseConfig } from "../src/models/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 beforeAll(async () => {
   await initAccelRecord({
-    type: "mysql",
-    // Vitestは通常マルチスレッドでてテストが行われます。
+    ...getDatabaseConfig(), // schema.prismaファイルに基づいてtypeとprismaDirが自動的に設定されます。
+
+    // Vitestは通常マルチスレッドでテストが行われます。
     // 各スレッドで異なるデータベースを利用するためには、VITEST_POOL_IDを利用してデータベースを分離します。
     datasourceUrl: `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`,
-    // Prismaのスキーマファイルのディレクトリを指定します。
-    // これは、テスト実行前にデータベースのマイグレーションを行うために必要な設定です。
-    prismaDir: path.resolve(__dirname, "../prisma"),
   });
   // initAccelRecordでprismaDirを指定している場合、未反映のマイグレーションを実行することができます。
   await Migration.migrate();
