@@ -1,3 +1,5 @@
+import { DataSource } from "@prisma/generator-helper";
+import { join } from "path";
 import { Collection } from "./associations/collectionProxy.js";
 import { HasManyAssociation } from "./associations/hasManyAssociation.js";
 import { HasOneAssociation } from "./associations/hasOneAssociation.js";
@@ -55,6 +57,27 @@ export const Models: Record<string, typeof Model> = {};
 
 export const registerModel = (model: any) => {
   Models[model.name] = model;
+};
+
+export const generateDatabaseConfig = (
+  dataSource: DataSource,
+  basePath: string,
+  schemaDir: string
+) => {
+  let url: string | null = null;
+  const prismaDir = join(basePath, schemaDir).replace("file:", "");
+  if (dataSource.url.fromEnvVar) {
+    const envVar = dataSource.url.fromEnvVar;
+    url = (import.meta as any).env?.[envVar] ?? process.env?.[envVar] ?? null;
+    if (url?.startsWith("file:")) {
+      url = join(prismaDir, url.replace("file:", "")).replace("file:", "");
+    }
+  }
+  return {
+    type: dataSource.activeProvider as "mysql" | "sqlite" | "postgresql",
+    datasourceUrl: url ?? dataSource.url.value ?? "",
+    prismaDir,
+  };
 };
 
 /**

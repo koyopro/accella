@@ -5,6 +5,7 @@ import { ModelWrapper } from "./wrapper.js";
 
 export const generateTypes = async (options: GeneratorOptions) => {
   return `import {
+  generateDatabaseConfig,
   registerModel,
   type Collection,
   type Filter,

@@ -1,10 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
 }
 
 generator custom_generator {
   provider    = "node node_modules/prisma-generator-accel-record"
-  output      = "../models"
+  output      = "../../models"
   factoryPath = "../factories"
 }
 
