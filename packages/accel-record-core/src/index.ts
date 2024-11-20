@@ -66,7 +66,8 @@ export const generateDatabaseConfig = (
 ) => {
   let url: string | null = null;
   if (dataSource.url.fromEnvVar) {
-    url = process.env[dataSource.url.fromEnvVar] ?? null;
+    const envVar = dataSource.url.fromEnvVar;
+    url = (import.meta as any).env?.[envVar] ?? process.env?.[envVar] ?? null;
     if (url?.startsWith("file:")) {
       url = join(basePath, schemaDir, url.replace("file:", "")).replace("file:", "");
     }
