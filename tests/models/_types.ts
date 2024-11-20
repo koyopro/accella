@@ -761,3 +761,22 @@ type BookMeta = {
   };
 };
 registerModel(Book);
+
+
+export const dataSource = {
+  "name": "db",
+  "provider": "mysql",
+  "activeProvider": "mysql",
+  "url": {
+    "fromEnvVar": null,
+    "value": "mysql://root:@localhost:3306/accel_test1"
+  },
+  "schemas": []
+};
+
+export const getDatabaseConfig = () => {
+  return {
+    type: dataSource.activeProvider,
+    datasourceUrl: dataSource.url.value,
+  }
+}
