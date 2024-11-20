@@ -54,7 +54,6 @@ export const dbConfig = () => {
       prismaDir: path.resolve(__dirname, "./prisma"),
       knexConfig: {
         client: "better-sqlite3",
-        useNullAsDefault: true,
         connection: path.resolve(__dirname, `./prisma/test${process.env.VITEST_POOL_ID}.db`),
       },
     } as const;
