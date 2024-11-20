@@ -1,3 +1,5 @@
+import { DataSource } from "@prisma/generator-helper";
+import { join } from "path";
 import { Collection } from "./associations/collectionProxy.js";
 import { HasManyAssociation } from "./associations/hasManyAssociation.js";
 import { HasOneAssociation } from "./associations/hasOneAssociation.js";
@@ -55,6 +57,24 @@ export const Models: Record<string, typeof Model> = {};
 
 export const registerModel = (model: any) => {
   Models[model.name] = model;
+};
+
+export const generateDatabaseConfig = (
+  dataSource: DataSource,
+  basePath: string,
+  schemaDir: string
+) => {
+  let url: string | null = null;
+  if (dataSource.url.fromEnvVar) {
+    url = process.env[dataSource.url.fromEnvVar] ?? null;
+    if (url?.startsWith("file:")) {
+      url = join(basePath, schemaDir, url.replace("file:", "")).replace("file:", "");
+    }
+  }
+  return {
+    type: dataSource.activeProvider,
+    datasourceUrl: url ?? dataSource.url.value,
+  };
 };
 
 /**
