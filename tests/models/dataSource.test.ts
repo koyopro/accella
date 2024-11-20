@@ -29,7 +29,7 @@ test("dataSource", () => {
         schemas: [],
       });
       break;
-    case "pg":
+    case "postgresql":
       expect(schemaDir).toBe("../../prisma_pg");
       expect(dataSource).toMatchObject({
         name: "db",
@@ -58,7 +58,7 @@ test("getDatabaseConfig()", () => {
       expect(config.type).toBe("sqlite");
       expect(config.datasourceUrl ?? "").toMatch(new RegExp("/.+/tests/prisma/test.db"));
       break;
-    case "pg":
+    case "postgresql":
       expect(config).toMatchObject({
         type: "postgresql",
         datasourceUrl: "postgresql://test:password@localhost:5432/accel_test1",

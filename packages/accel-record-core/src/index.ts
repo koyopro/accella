@@ -72,8 +72,8 @@ export const generateDatabaseConfig = (
     }
   }
   return {
-    type: dataSource.activeProvider,
-    datasourceUrl: url ?? dataSource.url.value,
+    type: dataSource.activeProvider as "mysql" | "sqlite" | "postgresql",
+    datasourceUrl: url ?? dataSource.url.value ?? "",
   };
 };
 

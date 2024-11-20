@@ -26,7 +26,7 @@ export const dbConfig = () => {
     } as const;
   } else if (process.env.DB_ENGINE == "pg") {
     return {
-      type: "pg",
+      type: "postgresql",
       // logLevel: "DEBUG",
       prismaDir: path.resolve(__dirname, "./prisma_pg"),
       datasourceUrl: `postgresql://test:password@localhost:5432/accel_test${process.env.VITEST_POOL_ID}`,

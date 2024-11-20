@@ -50,7 +50,7 @@ export const LogLevel = ["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"] as 
 export type LogLevel = (typeof LogLevel)[number];
 
 export interface Config {
-  type: "mysql" | "sqlite" | "pg";
+  type: "mysql" | "sqlite" | "pg" | "postgresql";
   logLevel?: LogLevel;
   logger?: Logger;
   /**
@@ -104,8 +104,9 @@ let _config: Config = { type: "sqlite" };
 let _rpcClient: any;
 let _queryCount: number = 0;
 export const initAccelRecord = async (config: Config) => {
-  _config = config;
+  _config = Object.assign({}, config);
   _config.logLevel ??= "WARN";
+  if (_config.type == "postgresql") _config.type = "pg";
 
   _rpcClient = SyncRpc(path.resolve(__dirname, "./worker.cjs"), {
     knexConfig: getKnexConfig(config),
