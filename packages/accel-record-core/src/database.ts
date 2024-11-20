@@ -26,12 +26,14 @@ const defaultLogger = {
 export type Logger = typeof defaultLogger;
 
 export const getKnexConfig = (config: Config) => {
-  if (config.knexConfig) return config.knexConfig;
-  if (config.datasourceUrl) {
-    const client =
-      config.type == "mysql" ? "mysql2" : config.type == "pg" ? "pg" : "better-sqlite3";
-    return { client, connection: config.datasourceUrl };
-  }
+  const detectClient = (type: Config["type"]) =>
+    type == "mysql" ? "mysql2" : type == "sqlite" ? "better-sqlite3" : "pg";
+  const baseConfig = config.knexConfig ?? {
+    client: detectClient(config.type),
+    connection: config.datasourceUrl,
+  };
+  if (config.type == "sqlite") baseConfig.useNullAsDefault ??= true;
+  return baseConfig;
 };
 
 const setupKnex = (config: Config) => {
