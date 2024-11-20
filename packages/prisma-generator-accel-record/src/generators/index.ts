@@ -29,7 +29,7 @@ const generateSchema = (options: GeneratorOptions) => {
   }
   return `
 export const schemaDir = "${schemaDir}";
-export const dataSource: DataSource = ${JSON.stringify(db, null, 2)};
+export const dataSource = ${JSON.stringify(db, null, 2)} as DataSource;
 export const getDatabaseConfig = () => generateDatabaseConfig(dataSource, import.meta.url, schemaDir);
 `;
 };

@@ -767,7 +767,7 @@ registerModel(Book);
 
 
 export const schemaDir = "../../prisma_mysql";
-export const dataSource: DataSource = {
+export const dataSource = {
   "name": "db",
   "provider": "mysql",
   "activeProvider": "mysql",
@@ -775,6 +775,7 @@ export const dataSource: DataSource = {
     "fromEnvVar": null,
     "value": "mysql://root:@localhost:3306/accel_test1"
   },
-  "schemas": []
-};
+  "schemas": [],
+  "sourceFilePath": "/Users/koyopro/Documents/repos/accella/tests/prisma_mysql/schema.prisma"
+} as DataSource;
 export const getDatabaseConfig = () => generateDatabaseConfig(dataSource, import.meta.url, schemaDir);
