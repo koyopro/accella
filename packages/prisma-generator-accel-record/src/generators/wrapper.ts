@@ -31,7 +31,7 @@ export class FieldWrapper {
 
   get hasScalarDefault() {
     if (typeof this.field.default === "object" && "name" in this.field.default) {
-      return ["uuid", "cuid"].includes(this.field.default.name);
+      return /^(uuid|cuid)/.test(this.field.default.name);
     }
     return this.field.default != undefined && typeof this.field.default !== "object";
   }
