@@ -24,6 +24,9 @@ const generateSchema = (options: GeneratorOptions) => {
   const relativePath = path.relative(join(outputPath, "index.ts"), options.schemaPath);
   const schemaDir = dirname(relativePath);
   const db = options.datasources.find((v) => v.name == "db");
+  if (!["mysql", "postgresql", "sqlite"].includes(db?.provider ?? "")) {
+    throw new Error(`db provider must be one of mysql, postgresql, sqlite: ${db?.provider}`);
+  }
   return `
 export const schemaDir = "${schemaDir}";
 export const dataSource: DataSource = ${JSON.stringify(db, null, 2)};
