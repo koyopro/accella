@@ -1,6 +1,6 @@
 {
   "name": "accel-record-factory",
-  "version": "1.15.1",
+  "version": "1.16.0",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
@@ -29,6 +29,6 @@
   "author": "koyopro",
   "license": "Apache-2.0",
   "dependencies": {
-    "accel-record-core": "^1.15.1"
+    "accel-record-core": "^1.16.0"
   }
 }

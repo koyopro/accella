@@ -1,5 +1,16 @@
 # Accel Record
 
+## 1.16.0
+
+### Minor Changes
+
+- Added getDatabaseConfig() to simplify initialization ([#71](https://github.com/koyopro/accella/pull/71))
+
+### Patch Changes
+
+- Set useNullAsDefault to true as default ([#70](https://github.com/koyopro/accella/pull/70))
+- Fix the issue where the default value is not set for the uuid column ([#69](https://github.com/koyopro/accella/pull/69))
+
 ## 1.15.1 (2024-11-07)
 
 ### Patch Changes
