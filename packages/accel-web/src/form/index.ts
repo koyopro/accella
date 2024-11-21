@@ -49,7 +49,7 @@ export const formFor = (resource: any, options?: FormForOptions) => {
   const namespace = options?.namespace || "";
   const prefix = namespace
     ? `${namespace}.`
-    : resource instanceof Model
+    : resource.class?.()?.name
       ? `${toCamelCase(resource.class().name)}.`
       : "";
   return {
