@@ -775,7 +775,6 @@ export const dataSource = {
     "fromEnvVar": null,
     "value": "mysql://root:@localhost:3306/accel_test1"
   },
-  "schemas": [],
-  "sourceFilePath": "/Users/koyopro/Documents/repos/accella/tests/prisma_mysql/schema.prisma"
+  "schemas": []
 } as DataSource;
 export const getDatabaseConfig = () => generateDatabaseConfig(dataSource, import.meta.url, schemaDir);

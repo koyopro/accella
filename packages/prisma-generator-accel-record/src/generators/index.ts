@@ -27,9 +27,11 @@ const generateSchema = (options: GeneratorOptions) => {
   if (!["mysql", "postgresql", "sqlite"].includes(db?.provider ?? "")) {
     throw new Error(`db provider must be one of mysql, postgresql, sqlite: ${db?.provider}`);
   }
+  // remove sourceFilePath
+  const { sourceFilePath: _, ...dataSource } = db as any;
   return `
 export const schemaDir = "${schemaDir}";
-export const dataSource = ${JSON.stringify(db, null, 2)} as DataSource;
+export const dataSource = ${JSON.stringify(dataSource, null, 2)} as DataSource;
 export const getDatabaseConfig = () => generateDatabaseConfig(dataSource, import.meta.url, schemaDir);
 `;
 };
