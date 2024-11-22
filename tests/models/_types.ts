@@ -421,6 +421,7 @@ declare module "./profile" {
     role: Role;
     roleText: string;
     uuid: string;
+    uuid7: string;
     cuid: string;
   }
 }
@@ -452,6 +453,7 @@ type ProfileMeta = {
     enabled: boolean;
     role: Role;
     uuid: string;
+    uuid7: string;
     cuid: string;
   };
   CreateInput: {
@@ -461,6 +463,7 @@ type ProfileMeta = {
     enabled?: boolean;
     role?: Role;
     uuid?: string;
+    uuid7?: string;
     cuid?: string;
   } & ({ user: User } | { userId: number });
   WhereInput: {
@@ -472,6 +475,7 @@ type ProfileMeta = {
     enabled?: boolean | boolean[] | undefined | null;
     role?: Role | Role[] | undefined | null;
     uuid?: string | string[] | StringFilter | null;
+    uuid7?: string | string[] | StringFilter | null;
     cuid?: string | string[] | StringFilter | null;
   };
 };
