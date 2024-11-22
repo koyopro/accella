@@ -777,4 +777,8 @@ export const dataSource = {
   },
   "schemas": []
 } as DataSource;
+
+/**
+ * Retrieves the database connection settings based on the Prisma schema file.
+ */
 export const getDatabaseConfig = () => generateDatabaseConfig(dataSource, import.meta.url, schemaDir);
