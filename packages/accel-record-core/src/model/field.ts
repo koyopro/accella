@@ -1,5 +1,6 @@
 import { createId as cuid } from "@paralleldrive/cuid2";
 import { DMMF } from "prisma/prisma-client/runtime/library.js";
+import { v7 as uuid7, v4 as uuidv4 } from "uuid";
 import { BooleanType, DateType, FloatType, IntegerType, StringType } from "./attributes.js";
 
 /**
@@ -96,6 +97,14 @@ export class Field {
   }
 
   /**
+   * Checks if the default is "uuid7" function.
+   * @returns True if the default value is "uuid7", false otherwise.
+   */
+  get defaultIsUuid7() {
+    return this.default != undefined && this.default.name === "uuid(7)";
+  }
+
+  /**
    * Checks if the default is "cuid" function.
    * @returns True if the default value is "cuid", false otherwise.
    */
@@ -119,7 +128,8 @@ export class Field {
    * @returns The initial value for the field.
    */
   getInitialValue() {
-    if (this.defaultIsUuid) return crypto.randomUUID();
+    if (this.defaultIsUuid7) return uuid7();
+    if (this.defaultIsUuid) return uuidv4();
     if (this.defaultIsCuid) return cuid();
     return this.scalarDefault;
   }
