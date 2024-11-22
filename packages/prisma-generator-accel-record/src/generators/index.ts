@@ -32,6 +32,10 @@ const generateSchema = (options: GeneratorOptions) => {
   return `
 export const schemaDir = "${schemaDir}";
 export const dataSource = ${JSON.stringify(dataSource, null, 2)} as DataSource;
+
+/**
+ * Retrieves the database connection settings based on the Prisma schema file.
+ */
 export const getDatabaseConfig = () => generateDatabaseConfig(dataSource, import.meta.url, schemaDir);
 `;
 };
