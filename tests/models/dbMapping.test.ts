@@ -1,6 +1,9 @@
 import { $user } from "../factories/user";
 import { Profile } from "./index";
 
+const uuidV4Pattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+const uuidV7Pattern = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+
 describe("database mapping", () => {
   test("mapping table name, default values", () => {
     const user = $user.create();
@@ -30,5 +33,11 @@ describe("database mapping", () => {
       expect(p.uuid).not.toBeUndefined();
       expect(p.cuid).not.toBeUndefined();
     }
+  });
+
+  test("uuid version", () => {
+    const p = Profile.build({});
+    expect(p.uuid).toMatch(uuidV4Pattern);
+    expect(p.uuid7).toMatch(uuidV7Pattern);
   });
 });
