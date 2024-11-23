@@ -46,12 +46,7 @@ export type FormForOptions = {
  * - `Submit`: A submit button component.
  */
 export const formFor = (resource: any, options?: FormForOptions) => {
-  const namespace = options?.namespace || "";
-  const prefix = namespace
-    ? `${namespace}.`
-    : resource instanceof Model
-      ? `${toCamelCase(resource.class().name)}.`
-      : "";
+  const prefix = getPrefix(resource, options);
   return {
     Form: form as (props: astroHTML.JSX.FormHTMLAttributes) => any,
 
@@ -79,6 +74,13 @@ export const formFor = (resource: any, options?: FormForOptions) => {
 
     Submit: extendCommponent<"button", {}>(button, () => ({ type: "submit" })),
   };
+};
+
+const getPrefix = (resource: any, options?: FormForOptions) => {
+  if (options?.namespace) return options.namespace;
+  const name = resource.class?.()?.name;
+  if (name) return `${toCamelCase(name)}.`;
+  return "";
 };
 
 export const extendCommponent = <L extends keyof astroHTML.JSX.DefinedIntrinsicElements, P>(
