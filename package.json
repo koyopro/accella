@@ -5,6 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "release": "npm run build && changeset publish",
     "format": "prettier -w '{src,tests,packages}/**/*.ts'",
     "lint": "eslint && prettier --check '{src,tests,packages}/**/*.ts'",
     "dev": "npm run dev --workspaces --if-present",
