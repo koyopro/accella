@@ -3,6 +3,7 @@
 import { parentPort, workerData } from "worker_threads";
 
 const sharedArray = new Int32Array(workerData.sharedBuffer);
+const responseArray = new Uint8Array(workerData.responseBuffer);
 
 // 内部スレッドの処理
 
@@ -17,7 +18,11 @@ parentPort.on("message", (buffer) => {
   //   parentPort.postMessage('Hello from innerWorker');
   // }, 1000);
   setTimeout(() => {
-    const value = 3;
+    const response = { message: "Hello from innerWorker" };
+    const responseJson = JSON.stringify(response);
+    new TextEncoder().encodeInto(responseJson, responseArray);
+
+    const value = responseJson.length;
     Atomics.store(sharedArray, 0, value);
     Atomics.notify(sharedArray, 0, 1);
     parentPort.postMessage(`InnerWorker: send data size: ${value}`);
@@ -25,5 +30,5 @@ parentPort.on("message", (buffer) => {
     parentPort.postMessage(`InnerWorker: value from parent is ${sharedArray[0]}`);
     Atomics.store(sharedArray, 0, value);
     Atomics.notify(sharedArray, 0, 1);
-  }, 1000);
+  }, 1);
 });

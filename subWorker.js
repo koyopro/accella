@@ -6,8 +6,11 @@ import { Worker, parentPort } from "worker_threads";
 const sharedBuffer = new SharedArrayBuffer(4);
 const sharedArray = new Int32Array(sharedBuffer);
 
+const responseBuffer = new SharedArrayBuffer(1024);
+const responseArray = new Uint8Array(responseBuffer);
+
 const subWorker = new Worker("./innerWorker.js", {
-  workerData: { sharedBuffer },
+  workerData: { sharedBuffer, responseBuffer },
 });
 
 subWorker.on("message", (message) => {
@@ -16,11 +19,11 @@ subWorker.on("message", (message) => {
 });
 
 subWorker.on("error", (error) => {
-  // parentPort.postMessage(`Error from innerWorker: ${error}`);
+  parentPort.postMessage(`Error from innerWorker: ${error}`);
 });
 
 subWorker.on("exit", (code) => {
-  // parentPort.postMessage(`innerWorker exited with code: ${code}`);
+  parentPort.postMessage(`innerWorker exited with code: ${code}`);
   Atomics.store(sharedArray, 0, 1);
   Atomics.notify(sharedArray, 0, 1);
 });
@@ -43,6 +46,10 @@ fs.readFile("./CONTRIBUTING.md", (err, data) => {
   Atomics.wait(sharedArray, 0, 0);
   const value = sharedArray[0];
   parentPort.postMessage(`SubWorker: data size from inner worker is ${value}`);
+  const responseJson = new TextDecoder().decode(responseArray.slice(0, value));
+  parentPort.postMessage(`SubWorker: response from inner worker: ${responseJson}.`);
+  const response = JSON.parse(responseJson);
+  parentPort.postMessage(`SubWorker: response from inner worker: ${response.message}`);
   const nextValue = 5;
   Atomics.store(sharedArray, 0, nextValue);
   Atomics.notify(sharedArray, 0, 1);
