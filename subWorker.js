@@ -1,16 +1,15 @@
 // subWorker.js
-// const { Worker, parentPort } = require('worker_threads');
 import fs from "fs";
-import { Worker, parentPort } from "worker_threads";
+import { Worker, parentPort, MessageChannel, receiveMessageOnPort } from "worker_threads";
 
 const sharedBuffer = new SharedArrayBuffer(4);
 const sharedArray = new Int32Array(sharedBuffer);
 
-const responseBuffer = new SharedArrayBuffer(1024);
-const responseArray = new Uint8Array(responseBuffer);
+const { port1: mainPort, port2: workerPort } = new MessageChannel();
 
 const subWorker = new Worker("./innerWorker.js", {
-  workerData: { sharedBuffer, responseBuffer },
+  workerData: { sharedBuffer, workerPort },
+  transferList: [workerPort],
 });
 
 subWorker.on("message", (message) => {
@@ -44,12 +43,9 @@ fs.readFile("./CONTRIBUTING.md", (err, data) => {
   parentPort.postMessage("SubWorker: Waiting for InnerWorker to finish processing...");
   // サブスレッドで内部スレッドの処理を同期的に待つ
   Atomics.wait(sharedArray, 0, 0);
-  const value = sharedArray[0];
-  parentPort.postMessage(`SubWorker: data size from inner worker is ${value}`);
-  const responseJson = new TextDecoder().decode(responseArray.slice(0, value));
-  parentPort.postMessage(`SubWorker: response from inner worker: ${responseJson}.`);
-  const response = JSON.parse(responseJson);
-  parentPort.postMessage(`SubWorker: response from inner worker: ${response.message}`);
+  const ret = receiveMessageOnPort(mainPort);
+  parentPort.postMessage(`SubWorker: ret from inner worker is ${JSON.stringify(ret)}`);
+
   const nextValue = 5;
   Atomics.store(sharedArray, 0, nextValue);
   Atomics.notify(sharedArray, 0, 1);
