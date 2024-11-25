@@ -16,11 +16,11 @@ subWorker.on("message", (message) => {
 });
 
 subWorker.on("error", (error) => {
-  parentPort.postMessage(`Error from innerWorker: ${error}`);
+  // parentPort.postMessage(`Error from innerWorker: ${error}`);
 });
 
 subWorker.on("exit", (code) => {
-  parentPort.postMessage(`innerWorker exited with code: ${code}`);
+  // parentPort.postMessage(`innerWorker exited with code: ${code}`);
   Atomics.store(sharedArray, 0, 1);
   Atomics.notify(sharedArray, 0, 1);
 });
@@ -33,15 +33,21 @@ fs.readFile("./CONTRIBUTING.md", (err, data) => {
     return;
   }
   const buffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
-  console.log(buffer);
+  // console.log(buffer);
   subWorker.postMessage(buffer, [buffer]);
-  console.log("File sent to innerWorker.");
-  console.log(buffer);
+  parentPort.postMessage("File sent to innerWorker.");
+  // parentPort.postMessage(buffer);
 
-  console.log("SubWorker: Waiting for InnerWorker to finish processing...");
+  parentPort.postMessage("SubWorker: Waiting for InnerWorker to finish processing...");
   // サブスレッドで内部スレッドの処理を同期的に待つ
   Atomics.wait(sharedArray, 0, 0);
-  console.log("SubWorker: InnerWorker has finished processing.");
+  const value = sharedArray[0];
+  parentPort.postMessage(`SubWorker: data size from inner worker is ${value}`);
+  const nextValue = 5;
+  Atomics.store(sharedArray, 0, nextValue);
+  Atomics.notify(sharedArray, 0, 1);
+  Atomics.wait(sharedArray, 0, nextValue);
+  parentPort.postMessage("SubWorker: InnerWorker has finished processing.");
 
   subWorker.terminate();
 });

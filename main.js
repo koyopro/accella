@@ -5,7 +5,7 @@ import { Worker } from "worker_threads";
 const worker = new Worker("./subWorker.js");
 
 worker.on("message", (message) => {
-  console.log("Message from subWorker:", message);
+  console.log(message);
 });
 
 worker.on("error", (error) => {
