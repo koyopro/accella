@@ -8,7 +8,4 @@ console.log(client.magic(0));
 console.log(client.magic(1));
 console.log(client.magic(2));
 
-setTimeout(() => {
-  actions.stop();
-}, 100);
-// actions.stop();
+actions.stop();

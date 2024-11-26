@@ -14,7 +14,6 @@ type AwaitedFunc<F extends Actions, K extends keyof F> = (
 ) => Awaited<ReturnType<F[K]>>;
 
 export const defineThreadSyncActions = <F extends Actions>(filename: string, actions: F) => {
-  console.log(filename);
   useAction(actions);
   let worker: Worker | null = null;
   return {
@@ -34,39 +33,33 @@ export const defineThreadSyncActions = <F extends Actions>(filename: string, act
         workerData: { sharedBuffer, workerPort },
         transferList: [workerPort],
       });
-      return buildClient(actions, worker, sharedBuffer, mainPort);
+      return buildClient(worker, sharedBuffer, mainPort) as any;
     },
   };
 };
 
-const buildClient = (
-  actions: Actions,
-  worker: Worker,
-  sharedBuffer: SharedArrayBuffer,
-  mainPort: MessagePort
-) => {
+const buildClient = (worker: Worker, sharedBuffer: SharedArrayBuffer, mainPort: MessagePort) => {
   const sharedArray = new Int32Array(sharedBuffer);
-  const ret: any = {};
-  for (const key of Object.keys(actions)) {
-    ret[key] = (...args: any) => {
-      worker?.postMessage({ method: key, args });
-      Atomics.wait(sharedArray, 0, 0);
-      const ret = receiveMessageOnPort(mainPort);
-      Atomics.store(sharedArray, 0, 0);
-      console.log("ret", ret);
-      return ret?.message;
-    };
-  }
-  return ret;
+  return new Proxy(
+    {},
+    {
+      get: (_, key: string) => {
+        return (...args: any) => {
+          worker.postMessage({ method: key, args });
+          Atomics.wait(sharedArray, 0, 0);
+          const ret = receiveMessageOnPort(mainPort);
+          Atomics.store(sharedArray, 0, 0);
+          return ret?.message;
+        };
+      },
+    }
+  );
 };
 
 const useAction = (actions: Actions) => {
-  // スレッドの処理
   parentPort?.on("message", async (mgs) => {
     const sharedArray = new Int32Array(workerData.sharedBuffer);
-    console.log("InnerWorker: Received message from parent.", mgs);
     const ret = await actions[mgs.method]?.(...(mgs.args ?? []));
-    console.log("InnerWorker: Send message to parent.", ret);
     workerData.workerPort.postMessage(ret);
     Atomics.store(sharedArray, 0, 1);
     Atomics.notify(sharedArray, 0, 1);
