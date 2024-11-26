@@ -1,4 +1,4 @@
-import actions from "./worker.js";
+import actions from "./worker";
 
 const client = actions.launch();
 
