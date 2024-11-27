@@ -1,7 +1,8 @@
 import actions from "./worker";
+import fail from "./workerWithError";
 
-test("sync actinos", () => {
-  const client = actions.launch();
+test("sync actinos", async () => {
+  const { client } = await actions.launch();
 
   expect(client.ping()).toBe("pong!?");
   expect(client.incr(3)).toBe(4);
@@ -16,4 +17,8 @@ test("sync actinos", () => {
   }
 
   actions.stop();
+});
+
+test.only("sync actinos with error", async () => {
+  expect(fail.launch()).rejects.toThrowError("Sample error on launching worker.");
 });

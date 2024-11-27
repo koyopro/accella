@@ -13,8 +13,11 @@ type AwaitedFunc<F extends Actions, K extends keyof F> = (
   ...args: Parameters<F[K]>
 ) => Awaited<ReturnType<F[K]>>;
 
+const isSubThread = typeof workerData.sharedBuffer !== "undefined";
+
 export const defineThreadSyncActions = <F extends Actions>(filename: string, actions: F) => {
   useAction(actions);
+  // Parent thread
   let worker: Worker | null = null;
   return {
     stop: () => {
@@ -22,7 +25,7 @@ export const defineThreadSyncActions = <F extends Actions>(filename: string, act
       worker = null;
     },
 
-    launch: (): { [K in keyof F]: AwaitedFunc<F, K> } => {
+    launch: async (): Promise<{ client: { [K in keyof F]: AwaitedFunc<F, K> } }> => {
       const sharedBuffer = new SharedArrayBuffer(4);
       const { port1: mainPort, port2: workerPort } = new MessageChannel();
 
@@ -33,9 +36,26 @@ export const defineThreadSyncActions = <F extends Actions>(filename: string, act
         workerData: { sharedBuffer, workerPort },
         transferList: [workerPort],
       });
-      return buildClient(worker, sharedBuffer, mainPort) as any;
+      return confirmWorkerReady(worker, sharedBuffer, mainPort) as any;
     },
   };
+};
+
+const confirmWorkerReady = (
+  worker: Worker,
+  sharedBuffer: SharedArrayBuffer,
+  mainPort: MessagePort
+) => {
+  return new Promise((resolve, reject) => {
+    worker.once("message", () => {
+      const client = buildClient(worker, sharedBuffer, mainPort);
+      resolve({ client });
+    });
+
+    worker.once("error", (error) => {
+      reject(error);
+    });
+  });
 };
 
 const buildClient = (worker: Worker, sharedBuffer: SharedArrayBuffer, mainPort: MessagePort) => {
@@ -60,6 +80,8 @@ const buildClient = (worker: Worker, sharedBuffer: SharedArrayBuffer, mainPort: 
 };
 
 const useAction = (actions: Actions) => {
+  if (!isSubThread) return;
+
   parentPort?.on("message", async (mgs) => {
     const sharedArray = new Int32Array(workerData.sharedBuffer);
     try {
@@ -71,6 +93,7 @@ const useAction = (actions: Actions) => {
     Atomics.store(sharedArray, 0, 1);
     Atomics.notify(sharedArray, 0, 1);
   });
+  parentPort?.postMessage("ready");
 };
 
 function buildFile(filePath: string, outfile: string) {
