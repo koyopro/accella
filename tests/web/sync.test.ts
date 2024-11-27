@@ -1,4 +1,4 @@
-import actions from "../../worker";
+import actions from "./worker";
 
 test("sync actinos", () => {
   const client = actions.launch();
