@@ -8,6 +8,7 @@ test("sync actinos", () => {
   expect(client.magic(0)).toBe(1);
   expect(client.magic(1)).toBe(3);
   expect(client.magic(2)).toBe(5);
+  expect(client.errorSample).toThrowError("errorSample");
 
   actions.stop();
 });

@@ -47,9 +47,12 @@ const buildClient = (worker: Worker, sharedBuffer: SharedArrayBuffer, mainPort: 
         return (...args: any) => {
           worker.postMessage({ method: key, args });
           Atomics.wait(sharedArray, 0, 0);
-          const ret = receiveMessageOnPort(mainPort);
+          const { result, error } = receiveMessageOnPort(mainPort)?.message || {};
           Atomics.store(sharedArray, 0, 0);
-          return ret?.message;
+          if (error) {
+            throw error;
+          }
+          return result;
         };
       },
     }
@@ -59,8 +62,12 @@ const buildClient = (worker: Worker, sharedBuffer: SharedArrayBuffer, mainPort: 
 const useAction = (actions: Actions) => {
   parentPort?.on("message", async (mgs) => {
     const sharedArray = new Int32Array(workerData.sharedBuffer);
-    const ret = await actions[mgs.method]?.(...(mgs.args ?? []));
-    workerData.workerPort.postMessage(ret);
+    try {
+      const ret = await actions[mgs.method]?.(...(mgs.args ?? []));
+      workerData.workerPort.postMessage({ result: ret });
+    } catch (e) {
+      workerData.workerPort.postMessage({ error: e });
+    }
     Atomics.store(sharedArray, 0, 1);
     Atomics.notify(sharedArray, 0, 1);
   });
