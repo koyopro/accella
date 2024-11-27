@@ -12,6 +12,7 @@ export type Actions = Record<string, (...args: any[]) => any>;
 type AwaitedFunc<F extends Actions, K extends keyof F> = (
   ...args: Parameters<F[K]>
 ) => Awaited<ReturnType<F[K]>>;
+export type Client<F extends Actions> = { [K in keyof F]: AwaitedFunc<F, K> };
 
 const isSubThread = typeof workerData.sharedBuffer !== "undefined";
 
@@ -25,7 +26,7 @@ export const defineThreadSyncActions = <F extends Actions>(filename: string, act
       worker = null;
     },
 
-    launch: async (): Promise<{ client: { [K in keyof F]: AwaitedFunc<F, K> } }> => {
+    launch: (): { client: Client<F>; worker: Worker } => {
       const sharedBuffer = new SharedArrayBuffer(4);
       const { port1: mainPort, port2: workerPort } = new MessageChannel();
 
@@ -36,26 +37,10 @@ export const defineThreadSyncActions = <F extends Actions>(filename: string, act
         workerData: { sharedBuffer, workerPort },
         transferList: [workerPort],
       });
-      return confirmWorkerReady(worker, sharedBuffer, mainPort) as any;
+      const client = buildClient(worker, sharedBuffer, mainPort) as any;
+      return { client, worker };
     },
   };
-};
-
-const confirmWorkerReady = (
-  worker: Worker,
-  sharedBuffer: SharedArrayBuffer,
-  mainPort: MessagePort
-) => {
-  return new Promise((resolve, reject) => {
-    worker.once("message", () => {
-      const client = buildClient(worker, sharedBuffer, mainPort);
-      resolve({ client });
-    });
-
-    worker.once("error", (error) => {
-      reject(error);
-    });
-  });
 };
 
 const buildClient = (worker: Worker, sharedBuffer: SharedArrayBuffer, mainPort: MessagePort) => {
