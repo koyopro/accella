@@ -9,6 +9,11 @@ test("sync actinos", () => {
   expect(client.magic(1)).toBe(3);
   expect(client.magic(2)).toBe(5);
   expect(client.errorSample).toThrowError("errorSample");
+  try {
+    client.myErrorTest();
+  } catch (e) {
+    expect(e).toMatchObject({ name: "MyError", message: "myErrorTest", prop1: "foo" });
+  }
 
   actions.stop();
 });

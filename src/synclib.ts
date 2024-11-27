@@ -47,10 +47,10 @@ const buildClient = (worker: Worker, sharedBuffer: SharedArrayBuffer, mainPort: 
         return (...args: any) => {
           worker.postMessage({ method: key, args });
           Atomics.wait(sharedArray, 0, 0);
-          const { result, error } = receiveMessageOnPort(mainPort)?.message || {};
+          const { result, error, properties } = receiveMessageOnPort(mainPort)?.message || {};
           Atomics.store(sharedArray, 0, 0);
           if (error) {
-            throw error;
+            throw Object.assign(error as object, properties);
           }
           return result;
         };
@@ -66,7 +66,7 @@ const useAction = (actions: Actions) => {
       const ret = await actions[mgs.method]?.(...(mgs.args ?? []));
       workerData.workerPort.postMessage({ result: ret });
     } catch (e) {
-      workerData.workerPort.postMessage({ error: e });
+      workerData.workerPort.postMessage({ error: e, properties: extractProperties(e) });
     }
     Atomics.store(sharedArray, 0, 1);
     Atomics.notify(sharedArray, 0, 1);
@@ -85,4 +85,19 @@ function buildFile(filePath: string, outfile: string) {
     packages: "external",
     target: "node18",
   });
+}
+
+// MessagePort doesn't copy the properties of Error objects. We still want
+// error objects to have extra properties such as "warnings" so implement the
+// property copying manually.
+export function extractProperties<T extends object>(object: T): T;
+export function extractProperties<T>(object?: T): T | undefined;
+export function extractProperties<T>(object?: T) {
+  if (object && typeof object === "object") {
+    const properties = {} as T;
+    for (const key in object) {
+      properties[key as keyof T] = object[key];
+    }
+    return properties;
+  }
 }
