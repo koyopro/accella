@@ -2,7 +2,7 @@ import actions from "./worker";
 import fail from "./workerWithError";
 
 test("sync actinos", async () => {
-  const { client } = actions.launch();
+  const client = actions.launch();
 
   expect(client.ping()).toBe("pong!?");
   expect(client.incr(3)).toBe(4);
@@ -20,9 +20,9 @@ test("sync actinos", async () => {
 });
 
 test("sync actinos with error", async () => {
-  const { worker } = fail.launch();
+  fail.launch();
   await new Promise<void>((resolve) => {
-    worker.on("error", (error) => {
+    fail.getWorker()!.on("error", (error) => {
       expect(error).toMatchObject({ message: "Sample error on launching worker." });
       resolve();
     });

@@ -26,7 +26,7 @@ export const defineThreadSyncActions = <F extends Actions>(filename: string, act
       worker = null;
     },
 
-    launch: (): { client: Client<F>; worker: Worker } => {
+    launch: (): Client<F> => {
       const sharedBuffer = new SharedArrayBuffer(4);
       const { port1: mainPort, port2: workerPort } = new MessageChannel();
 
@@ -37,8 +37,11 @@ export const defineThreadSyncActions = <F extends Actions>(filename: string, act
         workerData: { sharedBuffer, workerPort },
         transferList: [workerPort],
       });
-      const client = buildClient(worker, sharedBuffer, mainPort) as any;
-      return { client, worker };
+      return buildClient(worker, sharedBuffer, mainPort) as any;
+    },
+
+    getWorker: () => {
+      return worker;
     },
   };
 };
