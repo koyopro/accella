@@ -1,12 +1,14 @@
+import { buildSync } from "esbuild";
+import fs from "fs";
+import path from "path";
 import {
-  Worker,
-  parentPort,
   MessageChannel,
   MessagePort,
-  workerData,
+  Worker,
+  parentPort,
   receiveMessageOnPort,
+  workerData,
 } from "worker_threads";
-import { buildSync } from "esbuild";
 
 export type Actions = Record<string, (...args: any[]) => any>;
 type AwaitedFunc<F extends Actions, K extends keyof F> = (
@@ -30,13 +32,14 @@ export const defineThreadSyncActions = <F extends Actions>(filename: string, act
       const sharedBuffer = new SharedArrayBuffer(4);
       const { port1: mainPort, port2: workerPort } = new MessageChannel();
 
-      const outfile = `${filename}.mjs`;
-      buildFile(filename, outfile);
+      const tmpfile = makeTmpFileName(filename);
+      buildFile(filename, tmpfile);
 
-      worker = new Worker(outfile, {
+      worker = new Worker(tmpfile, {
         workerData: { sharedBuffer, workerPort },
         transferList: [workerPort],
       });
+      addListenerForRemovingTmpFile(worker, tmpfile);
       return buildClient(worker, sharedBuffer, mainPort) as any;
     },
 
@@ -44,6 +47,24 @@ export const defineThreadSyncActions = <F extends Actions>(filename: string, act
       return worker;
     },
   };
+};
+
+const makeTmpFileName = (filename: string) => {
+  return path.join(path.dirname(filename), `._${path.basename(filename)}.mjs`);
+};
+
+const addListenerForRemovingTmpFile = (worker: Worker, outfile: string) => {
+  const confirmRemoveTmpFile = () => {
+    if (fs.existsSync(outfile)) fs.unlinkSync(outfile);
+  };
+  worker.once("error", () => {
+    confirmRemoveTmpFile();
+  });
+  worker.once("message", (msg) => {
+    if (msg === "ready") {
+      confirmRemoveTmpFile();
+    }
+  });
 };
 
 const buildClient = (worker: Worker, sharedBuffer: SharedArrayBuffer, mainPort: MessagePort) => {
