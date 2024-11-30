@@ -18,6 +18,16 @@ export type Client<F extends Actions> = { [K in keyof F]: AwaitedFunc<F, K> };
 
 const isSubThread = typeof workerData.sharedBuffer !== "undefined";
 
+export const launchSyncWorker = <F extends Actions>(filename: string, actions: F) => {
+  const client = defineThreadSyncActions(filename, actions);
+  const launchedActions = client.launch();
+  return {
+    actions: launchedActions,
+    stop: client.stop,
+    getWorker: client.getWorker,
+  };
+};
+
 export const defineThreadSyncActions = <F extends Actions>(filename: string, actions: F) => {
   useAction(actions);
   // Parent thread
@@ -29,6 +39,8 @@ export const defineThreadSyncActions = <F extends Actions>(filename: string, act
     },
 
     launch: (): Client<F> => {
+      if (isSubThread) return {} as any;
+
       const sharedBuffer = new SharedArrayBuffer(4);
       const { port1: mainPort, port2: workerPort } = new MessageChannel();
 
@@ -43,9 +55,7 @@ export const defineThreadSyncActions = <F extends Actions>(filename: string, act
       return buildClient(worker, sharedBuffer, mainPort) as any;
     },
 
-    getWorker: () => {
-      return worker;
-    },
+    getWorker: () => worker,
   };
 };
 
