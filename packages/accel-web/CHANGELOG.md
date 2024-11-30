@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- [#75](https://github.com/koyopro/accella/pull/75) [`52a4704`](https://github.com/koyopro/accella/commit/52a4704aadc7d7822fb21c9af72d09ecea72fd0a) Thanks [@koyopro](https://github.com/koyopro)! - use FormModel name as namespace in formFor()
+- [#75](https://github.com/koyopro/accella/pull/74) [`f905943`](https://github.com/koyopro/accella/commit/f90594335a1411c6ae40fc7e458938e8e7b2cd1c) Thanks [@koyopro](https://github.com/koyopro)! - use FormModel name as namespace in formFor()
 
 ## 0.4.0 (2024-11-09)
 
