@@ -1,5 +1,15 @@
 # Accel Record
 
+## 1.17.0
+
+### Minor Changes
+
+- Support UUID v7 column ([#73](https://github.com/koyopro/accella/pull/73))
+
+### Patch Changes
+
+- Improvement of the generated types file ([#72](https://github.com/koyopro/accella/pull/72))
+
 ## 1.16.0
 
 ### Minor Changes
