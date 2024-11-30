@@ -1,6 +1,6 @@
 {
   "name": "accella",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A web framework built with Astro and Accel Record",
   "type": "module",
   "main": "dist/index.js",
@@ -46,6 +46,6 @@
   "homepage": "https://github.com/koyopro/accella#readme",
   "dependencies": {
     "@mojojs/path": "^1.7.0",
-    "accel-web": "^0.4.0"
+    "accel-web": "^0.5.0"
   }
 }
