@@ -1,3 +1,6 @@
+import { open } from "node:fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
 import actions from "./worker";
 import fail from "./workerWithError";
 
@@ -16,6 +19,17 @@ test("sync actinos", async () => {
     expect(e).toMatchObject({ name: "MyError", message: "myErrorTest", prop1: "foo" });
   }
 
+  actions.stop();
+});
+
+test("sync file read", async () => {
+  const client = actions.launch();
+  const filepath = fileURLToPath(path.join(import.meta.url, "../sample.txt"));
+  const fileHandle = await open(filepath, "r");
+  const arrayBuffer = client.readFile(fileHandle);
+  const textDecoder = new TextDecoder("utf-8");
+  const text = textDecoder.decode(arrayBuffer);
+  expect(text).toMatch("I could read a file.");
   actions.stop();
 });
 

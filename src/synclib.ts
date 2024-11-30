@@ -1,5 +1,6 @@
 import { buildSync } from "esbuild";
 import fs from "fs";
+import { FileHandle } from "fs/promises";
 import path from "path";
 import {
   MessageChannel,
@@ -84,7 +85,8 @@ const buildClient = (worker: Worker, sharedBuffer: SharedArrayBuffer, mainPort: 
     {
       get: (_, key: string) => {
         return (...args: any) => {
-          worker.postMessage({ method: key, args });
+          const transferList = args.filter((arg: any) => isTransferable(arg));
+          worker.postMessage({ method: key, args }, transferList);
           Atomics.wait(sharedArray, 0, 0);
           const { result, error, properties } = receiveMessageOnPort(mainPort)?.message || {};
           Atomics.store(sharedArray, 0, 0);
@@ -105,7 +107,8 @@ const useAction = (actions: Actions) => {
     const sharedArray = new Int32Array(workerData.sharedBuffer);
     try {
       const ret = await actions[mgs.method]?.(...(mgs.args ?? []));
-      workerData.workerPort.postMessage({ result: ret });
+      const transferList = isTransferable(ret) ? [ret] : [];
+      workerData.workerPort.postMessage({ result: ret }, transferList);
     } catch (e) {
       workerData.workerPort.postMessage({ error: e, properties: extractProperties(e) });
     }
@@ -142,4 +145,14 @@ export function extractProperties<T>(object?: T) {
     }
     return properties;
   }
+}
+
+const isTransferable = (obj: any): boolean => {
+  return obj instanceof ArrayBuffer || obj instanceof MessagePort || isFileHandle(obj);
+};
+
+function isFileHandle(obj: any): obj is FileHandle {
+  return (
+    obj && typeof obj === "object" && typeof obj.fd === "number" && typeof obj.read === "function"
+  );
 }
