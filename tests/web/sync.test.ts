@@ -4,9 +4,9 @@ import { fileURLToPath } from "url";
 import actions from "./worker";
 import fail from "./workerWithError";
 
-test("sync actinos", async () => {
-  const client = actions.launch();
+const client = actions.launch();
 
+test("sync actinos", async () => {
   expect(client.ping()).toBe("pong!?");
   expect(client.incr(3)).toBe(4);
   expect(client.magic(0)).toBe(1);
@@ -18,19 +18,15 @@ test("sync actinos", async () => {
   } catch (e) {
     expect(e).toMatchObject({ name: "MyError", message: "myErrorTest", prop1: "foo" });
   }
-
-  actions.stop();
 });
 
 test("sync file read", async () => {
-  const client = actions.launch();
   const filepath = fileURLToPath(path.join(import.meta.url, "../sample.txt"));
   const fileHandle = await open(filepath, "r");
   const arrayBuffer = client.readFile(fileHandle);
   const textDecoder = new TextDecoder("utf-8");
   const text = textDecoder.decode(arrayBuffer);
   expect(text).toMatch("I could read a file.");
-  actions.stop();
 });
 
 test("sync actinos with error", async () => {

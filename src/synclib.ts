@@ -20,25 +20,18 @@ export type Client<F extends Actions> = { [K in keyof F]: AwaitedFunc<F, K> };
 const isSubThread = typeof workerData.sharedBuffer !== "undefined";
 
 export const launchSyncWorker = <F extends Actions>(filename: string, actions: F) => {
-  const client = defineThreadSyncActions(filename, actions);
-  const launchedActions = client.launch();
+  const { launch, ...client } = defineSyncWorker(filename, actions);
   return {
-    actions: launchedActions,
-    stop: client.stop,
-    getWorker: client.getWorker,
+    actions: launch(),
+    ...client,
   };
 };
 
-export const defineThreadSyncActions = <F extends Actions>(filename: string, actions: F) => {
+export const defineSyncWorker = <F extends Actions>(filename: string, actions: F) => {
   useAction(actions);
   // Parent thread
   let worker: Worker | null = null;
   return {
-    stop: () => {
-      worker?.terminate();
-      worker = null;
-    },
-
     launch: (): Client<F> => {
       if (isSubThread) return {} as any;
 
@@ -54,6 +47,11 @@ export const defineThreadSyncActions = <F extends Actions>(filename: string, act
       });
       addListenerForRemovingTmpFile(worker, tmpfile);
       return buildClient(worker, sharedBuffer, mainPort) as any;
+    },
+
+    stopWorker: () => {
+      worker?.terminate();
+      worker = null;
     },
 
     getWorker: () => worker,
