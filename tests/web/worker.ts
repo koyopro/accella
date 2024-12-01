@@ -26,6 +26,10 @@ export default defineSyncWorker(import.meta.filename, {
     );
     return arrayBuffer;
   },
+  file: async (file: File) => {
+    const arrayBuffer = await file.arrayBuffer();
+    return arrayBuffer;
+  },
   errorSample: () => {
     throw new Error("errorSample");
   },

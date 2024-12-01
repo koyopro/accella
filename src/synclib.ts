@@ -146,7 +146,12 @@ export function extractProperties<T>(object?: T) {
 }
 
 const isTransferable = (obj: any): boolean => {
-  return obj instanceof ArrayBuffer || obj instanceof MessagePort || isFileHandle(obj);
+  return (
+    obj instanceof ArrayBuffer ||
+    obj instanceof MessagePort ||
+    isFileHandle(obj) ||
+    obj instanceof Blob
+  );
 };
 
 function isFileHandle(obj: any): obj is FileHandle {

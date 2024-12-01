@@ -20,13 +20,24 @@ test("sync actinos", async () => {
   }
 });
 
-test("sync file read", async () => {
+test("sync FileHandle read", async () => {
   const filepath = fileURLToPath(path.join(import.meta.url, "../sample.txt"));
   const fileHandle = await open(filepath, "r");
   const arrayBuffer = client.readFile(fileHandle);
   const textDecoder = new TextDecoder("utf-8");
   const text = textDecoder.decode(arrayBuffer);
   expect(text).toMatch("I could read a file.");
+});
+
+test("sync File read", () => {
+  const fileContent = new Uint8Array([72, 101, 108, 108, 111]); // Binary data for "Hello"
+  const blob = new Blob([fileContent], { type: "text/plain" });
+  const file = new File([blob], "example.txt", { type: "text/plain" });
+
+  const arrayBuffer = client.file(file);
+  const textDecoder = new TextDecoder("utf-8");
+  const text = textDecoder.decode(arrayBuffer);
+  expect(text).toMatch("Hello");
 });
 
 test("sync actinos with error", async () => {
