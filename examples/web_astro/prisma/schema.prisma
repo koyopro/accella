@@ -17,6 +17,7 @@ model Account {
   id             Int      @id @default(autoincrement())
   email          String   @unique
   passwordDigest String
+  avatarPath     String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   // todos          Todo[]

@@ -7,13 +7,21 @@ export class AccountModel extends Mix(ApplicationRecord, hasSecurePassword()) {
 
   constructor() {
     super();
-    this.callbacks.after.save.push(this.uploadAvatar);
+    this.callbacks.before.save.push(this.uploadAvatar);
+  }
+
+  get avatarUrl() {
+    if (!this.avatarPath) return undefined;
+
+    return `https://kydev.s3.ap-northeast-1.amazonaws.com/${this.avatarPath}`;
   }
 
   uploadAvatar() {
     if (this.avatar) {
-      const result = actions.uploadImage(this.avatar, "kydev", "sync-test.png");
+      const fileName = `avatar-${Date.now()}.png`;
+      const result = actions.uploadImage(this.avatar, "kydev", fileName);
       console.log(result);
+      this.avatarPath = fileName;
     }
   }
 }

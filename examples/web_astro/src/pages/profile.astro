@@ -20,7 +20,4 @@ const f = formFor(account);
 </f.Form>
 
 <h1>Uploaded Image</h1>
-<img
-  src=`https://kydev.s3.ap-northeast-1.amazonaws.com/sync-test.png?t=${Date.now()}`
-  width="200"
-/>
+{account?.avatarUrl ? <img src={account.avatarUrl} width="200" /> : <span>Not uploaded yet.</span>}
