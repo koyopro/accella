@@ -6,7 +6,7 @@ const { account } = session;
 
 if (Astro.request.method === "POST") {
   if (account && params.avatar instanceof File) {
-    account.avatar = params.avatar;
+    account.avatar.file = params.avatar;
     account.save();
     return Astro.redirect("/profile");
   }
@@ -20,4 +20,10 @@ const f = formFor(account);
 </f.Form>
 
 <h1>Uploaded Image</h1>
-{account?.avatarUrl ? <img src={account.avatarUrl} width="200" /> : <span>Not uploaded yet.</span>}
+{
+  account?.avatar?.url ? (
+    <img src={account.avatar.url} width="200" />
+  ) : (
+    <span>Not uploaded yet.</span>
+  )
+}
