@@ -1,6 +1,6 @@
 import { buildSync } from "esbuild";
 import fs from "fs";
-import { FileHandle } from "fs/promises";
+import { type FileHandle } from "fs/promises";
 import path from "path";
 import {
   MessageChannel,
@@ -17,7 +17,7 @@ type AwaitedFunc<F extends Actions, K extends keyof F> = (
 ) => Awaited<ReturnType<F[K]>>;
 export type Client<F extends Actions> = { [K in keyof F]: AwaitedFunc<F, K> };
 
-const isSubThread = typeof workerData.sharedBuffer !== "undefined";
+const isSubThread = typeof workerData?.sharedBuffer !== "undefined";
 
 export const launchSyncWorker = <F extends Actions>(filename: string, actions: F) => {
   const { launch, ...client } = defineSyncWorker(filename, actions);
