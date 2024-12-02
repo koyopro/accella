@@ -7,8 +7,8 @@ const { account } = session;
 if (Astro.request.method === "POST") {
   if (account && params.avatar instanceof File) {
     account.avatar = params.avatar;
-    account.uploadAvatar();
-    Astro.redirect("/profile");
+    account.save();
+    return Astro.redirect("/profile");
   }
 }
 const f = formFor(account);
