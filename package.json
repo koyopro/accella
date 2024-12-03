@@ -9,7 +9,7 @@
     "format": "prettier -w '{src,tests,packages}/**/*.ts'",
     "lint": "eslint && prettier --check '{src,tests,packages}/**/*.ts'",
     "dev": "npm run dev --workspaces --if-present",
-    "build": "npm run build -w accel-record-core -w accel-record -w accel-record-factory -w prisma-generator-accel-record -w accel-web",
+    "build": "npm run build -w accel-record-core -w accel-record -w accel-record-factory -w prisma-generator-accel-record -w accel-web -w accella",
     "generate:sqlite": "DATABASE_URL=file:./test.db npx prisma generate --schema=tests/prisma/schema.prisma",
     "generate:mysql": "npx prisma generate --schema=tests/prisma_mysql/schema.prisma",
     "generate:pg": "npx prisma generate --schema=tests/prisma_pg/schema",
