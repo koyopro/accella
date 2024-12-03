@@ -1,0 +1,13 @@
+---
+import { FormModel } from "accel-record";
+import { attributes } from "accel-record/attributes";
+import { formFor } from "accel-web";
+
+class SampleForm extends FormModel {
+  count = attributes.integer(0);
+}
+const form = SampleForm.build({});
+const { Label } = formFor(form, { namespace: "q" });
+---
+
+<Label for="count" />
