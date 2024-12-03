@@ -1,5 +1,11 @@
 # Accel Web
 
+## 0.5.1
+
+### Patch Changes
+
+- [#78](https://github.com/koyopro/accella/pull/78) [`50d30b5`](https://github.com/koyopro/accella/commit/50d30b5544977d77deaf49cab798a45fb11ddb8b) Thanks [@koyopro](https://github.com/koyopro)! - Fixed the issue where the namespace passed to formFor() was not being reflected correctly.
+
 ## 0.5.0
 
 ### Minor Changes
