@@ -77,10 +77,9 @@ export const formFor = (resource: any, options?: FormForOptions) => {
 };
 
 const getPrefix = (resource: any, options?: FormForOptions) => {
-  if (options?.namespace) return options.namespace;
   const name = resource.class?.()?.name;
-  if (name) return `${toCamelCase(name)}.`;
-  return "";
+  const namespace = options?.namespace || (name ? toCamelCase(name) : undefined);
+  return namespace ? `${namespace}.` : "";
 };
 
 export const extendCommponent = <L extends keyof astroHTML.JSX.DefinedIntrinsicElements, P>(
