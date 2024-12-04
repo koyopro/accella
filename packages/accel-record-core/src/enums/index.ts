@@ -75,9 +75,12 @@ export class Value {
 }
 
 export const defineEnumTextAttribute = (base: typeof Model, persisted: any, name: string) => {
-  Object.defineProperty(base.prototype, `${name}Text`, {
-    get() {
-      return (persisted[name] as Attribute).values().find((v) => v.value == this[name])?.text;
-    },
-  });
+  const attr = `${name}Text`;
+  if (!Object.getOwnPropertyDescriptor(base.prototype, attr)) {
+    Object.defineProperty(base.prototype, attr, {
+      get() {
+        return (persisted[name] as Attribute).values().find((v) => v.value == this[name])?.text;
+      },
+    });
+  }
 };

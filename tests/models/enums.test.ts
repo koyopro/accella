@@ -1,5 +1,6 @@
+import { defineEnumTextAttribute } from "accel-record/enums";
 import i18next from "i18next";
-import { Profile } from ".";
+import { Profile, Role } from ".";
 import { withI18n } from "../contexts/i18n";
 import { $Profile } from "../factories/profile";
 import { dbConfig } from "../vitest.setup";
@@ -82,5 +83,14 @@ describe("Enums", (context: any) => {
       expect($Profile.build({ role: "MEMBER" }).roleText).toBe("Member");
       expect($Profile.build({ role: "ADMIN" }).roleText).toBe("Admin");
     });
+  });
+});
+
+describe("defineEnumTextAttribute()", (context: any) => {
+  if (dbConfig().type == "sqlite") return context.skip();
+
+  test("No error when executed multiple times", () => {
+    defineEnumTextAttribute(Profile, Role, "role");
+    defineEnumTextAttribute(Profile, Role, "role");
   });
 });
