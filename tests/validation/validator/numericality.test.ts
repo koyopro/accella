@@ -1,5 +1,5 @@
 import { $ValidateSample } from "../../factories/validateSample";
-import { NewValidateSample } from "../../models";
+import type { NewValidateSample } from "../../models";
 
 describe("error message", () => {
   let sample: NewValidateSample;

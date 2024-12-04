@@ -1,4 +1,4 @@
-import { NewPost, NewUser, Post, User } from ".";
+import { type NewPost, type NewUser, Post, User } from ".";
 import { $post } from "../factories/post";
 import { $user } from "../factories/user";
 import { PostModel } from "./post";

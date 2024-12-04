@@ -1,4 +1,4 @@
-import { NewSetting, NewUser, Setting, User } from ".";
+import { type NewSetting, type NewUser, Setting, User } from ".";
 import { $setting } from "../factories/setting";
 import { $user } from "../factories/user";
 import { SettingModel } from "./setting";
