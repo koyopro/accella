@@ -1,4 +1,4 @@
-import { Meta, Model } from "accel-record-core";
+import { type Meta, Model } from "accel-record-core";
 
 type Functionable<T> = {
   [K in keyof T]: T[K] | ((seq?: number) => T[K]);
