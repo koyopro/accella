@@ -65,18 +65,18 @@ export const generateDatabaseConfig = (
   schemaDir: string
 ) => {
   let url: string | null = null;
-  const prismaDir = join(basePath, schemaDir).replace("file:", "");
+  const prismaDir = new URL(join(basePath, schemaDir));
   if (dataSource.url.fromEnvVar) {
     const envVar = dataSource.url.fromEnvVar;
     url = (import.meta as any).env?.[envVar] ?? process.env?.[envVar] ?? null;
     if (url?.startsWith("file:")) {
-      url = join(prismaDir, url.replace("file:", "")).replace("file:", "");
+      url = new URL(url, prismaDir).pathname;
     }
   }
   return {
     type: dataSource.activeProvider as "mysql" | "sqlite" | "postgresql",
     datasourceUrl: url ?? dataSource.url.value ?? "",
-    prismaDir,
+    prismaDir: prismaDir.pathname,
   };
 };
 
