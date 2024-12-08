@@ -1,5 +1,5 @@
 import { launchSyncWorker } from "../../src/synclib";
 
-export const { actions, getWorker, stop } = launchSyncWorker(import.meta.filename, {
+export const { actions, getWorker, stopWorker } = launchSyncWorker(import.meta.filename, {
   ping: () => "pong!?",
 });

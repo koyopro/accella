@@ -45,7 +45,7 @@ export const defineSyncWorker = <F extends Actions>(filename: string, actions: F
         workerData: { sharedBuffer, workerPort },
         transferList: [workerPort],
       });
-      addListenerForRemovingTmpFile(worker, tmpfile);
+      // addListenerForRemovingTmpFile(worker, tmpfile);
       return buildClient(worker, sharedBuffer, mainPort) as any;
     },
 
