@@ -1,5 +1,5 @@
+import { createHash } from "crypto";
 import { buildSync } from "esbuild";
-import fs from "fs";
 import { type FileHandle } from "fs/promises";
 import path from "path";
 import {
@@ -38,14 +38,13 @@ export const defineSyncWorker = <F extends Actions>(filename: string, actions: F
       const sharedBuffer = new SharedArrayBuffer(4);
       const { port1: mainPort, port2: workerPort } = new MessageChannel();
 
-      const tmpfile = makeTmpFileName(filename);
+      const tmpfile = makeTmpFilePath(filename);
       buildFile(filename, tmpfile);
 
       worker = new Worker(tmpfile, {
         workerData: { sharedBuffer, workerPort },
         transferList: [workerPort],
       });
-      // addListenerForRemovingTmpFile(worker, tmpfile);
       return buildClient(worker, sharedBuffer, mainPort) as any;
     },
 
@@ -58,22 +57,13 @@ export const defineSyncWorker = <F extends Actions>(filename: string, actions: F
   };
 };
 
-const makeTmpFileName = (filename: string) => {
-  return path.join(path.dirname(filename), `._${path.basename(filename)}.mjs`);
-};
-
-const addListenerForRemovingTmpFile = (worker: Worker, outfile: string) => {
-  const confirmRemoveTmpFile = () => {
-    if (fs.existsSync(outfile)) fs.unlinkSync(outfile);
-  };
-  worker.once("error", () => {
-    confirmRemoveTmpFile();
-  });
-  worker.once("message", (msg) => {
-    if (msg === "ready") {
-      confirmRemoveTmpFile();
-    }
-  });
+const makeTmpFilePath = (filename: string) => {
+  const md5 = createHash("md5").update(filename).digest("hex");
+  return path.resolve(
+    process.cwd(),
+    "node_modules",
+    `.sync-action-workers/${path.basename(filename)}_${md5}.mjs`
+  );
 };
 
 const buildClient = (worker: Worker, sharedBuffer: SharedArrayBuffer, mainPort: MessagePort) => {
