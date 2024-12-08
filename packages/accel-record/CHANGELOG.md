@@ -1,5 +1,11 @@
 # Accel Record
 
+## 1.17.1
+
+### Patch Changes
+
+- [#81](https://github.com/koyopro/accella/pull/81) [`84af669`](https://github.com/koyopro/accella/commit/84af669c2735e1766fec790de1d0cf4bbc2a2f88) Thanks [@koyopro](https://github.com/koyopro)! - Fixed an issue where calling defineEnumTextAttribute() multiple times with the same arguments would cause an error.
+
 ## 1.17.0
 
 ### Minor Changes
