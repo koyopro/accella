@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Knex from "knex";
 import fs from "fs";
-import { launchSyncWorker } from ".";
+import { launchSyncWorker } from "./index.js";
 
 const log = (data: object) => {
   fs.appendFile("query.log", JSON.stringify(data, null, 2) + "\n", (err) => {});

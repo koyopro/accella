@@ -4,8 +4,7 @@ import { fileURLToPath } from "url";
 import { loadDmmf } from "./fields.js";
 import { Model } from "./index.js";
 import { loadI18n } from "./model/naming.js";
-// @ts-ignore
-import SyncRpc, { stop } from "./sync-rpc/index.js";
+import { actions, stopWorker } from "./synclib/worker.js";
 
 const log = (logLevel: LogLevel, ...args: any[]) => {
   if (LogLevel.indexOf(logLevel) >= LogLevel.indexOf(_config.logLevel ?? "WARN")) {
@@ -108,9 +107,8 @@ export const initAccelRecord = async (config: Config) => {
   _config.logLevel ??= "WARN";
   if (_config.type == "postgresql") _config.type = "pg";
 
-  _rpcClient = SyncRpc(path.resolve(__dirname, "./worker.cjs"), {
-    knexConfig: getKnexConfig(config),
-  });
+  actions.init({ knexConfig: getKnexConfig(config) });
+  _rpcClient = 1;
   await loadDmmf();
   await loadI18n();
 
@@ -147,7 +145,7 @@ export const execSQL = (params: {
   if (!_rpcClient || !_config) {
     throw new Error("Please call initAccelRecord(config) first.");
   }
-  const ret = _rpcClient(params);
+  const ret = actions.execSQL(params);
   const time = Date.now() - startTime;
   const color = /begin|commit|rollback/i.test(sql) ? "\x1b[36m" : "\x1b[32m";
   log(params.logLevel ?? "DEBUG", `  \x1b[36mSQL(${time}ms)  ${color}${sql}\x1b[39m`, bindings);
@@ -167,5 +165,5 @@ const formatByEngine = (ret: any) => {
 };
 
 export const stopRpcClient = () => {
-  stop();
+  stopWorker();
 };
