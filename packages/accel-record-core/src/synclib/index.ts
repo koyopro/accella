@@ -17,7 +17,7 @@ type AwaitedFunc<F extends Actions, K extends keyof F> = (
 ) => Awaited<ReturnType<F[K]>>;
 export type Client<F extends Actions> = { [K in keyof F]: AwaitedFunc<F, K> };
 
-const isSubThread = typeof workerData?.sharedBuffer !== "undefined";
+const isSubThread = workerData?.subThreadForSync === true;
 
 export const launchSyncWorker = <F extends Actions>(filename: string, actions: F) => {
   const { launch, ...client } = defineSyncWorker(filename, actions);
@@ -42,7 +42,7 @@ export const defineSyncWorker = <F extends Actions>(filename: string, actions: F
       buildFile(filename, tmpfile);
 
       worker = new Worker(tmpfile, {
-        workerData: { sharedBuffer, workerPort },
+        workerData: { sharedBuffer, workerPort, subThreadForSync: true },
         transferList: [workerPort],
       });
       return buildClient(worker, sharedBuffer, mainPort) as any;
