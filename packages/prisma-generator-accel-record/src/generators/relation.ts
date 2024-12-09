@@ -11,7 +11,8 @@ const loadModels = async (options: GeneratorOptions) => {
   if (!fs.existsSync(filePath)) return undefined;
   try {
     buildFile(filePath, outfile);
-    return await eval(`import('${outfile}')`);
+    return undefined;
+    // return await eval(`import('${outfile}')`);
   } catch {
     console.log(
       [
