@@ -139,7 +139,7 @@ const isTransferable = (obj: any): boolean => {
   return (
     obj instanceof ArrayBuffer ||
     obj instanceof MessagePort ||
-    // obj instanceof Blob ||
+    obj instanceof Blob ||
     isFileHandle(obj)
   );
 };
