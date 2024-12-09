@@ -12,7 +12,7 @@ const loadModels = async (options: GeneratorOptions) => {
   try {
     buildFile(filePath, outfile);
     process.env.SYNC_ACTIONS = "none";
-    await eval(`import('${outfile}')`);
+    return await eval(`import('${outfile}')`);
   } catch {
     console.log(
       [
