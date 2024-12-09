@@ -109,7 +109,8 @@ export const initAccelRecord = async (config: Config) => {
   if (_config.type == "postgresql") _config.type = "pg";
 
   if (canSyncActions()) {
-    _rpcClient = await import("./synclib/worker.js");
+    _rpcClient ||= await import("./synclib/worker.js");
+    _rpcClient.actions.stopWorker();
     _rpcClient.actions.init({ knexConfig: getKnexConfig(config) });
   } else {
     _rpcClient = SyncRpc(path.resolve(__dirname, "./worker.cjs"), {
