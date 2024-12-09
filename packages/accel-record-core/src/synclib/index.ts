@@ -33,7 +33,8 @@ export const defineSyncWorker = <F extends Actions>(filename: string, actions: F
   let worker: Worker | null = null;
   return {
     launch: (): Client<F> => {
-      if (isSubThread) return {} as any;
+      console.log("defineSyncWorker", isSubThread, process.env.SYNC_ACTIONS);
+      if (isSubThread || process.env.SYNC_ACTIONS == "none") return {} as any;
 
       const sharedBuffer = new SharedArrayBuffer(4);
       const { port1: mainPort, port2: workerPort } = new MessageChannel();
