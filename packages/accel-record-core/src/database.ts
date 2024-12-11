@@ -1,5 +1,5 @@
 import Knex from "knex";
-import { buildSyncClient } from "./database/sync.js";
+import { buildSyncClient, SyncClient } from "./database/sync.js";
 import { loadDmmf } from "./fields.js";
 import { Model } from "./index.js";
 import { loadI18n } from "./model/naming.js";
@@ -94,17 +94,21 @@ export interface Config {
    * A function to transform the SQL before executing.
    */
   sqlTransformer?: (sql: string) => string;
+
+  sync?: "thread" | "process";
 }
 let _config: Config = { type: "sqlite" };
 
-const _rpcClient = buildSyncClient();
+let _rpcClient: SyncClient | undefined;
 
 let _queryCount: number = 0;
 export const initAccelRecord = async (config: Config) => {
   _config = Object.assign({}, config);
   _config.logLevel ??= "WARN";
+  _config.sync ??= "thread";
   if (_config.type == "postgresql") _config.type = "pg";
 
+  _rpcClient ||= buildSyncClient(_config.sync);
   _rpcClient.launchWorker({ knexConfig: getKnexConfig(config) });
   await loadDmmf();
   await loadI18n();
@@ -162,5 +166,5 @@ const formatByEngine = (ret: any) => {
 };
 
 export const stopRpcClient = () => {
-  _rpcClient.stopWorker();
+  _rpcClient?.stopWorker();
 };

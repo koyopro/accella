@@ -3,8 +3,8 @@ import { client } from "../synclib/worker.js";
 // @ts-ignore
 import SyncRpc, { stop } from "../sync-rpc/index.js";
 
-export const buildSyncClient = (): SyncClient => {
-  return canSyncActions() ? new ThreadSyncClient() : new ProcessSyncClient();
+export const buildSyncClient = (type: "thread" | "process"): SyncClient => {
+  return type == "process" ? new ProcessSyncClient() : new ThreadSyncClient();
 };
 
 export interface SyncClient {
@@ -42,8 +42,3 @@ export class ThreadSyncClient implements SyncClient {
     client.stopWorker();
   }
 }
-
-const canSyncActions = () => {
-  const v = Number(process.versions?.node?.split(".")?.[0]);
-  return isFinite(v) ? v >= 22 : false;
-};

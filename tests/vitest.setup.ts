@@ -60,7 +60,9 @@ export const dbConfig = () => {
 };
 
 beforeAll(async () => {
-  await initAccelRecord(dbConfig());
+  const v = Number(process.versions?.node?.split(".")?.[0]);
+  const sync = isFinite(v) && v >= 22 ? "thread" : "process";
+  await initAccelRecord({ ...dbConfig(), sync });
   await Migration.migrate();
 });
 
