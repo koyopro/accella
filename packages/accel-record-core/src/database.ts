@@ -103,12 +103,16 @@ let _rpcClient: SyncClient | undefined;
 
 let _queryCount: number = 0;
 export const initAccelRecord = async (config: Config) => {
+  if (_rpcClient) {
+    log("WARN", "initAccelRecord() has already been called.");
+    return;
+  }
   _config = Object.assign({}, config);
   _config.logLevel ??= "WARN";
   _config.sync ??= "thread";
   if (_config.type == "postgresql") _config.type = "pg";
 
-  _rpcClient ||= buildSyncClient(_config.sync);
+  _rpcClient = buildSyncClient(_config.sync);
   _rpcClient.launchWorker({ knexConfig: getKnexConfig(config) });
   await loadDmmf();
   await loadI18n();
