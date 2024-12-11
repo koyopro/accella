@@ -1,7 +1,7 @@
 /* eslint-disable */
-import Knex from "knex";
 import fs from "fs";
-import { launchSyncWorker } from "./index.js";
+import Knex from "knex";
+import { defineSyncWorker } from "./index.js";
 
 const log = (data: object) => {
   fs.appendFile("query.log", JSON.stringify(data, null, 2) + "\n", (err) => {});
@@ -33,7 +33,7 @@ function postgresPromise(knex: Knex.Knex, sql: string, bindings: readonly any[])
   });
 }
 
-export const { actions, getWorker, stopWorker } = launchSyncWorker(import.meta.filename, {
+export const client = defineSyncWorker(import.meta.filename, {
   init,
   execSQL,
 });

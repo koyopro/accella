@@ -1,11 +1,8 @@
 import Knex from "knex";
-import path from "path";
-import { fileURLToPath } from "url";
+import { buildSyncClient } from "./database/sync.js";
 import { loadDmmf } from "./fields.js";
 import { Model } from "./index.js";
 import { loadI18n } from "./model/naming.js";
-// @ts-ignore
-import SyncRpc, { stop } from "./sync-rpc/index.js";
 
 const log = (logLevel: LogLevel, ...args: any[]) => {
   if (LogLevel.indexOf(logLevel) >= LogLevel.indexOf(_config.logLevel ?? "WARN")) {
@@ -43,8 +40,6 @@ const setupKnex = (config: Config) => {
   }
   throw new Error("No config for knex. Please call initAccelRecord(config) first.");
 };
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const LogLevel = ["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"] as const;
 export type LogLevel = (typeof LogLevel)[number];
@@ -101,22 +96,16 @@ export interface Config {
   sqlTransformer?: (sql: string) => string;
 }
 let _config: Config = { type: "sqlite" };
-let _rpcClient: any;
+
+const _rpcClient = buildSyncClient();
+
 let _queryCount: number = 0;
 export const initAccelRecord = async (config: Config) => {
   _config = Object.assign({}, config);
   _config.logLevel ??= "WARN";
   if (_config.type == "postgresql") _config.type = "pg";
 
-  if (canSyncActions()) {
-    _rpcClient ||= await import("./synclib/worker.js");
-    _rpcClient.actions.stopWorker();
-    _rpcClient.actions.init({ knexConfig: getKnexConfig(config) });
-  } else {
-    _rpcClient = SyncRpc(path.resolve(__dirname, "./worker.cjs"), {
-      knexConfig: getKnexConfig(config),
-    });
-  }
+  _rpcClient.launchWorker({ knexConfig: getKnexConfig(config) });
   await loadDmmf();
   await loadI18n();
 
@@ -153,7 +142,7 @@ export const execSQL = (params: {
   if (!_rpcClient || !_config) {
     throw new Error("Please call initAccelRecord(config) first.");
   }
-  const ret = canSyncActions() ? _rpcClient.actions.execSQL(params) : _rpcClient(params);
+  const ret = _rpcClient.execSQL(params);
   const time = Date.now() - startTime;
   const color = /begin|commit|rollback/i.test(sql) ? "\x1b[36m" : "\x1b[32m";
   log(params.logLevel ?? "DEBUG", `  \x1b[36mSQL(${time}ms)  ${color}${sql}\x1b[39m`, bindings);
@@ -172,15 +161,6 @@ const formatByEngine = (ret: any) => {
   return _config.type == "mysql" ? ret[0] : ret;
 };
 
-const canSyncActions = () => {
-  const v = Number(process.versions?.node?.split(".")?.[0]);
-  return isFinite(v) ? v >= 22 : false;
-};
-
 export const stopRpcClient = () => {
-  if (canSyncActions()) {
-    _rpcClient.stopWorker();
-  } else {
-    stop();
-  }
+  _rpcClient.stopWorker();
 };
