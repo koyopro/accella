@@ -1,11 +1,8 @@
 import Knex from "knex";
-import path from "path";
-import { fileURLToPath } from "url";
+import { buildSyncClient, SyncClient } from "./database/sync.js";
 import { loadDmmf } from "./fields.js";
 import { Model } from "./index.js";
 import { loadI18n } from "./model/naming.js";
-// @ts-ignore
-import SyncRpc, { stop } from "./sync-rpc/index.js";
 
 const log = (logLevel: LogLevel, ...args: any[]) => {
   if (LogLevel.indexOf(logLevel) >= LogLevel.indexOf(_config.logLevel ?? "WARN")) {
@@ -43,8 +40,6 @@ const setupKnex = (config: Config) => {
   }
   throw new Error("No config for knex. Please call initAccelRecord(config) first.");
 };
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const LogLevel = ["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"] as const;
 export type LogLevel = (typeof LogLevel)[number];
@@ -99,18 +94,29 @@ export interface Config {
    * A function to transform the SQL before executing.
    */
   sqlTransformer?: (sql: string) => string;
+  /**
+   * The sync mode for the database worker.
+   * - "process": Uses child_process. This is the default.
+   * - "thread": Uses worker_threads. This is faster but has known race condition issues in Node versions below 21.
+   */
+  sync?: "process" | "thread";
 }
 let _config: Config = { type: "sqlite" };
-let _rpcClient: any;
+
+let _syncClient: SyncClient | undefined;
+
 let _queryCount: number = 0;
 export const initAccelRecord = async (config: Config) => {
+  if (_syncClient) {
+    log("WARN", "initAccelRecord() has already been called.");
+    return;
+  }
   _config = Object.assign({}, config);
   _config.logLevel ??= "WARN";
+  _config.sync ??= "process";
   if (_config.type == "postgresql") _config.type = "pg";
 
-  _rpcClient = SyncRpc(path.resolve(__dirname, "./worker.cjs"), {
-    knexConfig: getKnexConfig(config),
-  });
+  _syncClient = buildSyncClient(_config.sync, { knexConfig: getKnexConfig(config) });
   await loadDmmf();
   await loadI18n();
 
@@ -144,10 +150,10 @@ export const execSQL = (params: {
   params.sql = _config.sqlTransformer?.(params.sql) ?? params.sql;
   const { sql, bindings } = params;
   const startTime = Date.now();
-  if (!_rpcClient || !_config) {
+  if (!_syncClient || !_config) {
     throw new Error("Please call initAccelRecord(config) first.");
   }
-  const ret = _rpcClient(params);
+  const ret = _syncClient.execSQL(params);
   const time = Date.now() - startTime;
   const color = /begin|commit|rollback/i.test(sql) ? "\x1b[36m" : "\x1b[32m";
   log(params.logLevel ?? "DEBUG", `  \x1b[36mSQL(${time}ms)  ${color}${sql}\x1b[39m`, bindings);
@@ -167,5 +173,5 @@ const formatByEngine = (ret: any) => {
 };
 
 export const stopRpcClient = () => {
-  stop();
+  _syncClient?.stopWorker();
 };
