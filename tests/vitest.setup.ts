@@ -8,7 +8,9 @@ import { getDatabaseConfig } from "./models/index.js";
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const dbConfig = () => {
-  const config = getDatabaseConfig();
+  const nodeVersion = Number(process.versions?.node?.split(".")?.[0]);
+  const sync = isFinite(nodeVersion) && nodeVersion >= 22 ? "thread" : "process";
+  const config = { ...getDatabaseConfig(), LogLevel: "ERROR", sync } as const;
   if (process.env.DB_ENGINE == "mysql") {
     return {
       ...config,
