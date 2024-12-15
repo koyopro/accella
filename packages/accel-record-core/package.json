@@ -31,7 +31,7 @@
     "bcrypt-ts": "^5.0.0",
     "get-port": "^7.0.0",
     "knex": "^3.0.0",
-    "prisma": "^5.0.0",
+    "prisma": ">=5.0.0",
     "sync-actions": "^1.0.0",
     "uuid": "^11.0.0"
   },
