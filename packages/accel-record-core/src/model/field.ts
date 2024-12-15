@@ -101,7 +101,9 @@ export class Field {
    * @returns True if the default value is "uuid7", false otherwise.
    */
   get defaultIsUuid7() {
-    return this.default != undefined && this.default.name === "uuid(7)";
+    if (!this.default) return false;
+    if (this.default.name === "uuid(7)") return true;
+    return this.default.name === "uuid" && this.default.args[0] == 7;
   }
 
   /**
