@@ -1,4 +1,15 @@
+import type { Model } from "accel-record";
 import { actions } from "./worker.js";
+
+export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
+  model.callbacks.before["save"].push(() => {
+    if (uploader.file) {
+      uploader.store(uploader.file);
+      (model as any)[attr] = uploader.filename;
+    }
+  });
+  return uploader;
+};
 
 export class BaseUploader {
   storeDir = "uploads";

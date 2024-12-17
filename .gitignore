@@ -137,6 +137,7 @@ tsconfig.vitest-temp.json
 
 tests/check/
 tmp/
+public/
 
 # Do not include the following in the .gitignore under examples/basics, so it is listed here
 examples/basics/package-lock.json
