@@ -14,12 +14,12 @@ test("store()", () => {
 });
 
 test("store() with storeDir", () => {
-  const storage = new FileStorage(new BaseUploader({ storeDir: "custom" }));
+  const storage = new FileStorage(new BaseUploader({ root: "../tmp", storeDir: "custom" }));
   const file = buildFile();
 
   storage.store(file);
 
-  const filePath = path.resolve(__dirname, "../public/custom/example.txt");
+  const filePath = path.resolve(__dirname, "../tmp/custom/example.txt");
   const content = fs.readFileSync(filePath, "utf-8");
   expect(content).toBe("Hello");
 });
