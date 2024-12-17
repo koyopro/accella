@@ -2,6 +2,12 @@ import fs from "fs";
 import path from "path";
 import { BaseUploader, FileStorage } from "../src";
 
+class MyUploader extends BaseUploader {
+  override get filename() {
+    return "myfile.txt";
+  }
+}
+
 test("store()", () => {
   const storage = new FileStorage(new BaseUploader());
   const file = buildFile();
@@ -14,12 +20,12 @@ test("store()", () => {
 });
 
 test("store() with storeDir", () => {
-  const storage = new FileStorage(new BaseUploader({ root: "../tmp", storeDir: "custom" }));
+  const storage = new FileStorage(new MyUploader({ root: "../tmp", storeDir: "custom" }));
   const file = buildFile();
 
   storage.store(file);
 
-  const filePath = path.resolve(__dirname, "../tmp/custom/example.txt");
+  const filePath = path.resolve(__dirname, "../tmp/custom/myfile.txt");
   const content = fs.readFileSync(filePath, "utf-8");
   expect(content).toBe("Hello");
 });
