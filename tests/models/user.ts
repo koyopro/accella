@@ -1,4 +1,5 @@
 import { scope } from "accel-record";
+import { mount, BaseUploader } from "accel-wave";
 import { ApplicationRecord } from "./applicationRecord.js";
 
 export class UserModel extends ApplicationRecord {
@@ -18,4 +19,7 @@ export class UserModel extends ApplicationRecord {
   }
 
   static override searchableScopes = ["bio_cont"];
+
+  avatarPath: string | undefined;
+  avatar = mount(this, "avatarPath", new BaseUploader());
 }
