@@ -10,25 +10,24 @@ class MyUploader extends BaseUploader {
 
 test("store()", () => {
   const uploader = new BaseUploader();
-  const file = buildFile();
 
-  uploader.store(file);
+  uploader.store(buildFile());
 
-  const filePath = path.resolve(__dirname, "../public/uploads/example.txt");
-  const content = fs.readFileSync(filePath, "utf-8");
-  expect(content).toBe("Hello");
+  expect(read("../public/uploads/example.txt")).toBe("Hello");
 });
 
-test("store() with storeDir", () => {
+test("store() with customize", () => {
   const uploader = new MyUploader({ root: "../tmp", storeDir: "custom" });
-  const file = buildFile();
 
-  uploader.store(file);
+  uploader.store(buildFile());
 
-  const filePath = path.resolve(__dirname, "../tmp/custom/myfile.txt");
-  const content = fs.readFileSync(filePath, "utf-8");
-  expect(content).toBe("Hello");
+  expect(read("../tmp/custom/example.txt")).toBe("Hello");
 });
+
+const read = (filePath: string) => {
+  const absolutePath = path.resolve(__dirname, filePath);
+  return fs.readFileSync(absolutePath, "utf-8");
+};
 
 const buildFile = () => {
   const fileContent = new Uint8Array([72, 101, 108, 108, 111]); // Binary data for "Hello"
