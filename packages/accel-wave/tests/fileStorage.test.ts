@@ -8,7 +8,7 @@ test("store()", async () => {
   const blob = new Blob([fileContent], { type: "text/plain" });
   const file = new File([blob], "example.txt", { type: "text/plain" });
 
-  await storage.store(file);
+  storage.store(file);
 
   const filePath = path.resolve(__dirname, "../public/uploads/example.txt");
   const content = fs.readFileSync(filePath, "utf-8");
