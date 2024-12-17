@@ -2,7 +2,7 @@ import { actions } from "./worker.js";
 
 export class BaseUploader {
   storeDir = "uploads";
-  root = new URL("../public", import.meta.url).pathname;
+  root = `${process.cwd()}/public`;
 
   constructor(options?: Partial<BaseUploader>) {
     Object.assign(this, options);
