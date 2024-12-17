@@ -3,6 +3,7 @@ import { actions } from "./worker.js";
 export class BaseUploader {
   storeDir = "uploads";
   root = `${process.cwd()}/public`;
+  storege = new FileStorage(this);
 
   constructor(options?: Partial<BaseUploader>) {
     Object.assign(this, options);
@@ -10,6 +11,10 @@ export class BaseUploader {
 
   get filename(): string | undefined {
     return undefined;
+  }
+
+  store(file: File) {
+    this.storege.store(file);
   }
 }
 
