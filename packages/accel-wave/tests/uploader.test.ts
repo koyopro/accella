@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { BaseUploader, FileStorage } from "../src";
+import { BaseUploader } from "../src";
 
 class MyUploader extends BaseUploader {
   override get filename() {
@@ -9,10 +9,10 @@ class MyUploader extends BaseUploader {
 }
 
 test("store()", () => {
-  const storage = new FileStorage(new BaseUploader());
+  const uploader = new BaseUploader();
   const file = buildFile();
 
-  storage.store(file);
+  uploader.store(file);
 
   const filePath = path.resolve(__dirname, "../public/uploads/example.txt");
   const content = fs.readFileSync(filePath, "utf-8");
@@ -20,10 +20,10 @@ test("store()", () => {
 });
 
 test("store() with storeDir", () => {
-  const storage = new FileStorage(new MyUploader({ root: "../tmp", storeDir: "custom" }));
+  const uploader = new MyUploader({ root: "../tmp", storeDir: "custom" });
   const file = buildFile();
 
-  storage.store(file);
+  uploader.store(file);
 
   const filePath = path.resolve(__dirname, "../tmp/custom/myfile.txt");
   const content = fs.readFileSync(filePath, "utf-8");
