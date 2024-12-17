@@ -136,3 +136,5 @@ tsconfig.vitest-temp.json
 .DS_Store
 
 tmp/
+
+public/
