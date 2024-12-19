@@ -1,7 +1,7 @@
 import type { Model } from "accel-record";
-import fs from "fs";
 import { Config } from "./config.js";
-import { actions } from "./worker.js";
+import { FileStorage } from "./storages/file.js";
+import { type Storage } from "./storages/index.js";
 
 export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
   uploader.model = model;
@@ -17,7 +17,7 @@ export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
 
 export class BaseUploader {
   config: Config;
-  storage: FileStorage;
+  storage: Storage;
   _file: File | undefined;
   model: Model | undefined;
   attr: string | undefined;
@@ -59,25 +59,5 @@ export class BaseUploader {
   store(file: File) {
     this.file = file;
     this.storage.store(file);
-  }
-}
-
-export class FileStorage {
-  constructor(public config: Config) {}
-
-  store(file: File) {
-    const filePath = new URL(
-      `${this.config.root}/${this.config.storeDir}/${this.config.filename}`,
-      import.meta.url
-    ).pathname;
-    actions.writeFile(filePath, file);
-  }
-
-  retrive(identifier: string) {
-    const filePath = new URL(
-      `${this.config.root}/${this.config.storeDir}/${identifier}`,
-      import.meta.url
-    ).pathname;
-    return new File([fs.readFileSync(filePath)], identifier);
   }
 }
