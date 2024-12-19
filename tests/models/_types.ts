@@ -33,10 +33,7 @@ import {
 declare module "accel-record" {
   function meta<T>(model: T): Meta<T>;
 
-  interface Relation<T, M> {
-    john: (T extends User ? typeof UserModel['john'] : T extends Post ? typeof PostModel['john'] : never);
-    adults: (T extends User ? typeof UserModel['adults'] : never);
-  }
+  interface Relation<T, M> {}
 }
 
 type Meta<T> = T extends typeof UserModel | UserModel ? UserMeta :
@@ -423,6 +420,7 @@ declare module "./profile" {
     uuid: string;
     uuid7: string;
     cuid: string;
+    avatarPath: string | undefined;
   }
 }
 export interface NewProfile extends ProfileModel {};
@@ -455,6 +453,7 @@ type ProfileMeta = {
     uuid: string;
     uuid7: string;
     cuid: string;
+    avatarPath: string | undefined;
   };
   CreateInput: {
     id?: number;
@@ -465,6 +464,7 @@ type ProfileMeta = {
     uuid?: string;
     uuid7?: string;
     cuid?: string;
+    avatarPath?: string;
   } & ({ user: User } | { userId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
@@ -477,6 +477,7 @@ type ProfileMeta = {
     uuid?: string | string[] | StringFilter | null;
     uuid7?: string | string[] | StringFilter | null;
     cuid?: string | string[] | StringFilter | null;
+    avatarPath?: string | string[] | StringFilter | null;
   };
 };
 registerModel(Profile);
