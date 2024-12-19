@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { BaseUploader } from "../src";
+import { buildFile } from "./buildFile";
 
 class MyUploader extends BaseUploader {
   override get filename() {
@@ -35,11 +36,4 @@ test("store() with customize", () => {
 const read = (filePath: string) => {
   const absolutePath = path.resolve(__dirname, filePath);
   return fs.readFileSync(absolutePath, "utf-8");
-};
-
-const buildFile = () => {
-  const fileContent = new Uint8Array([72, 101, 108, 108, 111]); // Binary data for "Hello"
-  const blob = new Blob([fileContent], { type: "text/plain" });
-  const file = new File([blob], "example.txt", { type: "text/plain" });
-  return file;
 };
