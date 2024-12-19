@@ -87,6 +87,8 @@ model Profile {
   uuid7   String  @default(uuid(7))
   cuid    String  @default(cuid())
 
+  avatarPath String?
+
   @@map("profiles")
 }
 
