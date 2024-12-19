@@ -1,6 +1,8 @@
 import {
+  type GetObjectCommandInput,
   type PutObjectCommandInput,
   type S3ClientConfig,
+  GetObjectCommand,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
@@ -25,6 +27,18 @@ export const { actions, worker } = defineSyncWorker(import.meta.filename, {
 
     try {
       return await s3.send(command);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+  loadS3: async (s3Config: S3ClientConfig, getParams: GetObjectCommandInput) => {
+    const s3 = new S3Client(s3Config);
+    const command = new GetObjectCommand(getParams);
+
+    try {
+      const response = await s3.send(command);
+      return await response.Body!.transformToByteArray();
     } catch (error) {
       console.error(error);
       throw error;
