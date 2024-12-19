@@ -15,5 +15,9 @@ test("store()", (context: any) => {
   const config = new Config({ s3: { region, bucket } });
   const s3 = new S3Storage(config);
 
-  s3.store(buildFile());
+  const file = buildFile();
+  s3.store(file);
+
+  const retrivedFile = s3.retrive(file.name);
+  expect(retrivedFile.name).toBe(file.name);
 });
