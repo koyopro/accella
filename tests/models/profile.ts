@@ -1,10 +1,13 @@
 import { after, before } from "accel-record";
+import { BaseUploader, mount } from "accel-wave";
 import { ApplicationRecord } from "./applicationRecord.js";
 
 export class ProfileModel extends ApplicationRecord {
   static table = "profiles";
 
   data: string[] = [];
+
+  avatar = mount(this, "avatarPath", new BaseUploader());
 
   @before("validation")
   beforeValidation() {
