@@ -17,11 +17,18 @@ export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
 export class BaseUploader {
   storeDir = "uploads";
   root = `${process.cwd()}/public`;
-  storege = new FileStorage(this);
+  storage = new FileStorage(this);
   _file: File | undefined;
   assetHost: string | undefined;
   model: Model | undefined;
   attr: string | undefined;
+
+  s3:
+    | {
+        region: string;
+        bucket: string;
+      }
+    | undefined;
 
   constructor(options?: Partial<BaseUploader>) {
     Object.assign(this, options);
@@ -31,7 +38,7 @@ export class BaseUploader {
     if (this._file) return this._file;
     if (this.model && this.attr) {
       const identifier = (this.model as any)[this.attr];
-      return (this._file = this.storege.retrive(identifier));
+      return (this._file = this.storage.retrive(identifier));
     }
   }
 
@@ -54,7 +61,7 @@ export class BaseUploader {
 
   store(file: File) {
     this.file = file;
-    this.storege.store(file);
+    this.storage.store(file);
   }
 }
 
