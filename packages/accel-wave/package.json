@@ -19,6 +19,7 @@
   "author": "koyopro <koyopro2.0@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.0.0",
     "accel-record": ">=1.18.0"
   }
 }
