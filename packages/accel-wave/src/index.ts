@@ -1,5 +1,6 @@
 import type { Model } from "accel-record";
 import fs from "fs";
+import { Config } from "./config.js";
 import { actions } from "./worker.js";
 
 export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
@@ -15,23 +16,15 @@ export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
 };
 
 export class BaseUploader {
-  storeDir = "uploads";
-  root = `${process.cwd()}/public`;
-  storage = new FileStorage(this);
+  config: Config;
+  storage: FileStorage;
   _file: File | undefined;
-  assetHost: string | undefined;
   model: Model | undefined;
   attr: string | undefined;
 
-  s3:
-    | {
-        region: string;
-        bucket: string;
-      }
-    | undefined;
-
-  constructor(options?: Partial<BaseUploader>) {
-    Object.assign(this, options);
+  constructor(options?: Partial<Config>) {
+    this.config = new Config(options);
+    this.storage = new FileStorage(this.config);
   }
 
   get file() {
@@ -44,18 +37,22 @@ export class BaseUploader {
 
   set file(file: File | undefined) {
     this._file = file;
+    this.config.filename = file?.name;
   }
 
-  get filename(): string | undefined {
-    return this.file?.name;
+  get filename() {
+    return this.config.filename;
   }
 
   url() {
     if (!this.file) return undefined;
-    if (this.assetHost) {
-      return new URL(`${this.storeDir}/${this.filename}`, this.assetHost);
+    if (this.config.assetHost) {
+      return new URL(`${this.config.storeDir}/${this.filename}`, this.config.assetHost);
     } else {
-      return new URL(`${this.root}/${this.storeDir}/${this.filename}`, import.meta.url);
+      return new URL(
+        `${this.config.root}/${this.config.storeDir}/${this.filename}`,
+        import.meta.url
+      );
     }
   }
 
@@ -66,11 +63,11 @@ export class BaseUploader {
 }
 
 export class FileStorage {
-  constructor(public uploader: BaseUploader) {}
+  constructor(public config: Config) {}
 
   store(file: File) {
     const filePath = new URL(
-      `${this.uploader.root}/${this.uploader.storeDir}/${this.uploader.filename}`,
+      `${this.config.root}/${this.config.storeDir}/${this.config.filename}`,
       import.meta.url
     ).pathname;
     actions.writeFile(filePath, file);
@@ -78,7 +75,7 @@ export class FileStorage {
 
   retrive(identifier: string) {
     const filePath = new URL(
-      `${this.uploader.root}/${this.uploader.storeDir}/${identifier}`,
+      `${this.config.root}/${this.config.storeDir}/${identifier}`,
       import.meta.url
     ).pathname;
     return new File([fs.readFileSync(filePath)], identifier);

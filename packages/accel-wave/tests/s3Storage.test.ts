@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { BaseUploader } from "src/index";
+import { Config } from "src/config";
 import { S3Storage } from "../src/storages/s3";
 import { buildFile } from "./buildFile";
 
@@ -12,9 +12,8 @@ test("store()", (context: any) => {
 
   console.log(`test store() with s3 storage. region: ${region}, bucket: ${bucket}`);
 
-  const uploader = new BaseUploader({ s3: { region, bucket } });
-  const s3 = new S3Storage(uploader);
-  uploader.storage = s3;
+  const config = new Config({ s3: { region, bucket } });
+  const s3 = new S3Storage(config);
 
-  uploader.store(buildFile());
+  s3.store(buildFile());
 });
