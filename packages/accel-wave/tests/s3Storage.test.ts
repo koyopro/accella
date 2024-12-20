@@ -20,4 +20,10 @@ test("store()", (context: any) => {
 
   const retrivedFile = s3.retrive(file.name);
   expect(retrivedFile.name).toBe(file.name);
+
+  expect(s3.url(file.name)).toMatch(
+    new RegExp(
+      `https://${bucket}.s3.${region}.amazonaws.com/example.txt\\?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=.+`
+    )
+  );
 });

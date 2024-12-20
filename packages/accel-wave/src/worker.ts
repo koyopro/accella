@@ -6,6 +6,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import fs from "fs";
 import path from "path";
 import { defineSyncWorker } from "sync-actions";
@@ -43,5 +44,10 @@ export const { actions, worker } = defineSyncWorker(import.meta.filename, {
       console.error(error);
       throw error;
     }
+  },
+  getSignedS3Url: async (s3Config: S3ClientConfig, getParams: GetObjectCommandInput) => {
+    const s3 = new S3Client(s3Config);
+    const command = new GetObjectCommand(getParams);
+    return await getSignedUrl(s3, command, { expiresIn: 3600 });
   },
 }).launch();
