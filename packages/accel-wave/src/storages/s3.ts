@@ -32,4 +32,17 @@ export class S3Storage implements Storage {
     );
     return new File([new Blob([byteArray])], identifier);
   }
+
+  url(identifier: string) {
+    const config = this.config.s3;
+    if (!config) throw new Error("S3 config is not set");
+
+    return actions.getSignedS3Url(
+      { region: config.region },
+      {
+        Bucket: config.bucket,
+        Key: identifier,
+      }
+    );
+  }
 }
