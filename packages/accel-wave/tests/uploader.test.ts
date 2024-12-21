@@ -4,9 +4,14 @@ import { BaseUploader } from "../src";
 import { buildFile } from "./buildFile";
 
 class MyUploader extends BaseUploader {
+  override get storeDir() {
+    return "custom";
+  }
+
   override get filename() {
     return "myfile.txt";
   }
+  override set filename(value: string | undefined) {}
 }
 
 test("store()", () => {
@@ -23,7 +28,6 @@ test("store()", () => {
 test("store() with customize", () => {
   const uploader = new MyUploader({
     root: "../tmp",
-    storeDir: "custom",
     assetHost: "http://localhost",
   });
 
