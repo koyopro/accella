@@ -1,10 +1,12 @@
 import {
-  type GetObjectCommandInput,
-  type PutObjectCommandInput,
-  type S3ClientConfig,
+  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
+  type DeleteObjectCommandInput,
+  type GetObjectCommandInput,
+  type PutObjectCommandInput,
+  type S3ClientConfig,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import fs from "fs";
@@ -25,6 +27,17 @@ export const { actions, worker } = defineSyncWorker(import.meta.filename, {
       ...putConfig,
       Body: (await file.arrayBuffer()) as any,
     });
+
+    try {
+      return await s3.send(command);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+  deleteS3: async (s3Config: S3ClientConfig, deleteParams: DeleteObjectCommandInput) => {
+    const s3 = new S3Client(s3Config);
+    const command = new DeleteObjectCommand(deleteParams);
 
     try {
       return await s3.send(command);
