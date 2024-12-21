@@ -24,6 +24,28 @@ test("store()", () => {
   expect(regex.test(uploader.url()!.href)).toBeTruthy();
 });
 
+test("hasUpdate", () => {
+  const uploader = new BaseUploader();
+  const storeOfStorage = vi.spyOn((uploader as any)._storage, "store");
+  {
+    uploader.file = buildFile();
+    uploader.store();
+
+    expect(storeOfStorage).toHaveBeenCalledOnce();
+  }
+  {
+    // storeOfStorage is not called here because there are no updates
+    uploader.store();
+
+    expect(storeOfStorage).toHaveBeenCalledOnce();
+  }
+  {
+    uploader.store(buildFile());
+
+    expect(storeOfStorage).toHaveBeenCalledTimes(2);
+  }
+});
+
 test("store() with customize", () => {
   const uploader = new MyUploader({
     root: "../tmp",

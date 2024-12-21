@@ -13,17 +13,14 @@ export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
       (model as any)[attr] = uploader.filename;
     }
   });
-  model.callbacks.after["save"].push(() => {
-    if (uploader.file) {
-      uploader.store(uploader.file);
-    }
-  });
+  model.callbacks.after["save"].push(() => uploader.store());
   return uploader;
 };
 
 export class BaseUploader extends Config {
   model: Model | undefined;
   attr: string | undefined;
+  protected hasUpdate: boolean = false;
   protected _storage: Storage;
   protected _file: File | undefined;
   protected _filename: string | undefined;
@@ -51,6 +48,7 @@ export class BaseUploader extends Config {
   set file(file: File | undefined) {
     this._file = file;
     this._filename = file?.name;
+    this.hasUpdate = true;
   }
 
   url() {
@@ -64,8 +62,11 @@ export class BaseUploader extends Config {
     }
   }
 
-  store(file: File) {
-    this.file = file;
-    this._storage.store(file);
+  store(file?: File) {
+    if (file) this.file = file;
+    if (this.hasUpdate && this._file) {
+      this._storage.store(this._file);
+      this.hasUpdate = false;
+    }
   }
 }
