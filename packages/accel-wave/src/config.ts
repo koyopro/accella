@@ -2,8 +2,10 @@ import { deepMerge, type DeepPartial } from "./lib/deepMerge.js";
 import { FileStorage } from "./storages/file.js";
 import { type Storage } from "./storages/index.js";
 
+export type ConfigOptions = DeepPartial<Config>;
+
 export class Config {
-  constructor(options?: DeepPartial<Config>) {
+  constructor(options?: ConfigOptions) {
     deepMerge(this, globalConfig);
     deepMerge(this, options);
 
@@ -23,8 +25,8 @@ declare module "." {
   }
 }
 
-export let globalConfig: DeepPartial<Config> = {};
+export let globalConfig: ConfigOptions = {};
 
-export const configureAccelWave = (config: DeepPartial<Config>) => {
+export const configureAccelWave = (config: ConfigOptions) => {
   globalConfig = config;
 };
