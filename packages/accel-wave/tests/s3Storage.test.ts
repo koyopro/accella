@@ -30,16 +30,12 @@ test("store()", (context: any) => {
 });
 
 test("S3Storage with Uploader", () => {
-  const region = process.env.AWS_REGION;
-  const bucket = process.env.AWS_S3_BUCKET;
-  if (!region || !bucket) return;
-
   const uploader = new BaseUploader({
     storage: S3Storage,
-    s3: { region, Bucket: bucket, ACL: "public-read" },
+    s3: { region: "ap-northeast-1", Bucket: "my-bucket", ACL: "public-read" },
     filename: "example.txt",
   });
   expect(uploader.url()?.href).toEqual(
-    `https://${bucket}.s3.${region}.amazonaws.com/uploads/example.txt`
+    "https://my-bucket.s3.ap-northeast-1.amazonaws.com/uploads/example.txt"
   );
 });
