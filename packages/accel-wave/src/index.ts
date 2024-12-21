@@ -51,7 +51,7 @@ export class BaseUploader {
     if (this.config.assetHost) {
       return new URL(`${this.config.storeDir}/${this.filename}`, this.config.assetHost);
     } else {
-      return this.storage.url(this.filename);
+      return this.storage.url(`${this.config.storeDir}/${this.filename}`);
     }
   }
 
