@@ -42,19 +42,19 @@ export class S3Storage implements Storage {
     return new File([new Blob([byteArray])], identifier);
   }
 
-  url(identifier: string) {
+  url(path: string) {
     const config = this.config.s3;
     if (!config) throw new Error("S3 config is not set");
 
     if (config.ACL?.startsWith("public-read")) {
-      return new URL(`https://${config.Bucket}.s3.${config.region}.amazonaws.com/${identifier}`);
+      return new URL(`https://${config.Bucket}.s3.${config.region}.amazonaws.com/${path}`);
     }
 
     const url = actions.getSignedS3Url(
       { region: config.region },
       {
         Bucket: config.Bucket,
-        Key: identifier,
+        Key: path,
       }
     );
     return new URL(url);

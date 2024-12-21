@@ -39,5 +39,7 @@ test("S3Storage with Uploader", () => {
     s3: { region, Bucket: bucket, ACL: "public-read" },
     filename: "example.txt",
   });
-  expect(uploader.url()?.href).toEqual(`https://${bucket}.s3.${region}.amazonaws.com/example.txt`);
+  expect(uploader.url()?.href).toEqual(
+    `https://${bucket}.s3.${region}.amazonaws.com/uploads/example.txt`
+  );
 });
