@@ -21,4 +21,8 @@ export class FileStorage implements Storage {
     ).pathname;
     return new File([fs.readFileSync(filePath)], identifier);
   }
+
+  url(identifier: string) {
+    return new URL(`${this.config.root}/${this.config.storeDir}/${identifier}`, import.meta.url);
+  }
 }

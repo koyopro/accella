@@ -44,14 +44,12 @@ export class BaseUploader {
   }
 
   url() {
-    if (!this.file) return undefined;
+    if (!this.filename) return undefined;
+
     if (this.config.assetHost) {
       return new URL(`${this.config.storeDir}/${this.filename}`, this.config.assetHost);
     } else {
-      return new URL(
-        `${this.config.root}/${this.config.storeDir}/${this.filename}`,
-        import.meta.url
-      );
+      return this.storage.url(this.filename);
     }
   }
 
