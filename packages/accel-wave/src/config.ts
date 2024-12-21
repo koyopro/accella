@@ -20,7 +20,6 @@ declare module "." {
     storeDir: string;
     root: string;
     assetHost: string | undefined;
-    filename: string | undefined;
   }
 }
 

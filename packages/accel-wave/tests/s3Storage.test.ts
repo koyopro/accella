@@ -33,8 +33,8 @@ test("S3Storage with Uploader", () => {
   const uploader = new BaseUploader({
     storage: S3Storage,
     s3: { region: "ap-northeast-1", Bucket: "my-bucket", ACL: "public-read" },
-    filename: "example.txt",
   });
+  uploader.filename = "example.txt";
   expect(uploader.url()?.href).toEqual(
     "https://my-bucket.s3.ap-northeast-1.amazonaws.com/uploads/example.txt"
   );
