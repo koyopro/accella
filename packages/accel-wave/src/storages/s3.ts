@@ -1,6 +1,17 @@
-import type { Config } from "../config.js";
+import type { Config } from "../index.js";
 import { actions } from "../worker.js";
 import { type Storage } from "./index.js";
+
+declare module "../index.js" {
+  interface Config {
+    s3:
+      | {
+          region?: string;
+          bucket?: string;
+        }
+      | undefined;
+  }
+}
 
 export class S3Storage implements Storage {
   constructor(public config: Config) {}
