@@ -13,7 +13,7 @@ test("store()", (context: any) => {
 
   console.log(`test store() with s3 storage. region: ${region}, bucket: ${bucket}`);
 
-  const config = new Config({ s3: { region, bucket } });
+  const config = new Config({ s3: { region, Bucket: bucket } });
   const s3 = new S3Storage(config);
 
   const file = buildFile();
@@ -36,12 +36,8 @@ test("S3Storage with Uploader", () => {
 
   const uploader = new BaseUploader({
     storage: S3Storage,
-    s3: { region, bucket },
+    s3: { region, Bucket: bucket, ACL: "public-read" },
     filename: "example.txt",
   });
-  expect(uploader.url()).toMatch(
-    new RegExp(
-      `https://${bucket}.s3.${region}.amazonaws.com/example.txt\\?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=.+`
-    )
-  );
+  expect(uploader.url()?.href).toEqual(`https://${bucket}.s3.${region}.amazonaws.com/example.txt`);
 });

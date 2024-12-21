@@ -1,15 +1,11 @@
+import type { PutObjectRequest } from "@aws-sdk/client-s3";
 import type { Config } from "../index.js";
 import { actions } from "../worker.js";
 import { type Storage } from "./index.js";
 
 declare module "../index.js" {
   interface Config {
-    s3:
-      | {
-          region?: string;
-          bucket?: string;
-        }
-      | undefined;
+    s3: ({ region?: string } & Omit<PutObjectRequest, "Body" | "Key">) | undefined;
   }
 }
 
@@ -19,10 +15,12 @@ export class S3Storage implements Storage {
   store(file: File) {
     const config = this.config.s3;
     if (!config) throw new Error("S3 config is not set");
+    const { region, ...putConfig } = config;
     actions.writeS3(
-      { region: config.region },
+      { region: region },
       {
-        Bucket: config.bucket,
+        ...putConfig,
+        Bucket: config.Bucket,
         Key: file.name,
         ContentType: file.type,
       },
@@ -37,7 +35,7 @@ export class S3Storage implements Storage {
     const byteArray = actions.loadS3(
       { region: config.region },
       {
-        Bucket: config.bucket,
+        Bucket: config.Bucket,
         Key: identifier,
       }
     );
@@ -48,10 +46,14 @@ export class S3Storage implements Storage {
     const config = this.config.s3;
     if (!config) throw new Error("S3 config is not set");
 
+    if (config.ACL?.startsWith("public-read")) {
+      return new URL(`https://${config.Bucket}.s3.${config.region}.amazonaws.com/${identifier}`);
+    }
+
     const url = actions.getSignedS3Url(
       { region: config.region },
       {
-        Bucket: config.bucket,
+        Bucket: config.Bucket,
         Key: identifier,
       }
     );
