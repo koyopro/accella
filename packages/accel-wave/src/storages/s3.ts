@@ -37,12 +37,13 @@ export class S3Storage implements Storage {
     const config = this.config.s3;
     if (!config) throw new Error("S3 config is not set");
 
-    return actions.getSignedS3Url(
+    const url = actions.getSignedS3Url(
       { region: config.region },
       {
         Bucket: config.bucket,
         Key: identifier,
       }
     );
+    return new URL(url);
   }
 }
