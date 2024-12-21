@@ -1,6 +1,5 @@
 import type { Model } from "accel-record";
 import { Config } from "./config.js";
-import { FileStorage } from "./storages/file.js";
 import { type Storage } from "./storages/index.js";
 
 export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
@@ -24,7 +23,7 @@ export class BaseUploader {
 
   constructor(options?: Partial<Config>) {
     this.config = new Config(options);
-    this.storage = new FileStorage(this.config);
+    this.storage = new this.config.storage(this.config);
   }
 
   get file() {
