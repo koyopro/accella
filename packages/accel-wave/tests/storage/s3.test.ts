@@ -1,8 +1,8 @@
 import { config } from "dotenv";
 import { Config } from "src/config";
 import { BaseUploader } from "src/index";
-import { S3Storage } from "../src/storages/s3";
-import { buildFile } from "./buildFile";
+import { S3Storage } from "../../src/storages/s3";
+import { buildFile } from "../buildFile";
 
 config();
 
@@ -27,6 +27,8 @@ test("store()", (context: any) => {
       `https://${bucket}.s3.${region}.amazonaws.com/example.txt\\?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=.+`
     )
   );
+
+  s3.delete(file.name);
 });
 
 test("S3Storage with Uploader", () => {
