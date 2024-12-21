@@ -21,10 +21,18 @@ export class BaseUploader extends Config {
   protected _file: File | undefined;
   model: Model | undefined;
   attr: string | undefined;
+  protected _filename: string | undefined;
 
   constructor(options?: Partial<Config>) {
     super(options);
     this._storage = new this.storage(this);
+  }
+
+  get filename() {
+    return this._filename;
+  }
+  set filename(value: string | undefined) {
+    this._filename = value;
   }
 
   get file() {
@@ -37,7 +45,7 @@ export class BaseUploader extends Config {
 
   set file(file: File | undefined) {
     this._file = file;
-    this.filename = file?.name;
+    this._filename = file?.name;
   }
 
   url() {
