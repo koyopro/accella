@@ -11,7 +11,6 @@ class MyUploader extends BaseUploader {
   override get filename() {
     return "myfile.txt";
   }
-  override set filename(value: string | undefined) {}
 }
 
 test("store()", () => {
