@@ -12,7 +12,7 @@ declare module "../index.js" {
 export class S3Storage implements Storage {
   constructor(public config: Config) {}
 
-  store(file: File) {
+  store(file: File, identifier: string) {
     const config = this.config.s3;
     if (!config) throw new Error("S3 config is not set");
     const { region, ...putConfig } = config;
@@ -21,7 +21,7 @@ export class S3Storage implements Storage {
       {
         ...putConfig,
         Bucket: config.Bucket,
-        Key: file.name,
+        Key: identifier,
         ContentType: file.type,
       },
       file
