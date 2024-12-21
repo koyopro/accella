@@ -42,6 +42,19 @@ export class S3Storage implements Storage {
     return new File([new Blob([byteArray])], identifier);
   }
 
+  delete(identifier: string) {
+    const config = this.config.s3;
+    if (!config) throw new Error("S3 config is not set");
+
+    actions.deleteS3(
+      { region: config.region },
+      {
+        Bucket: config.Bucket,
+        Key: identifier,
+      }
+    );
+  }
+
   url(path: string) {
     const config = this.config.s3;
     if (!config) throw new Error("S3 config is not set");
