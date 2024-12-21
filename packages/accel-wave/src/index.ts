@@ -63,8 +63,9 @@ export class BaseUploader extends Config {
 
   store(file?: File) {
     if (file) this.file = file;
-    if (this.hasUpdate && this._file) {
-      this._storage.store(this._file);
+    if (this.hasUpdate && this._file && this.filename) {
+      const path = `${this.storeDir}/${this.filename}`;
+      this._storage.store(this._file, path);
       this.hasUpdate = false;
     }
   }
