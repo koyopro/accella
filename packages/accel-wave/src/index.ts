@@ -1,6 +1,5 @@
 import type { Model } from "accel-record";
-import { Config } from "./config.js";
-import type { DeepPartial } from "./lib/deepMerge.js";
+import { Config, type ConfigOptions } from "./config.js";
 import { type Storage } from "./storages/index.js";
 
 export { Config } from "./config.js";
@@ -25,7 +24,7 @@ export class BaseUploader extends Config {
   protected _file: File | undefined;
   protected _filename: string | undefined;
 
-  constructor(options?: DeepPartial<Config>) {
+  constructor(options?: ConfigOptions) {
     super(options);
     this._storage = new this.storage(this);
   }
