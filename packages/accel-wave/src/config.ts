@@ -15,17 +15,6 @@ export class Config {
   }
 }
 
-declare module "./config.js" {
-  interface Config {
-    s3:
-      | {
-          region: string;
-          bucket: string;
-        }
-      | undefined;
-  }
-}
-
 export let globalConfig: DeepPartial<Config> = {};
 
 export const configureAccelWave = (config: DeepPartial<Config>) => {

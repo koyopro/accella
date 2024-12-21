@@ -2,6 +2,8 @@ import type { Model } from "accel-record";
 import { Config } from "./config.js";
 import { type Storage } from "./storages/index.js";
 
+export { Config } from "./config.js";
+
 export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
   uploader.model = model;
   uploader.attr = attr;
