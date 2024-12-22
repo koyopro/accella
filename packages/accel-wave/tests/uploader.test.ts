@@ -22,6 +22,12 @@ test("store()", () => {
 
   const regex = new RegExp("file:///.+/accel-wave/public/uploads/example.txt");
   expect(regex.test(uploader.url()!.href)).toBeTruthy();
+
+  const target = uploader.url()!.pathname;
+  expect(fs.existsSync(target)).toBeTruthy();
+
+  uploader.store(null); // this should remove the file
+  expect(fs.existsSync(target)).toBeFalsy();
 });
 
 test("hasUpdate", () => {

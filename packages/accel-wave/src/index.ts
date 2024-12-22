@@ -63,11 +63,17 @@ export class BaseUploader extends Config {
     }
   }
 
-  store(file?: File) {
+  store(file?: File | undefined | null) {
+    const prevPath = `${this.storeDir}/${this.filename}`;
     if (file) this.file = file;
+    if (file === null) this.file = undefined;
     if (this.hasUpdate && this._file && this.filename) {
       const path = `${this.storeDir}/${this.filename}`;
       this._storage.store(this._file, path);
+      this.hasUpdate = false;
+    }
+    if (this.hasUpdate && !this._file) {
+      this._storage.delete(prevPath);
       this.hasUpdate = false;
     }
   }
