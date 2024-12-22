@@ -3,6 +3,7 @@ import { Config, type ConfigOptions } from "./config.js";
 import { type Storage } from "./storages/index.js";
 
 export { Config } from "./config.js";
+export { worker } from "./worker.js";
 
 export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
   uploader.model = model;
