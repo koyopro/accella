@@ -15,7 +15,7 @@
     "@astrojs/check": "^0.8.1",
     "@astrojs/node": "^8.3.2",
     "accel-web": "^0.5.1",
-    "accel-record": "^1.18.0",
+    "accel-record": "^1.19.0",
     "astro": "^4.16.8",
     "dotenv": "^16.4.5",
     "mysql2": "^3.9.8",
