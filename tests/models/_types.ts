@@ -34,7 +34,10 @@ import {
 declare module "accel-record" {
   function meta<T>(model: T): Meta<T>;
 
-  interface Relation<T, M> {}
+  interface Relation<T, M> {
+    john: (T extends User ? typeof UserModel['john'] : T extends Post ? typeof PostModel['john'] : never);
+    adults: (T extends User ? typeof UserModel['adults'] : never);
+  }
 }
 
 type Meta<T> = T extends typeof UserModel | UserModel ? UserMeta :
