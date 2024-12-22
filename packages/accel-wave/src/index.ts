@@ -40,7 +40,8 @@ export class BaseUploader extends Config {
     if (this._file) return this._file;
     if (this.model && this.attr) {
       const identifier = (this.model as any)[this.attr];
-      return (this._file = this._storage.retrive(identifier));
+      const path = `${this.storeDir}/${identifier}`;
+      return (this._file = this._storage.retrive(path));
     }
   }
 
