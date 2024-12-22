@@ -4,6 +4,7 @@ import { getViteConfig } from "astro/config";
 export default getViteConfig({
   test: {
     globals: true,
+    setupFiles: ["tests/setup.ts"],
   },
   esbuild: {
     target: "es2022",
