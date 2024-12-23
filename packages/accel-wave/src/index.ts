@@ -14,6 +14,9 @@ export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
   model.callbacks.after["save"].push(() => {
     uploader.store();
   });
+  model.callbacks.after["destroy"].push(() => {
+    uploader.store(null);
+  });
   return uploader;
 };
 
