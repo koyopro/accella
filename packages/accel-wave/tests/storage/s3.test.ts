@@ -1,6 +1,5 @@
 import { config } from "dotenv";
 import { Config } from "src/config";
-import { BaseUploader } from "src/index";
 import { S3Storage } from "../../src/storages/s3";
 import { buildFile } from "../buildFile";
 
@@ -31,13 +30,12 @@ test("store()", (context: any) => {
   s3.delete(file.name);
 });
 
-test("S3Storage with Uploader", () => {
-  const uploader = new BaseUploader({
-    storage: S3Storage,
+test("S3Storage with ACL config", () => {
+  const config = new Config({
     s3: { region: "ap-northeast-1", Bucket: "my-bucket", ACL: "public-read" },
   });
-  uploader.filename = "example.txt";
-  expect(uploader.url()?.href).toEqual(
+  const s3 = new S3Storage(config);
+  expect(s3.url("uploads/example.txt")?.href).toEqual(
     "https://my-bucket.s3.ap-northeast-1.amazonaws.com/uploads/example.txt"
   );
 });
