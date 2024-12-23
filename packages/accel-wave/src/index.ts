@@ -9,18 +9,18 @@ export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
   uploader.model = model;
   uploader.attr = attr;
   model.callbacks.before["save"].push(() => {
-    if (uploader.filename) {
-      (model as any)[attr] = uploader.filename;
-    }
+    (model as any)[attr] = uploader.filename;
   });
-  model.callbacks.after["save"].push(() => uploader.store());
+  model.callbacks.after["save"].push(() => {
+    uploader.store();
+  });
   return uploader;
 };
 
 export class Item {
   constructor(
-    public identifier: string,
-    public file: File
+    public readonly identifier: string,
+    public readonly file: File
   ) {}
 }
 
@@ -43,7 +43,7 @@ export class BaseUploader extends Config {
   }
 
   get file() {
-    if (this.item?.file) return this.item.file;
+    if (this.item) return this.item.file;
     if (this.model && this.attr) {
       const identifier = (this.model as any)[this.attr];
       const path = this.pathFor(identifier);
@@ -75,8 +75,8 @@ export class BaseUploader extends Config {
     if (file === null) this.file = undefined;
     if (this.hasUpdate && this.item) {
       this._storage.store(this.item.file, this.path);
-      this.hasUpdate = false;
     }
+    this.hasUpdate = false;
     for (const item of this.removedItems) {
       this._storage.delete(this.pathFor(item.identifier));
     }
