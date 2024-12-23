@@ -15,5 +15,6 @@ test("mount", () => {
   const p = Profile.find(user.id);
   expect(p.avatar.file?.name).toBe("example.png");
 
-  fs.unlinkSync(target);
+  p.destroy();
+  expect(fs.existsSync(target)).toBeFalsy();
 });
