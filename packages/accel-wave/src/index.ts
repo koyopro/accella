@@ -19,7 +19,7 @@ export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
 
 export class Item {
   constructor(
-    public identifier: string | undefined,
+    public identifier: string,
     public file: File
   ) {}
 }
@@ -38,9 +38,9 @@ export class BaseUploader extends Config {
   }
 
   get filename() {
-    return this.item?.identifier;
+    return this.item?.identifier ?? "";
   }
-  set filename(value: string | undefined) {
+  set filename(value: string) {
     if (this.item) this.item.identifier = value;
   }
 
@@ -48,7 +48,7 @@ export class BaseUploader extends Config {
     if (this.item?.file) return this.item.file;
     if (this.model && this.attr) {
       const identifier = (this.model as any)[this.attr];
-      const path = `${this.storeDir}/${identifier}`;
+      const path = this.pathFor(identifier);
       this.item = new Item(identifier, this._storage.retrive(path));
       return this.item.file;
     }
@@ -61,13 +61,12 @@ export class BaseUploader extends Config {
   }
 
   url() {
-    if (!this.filename) return undefined;
+    if (!this.item) return undefined;
 
-    const path = `${this.storeDir}/${this.filename}`;
     if (this.assetHost) {
-      return new URL(path, this.assetHost);
+      return new URL(this.path, this.assetHost);
     } else {
-      return this._storage.url(path);
+      return this._storage.url(this.path);
     }
   }
 
@@ -75,14 +74,20 @@ export class BaseUploader extends Config {
     if (file) this.file = file;
     if (file === null) this.file = undefined;
     if (this.hasUpdate && this.item?.file && this.filename) {
-      const path = `${this.storeDir}/${this.filename}`;
-      this._storage.store(this.item.file, path);
+      this._storage.store(this.item.file, this.path);
       this.hasUpdate = false;
     }
     for (const item of this.removedItems) {
-      const path = `${this.storeDir}/${item.identifier}`;
-      this._storage.delete(path);
+      this._storage.delete(this.pathFor(item.identifier));
     }
     this.removedItems = [];
+  }
+
+  protected get path() {
+    return this.pathFor(this.filename);
+  }
+
+  protected pathFor(identifier: string) {
+    return `${this.storeDir}/${identifier}`;
   }
 }
