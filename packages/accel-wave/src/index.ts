@@ -29,6 +29,7 @@ export class BaseUploader extends Config {
   attr: string | undefined;
   protected hasUpdate: boolean = false;
   protected _storage: Storage;
+  protected _filename: string | undefined;
   protected item: Item | undefined;
   protected removedItems: Item[] = [];
 
@@ -38,10 +39,7 @@ export class BaseUploader extends Config {
   }
 
   get filename() {
-    return this.item?.identifier ?? "";
-  }
-  set filename(value: string) {
-    if (this.item) this.item.identifier = value;
+    return this._filename ?? "";
   }
 
   get file() {
@@ -49,14 +47,16 @@ export class BaseUploader extends Config {
     if (this.model && this.attr) {
       const identifier = (this.model as any)[this.attr];
       const path = this.pathFor(identifier);
-      this.item = new Item(identifier, this._storage.retrive(path));
+      this._filename = identifier;
+      this.item = new Item(this.filename, this._storage.retrive(path));
       return this.item.file;
     }
   }
 
   set file(file: File | undefined) {
     if (this.item) this.removedItems.push(this.item);
-    this.item = file ? new Item(file.name, file) : undefined;
+    this._filename = file?.name;
+    this.item = file ? new Item(this.filename, file) : undefined;
     this.hasUpdate = true;
   }
 
@@ -73,7 +73,7 @@ export class BaseUploader extends Config {
   store(file?: File | undefined | null) {
     if (file) this.file = file;
     if (file === null) this.file = undefined;
-    if (this.hasUpdate && this.item?.file && this.filename) {
+    if (this.hasUpdate && this.item) {
       this._storage.store(this.item.file, this.path);
       this.hasUpdate = false;
     }
@@ -84,7 +84,7 @@ export class BaseUploader extends Config {
   }
 
   protected get path() {
-    return this.pathFor(this.filename);
+    return this.pathFor(this.item?.identifier ?? "");
   }
 
   protected pathFor(identifier: string) {
