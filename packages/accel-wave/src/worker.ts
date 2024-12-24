@@ -12,6 +12,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import fs from "fs";
 import path from "path";
 import { defineSyncWorker } from "sync-actions";
+import { download } from "./worker/download.js";
 
 export const { actions, worker } = defineSyncWorker(import.meta.filename, {
   writeFile: async (filePath: string, file: File) => {
@@ -63,4 +64,5 @@ export const { actions, worker } = defineSyncWorker(import.meta.filename, {
     const command = new GetObjectCommand(getParams);
     return await getSignedUrl(s3, command, { expiresIn: 3600 });
   },
+  download,
 }).launch();
