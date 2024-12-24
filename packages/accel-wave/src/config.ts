@@ -6,13 +6,13 @@ export type ConfigOptions = DeepPartial<Config>;
 
 export class Config {
   constructor(options?: ConfigOptions) {
-    deepMerge(this, globalConfig);
+    const defalutValues = {
+      storage: FileStorage,
+      storeDir: "uploads",
+      root: `${process.cwd()}/public`,
+    };
+    deepMerge(Config.prototype, Object.assign(defalutValues, globalConfig));
     deepMerge(this, options);
-
-    // Default values
-    this.storage ??= FileStorage;
-    this.storeDir ??= "uploads";
-    this.root ??= `${process.cwd()}/public`;
   }
 }
 
