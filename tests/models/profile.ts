@@ -7,7 +7,7 @@ export class ProfileModel extends ApplicationRecord {
 
   data: string[] = [];
 
-  avatar = mount(this, "avatarPath", new BaseUploader());
+  avatar = mount(this, "avatarPath", BaseUploader);
 
   @before("validation")
   beforeValidation() {
