@@ -8,9 +8,6 @@ export { worker } from "./worker.js";
 export const mount = (model: Model, attr: string, uploader: BaseUploader) => {
   uploader.model = model;
   uploader.attr = attr;
-  model.callbacks.before["save"].push(() => {
-    (model as any)[attr] = uploader.filename;
-  });
   model.callbacks.after["save"].push(() => {
     uploader.store();
   });
@@ -59,7 +56,10 @@ export class BaseUploader extends Config {
   set file(file: File | undefined) {
     if (this.item) this.removedItems.push(this.item);
     this._filename = file?.name;
-    this.item = file ? new Item(this.filename, file) : undefined;
+    const filename = this.filename;
+    this.item = file ? new Item(filename, file) : undefined;
+    if (this.model && this.attr) (this.model as any)[this.attr] = filename;
+
     this.hasUpdate = true;
   }
 
