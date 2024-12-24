@@ -4,15 +4,15 @@ import { $user } from "../factories/user";
 import { Profile } from "../models";
 
 test("mount", () => {
-  const user = $Profile.create({ user: $user.create() });
+  const profile = $Profile.create({ user: $user.create() });
   const file = new File([], "example.png", { type: "image/png" });
   const target = `${process.cwd()}/public/uploads/example.png`;
-  user.avatar.file = file;
-  user.save();
+  profile.avatar.file = file;
+  profile.save();
   expect(fs.existsSync(target)).toBeTruthy();
-  expect(user.avatarPath).toBe("example.png");
+  expect(profile.avatarPath).toBe("example.png");
 
-  const p = Profile.find(user.id);
+  const p = Profile.find(profile.id);
   expect(p.avatar.file?.name).toBe("example.png");
 
   p.destroy();
