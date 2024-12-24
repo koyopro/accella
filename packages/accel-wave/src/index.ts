@@ -5,7 +5,11 @@ import { type Storage } from "./storages/index.js";
 export { Config } from "./config.js";
 export { worker } from "./worker.js";
 
-export const mount = (model: Model, attr: string, uploaderClass: typeof BaseUploader) => {
+export const mount = <T extends Model>(
+  model: T,
+  attr: keyof T & string,
+  uploaderClass: typeof BaseUploader
+) => {
   const uploader = new uploaderClass();
   uploader.model = model;
   uploader.attr = attr;
