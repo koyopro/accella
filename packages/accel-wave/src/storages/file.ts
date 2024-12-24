@@ -1,7 +1,7 @@
 import fs from "fs";
 import { basename } from "path";
 import { Config } from "../config.js";
-import { actions } from "../worker.js";
+import { actions } from "../worker/index.js";
 import { type Storage } from "./index.js";
 
 export class FileStorage implements Storage {
