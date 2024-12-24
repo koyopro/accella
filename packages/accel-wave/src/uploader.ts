@@ -73,8 +73,8 @@ export class BaseUploader extends Config {
     this.removedItems = [];
   }
 
-  download(url: string) {
-    this.file = actions.download(url);
+  download(url: string): File {
+    return (this.file = actions.download(url));
   }
 
   protected get path() {
