@@ -68,3 +68,16 @@ const read = (filePath: string) => {
   const absolutePath = path.resolve(__dirname, filePath);
   return fs.readFileSync(absolutePath, "utf-8");
 };
+
+test("download()", () => {
+  const uploader = new BaseUploader();
+
+  uploader.download("https://avatars.githubusercontent.com/u/0?v=1");
+  expect(uploader.file).toBeDefined();
+  expect(uploader.file!.size).toBe(5065);
+
+  expect(() => uploader.download("invalid_url")).toThrowError("Invalid URL");
+  expect(() => uploader.download("https://raw.githubusercontent.com/github/x/y/z")).toThrowError(
+    "Failed to get 'https://raw.githubusercontent.com/github/x/y/z' (404)"
+  );
+});
