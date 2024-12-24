@@ -1,5 +1,5 @@
 import type { Model } from "accel-record";
-import type { BaseUploader } from ".";
+import type { BaseUploader } from "./index.js";
 
 export const mount = <T extends Model>(
   model: T,
