@@ -5,7 +5,9 @@ import { type Storage } from "./index.js";
 
 declare module "../index.js" {
   interface Config {
-    s3: ({ region?: string } & Partial<Omit<PutObjectRequest, "Body" | "Key">>) | undefined;
+    readonly s3:
+      | Readonly<{ region?: string } & Partial<Omit<PutObjectRequest, "Body" | "Key">>>
+      | undefined;
   }
 }
 
