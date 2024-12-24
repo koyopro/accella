@@ -18,14 +18,14 @@ export class Config {
 
 declare module "." {
   interface Config {
-    storage: new (config: Config) => Storage;
-    storeDir: string;
-    root: string;
-    assetHost: string | undefined;
+    readonly storage: new (config: Config) => Storage;
+    readonly storeDir: string;
+    readonly root: string;
+    readonly assetHost: string | undefined;
   }
 }
 
-export let globalConfig: ConfigOptions = {};
+let globalConfig: ConfigOptions = {};
 
 export const configureAccelWave = (config: ConfigOptions) => {
   globalConfig = config;
