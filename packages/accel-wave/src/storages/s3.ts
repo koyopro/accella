@@ -1,6 +1,6 @@
 import type { PutObjectRequest } from "@aws-sdk/client-s3";
 import type { Config } from "../index.js";
-import { actions } from "../worker.js";
+import { actions } from "../worker/index.js";
 import { type Storage } from "./index.js";
 
 declare module "../index.js" {

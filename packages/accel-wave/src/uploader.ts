@@ -2,7 +2,7 @@ import type { Model } from "accel-record";
 import type { ConfigOptions } from "./config.js";
 import { Config } from "./index.js";
 import type { Storage } from "./storages/index.js";
-import { actions } from "./worker.js";
+import { actions } from "./worker/index.js";
 
 export class Item {
   constructor(
