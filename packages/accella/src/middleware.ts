@@ -2,19 +2,10 @@ import { RecordNotFound } from "accel-record/errors";
 import { RequestParameters } from "accel-web";
 import { APIContext } from "astro";
 import { ZodError } from "zod";
-import { Accel } from "./index.js";
+import { runInitializers } from "./initialize.js";
 import { getSession } from "./session";
 
-const setup = async () => {
-  const path = Accel.root.child("src/config/database").toString();
-  try {
-    const setupDatabase = (await import(/* @vite-ignore */ path)).default;
-    await setupDatabase();
-  } catch (error) {
-    console.warn("Error setting up database", error);
-  }
-};
-await setup();
+await runInitializers();
 
 export const onRequest = async (context: APIContext, next: any) => {
   const { cookies, request, params, locals } = context;
