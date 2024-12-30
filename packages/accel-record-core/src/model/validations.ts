@@ -1,7 +1,7 @@
 import { Collection } from "../associations/collectionProxy.js";
 import { HasManyAssociation } from "../associations/hasManyAssociation.js";
 import { HasOneAssociation } from "../associations/hasOneAssociation.js";
-import { Model, ModelBase } from "../index.js";
+import { FormModel, Model, ModelBase } from "../index.js";
 import { Meta } from "../meta.js";
 import { Errors } from "../validation/errors.js";
 import { AcceptanceOptions, AcceptanceValidator } from "../validation/validator/acceptance.js";
@@ -179,10 +179,18 @@ type ValidateItem<T, K> = [K | K[], ValidatesOptions<T>] | typeof Validator<any>
  * }
  * ```
  */
-export const validates = <T extends typeof Model, K extends keyof Meta<T>["CreateInput"] & string>(
+export function validates<T extends typeof Model, K extends keyof Meta<T>["CreateInput"] & string>(
   klass: T,
   list: ValidateItem<T, K>[]
-): ValidateItem<any, any>[] => {
+): ValidateItem<any, any>[];
+export function validates<T extends typeof FormModel, K extends keyof InstanceType<T> & string>(
+  klass: T,
+  list: ValidateItem<T, K>[]
+): ValidateItem<any, any>[];
+export function validates<T, K extends string>(
+  klass: T,
+  list: ValidateItem<T, K>[]
+): ValidateItem<any, any>[] {
   const base = Object.getPrototypeOf(klass).validations ?? [];
   return [...base, ...list];
-};
+}
