@@ -18,6 +18,10 @@
       "types": "./dist/enums.d.ts",
       "default": "./dist/enums.js"
     },
+    "./validations": {
+      "types": "./dist/validations.d.ts",
+      "default": "./dist/validations.js"
+    },
     "./search": {
       "types": "./dist/search.d.ts",
       "default": "./dist/search.js"
