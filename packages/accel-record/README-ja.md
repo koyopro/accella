@@ -930,12 +930,11 @@ newUser.age; // => 20
 
 ```ts
 // src/models/user.ts
+import { validates } from "accel-record/validations";
 import { ApplicationRecord } from "./applicationRecord.js";
 
 export class UserModel extends ApplicationRecord {
-  override validateAttributes() {
-    this.validates("firstName", { presence: true });
-  }
+  static validations = validates(this, [["firstName", { presence: true }]]);
 }
 ```
 
@@ -972,7 +971,8 @@ User.create({ firstName: "" }); // => Error: Failed to create
 
 ### バリデーションの定義
 
-BaseModelの `validateAttributes`メソッドをオーバーライドすることで、バリデーションを定義することができます。
+`validates()`関数を利用しモデルクラスに`validations`プロパティを用意することで、バリデーションを定義することができます。
+または、BaseModelの`validateAttributes()`メソッドをオーバーライドする方法もあります。
 
 ```ts
 // prisma/schema.prisma
@@ -989,27 +989,35 @@ model ValidateSample {
 ```ts
 // ./models/validateSample.ts
 import { Validator } from "accel-record";
+import { validates } from "accel-record/validations";
 import { ApplicationRecord } from "./applicationRecord.js";
 
 export class ValidateSampleModel extends ApplicationRecord {
-  // validateAttributesメソッドをオーバーライドして、バリデーションを定義します。
-  override validateAttributes() {
+  static validations = validates(this, [
     // よく使われるバリデーションは、バリデーションヘルパーを利用して簡単に記述ができます。
-    this.validates("accepted", { acceptance: true });
-    this.validates("pattern", {
-      length: { minimum: 2, maximum: 5 },
-      format: { with: /^[a-z]+$/, message: "only allows lowercase letters" },
-    });
-    this.validates("size", { inclusion: { in: ["small", "medium", "large"] } });
-    this.validates(["key", "size"], { presence: true });
+    ["accepted", { acceptance: true }],
+    [
+      "pattern",
+      {
+        length: { minimum: 2, maximum: 5 },
+        format: { with: /^[a-z]+$/, message: "only allows lowercase letters" },
+      },
+    ],
+    ["size", { inclusion: { in: ["small", "medium", "large"] } }],
+    [["key", "size"], { presence: true }],
+
+    // カスタムバリデータの利用例
+    MyValidator,
+  ]);
+
+  // validateAttributesメソッドをオーバーライドして、バリデーションを定義することもできます。
+  override validateAttributes() {
     this.validates("key", { uniqueness: true });
 
     // 独自のロジックでバリデーションを行う場合は、 errros.add メソッドを利用してエラーメッセージを追加します。
     if (this.key && !/^[a-z]$/.test(this.key[0])) {
       this.errors.add("key", "should start with a lowercase letter");
     }
-    // カスタムバリデータの利用例
-    this.validatesWith(new MyValidator(this));
   }
 }
 
@@ -1197,12 +1205,11 @@ errors.messages.[messageKey]
 ```
 
 ```ts
+import { validates } from "accel-record/validations";
 import { ApplicationRecord } from "./applicationRecord.js";
 
 class UserModel extends ApplicationRecord {
-  override validateAttributes() {
-    this.validates("firstName", { presence: true });
-  }
+  static validations = validates(this, [["firstName", { presence: true }]]);
 }
 ```
 
@@ -1376,16 +1383,17 @@ Formオブジェクトは、通常のモデルとは切り分けてバリデー�
 ```ts
 import { FormModel } from "accel-record";
 import { attributes } from "accel-record/attributes";
+import { validates } from "accel-record/validations";
 
 class MyForm extends FormModel {
   title = attributes.string();
   priority = attributes.integer(3);
   dueDate = attributes.date();
 
-  override validateAttributes() {
-    this.validates("title", { presence: true });
-    this.validates("priority", { numericality: { between: [1, 5] } });
-  }
+  static validations = validates(this, [
+    ["title", { presence: true }],
+    ["priority", { numericality: { between: [1, 5] } }],
+  ]);
 
   save() {
     if (this.isInvalid()) return false;
