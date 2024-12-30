@@ -1,5 +1,5 @@
 import { Validator } from "accel-record";
-import { validates } from "accel-record-core/dist/model/validations.js";
+import { validates } from "accel-record/validations";
 import { ApplicationRecord } from "./applicationRecord.js";
 
 class MyValidator extends Validator<{ key: string | undefined }> {

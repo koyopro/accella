@@ -1,4 +1,4 @@
-import { validates } from "accel-record-core/dist/model/validations";
+import { validates } from "accel-record/validations";
 import { ValidateSampleModel } from "../validateSample";
 
 test("validates()", () => {
