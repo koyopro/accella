@@ -1,7 +1,7 @@
 import { Collection } from "../associations/collectionProxy.js";
 import { HasManyAssociation } from "../associations/hasManyAssociation.js";
 import { HasOneAssociation } from "../associations/hasOneAssociation.js";
-import { Model, ModelBase } from "../index.js";
+import { FormModel, Model, ModelBase } from "../index.js";
 import { Meta } from "../meta.js";
 import { Errors } from "../validation/errors.js";
 import { AcceptanceOptions, AcceptanceValidator } from "../validation/validator/acceptance.js";
@@ -45,8 +45,7 @@ export class Validations {
   isValid<T extends ModelBase & Validations>(this: T): boolean {
     this.runBeforeCallbacks("validation");
     this.errors.clearAll();
-    this.validateAttributes();
-    this.validateAssociations();
+    this.runValidations();
     this.runAfterCallbacks("validation");
     return this.errors.isEmpty();
   }
@@ -81,6 +80,25 @@ export class Validations {
    */
   validate<T extends Model>(this: T): boolean {
     return this.isValid();
+  }
+
+  protected runValidations<T extends ModelBase & Validations>(this: T) {
+    this.validateWithStaticProps();
+    this.validateAttributes();
+    this.validateAssociations();
+  }
+
+  validateWithStaticProps<T extends ModelBase & Validations>(this: T) {
+    const validations = (this.constructor as any)["validations"];
+    if (Array.isArray(validations)) {
+      for (const validation of validations) {
+        if (typeof validation === "function") {
+          new validation(this).validate();
+        } else {
+          this.validates(validation[0], validation[1]);
+        }
+      }
+    }
   }
 
   /**
@@ -134,4 +152,45 @@ export class Validations {
         new NumericalityValidator(this, attribute, options.numericality).validate();
     }
   }
+}
+
+type ValidateItem<T, K> = [K | K[], ValidatesOptions<T>] | typeof Validator<any>;
+
+/**
+ * Combines the base validations of a given model class with additional validation items.
+ *
+ * @returns An array containing the combined base and additional validation items.
+ * @example
+ * ```ts
+ * export class ValidateSampleModel extends ApplicationRecord {
+ *   static validations = validates(this, [
+ *     ["accepted", { acceptance: true }],
+ *     [["key", "size"], { presence: true }],
+ *     MyValidator,
+ *   ]);
+ * }
+ *
+ * class MyValidator extends Validator<{ key: string | undefined }> {
+ *   validate() {
+ *     if (this.record.key === "xs") {
+ *       this.errors.add("key", "should not be xs");
+ *     }
+ *   }
+ * }
+ * ```
+ */
+export function validates<T extends typeof Model, K extends keyof Meta<T>["CreateInput"] & string>(
+  klass: T,
+  list: ValidateItem<T, K>[]
+): ValidateItem<any, any>[];
+export function validates<T extends typeof FormModel, K extends keyof InstanceType<T> & string>(
+  klass: T,
+  list: ValidateItem<T, K>[]
+): ValidateItem<any, any>[];
+export function validates<T, K extends string>(
+  klass: T,
+  list: ValidateItem<T, K>[]
+): ValidateItem<any, any>[] {
+  const base = Object.getPrototypeOf(klass).validations ?? [];
+  return [...base, ...list];
 }

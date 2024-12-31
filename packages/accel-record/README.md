@@ -929,12 +929,11 @@ Here is an example of validation for a model.
 
 ```ts
 // src/models/user.ts
+import { validates } from "accel-record/validations";
 import { ApplicationRecord } from "./applicationRecord.js";
 
 export class UserModel extends ApplicationRecord {
-  override validateAttributes() {
-    this.validates("firstName", { presence: true });
-  }
+  static validations = validates(this, [["firstName", { presence: true }]]);
 }
 ```
 
@@ -956,7 +955,7 @@ When using the `save`, `update`, and `create` methods, validation is automatical
 ```ts
 import { User } from "./models/index.js";
 
-// When a validation error occurs, save and update will return false.
+// If a validation error occurs, save or update will return false.
 const newUser = User.build({ firstName: "" });
 newUser.save(); // => false
 newUser.errors.fullMessages(); // => ["FirstName can't be blank"]
@@ -965,13 +964,13 @@ const user = User.first()!;
 user.update({ firstName: "" }); // => false
 newUser.errors.fullMessages(); // => ["FirstName can't be blank"]
 
-// When a validation error occurs, create will throw an exception.
+// If a validation error occurs, create will throw an exception.
 User.create({ firstName: "" }); // => Error: Failed to create
 ```
 
 ### Validation Definition
 
-You can define validations by overriding the `validateAttributes` method of the BaseModel.
+You can define validations by using the `validates()` function and adding a `validations` property to the model class. Alternatively, you can override the `validateAttributes()` method of the BaseModel.
 
 ```ts
 // prisma/schema.prisma
@@ -988,27 +987,35 @@ model ValidateSample {
 ```ts
 // ./models/validateSample.ts
 import { Validator } from "accel-record";
+import { validates } from "accel-record/validations";
 import { ApplicationRecord } from "./applicationRecord.js";
 
 export class ValidateSampleModel extends ApplicationRecord {
-  // Override the validateAttributes method to define validations.
+  static validations = validates(this, [
+    // Common validations can be easily written using validation helpers.
+    ["accepted", { acceptance: true }],
+    [
+      "pattern",
+      {
+        length: { minimum: 2, maximum: 5 },
+        format: { with: /^[a-z]+$/, message: "only allows lowercase letters" },
+      },
+    ],
+    ["size", { inclusion: { in: ["small", "medium", "large"] } }],
+    [["key", "size"], { presence: true }],
+
+    // Example of using a custom validator
+    MyValidator,
+  ]);
+
+  // You can also override the validateAttributes method to define validations.
   override validateAttributes() {
-    // Common validations can be easily defined using validation helpers.
-    this.validates("accepted", { acceptance: true });
-    this.validates("pattern", {
-      length: { minimum: 2, maximum: 5 },
-      format: { with: /^[a-z]+$/, message: "only allows lowercase letters" },
-    });
-    this.validates("size", { inclusion: { in: ["small", "medium", "large"] } });
-    this.validates(["key", "size"], { presence: true });
     this.validates("key", { uniqueness: true });
 
     // If you want to perform custom validation logic, use the errors.add method to add error messages.
     if (this.key && !/^[a-z]$/.test(this.key[0])) {
       this.errors.add("key", "should start with a lowercase letter");
     }
-    // Example of using a custom validator
-    this.validatesWith(new MyValidator(this));
   }
 }
 
@@ -1196,12 +1203,11 @@ errors.messages.[messageKey]
 ```
 
 ```ts
+import { validates } from "accel-record/validations";
 import { ApplicationRecord } from "./applicationRecord.js";
 
 class UserModel extends ApplicationRecord {
-  override validateAttributes() {
-    this.validates("firstName", { presence: true });
-  }
+  static validations = validates(this, [["firstName", { presence: true }]]);
 }
 ```
 
@@ -1375,16 +1381,17 @@ By inheriting from the `FormModel` class, you can define attributes and perform 
 ```ts
 import { FormModel } from "accel-record";
 import { attributes } from "accel-record/attributes";
+import { validates } from "accel-record/validations";
 
 class MyForm extends FormModel {
   title = attributes.string();
   priority = attributes.integer(3);
   dueDate = attributes.date();
 
-  override validateAttributes() {
-    this.validates("title", { presence: true });
-    this.validates("priority", { numericality: { between: [1, 5] } });
-  }
+  static validations = validates(this, [
+    ["title", { presence: true }],
+    ["priority", { numericality: { between: [1, 5] } }],
+  ]);
 
   save() {
     if (this.isInvalid()) return false;
