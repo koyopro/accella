@@ -1,5 +1,11 @@
 # prisma-generator-accel-record
 
+## 1.18.1
+
+### Patch Changes
+
+- [#91](https://github.com/koyopro/accella/pull/91) [`bfc9af8`](https://github.com/koyopro/accella/commit/bfc9af847b254b9356e731320355e778261057f2) Thanks [@koyopro](https://github.com/koyopro)! - Disable sync-actions launch to prevent the process from hanging
+
 ## 1.18.0
 
 ### Minor Changes
