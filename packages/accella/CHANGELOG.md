@@ -1,5 +1,11 @@
 # accella
 
+## 0.2.0
+
+### Minor Changes
+
+- [#93](https://github.com/koyopro/accella/pull/93) [`991dcc8`](https://github.com/koyopro/accella/commit/991dcc844a018286ef39c83402c3b9ba402b93a8) Thanks [@koyopro](https://github.com/koyopro)! - feat: Load the files in the config/initializers directory during initialization
+
 ## 0.1.0
 
 ### Minor Changes
