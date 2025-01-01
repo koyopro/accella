@@ -7,6 +7,7 @@ import { RelationUpdater } from "./relation.js";
 export class Search<T> {
   readonly params: Record<string, any>;
   readonly [key: string]: any;
+  sorts: string[];
 
   constructor(
     protected model: typeof Model,
@@ -14,6 +15,8 @@ export class Search<T> {
     protected relation: Relation<any, any> | undefined = undefined
   ) {
     this.params = JSON.parse(JSON.stringify(params ?? {}));
+    const sorts = this.params["s"] ?? [];
+    this.sorts = Array.isArray(sorts) ? sorts : [sorts];
     for (const key of Object.keys(this.params)) {
       if (isBlank(this.params[key])) delete this.params[key];
       else if (key.match(/.+_.+/)) {
@@ -39,6 +42,12 @@ export class Search<T> {
           // Ignore the error
         } else throw e;
       }
+    }
+    for (const sort of this.sorts) {
+      const [attr, direction] = sort.split(" ");
+      if (direction !== "asc" && direction !== "desc") continue;
+      if (!this.model.attributeToColumn(attr)) continue;
+      relation = relation.order(attr, direction);
     }
     return relation as Relation<T, Meta<T>>;
   }
