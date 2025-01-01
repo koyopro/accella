@@ -10,7 +10,7 @@ export class Search<T> {
   sorts: string[];
 
   constructor(
-    protected model: typeof Model,
+    public readonly model: typeof Model,
     params: Record<string, any> | undefined,
     protected relation: Relation<any, any> | undefined = undefined
   ) {
