@@ -4,10 +4,8 @@ import { Account } from "src/models";
 import Layout from "../layouts/Layout.astro";
 
 const { params } = Astro.locals;
-const url = new URL(Astro.request.url);
-const searchParams = url.searchParams;
-const page = Number(searchParams.get("p")) || 1;
 
+const page = Number(params.p) || 1;
 const q = Account.search(Object.assign({ s: "id desc" }, params.q));
 
 const pager = paginate(q.result(), {
