@@ -1,6 +1,6 @@
 import { Search } from "accel-record/search";
 
-type Direction = "asc" | "desc";
+export type Direction = "asc" | "desc";
 
 export const sortUrl = (
   q: Search<any>,

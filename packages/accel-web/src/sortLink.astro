@@ -1,16 +1,20 @@
 ---
 import { Search } from "accel-record/search";
+import { Direction, sortUrl } from "./sort.js";
 
 type Props = {
   q: Search<any>;
   key: string;
+  defaultOrder?: Direction;
+  keys?: string[];
 };
 
-const { q, key } = Astro.props;
+const { q, key, defaultOrder, keys } = Astro.props;
+const href = sortUrl(q, key, { request: Astro.request, defaultOrder, keys });
 ---
 
 <sort-link data-key={key}>
-  <a href="#" class="sort-link__text">
+  <a href={href} class="sort-link__text">
     {Astro.slots.has("default") ? <slot /> : q.model.humanAttributeName(key)}
     <span class="sort-link__icon">
       <svg
@@ -30,18 +34,3 @@ const { q, key } = Astro.props;
     </span>
   </a>
 </sort-link>
-
-<script>
-  class SortLink extends HTMLElement {
-    constructor() {
-      super();
-
-      const button = this.querySelector("a")!;
-      button.addEventListener("click", () => {
-        console.log("clicked", this.dataset.key);
-      });
-    }
-  }
-
-  customElements.define("sort-link", SortLink);
-</script>

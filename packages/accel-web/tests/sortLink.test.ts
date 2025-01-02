@@ -27,11 +27,16 @@ const render = async (options = {}) => {
 test("SortLink Component", async () => {
   {
     const result = await render();
+    expect(result).toContain('<a href="https://example.com/?q.s=name+asc"');
     expect(result).toContain('data-key="name"');
     expect(result).toContain("> Name <");
   }
   {
-    const result = await render({ slots: { default: "UserName" } });
+    const result = await render({
+      slots: { default: "UserName" },
+      request: new Request("https://foo.com/bar?p=4"),
+    });
+    expect(result).toContain('<a href="https://foo.com/bar?p=4&q.s=name+asc"');
     expect(result).toContain("> UserName <");
   }
 });
