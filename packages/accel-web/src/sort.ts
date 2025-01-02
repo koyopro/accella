@@ -9,17 +9,20 @@ export const sortUrl = (
 ) => {
   const keys = options?.keys ?? [key];
   const defaultOrder = options?.defaultOrder ?? "asc";
-  const sorts = buildCurrentSorts(q);
+  const oldsorts = buildCurrentSorts(q);
+  const sorts = new Map<string, Direction>();
   for (const k of keys) {
     const [attr, dir] = k.split(" ") as [string, Direction | undefined];
-    sorts.set(attr, dir ?? flip(sorts.get(attr)) ?? defaultOrder);
+    sorts.set(attr, dir ?? flip(oldsorts.get(attr)) ?? defaultOrder);
   }
-  const value = Array.from(sorts.entries())
-    .map(([k, d]) => `${k} ${d}`)
-    .join(",");
+
   const url = options?.request?.url;
-  if (url) return updateQueryParameter(url, "q.s", value);
-  return `?${new URLSearchParams({ "q.s": value }).toString()}`;
+  if (url) return updateQueryParameter(url, "q.s[]", sorts);
+
+  const value = Array.from(sorts.entries())
+    .map(([k, d]) => `q.s[]=${k}+${d}`)
+    .join("&");
+  return `?${value}`;
 };
 
 const buildCurrentSorts = (q: Search<any>) => {
@@ -31,9 +34,12 @@ const buildCurrentSorts = (q: Search<any>) => {
   return sorts;
 };
 
-const updateQueryParameter = (url: string, paramName: string, paramValue: string) => {
+const updateQueryParameter = (url: string, paramName: string, sorts: Map<string, Direction>) => {
   const urlObj = new URL(url);
-  urlObj.searchParams.set(paramName, paramValue);
+  urlObj.searchParams.delete(paramName);
+  for (const [k, v] of sorts.entries()) {
+    urlObj.searchParams.append(paramName, `${k} ${v}`);
+  }
   return urlObj.toString();
 };
 

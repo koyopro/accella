@@ -8,32 +8,32 @@ test("sortUrl", () => {
   {
     const q = new Search(SampleModel, {});
     const url = sortUrl(q, "name");
-    expect(url).toBe("?q.s=name+asc");
+    expect(decodeURI(url)).toBe("?q.s[]=name+asc");
   }
   {
     const q = new Search(SampleModel, {});
     const url = sortUrl(q, "name", { defaultOrder: "desc" });
-    expect(url).toBe("?q.s=name+desc");
+    expect(decodeURI(url)).toBe("?q.s[]=name+desc");
   }
   {
     const q = new Search(SampleModel, { s: "name asc" });
     const url = sortUrl(q, "name");
-    expect(url).toBe("?q.s=name+desc");
+    expect(decodeURI(url)).toBe("?q.s[]=name+desc");
   }
   {
     const q = new Search(SampleModel, { s: "name desc" });
     const url = sortUrl(q, "name");
-    expect(url).toBe("?q.s=name+asc");
+    expect(decodeURI(url)).toBe("?q.s[]=name+asc");
   }
   {
     const q = new Search(SampleModel, { s: ["name desc", "id desc"] });
     const url = sortUrl(q, "name", { keys: ["name", "id asc"] });
-    expect(url).toBe("?q.s=name+asc%2Cid+asc");
+    expect(decodeURI(url)).toBe("?q.s[]=name+asc&q.s[]=id+asc");
   }
   {
-    const request = new Request("http://localhost/?p=3&q.s=name+desc");
-    const q = new Search(SampleModel, {});
-    const url = sortUrl(q, "name", { request });
-    expect(url).toBe("http://localhost/?p=3&q.s=name+asc");
+    const request = new Request("http://localhost/?p=3&q.s[]=name+desc");
+    const q = new Search(SampleModel, { s: ["name desc"] });
+    const url = sortUrl(q, "email", { request });
+    expect(decodeURI(url)).toBe("http://localhost/?p=3&q.s[]=email+asc");
   }
 });
