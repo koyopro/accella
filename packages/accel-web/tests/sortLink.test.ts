@@ -28,8 +28,7 @@ test("SortLink Component", async () => {
   {
     const result = await render();
     expect(decodeURIComponent(result)).toContain('<a href="https://example.com/?q.s[]=name+asc"');
-    expect(result).toContain('data-key="name"');
-    expect(result).toContain("> Name <");
+    expect(result).toContain(">Name</span>");
   }
   {
     const result = await render({
@@ -39,6 +38,6 @@ test("SortLink Component", async () => {
     expect(decodeURIComponent(result)).toContain(
       '<a href="https://foo.com/bar?p=4&q.s[]=name+asc"'
     );
-    expect(result).toContain("> UserName <");
+    expect(result).toContain("UserName");
   }
 });

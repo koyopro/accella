@@ -30,8 +30,8 @@ const { LinkToNextPage, LinkToPrevPage, Nav, PageEntriesInfo } = pager;
     </div>
     <div class="d-flex flex-column gap-2 mb-3" style="padding: 20px">
       <div class="d-flex gap-3">
-        <SortLink q={q} key="id" />
-        <SortLink q={q} key="email" />
+        <SortLink q={q} key="id" class="sort-link--id" />
+        <SortLink q={q} key="email" class="sort-link--email" asc="↑" desc="↓" />
       </div>
       {
         pager.records.map((account) => (

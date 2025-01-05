@@ -7,30 +7,25 @@ type Props = {
   key: string;
   defaultOrder?: Direction;
   keys?: string[];
-};
+  asc?: string;
+  desc?: string;
+} & astroHTML.JSX.LinkHTMLAttributes;
 
-const { q, key, defaultOrder, keys } = Astro.props;
+const { q, key, defaultOrder, keys, asc, desc, ...linkAttrs } = Astro.props;
+const url = Astro.request.url;
+const sortOrder = url.includes(`${key}+desc`) ? "desc" : url.includes(`${key}+asc`) ? "asc" : "";
 const href = sortUrl(q, key, { request: Astro.request, defaultOrder, keys });
 ---
 
-<sort-link data-key={key}>
-  <a href={href} class="sort-link__text">
-    {Astro.slots.has("default") ? <slot /> : q.model.humanAttributeName(key)}
-    <span class="sort-link__icon">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="feather feather-chevron-up"
-      >
-        <polyline points="18 15 12 9 6 15"></polyline>
-      </svg>
-    </span>
-  </a>
-</sort-link>
+<a {...linkAttrs} {href}>
+  <slot>
+    <span class="sort-link__text">{q.model.humanAttributeName(key)}</span>
+  </slot>
+  {
+    sortOrder != "" && (
+      <span class={`sort-link__icon sort-link__icon--${sortOrder}`}>
+        {sortOrder === "asc" ? asc ?? "▲" : desc ?? "▼"}
+      </span>
+    )
+  }
+</a>
