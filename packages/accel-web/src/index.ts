@@ -5,4 +5,4 @@ export { searchFormFor } from "./searchFormFor.js";
 export { createCookieSessionStorage, Session } from "./session.js";
 export { sortUrl } from "./sort.js";
 export { SortLink };
-import SortLink from "./sortLink.astro";
+import SortLink from "./SortLink.astro";
