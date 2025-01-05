@@ -7,7 +7,7 @@ import { RelationUpdater } from "./relation.js";
 export class Search<T> {
   readonly params: Record<string, any>;
   readonly [key: string]: any;
-  sorts: string[];
+  protected _sorts: string[] = [];
 
   constructor(
     public readonly model: typeof Model,
@@ -15,8 +15,7 @@ export class Search<T> {
     protected relation: Relation<any, any> | undefined = undefined
   ) {
     this.params = JSON.parse(JSON.stringify(params ?? {}));
-    const sorts = this.params["s"] ?? [];
-    this.sorts = Array.isArray(sorts) ? sorts : [sorts];
+    this.sorts = this.params["s"] ?? [];
     for (const key of Object.keys(this.params)) {
       if (isBlank(this.params[key])) delete this.params[key];
       else if (key.match(/.+_.+/)) {
@@ -27,6 +26,14 @@ export class Search<T> {
         });
       }
     }
+  }
+
+  get sorts(): string[] {
+    return this._sorts;
+  }
+
+  set sorts(value: string | string[]) {
+    this._sorts = Array.isArray(value) ? value : [value];
   }
 
   /**

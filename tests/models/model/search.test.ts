@@ -1,3 +1,4 @@
+import { Search } from "accel-record/search";
 import { Profile, User } from "..";
 import { $post } from "../../factories/post";
 import { $postTag } from "../../factories/postTag";
@@ -119,4 +120,12 @@ test("search() params", () => {
   const search = User.search({ name_eq: "foo" });
   expect(search["name_eq"]).toEqual("foo");
   expect(search["name_cont"]).toBeUndefined();
+});
+
+test("sorts", () => {
+  const s = new Search(User, { s: "name desc" });
+  expect(s.sorts).toEqual(["name desc"]);
+
+  s.sorts = ["name asc", "age desc"];
+  expect(s.sorts).toEqual(["name asc", "age desc"]);
 });
