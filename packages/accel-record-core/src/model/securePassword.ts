@@ -1,6 +1,7 @@
-import { Model } from "../index.js";
 import { compareSync, genSaltSync, hashSync } from "bcrypt-ts";
+import { Model, Validator } from "../index.js";
 import { isBlank } from "../validation/validator/presence.js";
+import { validates } from "./validations.js";
 
 // bcrypt-ts: The maximum input length is 72 bytes
 const MAX_PASSWORD_LENGTH_ALLOWED = 72;
@@ -60,8 +61,30 @@ export function hasSecurePassword<T extends string = "password">(
 
   // Create an alias for authenticate only when the attribute is "password"
   const authenticateAlias = attribute == "password" ? "authenticate" : "__authenticate";
+
+  const CustomValidator = class extends Validator<Model> {
+    validate(): void {
+      if (!validations) return;
+      const password = _get(this.record, _attribute);
+      const confirm = _get(this.record, _cofirmAttribute);
+      const digest = _get(this.record, `${attribute}Digest`);
+      if (validations == true && isBlank(digest)) {
+        this.record.errors.add(attribute, "blank");
+      }
+      this.record.validates(attribute as any, {
+        length: { maximum: MAX_PASSWORD_LENGTH_ALLOWED },
+      });
+      if (confirm != undefined && password !== confirm) {
+        const humanAttributeName = this.record.class().humanAttributeName(attribute);
+        this.record.errors.add(confirmAttribute, "confirmation", {
+          attribute: humanAttributeName,
+        });
+      }
+    }
+  };
   // @ts-ignore
   return class SecurePassword {
+    static validations = validates(this, [CustomValidator]);
     get [attribute]() {
       return _get(this, _attribute);
     }
@@ -83,24 +106,6 @@ export function hasSecurePassword<T extends string = "password">(
     }
     [authenticateAlias](this: any, password: string) {
       return this[authenticate](password);
-    }
-    validateAttributes<T extends Model & SecurePassword>(this: T) {
-      if (!validations) return;
-      const password = _get(this, _attribute);
-      const confirm = _get(this, _cofirmAttribute);
-      const digest = _get(this, `${attribute}Digest`);
-      if (validations == true && isBlank(digest)) {
-        this.errors.add(attribute, "blank");
-      }
-      this.validates(attribute as any, {
-        length: { maximum: MAX_PASSWORD_LENGTH_ALLOWED },
-      });
-      if (confirm != undefined && password !== confirm) {
-        const humanAttributeName = this.class().humanAttributeName(attribute);
-        this.errors.add(confirmAttribute, "confirmation", {
-          attribute: humanAttributeName,
-        });
-      }
     }
   };
 }

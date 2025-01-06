@@ -1,7 +1,7 @@
 import { Collection } from "../associations/collectionProxy.js";
 import { HasManyAssociation } from "../associations/hasManyAssociation.js";
 import { HasOneAssociation } from "../associations/hasOneAssociation.js";
-import { FormModel, Model, ModelBase } from "../index.js";
+import { Model, ModelBase } from "../index.js";
 import { Meta } from "../meta.js";
 import { Errors } from "../validation/errors.js";
 import { AcceptanceOptions, AcceptanceValidator } from "../validation/validator/acceptance.js";
@@ -183,10 +183,10 @@ export function validates<T extends typeof Model, K extends keyof Meta<T>["Creat
   klass: T,
   list: ValidateItem<T, K>[]
 ): ValidateItem<any, any>[];
-export function validates<T extends typeof FormModel, K extends keyof InstanceType<T> & string>(
-  klass: T,
-  list: ValidateItem<T, K>[]
-): ValidateItem<any, any>[];
+export function validates<
+  T extends { new (...args: any): any },
+  K extends keyof InstanceType<T> & string,
+>(klass: T, list: ValidateItem<T, K>[]): ValidateItem<any, any>[];
 export function validates<T, K extends string>(
   klass: T,
   list: ValidateItem<T, K>[]
