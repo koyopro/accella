@@ -69,10 +69,7 @@ test("sortUrl()", async () => {
   }
   {
     const q = new Search(User, { s: ["age desc", "id desc"] });
-    const url = sortUrl(q, "name", {
-      keys: ["age", "id asc"],
-      request,
-    });
+    const url = sortUrl(q, ["age", "id asc"], { request });
     expect(decodeURI(url)).toBe("http://localhost/?q.s[]=age+asc&q.s[]=id+asc");
     expect(await fetchIdsFromUrl(url)).toEqual([2, 3, 1, 4]);
   }

@@ -27,7 +27,7 @@ test("sortUrl", () => {
   }
   {
     const q = new Search(SampleModel, { s: ["name desc", "id desc"] });
-    const url = sortUrl(q, "name", { keys: ["name", "id asc"] });
+    const url = sortUrl(q, ["name", "id asc"]);
     expect(decodeURI(url)).toBe("?q.s[]=name+asc&q.s[]=id+asc");
   }
   {

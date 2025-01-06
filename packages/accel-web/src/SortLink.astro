@@ -4,27 +4,27 @@ import { Direction, sortUrl } from "./sort.js";
 
 type Props = {
   q: Search<any>;
-  key: string;
+  key: string | string[];
   defaultOrder?: Direction;
-  keys?: string[];
   asc?: string;
   desc?: string;
 } & astroHTML.JSX.LinkHTMLAttributes;
 
-const { q, key, defaultOrder, keys, asc, desc, ...linkAttrs } = Astro.props;
+const { q, key, defaultOrder, asc, desc, ...linkAttrs } = Astro.props;
 const url = Astro.request.url;
-const sortOrder = url.includes(`${key}+desc`) ? "desc" : url.includes(`${key}+asc`) ? "asc" : "";
-const href = sortUrl(q, key, { request: Astro.request, defaultOrder, keys });
+const key0 = Array.isArray(key) ? key[0] : key;
+const direction = url.includes(`${key0}+desc`) ? "desc" : url.includes(`${key0}+asc`) ? "asc" : "";
+const href = sortUrl(q, key, { request: Astro.request, defaultOrder });
 ---
 
 <a {...linkAttrs} {href}>
   <slot>
-    <span class="sort-link__text">{q.model.humanAttributeName(key)}</span>
+    <span class="sort-link__text">{q.model.humanAttributeName(key0)}</span>
   </slot>
   {
-    sortOrder != "" && (
-      <span class={`sort-link__icon sort-link__icon--${sortOrder}`}>
-        {sortOrder === "asc" ? asc ?? "▲" : desc ?? "▼"}
+    direction != "" && (
+      <span class={`sort-link__icon sort-link__icon--${direction}`}>
+        {direction === "asc" ? asc ?? "▲" : desc ?? "▼"}
       </span>
     )
   }
