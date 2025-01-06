@@ -215,6 +215,51 @@ const { Nav, PageEntriesInfo, records } = paginate(search.result().order("id", "
 </Layout>
 ```
 
+### SortLink
+
+`SortLink` is a component that generates a link for sorting. It takes a query and options as arguments.
+
+```astro
+---
+import { RequestParameters, SortLink } from "accel-web";
+import { Account } from "src/models";
+
+const params = await RequestParameters.from(Astro.request);
+const search = Account.search(params.q);
+---
+<table>
+  <thead>
+    <tr>
+      <th>
+        <!-- Basic Usage -->
+        <SortLink q={search} key="id" />
+      </th>
+      <th>
+        <!--
+          Customization Examples
+          - Specifying multiple sort attributes
+          - Changing the appearance of ascending/descending arrows (default is "▲" and "▼")
+          - Custom text
+        -->
+        <SortLink q={search} key={["email", "id desc"]} asc="↓" desc="↑">
+          Email Address
+        </SortLink>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      search.result().map((account) => (
+        <tr>
+          <td>{account.id}</td>
+          <td>{account.email}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+```
+
 ## Session
 
 `createCookieSessionStorage` is a function that generates a session storage object. This is a thin wrapper around the function of the same name provided by [astro-cookie-session](https://www.npmjs.com/package/astro-cookie-session), so please refer to its documentation for basic usage. The difference from the original is that it adds the ability to save Accel Record models as sessions.
