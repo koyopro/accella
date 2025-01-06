@@ -2,6 +2,17 @@ import { Search } from "accel-record/search";
 
 export type Direction = "asc" | "desc";
 
+/**
+ * Generates a URL for sorting based on the provided search query and sorting options.
+ *
+ * @param q - The search query object.
+ * @param key - The primary key to sort by.
+ * @param options - Optional sorting options.
+ * @param options.defaultOrder - The default sorting order if not specified (default is "asc").
+ * @param options.keys - An array of keys to sort by, each key can include a direction (e.g., "name desc").
+ * @param options.request - An optional request object containing the URL to update.
+ * @returns URL with the sorting parameters.
+ */
 export const sortUrl = (
   q: Search<any>,
   key: string,
