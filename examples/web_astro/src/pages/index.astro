@@ -1,15 +1,14 @@
 ---
-import { paginate } from "accel-web";
+import { paginate, SortLink } from "accel-web";
 import { Account } from "src/models";
 import Layout from "../layouts/Layout.astro";
 
-const url = new URL(Astro.request.url);
-const searchParams = url.searchParams;
-const page = Number(searchParams.get("p")) || 1;
+const { params } = Astro.locals;
 
-const q = Account.all();
+const page = Number(params.p) || 1;
+const q = Account.search(Object.assign({ s: "id desc" }, params.q));
 
-const pager = paginate(q.order("id", "desc"), {
+const pager = paginate(q.result(), {
   page,
   per: 10,
   window: 2,
@@ -31,8 +30,10 @@ const { LinkToNextPage, LinkToPrevPage, Nav, PageEntriesInfo } = pager;
     </div>
     <div class="d-flex flex-column gap-2 mb-3" style="padding: 20px">
       <div class="d-flex gap-3">
-        <div>ID</div>
-        <div>Email</div>
+        <SortLink q={q} key="id" class="sort-link--id" />
+        <SortLink q={q} key={["email", "id desc"]} asc="↓" desc="↑" class="sort-link--email">
+          Email Address
+        </SortLink>
       </div>
       {
         pager.records.map((account) => (

@@ -7,13 +7,15 @@ import { RelationUpdater } from "./relation.js";
 export class Search<T> {
   readonly params: Record<string, any>;
   readonly [key: string]: any;
+  protected _sorts: string[] = [];
 
   constructor(
-    protected model: typeof Model,
+    public readonly model: typeof Model,
     params: Record<string, any> | undefined,
     protected relation: Relation<any, any> | undefined = undefined
   ) {
     this.params = JSON.parse(JSON.stringify(params ?? {}));
+    this.sorts = this.params["s"] ?? [];
     for (const key of Object.keys(this.params)) {
       if (isBlank(this.params[key])) delete this.params[key];
       else if (key.match(/.+_.+/)) {
@@ -24,6 +26,14 @@ export class Search<T> {
         });
       }
     }
+  }
+
+  get sorts(): string[] {
+    return this._sorts;
+  }
+
+  set sorts(value: string | string[]) {
+    this._sorts = Array.isArray(value) ? value : [value];
   }
 
   /**
@@ -39,6 +49,12 @@ export class Search<T> {
           // Ignore the error
         } else throw e;
       }
+    }
+    for (const sort of this.sorts) {
+      const [attr, direction] = sort.split(" ");
+      if (direction !== "asc" && direction !== "desc") continue;
+      if (!this.model.attributeToColumn(attr)) continue;
+      relation = relation.order(attr, direction);
     }
     return relation as Relation<T, Meta<T>>;
   }
