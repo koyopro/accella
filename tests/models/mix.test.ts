@@ -3,6 +3,8 @@ import { Mix } from "accel-record-core";
 class A {
   static a = "a";
 
+  static validations = ["a"];
+
   a = "a";
   errors: string[] = [];
 
@@ -24,6 +26,8 @@ class AB extends Mix(A, B) {}
 class C {
   static c = "c";
 
+  static validations = ["c"];
+
   c = "c";
 
   validate<T extends A>(this: T) {
@@ -40,6 +44,8 @@ test("mix", () => {
 
   expect(ABC.a).toBe("a");
   expect(ABC.c).toBe("c");
+
+  expect(ABC.validations).toEqual(["a", "c"]);
 
   const ab = new AB();
   expect(ab.a).toBe("a");

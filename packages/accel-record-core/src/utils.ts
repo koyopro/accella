@@ -84,7 +84,15 @@ const assign = (target: object, source: object, key: string) => {
   const desc = Object.getOwnPropertyDescriptor(source, key);
   const targetDesc = findMethod(target, key);
 
-  if (typeof targetDesc?.value == "function" && typeof desc?.value == "function") {
+  if (Array.isArray(targetDesc?.value) && Array.isArray(desc?.value)) {
+    // merge arrays
+    Object.defineProperty(target, key, {
+      value: [...targetDesc.value, ...desc.value],
+      enumerable: targetDesc.enumerable,
+      writable: true,
+      configurable: true,
+    });
+  } else if (typeof targetDesc?.value == "function" && typeof desc?.value == "function") {
     // already has a method, so we need to wrap it
     Object.defineProperty(target, key, {
       value: function (this: any, ...args: any[]) {
