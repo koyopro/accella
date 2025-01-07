@@ -1,5 +1,12 @@
 # accella
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [[`1613a7b`](https://github.com/koyopro/accella/commit/1613a7b467e90d8e1b685df0b9d7266103e23287)]:
+  - accel-web@0.6.0
+
 ## 0.2.0
 
 ### Minor Changes
