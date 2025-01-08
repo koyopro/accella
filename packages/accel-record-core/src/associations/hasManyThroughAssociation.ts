@@ -1,5 +1,6 @@
 import { exec } from "../database.js";
 import { Model } from "../index.js";
+import { hashCondition } from "../relation/options.js";
 import { HasManyAssociation } from "./hasManyAssociation.js";
 
 // cf. https://github.com/rails/rails/blob/main/activerecord/lib/active_record/associations/has_many_through_association.rb
@@ -75,10 +76,10 @@ export class HasManyThroughAssociation<O extends Model, T extends Model> extends
           ],
         ],
       ],
-      wheres: [
-        {
+      conditions: [
+        hashCondition({
           [`${this.info.through}.${this.info.foreignKey}`]: this.ownersPrimary,
-        },
+        }),
       ],
     };
   }

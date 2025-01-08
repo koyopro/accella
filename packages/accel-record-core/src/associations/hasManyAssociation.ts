@@ -1,4 +1,5 @@
 import { Model, Models } from "../index.js";
+import { hashCondition } from "../relation/options.js";
 import { Association } from "./association.js";
 
 // cf. https://github.com/rails/rails/blob/main/activerecord/lib/active_record/associations/has_many_association.rb#L11
@@ -22,11 +23,17 @@ export class HasManyAssociation<O extends Model, T extends Model> extends Associ
   }
 
   deleteAll() {
-    Models[this.info.klass].all().setOption("wheres", [this.scopeAttributes()]).deleteAll();
+    Models[this.info.klass]
+      .all()
+      .setOption("conditions", [hashCondition(this.scopeAttributes())])
+      .deleteAll();
   }
 
   destroyAll() {
-    Models[this.info.klass].all().setOption("wheres", [this.scopeAttributes()]).destroyAll();
+    Models[this.info.klass]
+      .all()
+      .setOption("conditions", [hashCondition(this.scopeAttributes())])
+      .destroyAll();
   }
 
   delete(...records: T[]) {

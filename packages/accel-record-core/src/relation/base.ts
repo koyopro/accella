@@ -4,7 +4,7 @@ import { ModelMeta } from "../meta.js";
 import { affectLock } from "../model/lock.js";
 import { IncludesLoader } from "./includes.js";
 import { Relation } from "./index.js";
-import { Options } from "./options.js";
+import { Condition, Options } from "./options.js";
 
 /**
  * Provides the base methods for relations.
@@ -60,59 +60,15 @@ export class RelationBase {
     for (const [query, bindings] of this.options.joinsRaw) {
       q = q.joinRaw(query, bindings);
     }
-    q = this.affectWheres(q);
-    q = this.affectOrWheres(q);
+    for (const condition of this.options.conditions) {
+      q = affectCondition(condition, q);
+    }
     if (this.options.limit) q = q.limit(this.options.limit);
     if (this.options.offset) q = q.offset(this.options.offset);
     for (const [column, direction] of this.options.orders ?? []) {
       q = q.orderBy(column, direction);
     }
     q = affectLock(q, this.options.lock);
-    return q;
-  }
-  protected affectWheres<T>(this: Relation<T, ModelMeta>, q: any) {
-    for (const where of this.options.wheres) {
-      if (Array.isArray(where)) {
-        q = q.where(...where);
-      } else {
-        q = q.where(where);
-      }
-    }
-    for (const where of this.options.whereNots) {
-      if (Array.isArray(where)) {
-        q = q.whereNot(...where);
-      } else {
-        q = q.whereNot(where);
-      }
-    }
-    for (const [query, bindings] of this.options.whereRaws) {
-      q = q.whereRaw(query, bindings);
-    }
-    return q;
-  }
-  protected affectOrWheres<T>(this: Relation<T, ModelMeta>, q: any) {
-    for (const where of this.options.orWheres) {
-      q = q.orWhere(function (this: any) {
-        for (const w of where) {
-          if (Array.isArray(w)) {
-            this.where(...w);
-          } else {
-            this.where(w);
-          }
-        }
-      });
-    }
-    for (const where of this.options.orWhereNots) {
-      q = q.orWhere(function (this: any) {
-        for (const w of where) {
-          if (Array.isArray(w)) {
-            this.whereNot(...w);
-          } else {
-            this.whereNot(w);
-          }
-        }
-      });
-    }
     return q;
   }
   protected makeAttributes<T>(this: Relation<T, ModelMeta>, row: object) {
@@ -129,3 +85,28 @@ export class RelationBase {
     return attributes;
   }
 }
+
+const affectCondition = (condition: Condition, q: any) => {
+  switch (condition.__op__) {
+    case "hash":
+      return q.where(condition.condition);
+    case "hashNot":
+      return q.whereNot(condition.condition);
+    case "list":
+      return q.where(...condition.condition);
+    case "listNot":
+      return q.whereNot(...condition.condition);
+    case "raw":
+      return q.whereRaw(condition.query, condition.bindings);
+    case "and":
+      for (const c of condition.conditions) {
+        q.andWhere((builder: any) => affectCondition(c, builder));
+      }
+      return q;
+    case "or":
+      for (const c of condition.conditions) {
+        q.orWhere((builder: any) => affectCondition(c, builder));
+      }
+      return q;
+  }
+};
