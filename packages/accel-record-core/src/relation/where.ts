@@ -47,7 +47,7 @@ export class Where {
       return this.whereRaw(queryOrInput, ...bindings);
     }
     const input = queryOrInput;
-    const newOptions: Options = JSON.parse(JSON.stringify(this.options));
+    const newOptions: Options = this.copyOptions();
     for (const key in input) {
       newOptions["conditions"].push(...this.buildConditions(input, key));
     }
@@ -115,7 +115,7 @@ export class Where {
    */
   whereNot<T, M extends ModelMeta>(this: Relations<T, M>, input: M["WhereInput"]): Relation<T, M>;
   whereNot<T, M extends ModelMeta>(this: Relation<T, M>, input: M["WhereInput"]): Relation<T, M> {
-    const newOptions: Options = JSON.parse(JSON.stringify(this.options));
+    const newOptions: Options = this.copyOptions();
     for (const key in input) {
       const column = this.model.attributeToColumn(key);
       const col = `${this.model.tableName}.${column}`;
@@ -170,7 +170,7 @@ export class Where {
     query: string,
     ...bindings: any[]
   ): Relation<T, M> {
-    const newOptions: Options = JSON.parse(JSON.stringify(this.options));
+    const newOptions: Options = this.copyOptions();
     newOptions["conditions"].push(rawCondition(query, bindings));
     return new Relation(this.model, newOptions);
   }
@@ -197,7 +197,7 @@ export class Where {
       relationOrInput instanceof Relation
         ? relationOrInput
         : new Relation(this.model, {}).where(relationOrInput);
-    const newOptions: Options = JSON.parse(JSON.stringify(this.options));
+    const newOptions: Options = this.copyOptions();
     const condition1 = wrapAnd(newOptions["conditions"]);
     const condition2 = wrapAnd(relation.options.conditions);
     newOptions["conditions"] = [orCondition([condition1, condition2])];

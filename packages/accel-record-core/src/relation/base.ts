@@ -23,6 +23,10 @@ export class RelationBase {
     return this;
   }
 
+  copyOptions<T>(this: Relation<T, ModelMeta>) {
+    return JSON.parse(JSON.stringify(this.options));
+  }
+
   load<T, M extends ModelMeta>(this: Relation<T, M>): T[] {
     const select =
       this.options.select.length > 0
