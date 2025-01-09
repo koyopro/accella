@@ -1,0 +1,52 @@
+version: 2.1
+
+jobs:
+  test:
+    resource_class: large
+    docker:
+      - image: << parameters.node_image >>
+        environment:
+          VITEST_MIN_THREADS: 2
+          VITEST_MAX_THREADS: 4
+      - image: cimg/mysql:8.0
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      - image: cimg/postgres:17.0
+        environment:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: password
+    steps:
+      - checkout
+      - run: sudo apt-get update && sudo apt-get install -y cpio
+      - restore_cache:
+          keys:
+            - v1-node-modules-<< parameters.node_image >>-{{ checksum "package-lock.json" }}
+            - v1-node-modules-<< parameters.node_image >>
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-node-modules-<< parameters.node_image >>-{{ checksum "package-lock.json" }}
+      - run: npm run build
+      - run: npm run test -w accel-web
+      - run: npm run generate:mysql
+      - run: npm run test:mysql
+      - run: npm run sample
+      - run: npm run generate:sqlite
+      - run: npm run test:sqlite
+      - run: npm run generate:pg
+      - run: npm run test:pg
+    parameters:
+      node_image:
+        type: string
+        default: cimg/node:22.13
+
+workflows:
+  test_app:
+    jobs:
+      - test:
+          name: test_node_20
+          node_image: cimg/node:20.18
+      - test:
+          name: test_node_22
+          node_image: cimg/node:22.13
