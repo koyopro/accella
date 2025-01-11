@@ -1,4 +1,5 @@
 import { Model, Models } from "../index.js";
+import { hashCondition } from "../relation/options.js";
 import { Association } from "./association.js";
 
 export class BelongsToAssociation<O extends Model, T extends Model> extends Association<O, T> {
@@ -6,7 +7,7 @@ export class BelongsToAssociation<O extends Model, T extends Model> extends Asso
     if (!this.isLoaded) {
       this.target = Models[this.info.klass]
         .all()
-        .setOption("wheres", [this.scopeAttributes()])
+        .setOption("conditions", [hashCondition(this.scopeAttributes())])
         .first() as T | undefined;
       this.isLoaded = true;
     }

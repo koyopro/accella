@@ -1,5 +1,6 @@
 import { Model } from "../index.js";
 import { Association as Info } from "../model/association.js";
+import { hashCondition } from "../relation/options.js";
 
 export class Association<O extends Model, T extends Model> {
   protected target: T | undefined = undefined;
@@ -16,7 +17,7 @@ export class Association<O extends Model, T extends Model> {
   }
 
   whereAttributes(): Record<string, any> {
-    return { wheres: [this.scopeAttributes()] };
+    return { conditions: [hashCondition(this.scopeAttributes())] };
   }
 
   scopeAttributes() {
