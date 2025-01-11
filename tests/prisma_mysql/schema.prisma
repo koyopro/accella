@@ -10,7 +10,7 @@ generator custom_generator {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:@localhost:3306/accel_test1"
+  url      = "mysql://root:@localhost:3306/accel_test1?timezone=Z"
 }
 
 model User {
