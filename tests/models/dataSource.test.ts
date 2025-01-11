@@ -11,7 +11,7 @@ test("dataSource", () => {
         activeProvider: "mysql",
         url: {
           fromEnvVar: null,
-          value: "mysql://root:@localhost:3306/accel_test1",
+          value: "mysql://root:@localhost:3306/accel_test1?timezone=Z",
         },
         schemas: [],
       });
@@ -51,7 +51,7 @@ test("getDatabaseConfig()", () => {
     case "mysql":
       expect(config).toMatchObject({
         type: "mysql",
-        datasourceUrl: "mysql://root:@localhost:3306/accel_test1",
+        datasourceUrl: "mysql://root:@localhost:3306/accel_test1?timezone=Z",
         prismaDir: new RegExp("/.+/tests/prisma_mysql"),
       });
       break;

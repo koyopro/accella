@@ -56,7 +56,7 @@ export interface Config {
    * @example
    * ```
    * sqlite: path.resolve(__dirname, `./prisma/test${process.env.VITEST_POOL_ID}.db`)
-   * mysql: `mysql://myuser:password@localhost:3306/test_database${process.env.VITEST_POOL_ID}`
+   * mysql: `mysql://myuser:password@localhost:3306/test_database${process.env.VITEST_POOL_ID}?timezone=Z`
    * pg: `postgresql://myuser:password@localhost:5432/test_database${process.env.VITEST_POOL_ID}`
    * ```
    */
@@ -75,6 +75,7 @@ export interface Config {
    *     user: "root",
    *     password: "",
    *     database: `accel_test${process.env.VITEST_POOL_ID}`,
+   *     timezone: "Z",
    *   }
    * }
    * ```
