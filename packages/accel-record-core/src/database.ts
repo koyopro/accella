@@ -22,6 +22,22 @@ const defaultLogger = {
 };
 export type Logger = typeof defaultLogger;
 
+function setDefaultTimezone(connection: string): string;
+function setDefaultTimezone(connection: any): any;
+function setDefaultTimezone(connection: string | any) {
+  if (typeof connection == "string") {
+    const parsedUrl = new URL(connection);
+    if (!parsedUrl.searchParams.has("timezone")) {
+      parsedUrl.searchParams.set("timezone", "Z");
+      return parsedUrl.toString();
+    }
+    return connection;
+  } else {
+    connection.timezone ??= "Z";
+    return connection;
+  }
+}
+
 export const getKnexConfig = (config: Config) => {
   const detectClient = (type: Config["type"]) =>
     type == "mysql" ? "mysql2" : type == "sqlite" ? "better-sqlite3" : "pg";
@@ -30,6 +46,8 @@ export const getKnexConfig = (config: Config) => {
     connection: config.datasourceUrl,
   };
   if (config.type == "sqlite") baseConfig.useNullAsDefault ??= true;
+  if (config.type == "mysql") baseConfig.connection = setDefaultTimezone(baseConfig.connection);
+
   return baseConfig;
 };
 
