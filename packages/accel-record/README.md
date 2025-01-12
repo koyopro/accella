@@ -185,7 +185,7 @@ initAccelRecord(getDatabaseConfig()).then(() => {
 ```
 
 ```sh
-$ export DATABASE_URL="mysql://root:@localhost:3306/accel_test?timezone=Z"
+$ export DATABASE_URL="mysql://root:@localhost:3306/accel_test"
 $ npx prisma migrate dev
 # Example of executing .ts files using tsx
 $ npm i -D tsx
@@ -853,7 +853,7 @@ beforeAll(async () => {
 
     // Vitest usually performs tests in a multi-threaded manner.
     // To use different databases in each thread, separate the databases using VITEST_POOL_ID.
-    datasourceUrl: `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}?timezone=Z`,
+    datasourceUrl: `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`,
   });
   // If prismaDir is specified in initAccelRecord, you can execute pending migrations.
   await Migration.migrate();
