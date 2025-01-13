@@ -96,9 +96,9 @@ export interface Config {
    */
   sqlTransformer?: (sql: string) => string;
   /**
-   * The sync mode for the database worker.
-   * - "process": Uses child_process. This is the default.
-   * - "thread": Uses worker_threads. This is faster but has known race condition issues in Node versions below 21.
+   * The synchronization mode for the database worker.
+   * - "thread": (Default) Uses worker_threads. This is faster but may have race condition issues in Node versions below 21.
+   * - "process": Uses child_process.
    */
   sync?: "process" | "thread";
 }
@@ -114,7 +114,7 @@ export const initAccelRecord = async (config: Config) => {
   }
   _config = Object.assign({}, config);
   _config.logLevel ??= "WARN";
-  _config.sync ??= "process";
+  _config.sync ??= "thread";
   if (_config.type == "postgresql") _config.type = "pg";
 
   _syncClient = buildSyncClient(_config.sync, { knexConfig: getKnexConfig(config) });
