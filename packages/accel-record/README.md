@@ -181,6 +181,7 @@ initAccelRecord(getDatabaseConfig()).then(() => {
     lastName: "Doe",
   });
   console.log(`New user created! User.count is ${User.count()}`);
+  process.exit(0);
 });
 ```
 
