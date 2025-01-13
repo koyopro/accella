@@ -777,7 +777,7 @@ export const dataSource = {
   "activeProvider": "mysql",
   "url": {
     "fromEnvVar": null,
-    "value": "mysql://root:@localhost:3306/accel_test1?timezone=Z"
+    "value": "mysql://root:@localhost:3306/accel_test1"
   },
   "schemas": []
 } as DataSource;
