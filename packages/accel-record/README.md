@@ -40,7 +40,9 @@ It can be used with MySQL, PostgreSQL, and SQLite.
 - [Password Authentication](#password-authentication)
 - [Form Objects](#form-objects)
 - [Nullable Values Handling](#nullable-values-handling)
+- [Time Zone for DateTime Columns](#time-zone-for-datetime-columns)
 - [Future Planned Features](#future-planned-features)
+- [Background of Design and Development](#background-of-design-and-development)
 
 ## Usage
 
@@ -185,7 +187,7 @@ initAccelRecord(getDatabaseConfig()).then(() => {
 ```
 
 ```sh
-$ export DATABASE_URL="mysql://root:@localhost:3306/accel_test?timezone=Z"
+$ export DATABASE_URL="mysql://root:@localhost:3306/accel_test"
 $ npx prisma migrate dev
 # Example of executing .ts files using tsx
 $ npm i -D tsx
@@ -853,7 +855,7 @@ beforeAll(async () => {
 
     // Vitest usually performs tests in a multi-threaded manner.
     // To use different databases in each thread, separate the databases using VITEST_POOL_ID.
-    datasourceUrl: `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}?timezone=Z`,
+    datasourceUrl: `mysql://root:@localhost:3306/accel_test${process.env.VITEST_POOL_ID}`,
   });
   // If prismaDir is specified in initAccelRecord, you can execute pending migrations.
   await Migration.migrate();
@@ -1442,6 +1444,28 @@ user.age; // => undefined
 // By specifying undefined for optional fields, you can update the value to null in the database.
 user.update({ age: undefined });
 ```
+
+## Time Zone for DateTime Columns
+
+In JavaScript, Date values retrieved from DateTime columns will be in the local time zone. The storage format for each database engine is as follows:
+
+### SQLite
+
+- DateTimes are stored as Unix Timestamps in the database. (Usually, there is no need to be aware of time zones)
+
+### MySQL
+
+- By default, the time stored in the database is treated as UTC.
+- You can change this behavior by specifying the timezone when connecting.
+
+```bash
+export DATABASE_URL="mysql://root:@localhost:3306/accel_test?timezone=+09:00"
+```
+
+### PostgreSQL
+
+- For `timestamp (without time zone)` type, the time stored in the database is treated as the local time zone.
+- If you need to handle times in a time zone other than the local time zone, consider using the `timestamp with time zone` type.
 
 ## Future Planned Features
 
