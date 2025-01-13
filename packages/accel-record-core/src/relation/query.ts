@@ -3,6 +3,7 @@ import { RecordNotFound } from "../errors.js";
 import { Model } from "../index.js";
 import { ModelMeta } from "../meta.js";
 import { Relation, Relations } from "./index.js";
+import { hashCondition } from "./options.js";
 
 /**
  * Provides the query methods for relations.
@@ -20,7 +21,9 @@ export class Query {
     const keys = [key].flat();
     const valid = keys.every((key) => typeof key !== "number" || isFinite(key));
     const where = this.model.primaryKeys.toHash((col, i) => [col, keys[i]]);
-    const instance = valid ? this.setOption("wheres", [where]).first() : undefined;
+    const instance = valid
+      ? this.setOption("conditions", [hashCondition(where)]).first()
+      : undefined;
     if (!instance) {
       throw new RecordNotFound("Record Not Found");
     }
