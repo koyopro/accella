@@ -2,7 +2,6 @@ import { initAccelRecord } from "accel-record";
 import "accel-record/errors";
 import "accel-record/search";
 import { getDatabaseConfig, User } from "../tests/models/index.js";
-import { worker } from "../tests/models/workers/sample.js";
 
 const config = getDatabaseConfig();
 // config.datasourceUrl += "?timezone=+09:00";
@@ -11,5 +10,5 @@ initAccelRecord(config).then(() => {
   // User.create({ email: `${Date.now()}@example.com` });
   console.log(User.count());
   console.log(User.all().map((u) => u.createdAt.toString()));
-  worker.terminate();
+  process.exit(0);
 });
