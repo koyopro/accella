@@ -11,7 +11,7 @@
   "author": "koyopro <koyopro2.0@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "accel-record": "^1.14.1",
+    "accel-record": ">=1.14.1",
     "mysql2": "^3.11.0"
   }
 }
