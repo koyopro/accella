@@ -1,5 +1,29 @@
 # Accel Record
 
+## 2.0.0
+
+### Major Changes
+
+- [#103](https://github.com/koyopro/accella/pull/103) [`af334db`](https://github.com/koyopro/accella/commit/af334dbc8d48ece791a73cfbbe87a850cf5f5be6) Thanks [@koyopro](https://github.com/koyopro)! - Changed the default synchronization worker type from child_process to worker_threads.
+
+  - The conventional synchronization using `child_process` is still available, but using `worker_threads` improves performance.
+  - To use synchronization with `child_process`, specify `sync: 'process'` in the arguments of `initAccelRecord()`.
+
+- [#102](https://github.com/koyopro/accella/pull/102) [`3602db4`](https://github.com/koyopro/accella/commit/3602db4f59b08142e64c68dc1cb7443330cbb902) Thanks [@koyopro](https://github.com/koyopro)! - Set the default time zone to UTC when connecting to MySQL
+
+  - For detailed specifications, please refer to the [README](https://github.com/koyopro/accella/blob/main/packages/accel-record/README.md#time-zone-for-datetime-columns).
+
+### Minor Changes
+
+- [#100](https://github.com/koyopro/accella/pull/100) [`7a9128d`](https://github.com/koyopro/accella/commit/7a9128d44f2ee6f3a994edb10659721f0ed67680) Thanks [@koyopro](https://github.com/koyopro)! - Reimplemented the processing related to Relation's where clause to support nested conditions.
+
+### Patch Changes
+
+- Updated dependencies [[`7a9128d`](https://github.com/koyopro/accella/commit/7a9128d44f2ee6f3a994edb10659721f0ed67680), [`3602db4`](https://github.com/koyopro/accella/commit/3602db4f59b08142e64c68dc1cb7443330cbb902), [`af334db`](https://github.com/koyopro/accella/commit/af334dbc8d48ece791a73cfbbe87a850cf5f5be6), [`45c69e3`](https://github.com/koyopro/accella/commit/45c69e3df5e040b5eb574b6c6509320e0641f5b5)]:
+  - accel-record-core@2.0.0
+  - accel-record-factory@2.0.0
+  - prisma-generator-accel-record@2.0.0
+
 ## 1.21.0
 
 ### Minor Changes
