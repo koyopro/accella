@@ -2,7 +2,7 @@ import { $post } from "../factories/post";
 import { $setting } from "../factories/setting";
 import { $user } from "../factories/user";
 
-const objectContaining = expect.objectContaining;
+const objectContaining = (obj: any) => expect.objectContaining(obj);
 
 test("toHash", () => {
   const u = $user.create({ name: "hoge" });
