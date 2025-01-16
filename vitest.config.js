@@ -6,6 +6,7 @@ export default getViteConfig({
     globals: true,
     include: ["./tests/**/*.test.{js,ts}"],
     setupFiles: ["./tests/vitest.setup.ts"],
+    pool: "threads",
   },
   esbuild: {
     target: "es2022",
