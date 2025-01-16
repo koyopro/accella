@@ -1,7 +1,7 @@
 import { User } from "..";
 import { $user } from "../../factories/user";
 
-const objectContaining = expect.objectContaining;
+const objectContaining = (obj: any) => expect.objectContaining(obj);
 
 test("Relation#toHashArray()", () => {
   $user.create({ name: "hoge" });
