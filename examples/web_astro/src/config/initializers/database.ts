@@ -1,6 +1,6 @@
 import { initAccelRecord } from "accel-record";
-import { getDatabaseConfig } from "../models";
+import { getDatabaseConfig } from "../../models";
 
-export const initDatabase = async () => {
+export default async () => {
   await initAccelRecord(getDatabaseConfig());
 };

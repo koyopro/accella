@@ -1,6 +1,6 @@
 import i18next from "i18next";
 
-export const initI18n = async () => {
+export default async () => {
   // return;
   await i18next.init({ lng: "ja", resources: { ja } });
   // await i18next.changeLanguage("en");
