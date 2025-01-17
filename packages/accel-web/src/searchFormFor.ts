@@ -21,6 +21,6 @@ import { formFor, FormForOptions } from "./form/index.js";
  * </Form>
  * ```
  */
-export const searchFormFor = (s: Search<any>, options: FormForOptions) => {
+export const searchFormFor = (s: Search<any>, options?: FormForOptions) => {
   return formFor(s, { namespace: "q", ...options });
 };
