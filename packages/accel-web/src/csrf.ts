@@ -5,9 +5,9 @@ const SESSION_KEY = "_csrf_token";
 
 export const formAuthenticityToken = (session: any) => {
   const tokens = newTokens();
-  const secret = tokens.secretSync();
+  const secret = session.get(SESSION_KEY) ?? tokens.secretSync();
   const token = tokens.create(secret);
-  session.set(SESSION_KEY, token);
+  session.set(SESSION_KEY, secret);
   return token;
 };
 

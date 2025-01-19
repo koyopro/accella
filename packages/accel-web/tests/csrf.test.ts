@@ -13,18 +13,20 @@ beforeEach(() => {
   data = {};
 });
 
-type SessionData = {
-  [key: string]: any;
-};
-
-export const { getSession } = createCookieSessionStorage<SessionData>();
+export const { getSession } = createCookieSessionStorage();
 const session = getSession(mockAstroCookies);
 
 test("formAuthenticityToken()", async () => {
   expect(session.get("_csrf_token")).toBeUndefined();
   const token = formAuthenticityToken(session);
   expect(token.length).toBeGreaterThanOrEqual(60);
-  expect(session.get("_csrf_token")?.length).toBeGreaterThanOrEqual(60);
+  const secret = session.get("_csrf_token");
+  expect(secret?.length).toBeGreaterThanOrEqual(40);
+
+  // If a token already exists in the session, it will be reused
+  const token2 = formAuthenticityToken(session);
+  expect(session.get("_csrf_token")).toBe(secret);
+  expect(token2).not.toBe(token);
 });
 
 test("isValidAuthenticityToken()", async () => {
