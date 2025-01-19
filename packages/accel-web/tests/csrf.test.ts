@@ -1,20 +1,7 @@
+import { getMockSession } from "./mockSession";
 import { formAuthenticityToken, isValidAuthenticityToken } from "src/csrf";
-import { createCookieSessionStorage } from "src/session";
 
-let data: Record<string, any> = {};
-const mockAstroCookies = {
-  get: (key: string) => ({ value: data[key] }),
-  set: (key: string, value: string | Record<string, any>) => {
-    data[key] = value;
-  },
-} as any;
-
-beforeEach(() => {
-  data = {};
-});
-
-export const { getSession } = createCookieSessionStorage();
-const session = getSession(mockAstroCookies);
+const session = getMockSession();
 
 test("formAuthenticityToken()", async () => {
   expect(session.get("_csrf_token")).toBeUndefined();
