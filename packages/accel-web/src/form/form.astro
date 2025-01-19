@@ -1,1 +1,11 @@
-<form {...Astro.props}><slot /></form>
+---
+import { formAuthenticityToken } from "../csrf.js";
+
+const { session } = Astro.locals as any;
+const authenticityToken = session ? formAuthenticityToken(session) : undefined;
+---
+
+<form {...Astro.props}>
+  {authenticityToken && <input type="hidden" name="authenticity_token" value={authenticityToken} />}
+  <slot />
+</form>
