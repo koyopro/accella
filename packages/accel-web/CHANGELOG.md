@@ -1,5 +1,15 @@
 # Accel Web
 
+## 1.0.0
+
+### Major Changes
+
+- [#109](https://github.com/koyopro/accella/pull/109) [`f962d09`](https://github.com/koyopro/accella/commit/f962d09acf14a4547fda992938b4b2e517fdca96) Thanks [@koyopro](https://github.com/koyopro)! - Change the version to 1.0
+
+### Patch Changes
+
+- [#106](https://github.com/koyopro/accella/pull/106) [`c2c012c`](https://github.com/koyopro/accella/commit/c2c012c45d273fcb5953f6ee2ae4ad967946780e) Thanks [@koyopro](https://github.com/koyopro)! - Fixed the second argument of searchFormFor() to be optional instead of mandatory.
+
 ## 0.6.0
 
 ### Minor Changes

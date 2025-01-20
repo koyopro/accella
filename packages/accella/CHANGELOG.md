@@ -1,5 +1,16 @@
 # accella
 
+## 0.2.2
+
+### Patch Changes
+
+- [#110](https://github.com/koyopro/accella/pull/110) [`9cef363`](https://github.com/koyopro/accella/commit/9cef363ddc52efd1cb6c7a60ff722c3eaf443ae1) Thanks [@koyopro](https://github.com/koyopro)! - Fixed an issue where runInitializers() was not working properly after the build
+
+- [#110](https://github.com/koyopro/accella/pull/110) [`6442d53`](https://github.com/koyopro/accella/commit/6442d533de0028c1720dd662d806c4fd94ecd15c) Thanks [@koyopro](https://github.com/koyopro)! - Changed the order of accella-integration from post to pre.
+
+- Updated dependencies [[`f962d09`](https://github.com/koyopro/accella/commit/f962d09acf14a4547fda992938b4b2e517fdca96), [`c2c012c`](https://github.com/koyopro/accella/commit/c2c012c45d273fcb5953f6ee2ae4ad967946780e)]:
+  - accel-web@1.0.0
+
 ## 0.2.1
 
 ### Patch Changes
