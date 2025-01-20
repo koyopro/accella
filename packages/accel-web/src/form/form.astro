@@ -1,8 +1,10 @@
 ---
 import { formAuthenticityToken } from "../csrf.js";
+import { createCookieSessionStorage } from "../session.js";
 
-const { session } = Astro.locals as any;
-const authenticityToken = session ? formAuthenticityToken(session) : undefined;
+const createSession = () => createCookieSessionStorage().getSession(Astro.cookies);
+const session = (Astro.locals as any).session ?? createSession();
+const authenticityToken = formAuthenticityToken(session);
 ---
 
 <form {...Astro.props}>
