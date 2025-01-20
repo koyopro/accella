@@ -6,7 +6,7 @@ const integration: AstroIntegration = {
     "astro:config:setup": ({ addMiddleware }) => {
       addMiddleware({
         entrypoint: "accella/middleware",
-        order: "post",
+        order: "pre",
       });
     },
   },
