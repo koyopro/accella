@@ -1,5 +1,7 @@
-import { getMockSession } from "./mockSession";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { formAuthenticityToken, isValidAuthenticityToken } from "src/csrf";
+import CsrfMetaTags from "src/form/csrfMetaTags.astro";
+import { getMockSession } from "./mockSession";
 
 const session = getMockSession();
 
@@ -26,4 +28,24 @@ test("isValidAuthenticityToken()", async () => {
   expect(subject(validSecret, validToken)).toBe(true);
   expect(subject(validSecret, validToken + "a")).toBe(false);
   expect(subject(validSecret + "0", validToken)).toBe(false);
+});
+
+test("CsrfMetaTags", async () => {
+  const container = await AstroContainer.create();
+  const correctRegex = new RegExp(
+    '<meta name="csrf-param" content="authenticity_token">' +
+      '<meta name="csrf-token" content=".+?">'
+  );
+  {
+    // With session
+    const result = await container.renderToString(CsrfMetaTags, {
+      locals: { session },
+    });
+    expect(result).toMatch(correctRegex);
+  }
+  {
+    // Without session
+    const result = await container.renderToString(CsrfMetaTags);
+    expect(result).toMatch(correctRegex);
+  }
 });
