@@ -18,10 +18,15 @@ import label from "./label.astro";
 import select from "./select.astro";
 import textarea from "./textarea.astro";
 
+import CsrfMetaTags from "./csrfMetaTags.astro";
+import CsrfTokenField from "./CsrfTokenField.astro";
+
 export type FormForOptions = {
   /** Prefix of form field */
   namespace?: string;
 };
+
+export { CsrfMetaTags, CsrfTokenField };
 
 /**
  * Generates a set of form components for a given resource.

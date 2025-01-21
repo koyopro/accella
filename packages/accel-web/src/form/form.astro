@@ -1,8 +1,8 @@
 ---
-const authenticityToken = (Astro.locals as any).authenticityToken;
+import CsrfTokenField from "./CsrfTokenField.astro";
 ---
 
 <form {...Astro.props}>
-  {authenticityToken && <input type="hidden" name="authenticity_token" value={authenticityToken} />}
+  <CsrfTokenField />
   <slot />
 </form>
