@@ -1,8 +1,13 @@
 import csrf from "csrf";
-import { RequestParameters } from "./parameters";
+import { RequestParameters } from "./parameters.js";
 
 const AUTHENTICITY_TOKEN_LENGTH = 32;
 const SESSION_KEY = "_csrf_token";
+
+interface Session {
+  get(key: string): any;
+  set(key: string, value: any): void;
+}
 
 export class InvalidAuthenticityToken extends Error {
   constructor() {
@@ -11,7 +16,7 @@ export class InvalidAuthenticityToken extends Error {
   }
 }
 
-export const formAuthenticityToken = (session: any) => {
+export const formAuthenticityToken = (session: Session) => {
   const tokens = newTokens();
   const secret: string = session.get(SESSION_KEY) ?? tokens.secretSync();
   const token = tokens.create(secret);
@@ -19,7 +24,7 @@ export const formAuthenticityToken = (session: any) => {
   return token;
 };
 
-export const isValidAuthenticityToken = (session: any, token: string) => {
+export const isValidAuthenticityToken = (session: Session, token: string) => {
   const secret = session.get(SESSION_KEY) as string | undefined;
   if (!secret) return false;
 
@@ -36,7 +41,7 @@ const newTokens = () => {
 
 export const validateAuthenticityToken = (
   params: RequestParameters,
-  session: any,
+  session: Session,
   request: Request
 ) => {
   const authenticityToken: string = params["authenticity_token"] ?? "";
