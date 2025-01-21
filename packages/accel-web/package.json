@@ -6,6 +6,24 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./form": {
+      "types": "./dist/form/index.d.ts",
+      "default": "./dist/form/index.js"
+    },
+    "./form/*": {
+      "types": "./dist/form/*",
+      "default": "./dist/form/*"
+    },
+    "./csrf": {
+      "types": "./dist/csrf.d.ts",
+      "default": "./dist/csrf.js"
+    }
+  },
   "scripts": {
     "test": "vitest --typecheck",
     "build": "tsc && cd src/ && find . -name '*.astro' -print0 | cpio -pd0 ../dist/"
