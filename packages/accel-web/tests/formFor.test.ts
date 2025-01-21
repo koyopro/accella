@@ -1,18 +1,18 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
-import { getMockSession } from "./mockSession";
 import MyForm from "./MyForm.astro";
 import MyFormWithNamespace from "./MyFormWithNamespace.astro";
 
-const session = getMockSession();
-
 test("formFor() with FormModel", async () => {
+  const authenticityToken = "abcd";
   const container = await AstroContainer.create();
   const result = await container.renderToString(MyForm, {
-    locals: { session },
+    locals: { authenticityToken },
   });
 
   expect(result).toContain('htmlFor="sampleForm.count"');
-  expect(result).toContain('<input type="hidden" name="authenticity_token" value="');
+  expect(result).toContain(
+    `<input type="hidden" name="authenticity_token" value="${authenticityToken}"`
+  );
 });
 
 test("formFor() with namespace", async () => {

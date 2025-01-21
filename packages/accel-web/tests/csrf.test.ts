@@ -38,21 +38,26 @@ test("isValidAuthenticityToken()", async () => {
 
 test("CsrfMetaTags", async () => {
   const container = await AstroContainer.create();
-  const correctRegex = new RegExp(
-    '<meta name="csrf-param" content="authenticity_token">' +
-      '<meta name="csrf-token" content=".+?">'
-  );
   {
-    // With session
+    // With authenticityToken
     const result = await container.renderToString(CsrfMetaTags, {
-      locals: { session },
+      locals: { authenticityToken: validToken },
     });
-    expect(result).toMatch(correctRegex);
+    expect(result).toMatch(
+      new RegExp(
+        '<meta name="csrf-param" content="authenticity_token">' +
+          '<meta name="csrf-token" content=".+?">'
+      )
+    );
   }
   {
-    // Without session
+    // Without authenticityToken
     const result = await container.renderToString(CsrfMetaTags);
-    expect(result).toMatch(correctRegex);
+    expect(result).toMatch(
+      new RegExp(
+        '<meta name="csrf-param" content="authenticity_token"><meta name="csrf-token" content>'
+      )
+    );
   }
 });
 

@@ -1,4 +1,4 @@
-import { validateAuthenticityToken } from "accel-web/dist/csrf";
+import { formAuthenticityToken, validateAuthenticityToken } from "accel-web/dist/csrf";
 import { defineMiddleware } from "astro:middleware";
 
 export const onRequest = defineMiddleware(async (context, next) => {
@@ -10,6 +10,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   validateAuthenticityToken(locals.params, locals.session, request);
+
+  locals.authenticityToken = formAuthenticityToken(locals.session);
 
   return next();
 });
