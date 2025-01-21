@@ -1,7 +1,15 @@
 import csrf from "csrf";
+import { RequestParameters } from "./parameters";
 
 const AUTHENTICITY_TOKEN_LENGTH = 32;
 const SESSION_KEY = "_csrf_token";
+
+export class InvalidAuthenticityToken extends Error {
+  constructor() {
+    super("Invalid authenticity token");
+    this.name = "InvalidAuthenticityToken";
+  }
+}
 
 export const formAuthenticityToken = (session: any) => {
   const tokens = newTokens();
@@ -24,4 +32,16 @@ const newTokens = () => {
     saltLength: AUTHENTICITY_TOKEN_LENGTH,
     secretLength: AUTHENTICITY_TOKEN_LENGTH,
   });
+};
+
+export const validateAuthenticityToken = (
+  params: RequestParameters,
+  session: any,
+  request: Request
+) => {
+  const authenticityToken: string = params["authenticity_token"] ?? "";
+  const checkNeeded = ["POST", "PATCH", "DELETE", "PUT"].includes(request.method);
+  if (checkNeeded && !isValidAuthenticityToken(session, authenticityToken)) {
+    throw new InvalidAuthenticityToken();
+  }
 };

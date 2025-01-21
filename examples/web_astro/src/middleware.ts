@@ -1,3 +1,4 @@
+import { validateAuthenticityToken } from "accel-web/dist/csrf";
 import { defineMiddleware } from "astro:middleware";
 
 export const onRequest = defineMiddleware(async (context, next) => {
@@ -7,6 +8,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
   if (!locals.session.account && !path.startsWith("/sign")) {
     return redirect("/signin");
   }
+
+  validateAuthenticityToken(locals.params, locals.session, request);
 
   return next();
 });

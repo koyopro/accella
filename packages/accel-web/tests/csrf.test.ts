@@ -1,9 +1,17 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
-import { formAuthenticityToken, isValidAuthenticityToken } from "src/csrf";
+import {
+  formAuthenticityToken,
+  InvalidAuthenticityToken,
+  isValidAuthenticityToken,
+  validateAuthenticityToken,
+} from "src/csrf";
 import CsrfMetaTags from "src/form/csrfMetaTags.astro";
+import { RequestParameters } from "src/parameters";
 import { getMockSession } from "./mockSession";
 
 const session = getMockSession();
+const validSecret = "RK7GvAduF_pYJRbNUCHFS_jFf2QgTkqBIkXujJ7Mn3U";
+const validToken = "AmbcU4bhatotRJfZ3Ictudyq7tgD8ckf-sLYrOVfTTbDR3yMbsnR_KLLHDug";
 
 test("formAuthenticityToken()", async () => {
   expect(session.get("_csrf_token")).toBeUndefined();
@@ -19,8 +27,6 @@ test("formAuthenticityToken()", async () => {
 });
 
 test("isValidAuthenticityToken()", async () => {
-  const validSecret = "RK7GvAduF_pYJRbNUCHFS_jFf2QgTkqBIkXujJ7Mn3U";
-  const validToken = "AmbcU4bhatotRJfZ3Ictudyq7tgD8ckf-sLYrOVfTTbDR3yMbsnR_KLLHDug";
   const subject = (secret: any, token: string) => {
     session.set("_csrf_token", secret);
     return isValidAuthenticityToken(session, token);
@@ -47,5 +53,34 @@ test("CsrfMetaTags", async () => {
     // Without session
     const result = await container.renderToString(CsrfMetaTags);
     expect(result).toMatch(correctRegex);
+  }
+});
+
+test("validateAuthenticityToken()", async () => {
+  session.set("_csrf_token", validSecret);
+  const result = async (request: Request) => {
+    const params = await RequestParameters.from(request);
+    validateAuthenticityToken(params, session, request);
+  };
+  {
+    // Valid
+    const request = new Request(`http://localhost?authenticity_token=${validToken}`, {
+      method: "POST",
+    });
+    await expect(result(request)).resolves.not.toThrow();
+  }
+  {
+    // Invalid
+    const request = new Request(`http://localhost?authenticity_token=${validToken}a`, {
+      method: "POST",
+    });
+    await expect(result(request)).rejects.toThrow(InvalidAuthenticityToken);
+  }
+  {
+    // Invalid but GET request
+    const request = new Request(`http://localhost?authenticity_token=${validToken}a`, {
+      method: "GET",
+    });
+    await expect(result(request)).resolves.not.toThrow();
   }
 });
