@@ -1,4 +1,5 @@
 ---
+import { CsrfMetaTags } from "accel-web";
 interface Props {
   title: string;
 }
@@ -15,6 +16,7 @@ const { session } = Astro.locals;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <CsrfMetaTags />
     <title>{title}</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
