@@ -13,7 +13,7 @@
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "accel-web": "^0.4.0",
-    "astro": "^4.16.10",
+    "astro": "^5.1.8",
     "typescript": "^5.6.3"
   },
   "prisma": {
