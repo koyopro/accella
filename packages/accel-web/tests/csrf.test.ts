@@ -69,9 +69,17 @@ test("validateAuthenticityToken()", async () => {
     validateAuthenticityToken(params, session, request);
   };
   {
-    // Valid
+    // Valid (parameter)
     const request = new Request(`http://localhost?authenticity_token=${validToken}`, {
       method: "POST",
+    });
+    await expect(result(request)).resolves.not.toThrow();
+  }
+  {
+    // Valid (X-CSRF-Token header)
+    const request = new Request(`http://localhost`, {
+      method: "DELETE",
+      headers: { "X-CSRF-Token": validToken },
     });
     await expect(result(request)).resolves.not.toThrow();
   }

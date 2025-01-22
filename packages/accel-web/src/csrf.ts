@@ -71,9 +71,11 @@ export const validateAuthenticityToken = (
   session: Session,
   request: Request
 ) => {
-  const authenticityToken: string = params["authenticity_token"] ?? "";
-  const checkNeeded = ["POST", "PATCH", "DELETE", "PUT"].includes(request.method);
-  if (checkNeeded && !isValidAuthenticityToken(session, authenticityToken)) {
+  if (!["POST", "PATCH", "DELETE", "PUT"].includes(request.method)) return;
+
+  const authenticityToken: string =
+    params["authenticity_token"] ?? request.headers.get("X-CSRF-Token") ?? "";
+  if (!isValidAuthenticityToken(session, authenticityToken)) {
     throw new InvalidAuthenticityToken();
   }
 };
