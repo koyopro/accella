@@ -1,0 +1,5 @@
+---
+const { authenticityToken } = Astro.locals as any;
+---
+
+{authenticityToken && <input type="hidden" name="authenticity_token" value={authenticityToken} />}

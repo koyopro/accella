@@ -321,3 +321,63 @@ if (Astro.request.method === "POST") {
   </div>
 </form>
 ```
+
+## CSRF Protection
+
+We provide helper functions for CSRF protection using tokens.
+
+Use `defineAuthenticityToken` and `validateAuthenticityToken` in Astro middleware to prepare and validate tokens for requests.
+
+```ts
+// src/middleware.ts
+import { RequestParameters } from "accel-web";
+import { defineAuthenticityToken, validateAuthenticityToken } from "accel-web/csrf";
+import { APIContext } from "astro";
+import { getSession } from "./session";
+
+export const onRequest = async (context: APIContext, next: any) => {
+  const { cookies, request, params, locals } = context;
+  locals.session = getSession(cookies);
+  locals.params = await RequestParameters.from(request, params);
+
+  defineAuthenticityToken(locals, locals.session);
+  validateAuthenticityToken(locals.params, locals.session, request);
+
+  return await next();
+};
+```
+
+When `defineAuthenticityToken` is executed, the token can be accessed via `Astro.locals.authenticityToken`. This token is automatically embedded when generating forms using `formFor`. If you are creating a form manually, use the `CsrfTokenField` component to include the token as shown below.
+
+```astro
+---
+import CsrfTokenField from "accel-web/form/CsrfTokenField.astro";
+---
+
+<form method="POST">
+  <CsrfTokenField />
+  <!-- ... -->
+</form>
+```
+
+`validateAuthenticityToken` validates the authenticity token for POST, PUT, PATCH, and DELETE requests. If the tokens do not match, an `InvalidAuthenticityToken` exception is thrown.
+
+### For Ajax Requests
+
+Use the `CsrfMetaTags` component in your layout file to generate meta tags. Set the token from these meta tags in the `X-CSRF-Token` request header.
+
+```astro
+---
+import { CsrfMetaTags } from "accel-web";
+---
+
+<!-- ... -->
+  <head>
+    <CsrfMetaTags />
+    <!-- Meta tags like the following will be generated:
+    <meta name="csrf-param" content="authenticity_token">
+    <meta name="csrf-token" content="xxxx">
+    -->
+  </head>
+<!-- ... -->
+```

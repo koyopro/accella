@@ -1,1 +1,8 @@
-<form {...Astro.props}><slot /></form>
+---
+import CsrfTokenField from "./CsrfTokenField.astro";
+---
+
+<form {...Astro.props}>
+  <CsrfTokenField />
+  <slot />
+</form>

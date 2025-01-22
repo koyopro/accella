@@ -79,3 +79,7 @@ export type SessionData = {
 
 export type Session = BaseSession & Partial<SessionData>;
 ```
+
+#### CSRF Protection
+
+Accella has built-in CSRF protection. When sending POST or other non-GET requests, you must include the appropriate token in the request, or an InvalidAuthenticityToken error will occur. If you use the [related features to create forms](https://github.com/koyopro/accella/blob/main/packages/accel-web/README.md#form-and-request-parameters), the CSRF token is automatically generated and included in the request. For other methods of sending non-GET requests, refer to the [CSRF Protection](https://github.com/koyopro/accella/blob/main/packages/accel-web/README.md#csrf-protection) section for the necessary steps.
