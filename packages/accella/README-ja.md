@@ -79,3 +79,9 @@ export type SessionData = {
 
 export type Session = BaseSession & Partial<SessionData>;
 ```
+
+#### CSRF対策
+
+AccellaではCSRF対策が適用されており、POST等のリクエストを送信する際には適切なトークンをリクエストに含めない場合、InvalidAuthenticityTokenエラーが発生します。
+[関連の機能を利用してフォームを用意する場合](https://github.com/koyopro/accella/blob/main/packages/accel-web/README.md#form-and-request-parameters)には自動的にCSRFトークンが生成され、リクエストに含まれるようになります。
+その他の方法でGET以外のリクエストを送信する場合に必要な対応については、[CSRF Protection](https://github.com/koyopro/accella/blob/main/packages/accel-web/README.md#csrf-protection)の内容を参照してください。

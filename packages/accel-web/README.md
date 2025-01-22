@@ -347,7 +347,7 @@ export const onRequest = async (context: APIContext, next: any) => {
 };
 ```
 
-When `defineAuthenticityToken` is executed, the token can be accessed via `locals.authenticityToken`. This token is automatically embedded when generating forms using `formFor`. If you are creating a form manually, use the `CsrfTokenField` component to include the token as shown below.
+When `defineAuthenticityToken` is executed, the token can be accessed via `Astro.locals.authenticityToken`. This token is automatically embedded when generating forms using `formFor`. If you are creating a form manually, use the `CsrfTokenField` component to include the token as shown below.
 
 ```astro
 ---
@@ -360,7 +360,7 @@ import CsrfTokenField from "accel-web/form/CsrfTokenField.astro";
 </form>
 ```
 
-`validateAuthenticityToken` validates the request. If the tokens do not match, an `InvalidAuthenticityToken` exception is thrown.
+`validateAuthenticityToken` validates the authenticity token for POST, PUT, PATCH, and DELETE requests. If the tokens do not match, an `InvalidAuthenticityToken` exception is thrown.
 
 ### For Ajax Requests
 
