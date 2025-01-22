@@ -16,6 +16,16 @@ export class InvalidAuthenticityToken extends Error {
   }
 }
 
+/**
+ * Generates a form authenticity token for a given session.
+ *
+ * This function creates a new set of tokens and retrieves the secret from the session.
+ * If the secret does not exist in the session, it generates a new secret.
+ * It then creates a token using the secret and stores the secret back in the session.
+ *
+ * @param session - The session object to retrieve and store the secret.
+ * @returns The generated form authenticity token.
+ */
 export const formAuthenticityToken = (session: Session) => {
   const tokens = newTokens();
   const secret: string = session.get(SESSION_KEY) ?? tokens.secretSync();
@@ -24,6 +34,13 @@ export const formAuthenticityToken = (session: Session) => {
   return token;
 };
 
+/**
+ * Validates the provided authenticity token against the session's secret.
+ *
+ * @param session - The current session object containing the secret.
+ * @param token - The authenticity token to be validated.
+ * @returns `true` if the token is valid, `false` otherwise.
+ */
 export const isValidAuthenticityToken = (session: Session, token: string) => {
   const secret = session.get(SESSION_KEY) as string | undefined;
   if (!secret) return false;
@@ -39,6 +56,16 @@ const newTokens = () => {
   });
 };
 
+/**
+ * Validates the authenticity token from the request parameters against the session.
+ * Throws an `InvalidAuthenticityToken` error if the token is invalid and the request method
+ * requires a token check (POST, PATCH, DELETE, PUT).
+ *
+ * @param params - The request parameters containing the authenticity token.
+ * @param session - The current session object.
+ * @param request - The request object containing the HTTP method.
+ * @throws {InvalidAuthenticityToken} If the authenticity token is invalid for the given request method.
+ */
 export const validateAuthenticityToken = (
   params: RequestParameters,
   session: Session,
@@ -51,6 +78,14 @@ export const validateAuthenticityToken = (
   }
 };
 
+/**
+ * Defines an `authenticityToken` property on the target object. The property
+ * is lazily evaluated and will generate a new authenticity token using the
+ * provided session if it is accessed for the first time.
+ *
+ * @param target - The object on which the `authenticityToken` property will be defined.
+ * @param session - The session object used to generate the authenticity token.
+ */
 export const defineAuthenticityToken = (target: any, session: Session) => {
   let _authenticityToken: string | undefined = undefined;
   Object.defineProperty(target, "authenticityToken", {
