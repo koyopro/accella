@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
-    "accel-web": "^0.4.0",
+    "accella": "^0.2.2",
     "astro": "^5.1.8",
     "typescript": "^5.6.3"
   },
