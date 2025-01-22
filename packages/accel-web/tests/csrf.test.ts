@@ -1,5 +1,6 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import {
+  defineAuthenticityToken,
   formAuthenticityToken,
   InvalidAuthenticityToken,
   isValidAuthenticityToken,
@@ -88,4 +89,17 @@ test("validateAuthenticityToken()", async () => {
     });
     await expect(result(request)).resolves.not.toThrow();
   }
+});
+
+test("defineAuthenticityToken()", async () => {
+  const target: any = {};
+  expect(target["authenticityToken"]).toBeUndefined();
+  // The token should be generated
+  defineAuthenticityToken(target, session);
+  const token = target["authenticityToken"];
+  expect(token).not.toBeUndefined();
+  // The token should not be regenerated
+  expect(target["authenticityToken"]).toBe(token);
+  // readonly property
+  expect(() => (target["authenticityToken"] = "test")).toThrowError();
 });

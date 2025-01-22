@@ -5,7 +5,7 @@ declare global {
     interface Locals {
       session: import("./src/session").Session;
       params: import("accel-web").RequestParameters;
-      authenticityToken?: string;
+      readonly authenticityToken?: string;
     }
   }
 }

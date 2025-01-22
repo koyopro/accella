@@ -50,3 +50,12 @@ export const validateAuthenticityToken = (
     throw new InvalidAuthenticityToken();
   }
 };
+
+export const defineAuthenticityToken = (target: any, session: Session) => {
+  let _authenticityToken: string | undefined = undefined;
+  Object.defineProperty(target, "authenticityToken", {
+    get: () => (_authenticityToken ||= formAuthenticityToken(session)),
+    configurable: true,
+    enumerable: true,
+  });
+};
