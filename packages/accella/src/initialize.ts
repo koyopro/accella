@@ -1,5 +1,5 @@
 export const runInitializers = async () => {
-  const modules = import.meta.glob("src/config/initializers/*");
+  const modules = import.meta.glob("/src/config/initializers/*");
   for (const path in modules) {
     try {
       const initializer = ((await modules[path]()) as any).default;
