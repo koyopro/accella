@@ -1,47 +1,52 @@
-# Astro Starter Kit: Minimal
+# Starter Kit: Basics
 
 ```sh
-npm create astro@latest -- --template minimal
+npm create accella@latest
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+## Project Structure
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
+Inside of your project, you'll see the following folders and files:
 
 ```text
 /
-├── public/
+├── db/
+│   └── schema/
+│       └── main.prisma
 ├── src/
+│   ├── config/
+│   |   ├── session.ts
+│   |   └── initializers/
+│   |       └── database.ts
+│   ├── models/
+│   |   └── index.ts
 │   └── pages/
 │       └── index.astro
+├── public/
 └── package.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+`db/schema/main.prisma` is the Prisma schema file. You can define your database models here.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+`src/config/` contains configuration files. `session.ts` is used to configure session management, and `initializers/` contains files that are run when the server starts.
+Files related to Accel Record, generated based on the schema file, are stored in `src/models/`.
+
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
 Any static assets, like images, can be placed in the `public/` directory.
 
-## 🧞 Commands
+## Commands
 
 All commands are run from the root of the project, from a terminal:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+| Command                  | Action                                       |
+| :----------------------- | :------------------------------------------- |
+| `npm install`            | Installs dependencies                        |
+| `npm run dev`            | Starts local dev server at `localhost:4321`  |
+| `npm run build`          | Build your production site to `./dist/`      |
+| `npm run preview`        | Preview your build locally, before deploying |
+| `npx prisma migrate dev` | Run Prisma migrations                        |
 
-## 👀 Want to learn more?
+## Docs
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+[README for accella](https://github.com/koyopro/accella/blob/main/packages/accella/README.md)
