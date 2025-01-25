@@ -1,5 +1,11 @@
 # Accel Web
 
+## 1.1.0
+
+### Minor Changes
+
+- [#111](https://github.com/koyopro/accella/pull/111) [`0e24840`](https://github.com/koyopro/accella/commit/0e24840ba5d9c56b32ffd759023c9a797b75aee3) Thanks [@koyopro](https://github.com/koyopro)! - Implemented CSRF protection features
+
 ## 1.0.0
 
 ### Major Changes
