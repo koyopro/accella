@@ -18,15 +18,7 @@ jobs:
     steps:
       - checkout
       - run: sudo apt-get update && sudo apt-get install -y cpio
-      - restore_cache:
-          keys:
-            - v1-node-modules-<< parameters.node_image >>-{{ checksum "package-lock.json" }}
-            - v1-node-modules-<< parameters.node_image >>
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-node-modules-<< parameters.node_image >>-{{ checksum "package-lock.json" }}
+      - run: npm install --no-package-lock
       - run: npm run build
       - run: npm run build -w examples/web_astro
       - run: npm run test -w accel-web
