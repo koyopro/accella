@@ -1,5 +1,18 @@
 # accella
 
+## 0.3.0
+
+### Minor Changes
+
+- [#111](https://github.com/koyopro/accella/pull/111) [`0e24840`](https://github.com/koyopro/accella/commit/0e24840ba5d9c56b32ffd759023c9a797b75aee3) Thanks [@koyopro](https://github.com/koyopro)! - Applied CSRF protection
+
+### Patch Changes
+
+- [#113](https://github.com/koyopro/accella/pull/113) [`d5e1646`](https://github.com/koyopro/accella/commit/d5e16463667fa050dcd6fb5e078ec539a2f777c6) Thanks [@koyopro](https://github.com/koyopro)! - Fixed an error of runInitializers about glob import
+
+- Updated dependencies [[`0e24840`](https://github.com/koyopro/accella/commit/0e24840ba5d9c56b32ffd759023c9a797b75aee3)]:
+  - accel-web@1.1.0
+
 ## 0.2.2
 
 ### Patch Changes
