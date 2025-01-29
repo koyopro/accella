@@ -19,5 +19,8 @@
   },
   "prisma": {
     "schema": "./db/schema/"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.4"
   }
 }
