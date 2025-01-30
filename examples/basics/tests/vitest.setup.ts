@@ -1,16 +1,8 @@
-import { DatabaseCleaner, Migration, initAccelRecord, stopWorker } from "accel-record";
-
-import { getDatabaseConfig } from "src/models/index";
+import { DatabaseCleaner, Migration, stopWorker } from "accel-record";
+import setupDatabase from "src/config/initializers/database";
 
 beforeAll(async () => {
-  // Vitest usually performs tests in a multi-threaded manner.
-  // To use different databases in each thread, separate the databases using VITEST_POOL_ID.
-  const datasourceUrl = new URL(`../db/test${process.env.VITEST_POOL_ID}.db`, import.meta.url)
-    .pathname;
-  await initAccelRecord({
-    ...getDatabaseConfig(),
-    datasourceUrl,
-  });
+  await setupDatabase();
   await Migration.migrate();
 });
 
