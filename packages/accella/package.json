@@ -18,6 +18,10 @@
       "types": "./dist/middleware.d.ts",
       "default": "./dist/middleware.js"
     },
+    "./initialize": {
+      "types": "./dist/initialize.d.ts",
+      "default": "./dist/initialize.js"
+    },
     "./integration": {
       "types": "./dist/integration.d.ts",
       "default": "./dist/integration.js"
