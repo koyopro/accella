@@ -4,7 +4,7 @@ import { dbConfig } from "../vitest.setup";
 test("dataSource", () => {
   switch (dbConfig().type) {
     case "mysql":
-      expect(schemaDir).toBe("../../prisma_mysql");
+      expect(schemaDir).toBe("../prisma_mysql/");
       expect(dataSource).toMatchObject({
         name: "db",
         provider: "mysql",
@@ -17,7 +17,7 @@ test("dataSource", () => {
       });
       break;
     case "sqlite":
-      expect(schemaDir).toBe("../../prisma");
+      expect(schemaDir).toBe("../prisma/");
       expect(dataSource).toMatchObject({
         name: "db",
         provider: "sqlite",
@@ -30,7 +30,7 @@ test("dataSource", () => {
       });
       break;
     case "postgresql":
-      expect(schemaDir).toBe("../../prisma_pg");
+      expect(schemaDir).toBe("../prisma_pg/");
       expect(dataSource).toMatchObject({
         name: "db",
         provider: "postgresql",
@@ -52,22 +52,22 @@ test("getDatabaseConfig()", () => {
       expect(config).toMatchObject({
         type: "mysql",
         datasourceUrl: "mysql://root:@localhost:3306/accel_test1",
-        prismaDir: new RegExp("/.+/tests/prisma_mysql"),
       });
+      expect(config.prismaDir).toMatch(new RegExp("/.+/tests/prisma_mysql/"));
       break;
     case "sqlite":
       expect(config).toMatchObject({
         type: "sqlite",
-        datasourceUrl: new RegExp("/.+/tests/prisma/test.db"),
-        prismaDir: new RegExp("/.+/tests/prisma"),
       });
+      expect(config.datasourceUrl).toMatch(new RegExp("/.+/tests/prisma/test.db"));
+      expect(config.prismaDir).toMatch(new RegExp("/.+/tests/prisma/"));
       break;
     case "postgresql":
       expect(config).toMatchObject({
         type: "postgresql",
         datasourceUrl: "postgresql://test:password@localhost:5432/accel_test1",
-        prismaDir: new RegExp("/.+/tests/prisma_pg"),
       });
+      expect(config.prismaDir).toMatch(new RegExp("/.+/tests/prisma_pg/"));
       break;
   }
 });

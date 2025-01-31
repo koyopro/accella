@@ -770,7 +770,7 @@ type BookMeta = {
 registerModel(Book);
 
 
-export const schemaDir = "../../prisma_mysql";
+export const schemaDir = "../prisma_mysql/";
 export const dataSource = {
   "name": "db",
   "provider": "mysql",
