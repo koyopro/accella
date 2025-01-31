@@ -22,7 +22,7 @@ declare module "accel-record" {
 
 type Meta<T> = any;
 
-export const schemaDir = "../../../db";
+export const schemaDir = "../../db/";
 export const dataSource = {
   name: "db",
   provider: "sqlite",
