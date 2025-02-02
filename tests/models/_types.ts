@@ -771,6 +771,7 @@ registerModel(Book);
 
 
 export const schemaDir = "../prisma_mysql/";
+export const sourceFilePath = "../prisma_mysql/schema.prisma";
 export const dataSource = {
   "name": "db",
   "provider": "mysql",
@@ -785,4 +786,4 @@ export const dataSource = {
 /**
  * Retrieves the database connection settings based on the Prisma schema file.
  */
-export const getDatabaseConfig = () => generateDatabaseConfig(dataSource, import.meta.url, schemaDir);
+export const getDatabaseConfig = () => generateDatabaseConfig(dataSource, import.meta.url, schemaDir, sourceFilePath);

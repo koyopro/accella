@@ -61,7 +61,8 @@ export const registerModel = (model: any) => {
 export const generateDatabaseConfig = (
   dataSource: DataSource,
   basePath: string,
-  schemaDir: string
+  schemaDir: string,
+  sourceFilePath: string
 ) => {
   let url: string | null = null;
   const prismaDir = new URL(schemaDir, basePath);
@@ -69,7 +70,7 @@ export const generateDatabaseConfig = (
     const envVar = dataSource.url.fromEnvVar;
     url = (import.meta as any).env?.[envVar] ?? process.env?.[envVar] ?? null;
     if (url?.startsWith("file:")) {
-      url = new URL(url, prismaDir).pathname;
+      url = new URL(url, new URL(sourceFilePath, basePath)).pathname;
     }
   }
   return {
