@@ -1,6 +1,6 @@
 {
   "name": "accel-record",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Accel Record is a type-safe and synchronous ORM for TypeScript. It adopts the Active Record pattern and is heavily influenced by Ruby on Rails' Active Record.",
   "type": "module",
   "main": "dist/index.js",
@@ -57,8 +57,8 @@
   "author": "koyopro",
   "license": "Apache-2.0",
   "dependencies": {
-    "accel-record-core": "^2.0.0",
+    "accel-record-core": "^2.0.1",
     "accel-record-factory": "^2.0.0",
-    "prisma-generator-accel-record": "^2.0.0"
+    "prisma-generator-accel-record": "^2.0.1"
   }
 }
