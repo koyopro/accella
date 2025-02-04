@@ -29,6 +29,7 @@ jobs:
       - run: npm run test:sqlite
       - run: npm run generate:pg
       - run: npm run test:pg
+      - run: npm run check:schema
     parameters:
       node_image:
         type: string

@@ -1,5 +1,5 @@
-import { getDatabaseConfig, dataSource, schemaDir } from "./index";
 import { dbConfig } from "../vitest.setup";
+import { dataSource, getDatabaseConfig, schemaDir } from "./index";
 
 test("dataSource", () => {
   switch (dbConfig().type) {

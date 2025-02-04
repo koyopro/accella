@@ -20,6 +20,7 @@
     "test:mysql": "DB_ENGINE=mysql vitest --typecheck",
     "test:pg": "DB_ENGINE=pg vitest --typecheck",
     "sample": "tsc -p . && node dist/src/index.js",
+    "check:schema": "npx tsx src/checkSchema.ts",
     "check-package": "cd examples/minimal && npm run check && cd ../.."
   },
   "repository": {

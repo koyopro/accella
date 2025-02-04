@@ -28,15 +28,16 @@ const generateSchema = (options: GeneratorOptions) => {
     throw new Error(`db provider must be one of mysql, postgresql, sqlite: ${db?.provider}`);
   }
   // remove sourceFilePath
-  const { sourceFilePath: _, ...dataSource } = db as any;
+  const { sourceFilePath, ...dataSource } = db as any;
   return `
 export const schemaDir = "${schemaDir}/";
+export const sourceFilePath = "${path.relative(outputPath, sourceFilePath)}";
 export const dataSource = ${JSON.stringify(dataSource, null, 2)} as DataSource;
 
 /**
  * Retrieves the database connection settings based on the Prisma schema file.
  */
-export const getDatabaseConfig = () => generateDatabaseConfig(dataSource, import.meta.url, schemaDir);
+export const getDatabaseConfig = () => generateDatabaseConfig(dataSource, import.meta.url, schemaDir, sourceFilePath);
 `;
 };
 

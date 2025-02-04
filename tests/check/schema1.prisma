@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator custom_generator {
+  provider = "node node_modules/prisma-generator-accel-record"
+  output   = "./models1"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement()) @map("_id")
+}
