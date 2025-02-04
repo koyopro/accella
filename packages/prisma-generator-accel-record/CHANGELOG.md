@@ -1,5 +1,13 @@
 # prisma-generator-accel-record
 
+## 2.0.1
+
+### Patch Changes
+
+- [#119](https://github.com/koyopro/accella/pull/119) [`89cb887`](https://github.com/koyopro/accella/commit/89cb88792de7005749bf807d2a5df28ac2cb7b3b) Thanks [@koyopro](https://github.com/koyopro)! - Fixed an issue where the schemaDir was one level deeper than necessary.
+
+- [#121](https://github.com/koyopro/accella/pull/121) [`6014c2b`](https://github.com/koyopro/accella/commit/6014c2b7a7f21b5899b96e0acf2270ecd8f03b46) Thanks [@koyopro](https://github.com/koyopro)! - The `sourceFilePath` is now output separately from `schemaDir` and is used in `generateDatabaseConfig()`.
+
 ## 2.0.0
 
 ### Major Changes
