@@ -23,6 +23,7 @@ declare module "accel-record" {
 type Meta<T> = any;
 
 export const schemaDir = "../../db/";
+export const sourceFilePath = "../../db/schema/main.prisma";
 export const dataSource = {
   name: "db",
   provider: "sqlite",
@@ -38,4 +39,4 @@ export const dataSource = {
  * Retrieves the database connection settings based on the Prisma schema file.
  */
 export const getDatabaseConfig = () =>
-  generateDatabaseConfig(dataSource, import.meta.url, schemaDir);
+  generateDatabaseConfig(dataSource, import.meta.url, schemaDir, sourceFilePath);
