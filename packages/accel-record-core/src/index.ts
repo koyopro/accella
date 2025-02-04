@@ -1,5 +1,4 @@
 import { DataSource } from "@prisma/generator-helper";
-import { join } from "path";
 import { Collection } from "./associations/collectionProxy.js";
 import { HasManyAssociation } from "./associations/hasManyAssociation.js";
 import { HasOneAssociation } from "./associations/hasOneAssociation.js";
@@ -65,7 +64,7 @@ export const generateDatabaseConfig = (
   schemaDir: string
 ) => {
   let url: string | null = null;
-  const prismaDir = new URL(join(basePath, schemaDir));
+  const prismaDir = new URL(schemaDir, basePath);
   if (dataSource.url.fromEnvVar) {
     const envVar = dataSource.url.fromEnvVar;
     url = (import.meta as any).env?.[envVar] ?? process.env?.[envVar] ?? null;

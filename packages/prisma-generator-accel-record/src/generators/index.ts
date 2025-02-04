@@ -1,6 +1,6 @@
 import { DMMF, GeneratorOptions } from "@prisma/generator-helper";
+import path, { dirname } from "path";
 import { generateTypes } from "./type";
-import path, { dirname, join } from "path";
 
 export const generateIndex = async (options: GeneratorOptions) => {
   return [
@@ -21,7 +21,7 @@ import { type DataSource } from "@prisma/generator-helper";
 
 const generateSchema = (options: GeneratorOptions) => {
   const outputPath = options.generator.output!.value!;
-  const relativePath = path.relative(join(outputPath, "index.ts"), options.schemaPath);
+  const relativePath = path.relative(outputPath, options.schemaPath);
   const schemaDir = dirname(relativePath);
   const db = options.datasources.find((v) => v.name == "db");
   if (!["mysql", "postgresql", "sqlite"].includes(db?.provider ?? "")) {
@@ -30,7 +30,7 @@ const generateSchema = (options: GeneratorOptions) => {
   // remove sourceFilePath
   const { sourceFilePath: _, ...dataSource } = db as any;
   return `
-export const schemaDir = "${schemaDir}";
+export const schemaDir = "${schemaDir}/";
 export const dataSource = ${JSON.stringify(dataSource, null, 2)} as DataSource;
 
 /**
