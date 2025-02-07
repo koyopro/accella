@@ -1,5 +1,11 @@
 # accella
 
+## 0.4.0
+
+### Minor Changes
+
+- [#122](https://github.com/koyopro/accella/pull/122) [`0096d89`](https://github.com/koyopro/accella/commit/0096d89e69dfbde763f771d71f2e0ef4e09826b9) Thanks [@koyopro](https://github.com/koyopro)! - Implemented loadDotenvs() and called it at the beginning of runInitializers()
+
 ## 0.3.0
 
 ### Minor Changes
