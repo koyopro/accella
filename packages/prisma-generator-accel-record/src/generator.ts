@@ -52,10 +52,10 @@ const generateModels = async (options: GeneratorOptions, outputDir: string) => {
 const generateFactories = async (options: GeneratorOptions, indexFile: string) => {
   const factoryDir = options.generator.config.factoryPath;
   if (typeof factoryDir !== "string") return;
-  const prefix = factoryDir.startsWith("/") ? "" : path.dirname(options.schemaPath);
+  const url = new URL(`${factoryDir}/`, `file://${options.schemaPath}`);
   for (const model of options.dmmf.datamodel.models) {
     const fileName = `${toCamelCase(model.name)}.ts`;
-    const filePath = path.join(prefix, factoryDir, fileName);
+    const filePath = new URL(fileName, url).pathname;
     if (fs.existsSync(filePath)) continue;
     const relative = path.relative(path.dirname(filePath), indexFile).replace(/.ts$/, ".js");
     await writeFileSafely(filePath, generateFactory(model, { pathToIndex: relative }));
