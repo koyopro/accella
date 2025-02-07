@@ -1,4 +1,8 @@
+import * as dotenv from "dotenv";
+import * as dotenvExpand from "dotenv-expand";
+
 export const runInitializers = async () => {
+  loadDotenvs();
   const modules = import.meta.glob("/src/config/initializers/*");
   for (const path in modules) {
     try {
@@ -8,4 +12,9 @@ export const runInitializers = async () => {
       console.warn(`Error running initializer of ${path}`, error);
     }
   }
+};
+
+export const loadDotenvs = () => {
+  const path = [".env.local", `.env.${process.env.NODE_ENV}`, ".env"];
+  dotenvExpand.expand(dotenv.config({ path }));
 };
