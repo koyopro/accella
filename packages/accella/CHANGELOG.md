@@ -1,5 +1,11 @@
 # accella
 
+## 0.5.0
+
+### Minor Changes
+
+- [#118](https://github.com/koyopro/accella/pull/118) [`125c61d`](https://github.com/koyopro/accella/commit/125c61d04607cc1ca3edde377d4175b6255378ba) Thanks [@koyopro](https://github.com/koyopro)! - Included Vitest in the project initialization
+
 ## 0.4.0
 
 ### Minor Changes
