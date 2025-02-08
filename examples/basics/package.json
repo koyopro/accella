@@ -1,9 +1,10 @@
 {
   "name": "accella-basic-template",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
+    "test": "vitest",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
@@ -19,5 +20,8 @@
   },
   "prisma": {
     "schema": "./db/schema/"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.4"
   }
 }
