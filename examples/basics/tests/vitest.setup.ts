@@ -1,8 +1,8 @@
 import { DatabaseCleaner, Migration, stopWorker } from "accel-record";
-import setupDatabase from "src/config/initializers/database";
+import { runInitializers } from "accella/initialize";
 
 beforeAll(async () => {
-  await setupDatabase();
+  await runInitializers();
   await Migration.migrate();
 });
 
