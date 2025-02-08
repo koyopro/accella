@@ -1,5 +1,11 @@
 # prisma-generator-accel-record
 
+## 2.0.2
+
+### Patch Changes
+
+- [#124](https://github.com/koyopro/accella/pull/124) [`ac10d13`](https://github.com/koyopro/accella/commit/ac10d131301ec3aa94c95788b413a8d87ac5da6d) Thanks [@koyopro](https://github.com/koyopro)! - Adjusted the resolution method of factoryDir in generateFactories()
+
 ## 2.0.1
 
 ### Patch Changes
