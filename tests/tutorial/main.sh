@@ -5,19 +5,29 @@ dir=$(pwd)
 npm create accella@latest my-app
 cd my-app
 
+check_status_code() {
+  local url=$1
+  local expected_status=$2
+  status_code=$(curl -o /dev/null -s -w "%{http_code}" $url)
+  if [ "$status_code" -ne $expected_status ]; then
+    echo "Request to $url failed with status code $status_code"
+    kill $pids
+    exit 1
+  else
+    echo "Request to $url succeeded with status code $status_code"
+  fi
+}
+
 # Start the server
 npm run dev &
 sleep 1
 pids=$(ps ax | grep 'astro dev' | grep -v grep | awk '{print $1}')
 
-status_code=$(curl -o /dev/null -s -w "%{http_code}" http://localhost:4321/)
-if [ "$status_code" -ne 200 ]; then
-  echo "Request failed with status code $status_code"
-  kill $pids
-  exit 1
-else
-  echo "Request succeeded with status code $status_code"
-fi
+check_status_code "http://localhost:4321/" 200
+
+cat ${dir}/tests/tutorial/about.astro >> src/pages/about.astro
+sleep 1
+check_status_code "http://localhost:4321/about" 200
 
 check_exit_status() {
   if [ $1 -ne 0 ]; then
