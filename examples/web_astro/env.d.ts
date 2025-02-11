@@ -3,7 +3,7 @@
 declare global {
   namespace App {
     interface Locals {
-      session: import("./src/session").Session;
+      session: import("./src/config/session").Session;
       params: import("accel-web").RequestParameters;
     }
   }
