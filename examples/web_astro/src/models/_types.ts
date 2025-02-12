@@ -103,6 +103,8 @@ declare module "./todo" {
     dueDate: Date | undefined;
     status: Status;
     statusText: string;
+    label: string | undefined;
+    available: boolean;
     createdAt: Date | undefined;
     updatedAt: Date | undefined;
   }
@@ -133,6 +135,8 @@ type TodoMeta = {
     estimate: number | undefined;
     dueDate: Date | undefined;
     status: Status;
+    label: string | undefined;
+    available: boolean;
     createdAt: Date;
     updatedAt: Date;
   };
@@ -143,6 +147,8 @@ type TodoMeta = {
     estimate?: number;
     dueDate?: Date;
     status?: Status;
+    label?: string;
+    available?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
   };
@@ -153,6 +159,8 @@ type TodoMeta = {
     estimate?: number | number[] | Filter<number> | null;
     dueDate?: Date | Date[] | Filter<Date> | null;
     status?: Status | Status[] | undefined | null;
+    label?: string | string[] | StringFilter | null;
+    available?: boolean | boolean[] | undefined | null;
     createdAt?: Date | Date[] | Filter<Date> | null;
     updatedAt?: Date | Date[] | Filter<Date> | null;
   };

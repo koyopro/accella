@@ -1,31 +1,31 @@
 import { extendCommponent } from "./index.js";
 import input from "./input.astro";
 
-export const makeTextField = (prefix: string, r: any) => {
-  return extendCommponent<"input", { attr: string }>(
+export const makeTextField = <T>(prefix: string, r: any) => {
+  return extendCommponent<"input", { attr: keyof T & string }>(
     input,
     (p) => ({ name: `${prefix}${p.attr}`, value: r[p.attr], type: "text" }),
     ["attr"]
   );
 };
 
-export const makeHiddenField = (prefix: string, r: any) => {
-  return extendCommponent<"input", { attr: string }>(
+export const makeHiddenField = <T>(prefix: string, r: any) => {
+  return extendCommponent<"input", { attr: keyof T & string }>(
     input,
     (p) => ({ name: `${prefix}${p.attr}`, value: r[p.attr], type: "hidden" }),
     ["attr"]
   );
 };
 
-export const makePasswordField = (prefix: string) => {
-  return extendCommponent<"input", { attr: string }>(
+export const makePasswordField = <T>(prefix: string) => {
+  return extendCommponent<"input", { attr: keyof T & string }>(
     input,
     (p) => ({ name: `${prefix}${p.attr}`, type: "password" }),
     ["attr"]
   );
 };
-export const makeNumberField = (prefix: string, r: any) => {
-  return extendCommponent<"input", { attr: string }>(
+export const makeNumberField = <T>(prefix: string, r: any) => {
+  return extendCommponent<"input", { attr: keyof T & string }>(
     input,
     (p) => ({
       name: `+${prefix}${p.attr}`,
@@ -36,8 +36,8 @@ export const makeNumberField = (prefix: string, r: any) => {
   );
 };
 
-export const makeDateField = (prefix: string, r: any) =>
-  extendCommponent<"input", { attr: string }>(
+export const makeDateField = <T>(prefix: string, r: any) =>
+  extendCommponent<"input", { attr: keyof T & string }>(
     input,
     (p) => ({
       name: `${prefix}${p.attr}`,
@@ -47,8 +47,8 @@ export const makeDateField = (prefix: string, r: any) =>
     ["attr"]
   );
 
-export const makeCheckbox = (prefix: string, r: any) => {
-  return extendCommponent<"input", { attr: string }>(
+export const makeCheckbox = <T>(prefix: string, r: any) => {
+  return extendCommponent<"input", { attr: keyof T & string }>(
     input,
     (p) => ({
       name: `${prefix}${p.attr}`,
@@ -59,8 +59,8 @@ export const makeCheckbox = (prefix: string, r: any) => {
   );
 };
 
-export const makeRadioButton = (prefix: string) =>
-  extendCommponent<"input", { attr: string }>(
+export const makeRadioButton = <T>(prefix: string) =>
+  extendCommponent<"input", { attr: keyof T & string }>(
     input,
     (p) => ({
       name: `${prefix}${p.attr}`,

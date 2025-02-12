@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `Todo` ADD COLUMN `available` BOOLEAN NOT NULL DEFAULT true,
+    ADD COLUMN `label` VARCHAR(191) NULL;

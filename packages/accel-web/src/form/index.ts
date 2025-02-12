@@ -50,32 +50,32 @@ export { CsrfMetaTags, CsrfTokenField };
  * - `Textarea`: A textarea input field component.
  * - `Submit`: A submit button component.
  */
-export const formFor = (resource: any, options?: FormForOptions) => {
+export const formFor = <T>(resource: T, options?: FormForOptions) => {
   const prefix = getPrefix(resource, options);
   return {
     Form: form as (props: astroHTML.JSX.FormHTMLAttributes) => any,
 
-    Label: makeLabel(prefix, resource),
+    Label: makeLabel<T>(prefix, resource),
 
-    TextField: makeTextField(prefix, resource),
+    TextField: makeTextField<T>(prefix, resource),
 
-    HiddenField: makeHiddenField(prefix, resource),
+    HiddenField: makeHiddenField<T>(prefix, resource),
 
-    PasswordField: makePasswordField(prefix),
+    PasswordField: makePasswordField<T>(prefix),
 
-    NumberField: makeNumberField(prefix, resource),
+    NumberField: makeNumberField<T>(prefix, resource),
 
-    DateField: makeDateField(prefix, resource),
+    DateField: makeDateField<T>(prefix, resource),
 
-    Checkbox: makeCheckbox(prefix, resource),
+    Checkbox: makeCheckbox<T>(prefix, resource),
 
-    RadioButton: makeRadioButton(prefix),
+    RadioButton: makeRadioButton<T>(prefix),
 
-    CollectionRadioButtons: makeCollectionRadioButtons(prefix, resource),
+    CollectionRadioButtons: makeCollectionRadioButtons<T>(prefix, resource),
 
-    Select: makeSelect(prefix, resource),
+    Select: makeSelect<T>(prefix, resource),
 
-    Textarea: makeTextarea(prefix, resource),
+    Textarea: makeTextarea<T>(prefix, resource),
 
     Submit: extendCommponent<"button", {}>(button, () => ({ type: "submit" })),
   };
@@ -101,11 +101,11 @@ export const extendCommponent = <L extends keyof astroHTML.JSX.DefinedIntrinsicE
   }) as any;
 };
 
-const makeSelect = (prefix: string, r: any) =>
+const makeSelect = <T>(prefix: string, r: any) =>
   extendCommponent<
     "select",
     {
-      attr: string;
+      attr: keyof T & string;
       collection: [string, string | undefined][];
       selected?: string;
       includeBlank?: string;
@@ -121,10 +121,10 @@ const makeSelect = (prefix: string, r: any) =>
     ["attr", "collection", "selected", "includeBlank"]
   );
 
-const makeCollectionRadioButtons = (
+const makeCollectionRadioButtons = <T>(
   prefix: string,
   r: any
-): ((props: { attr: string; collection: [string, string][] }) => any) => {
+): ((props: { attr: keyof T & string; collection: [string, string][] }) => any) => {
   return extendCommponent<"input", {}>(
     collectionRadioButtons,
     (p) => ({
@@ -136,8 +136,8 @@ const makeCollectionRadioButtons = (
   );
 };
 
-const makeLabel = (prefix: string, resource: any) => {
-  return extendCommponent<"label", { for: string }>(
+const makeLabel = <T>(prefix: string, resource: any) => {
+  return extendCommponent<"label", { for: keyof T & string }>(
     label,
     (p) => ({
       htmlFor: `${prefix}${p.for}`,
@@ -147,8 +147,8 @@ const makeLabel = (prefix: string, resource: any) => {
   );
 };
 
-const makeTextarea = (prefix: string, r: any) => {
-  return extendCommponent<"textarea", { attr: string }>(
+const makeTextarea = <T>(prefix: string, r: any) => {
+  return extendCommponent<"textarea", { attr: keyof T & string }>(
     textarea,
     (p) => ({ name: `${prefix}${p.attr}`, value: r[p.attr] }),
     ["attr"]

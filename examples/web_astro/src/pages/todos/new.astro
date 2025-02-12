@@ -28,14 +28,14 @@ const { Form, Label, TextField, Submit } = f;
           </div>
         )
       }
-      <f.HiddenField attr="secret" />
+      <f.HiddenField attr="id" />
       <div class="mb-3">
         <Label for="title" />
         <TextField attr="title" class="form-control" />
       </div>
       <div class="mb-3">
-        <Label for="description" />
-        <f.Textarea attr="description" class="form-control" />
+        <Label for="content" />
+        <f.Textarea attr="content" class="form-control" />
       </div>
       <div class="mb-3">
         <Label for="estimate" />

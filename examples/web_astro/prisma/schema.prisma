@@ -34,6 +34,8 @@ model Todo {
   estimate  Int?
   dueDate   DateTime?
   status    Status    @default(OPEN)
+  label     String?
+  available Boolean   @default(true)
   // account   Account   @relation(fields: [accountId], references: [id])
   // accountId Int
   createdAt DateTime  @default(now())
