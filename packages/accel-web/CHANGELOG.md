@@ -1,5 +1,11 @@
 # Accel Web
 
+## 1.1.1
+
+### Patch Changes
+
+- [#129](https://github.com/koyopro/accella/pull/129) [`2676a8d`](https://github.com/koyopro/accella/commit/2676a8d26b2b08a9ccb94110fb2a7ab3a2cc7cd5) Thanks [@koyopro](https://github.com/koyopro)! - Added type restrictions to the arguments of each formFor component
+
 ## 1.1.0
 
 ### Minor Changes
