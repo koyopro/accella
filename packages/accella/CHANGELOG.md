@@ -1,5 +1,18 @@
 # accella
 
+## 0.5.0
+
+### Minor Changes
+
+- [#128](https://github.com/koyopro/accella/pull/128) [`d2c3eea`](https://github.com/koyopro/accella/commit/d2c3eead5e82a42e1f77417b45be3efa97306ff8) Thanks [@koyopro](https://github.com/koyopro)! - Made it possible to specify sessionOptions in config/session.ts
+
+- [#118](https://github.com/koyopro/accella/pull/118) [`125c61d`](https://github.com/koyopro/accella/commit/125c61d04607cc1ca3edde377d4175b6255378ba) Thanks [@koyopro](https://github.com/koyopro)! - Included Vitest in the project initialization
+
+### Patch Changes
+
+- Updated dependencies [[`2676a8d`](https://github.com/koyopro/accella/commit/2676a8d26b2b08a9ccb94110fb2a7ab3a2cc7cd5)]:
+  - accel-web@1.1.1
+
 ## 0.4.0
 
 ### Minor Changes
