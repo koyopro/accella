@@ -75,7 +75,7 @@ export function hasSecurePassword<T extends string = "password">(
         length: { maximum: MAX_PASSWORD_LENGTH_ALLOWED },
       });
       if (confirm != undefined && password !== confirm) {
-        const humanAttributeName = this.record.class().humanAttributeName(attribute);
+        const humanAttributeName = this.record.class().humanAttributeName(attribute as keyof Model);
         this.record.errors.add(confirmAttribute, "confirmation", {
           attribute: humanAttributeName,
         });
