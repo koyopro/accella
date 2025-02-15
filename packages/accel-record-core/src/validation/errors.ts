@@ -47,7 +47,7 @@ export class Error {
    * @returns The full error message.
    */
   get fullMessage() {
-    const attrName = this.base.class().humanAttributeName(this.attribute);
+    const attrName = this.base.class().humanAttributeName(this.attribute as keyof Model);
     return `${attrName} ${this.message}`;
   }
 

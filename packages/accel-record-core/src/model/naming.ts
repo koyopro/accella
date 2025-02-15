@@ -31,7 +31,10 @@ export class Naming {
    * @param attribute - The attribute name.
    * @returns The human-readable attribute name.
    */
-  static humanAttributeName(attribute: string) {
+  static humanAttributeName<T extends { new (): any }>(
+    this: T,
+    attribute: keyof InstanceType<T> & string
+  ) {
     const key = `accelrecord.attributes.${this.name}.${attribute}`;
     return i18n?.t(key, "") || toPascalCase(attribute);
   }

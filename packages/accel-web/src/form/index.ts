@@ -161,10 +161,10 @@ function toCamelCase(str: string): string {
 
 const humanAttributeName = (resource: any, name: string) => {
   if (resource instanceof Model) {
-    return resource.class().humanAttributeName(name);
+    return resource.class().humanAttributeName(name as keyof Model);
   }
   if (resource instanceof FormModel) {
-    return resource.class().humanAttributeName(name);
+    return resource.class().humanAttributeName(name as keyof FormModel);
   }
   return undefined;
 };
