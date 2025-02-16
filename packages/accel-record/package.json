@@ -14,6 +14,10 @@
       "types": "./dist/attributes.d.ts",
       "default": "./dist/attributes.js"
     },
+    "./merge": {
+      "types": "./dist/merge.d.ts",
+      "default": "./dist/merge.js"
+    },
     "./enums": {
       "types": "./dist/enums.d.ts",
       "default": "./dist/enums.js"
