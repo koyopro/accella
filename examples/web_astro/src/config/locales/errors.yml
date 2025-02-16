@@ -1,0 +1,12 @@
+ja:
+  translation:
+    errors:
+      messages:
+        blank: "を入力してください"
+        accepted: "をチェックしてください"
+        invalid: "は不正です"
+        inclusion: "はリストに含まれていません"
+        tooShort: "は短すぎます(%{count}文字以上)"
+        tooLong: "は長すぎます(%{count}文字以下)"
+        taken: "は既に使用されています"
+        confirmation: "と%{attribute}の入力が一致しません"

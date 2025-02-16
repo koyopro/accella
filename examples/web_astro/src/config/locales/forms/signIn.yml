@@ -1,0 +1,7 @@
+ja:
+  translation:
+    accelrecord:
+      attributes:
+        SignIn:
+          email: "メールアドレス"
+          password: "パスワード"

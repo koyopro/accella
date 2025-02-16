@@ -1,0 +1,16 @@
+ja:
+  translation:
+    views:
+      pagination:
+        first: "&laquo; 最初"
+        last: "最後 &raquo;"
+        previous: "&lsaquo; 前"
+        next: "次 &rsaquo;"
+        truncate: "&hellip;"
+    helpers:
+      pageEntriesInfo:
+        onePage:
+          displayEntries_zero: "レコードが見つかりませんでした"
+          displayEntries_other: "<b>全{{total}}</b>件表示中"
+        morePages:
+          displayEntries: "<b>{{first}}-{{last}}</b>件 / {{total}}件中"

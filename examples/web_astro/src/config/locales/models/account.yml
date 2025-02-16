@@ -1,0 +1,8 @@
+ja:
+  translation:
+    accelrecord:
+      attributes:
+        Account:
+          email: "メールアドレス"
+          password: "パスワード"
+          passwordConfirmation: "パスワード(確認用)"
