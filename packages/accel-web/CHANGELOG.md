@@ -1,5 +1,14 @@
 # Accel Web
 
+## 1.1.2
+
+### Patch Changes
+
+- [#133](https://github.com/koyopro/accella/pull/133) [`09b7738`](https://github.com/koyopro/accella/commit/09b7738b64f3b53e6980d6bac09cb7821acf774d) Thanks [@koyopro](https://github.com/koyopro)! - Adapting to the change in the argument type of Accel Record's Model.humanAttributeName()
+
+- Updated dependencies [[`2778ea3`](https://github.com/koyopro/accella/commit/2778ea3a4b5dcb8edd0090a50fcf96fb23ccbd9e), [`38065c1`](https://github.com/koyopro/accella/commit/38065c137af90ec46ea9fcb3198d8d04dcbd0505)]:
+  - accel-record@2.1.0
+
 ## 1.1.1
 
 ### Patch Changes
