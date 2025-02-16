@@ -1,0 +1,15 @@
+ja:
+  translation:
+    accelrecord:
+      attributes:
+        Todo:
+          title: "タイトル"
+          estimate: "見積もり"
+          dueDate: "期日"
+          status: "ステータス"
+          available: "有効"
+          description: "詳細"
+    enums:
+      Status:
+        OPEN: "オープン"
+        CLOSED: "クローズド"
