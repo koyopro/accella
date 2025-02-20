@@ -2,7 +2,7 @@ Language: [English](README.md) | [日本語](README-ja.md)
 
 # Accellaプロジェクト
 
-Accellaは、豊富な機能と高い型安全性により高い開発効率を実現するためのフルスタックWebフレームワークです。スタートアップや小規模チームに特に適しています。
+Accellaは、豊富な機能と強い型安全性により高い開発効率を実現するためのフルスタックWebフレームワークです。スタートアップや小規模チームに特に適しています。
 
 ## インストール
 
@@ -10,7 +10,9 @@ Accellaは、豊富な機能と高い型安全性により高い開発効率を�
 npm create accella@latest
 ```
 
-詳細は[こちら](./packages/accella/README-ja.md)をご覧ください。
+## ドキュメント
+
+https://accella.dev/ja/
 
 ## 特徴
 

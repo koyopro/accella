@@ -10,7 +10,9 @@ Accella is a full-stack web framework designed to achieve high development effic
 npm create accella@latest
 ```
 
-For more details, please refer to [this document](./packages/accella/README.md).
+## Documentation
+
+https://accella.dev/
 
 ## Features
 
