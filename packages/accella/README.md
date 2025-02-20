@@ -4,19 +4,7 @@ Language: [English](https://github.com/koyopro/accella/blob/main/packages/accell
 
 A web framework built with Astro and Accel Record.
 
-## Installation
-
-```bash
-npm create accella@latest my-accella-app
-```
-
-## Getting Started
-
-```bash
-cd my-accella-app
-npm run dev
-open http://localhost:4321
-```
+For instructions on how to use the framework, please refer to the [Accella documentation](https://accella.dev/).
 
 ## Structure
 
