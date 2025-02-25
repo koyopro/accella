@@ -1,6 +1,6 @@
 {
   "name": "create-accella",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "type": "module",
   "description": "Scaffolding for Accella projects",
   "main": "src/index.js",

@@ -1,5 +1,20 @@
 # accella
 
+## 1.0.0
+
+### Major Changes
+
+- [#138](https://github.com/koyopro/accella/pull/138) [`d4682e8`](https://github.com/koyopro/accella/commit/d4682e8d6dec61dce18292311d5ab44d967966ee) Thanks [@koyopro](https://github.com/koyopro)! - Change the version to 1.0
+
+### Minor Changes
+
+- [#135](https://github.com/koyopro/accella/pull/135) [`5b66998`](https://github.com/koyopro/accella/commit/5b66998b4d933897d761f69744a5f87369fe28ef) Thanks [@koyopro](https://github.com/koyopro)! - Added loadLocaleResources() to load locale resource files
+
+### Patch Changes
+
+- Updated dependencies [[`09b7738`](https://github.com/koyopro/accella/commit/09b7738b64f3b53e6980d6bac09cb7821acf774d)]:
+  - accel-web@1.1.2
+
 ## 0.5.0
 
 ### Minor Changes
