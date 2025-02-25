@@ -1,7 +1,7 @@
 {
   "name": "accella-basic-template",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "test": "vitest",
