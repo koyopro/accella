@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
-    "accella": ">=0.3.0",
+    "accella": "^1.0.0",
     "astro": "^5.1.8",
     "better-sqlite3": "^11.8.1",
     "typescript": "^5.6.3"
