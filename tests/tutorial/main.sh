@@ -50,5 +50,9 @@ check_exit_status $? "Prisma migrate dev"
 npx vitest run
 check_exit_status $? "Run test"
 
+npx astro add node --yes
+npm run build
+check_exit_status $? "Run build"
+
 echo "All tests passed"
 kill $pids
