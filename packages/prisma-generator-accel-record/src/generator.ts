@@ -6,15 +6,14 @@ import { GENERATOR_NAME } from "./constants";
 import { ensureApplicationRecord } from "./generators/applicationRecord";
 import { generateFactory } from "./generators/factory";
 import {
-  generateIndex,
-  toCamelCase,
-  generateSchemaFileContent,
   ACCEL_RECORD_DIR,
+  generateIndex,
+  generateSchemaFileContent,
   SCHEMA_CONFIG_FILE,
+  toCamelCase,
 } from "./generators/index";
 import { getModel as generateModel } from "./generators/model";
 import { writeFileSafely } from "./utils/writeFileSafely";
-import { mkdirp } from "mkdirp";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { version } = require("../package.json");
@@ -56,7 +55,7 @@ async function writeSchemaFile(options: GeneratorOptions): Promise<void> {
   const accelDir = path.join(projectRoot, ACCEL_RECORD_DIR);
 
   // ディレクトリが存在しない場合は作成
-  await mkdirp(accelDir);
+  await fsPromises.mkdir(accelDir, { recursive: true });
 
   // スキーマ情報を生成
   const content = generateSchemaFileContent(options);
