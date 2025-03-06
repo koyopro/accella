@@ -52,8 +52,8 @@ generatorHandler({
 // スキーマ設定ファイルを書き出す関数
 async function writeSchemaFile(options: GeneratorOptions): Promise<void> {
   const outputPath = options.generator.output!.value!;
-  const basePath = path.resolve(outputPath, "../.."); // node_modulesの親ディレクトリを取得
-  const accelDir = path.join(basePath, ACCEL_RECORD_DIR);
+  const projectRoot = path.resolve(outputPath, "../.."); // node_modulesの親ディレクトリを取得
+  const accelDir = path.join(projectRoot, ACCEL_RECORD_DIR);
 
   // ディレクトリが存在しない場合は作成
   await mkdirp(accelDir);
