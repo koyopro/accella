@@ -3,7 +3,7 @@ import path from "path";
 import { generateTypes } from "./type";
 
 export const ACCEL_RECORD_DIR = ".accel-record";
-export const SCHEMA_CONFIG_FILE = "schema.js";
+export const SCHEMA_CONFIG_FILE = "schema";
 
 export const generateIndex = async (options: GeneratorOptions) => {
   return [

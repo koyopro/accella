@@ -52,7 +52,7 @@ generatorHandler({
 async function writeSchemaFile(options: GeneratorOptions): Promise<void> {
   const outputPath = options.generator.output!.value!;
   const projectRoot = path.resolve(outputPath, "../.."); // node_modulesの親ディレクトリを取得
-  const accelDir = path.join(projectRoot, ACCEL_RECORD_DIR);
+  const accelDir = path.join(projectRoot, "node_modules", ACCEL_RECORD_DIR);
 
   // ディレクトリが存在しない場合は作成
   await fsPromises.mkdir(accelDir, { recursive: true });
@@ -60,10 +60,21 @@ async function writeSchemaFile(options: GeneratorOptions): Promise<void> {
   // スキーマ情報を生成
   const content = generateSchemaFileContent(options);
 
-  // ファイルに書き出し
-  const filePath = path.join(accelDir, SCHEMA_CONFIG_FILE);
+  // schema.js ファイルを書き出し
+  const filePath = path.join(accelDir, SCHEMA_CONFIG_FILE + ".js");
   await fsPromises.writeFile(filePath, content, "utf8");
   console.info(`${green("create")}: ${path.relative(currentDir, filePath)}`);
+
+  // schema.d.ts 型定義ファイルを書き出し
+  const typesContent = `import { type DataSource } from "@prisma/generator-helper";
+
+export const schemaDir: string;
+export const sourceFilePath: string;
+export const dataSource: DataSource;
+`;
+  const typeFilePath = path.join(accelDir, SCHEMA_CONFIG_FILE + ".d.ts");
+  await fsPromises.writeFile(typeFilePath, typesContent, "utf8");
+  console.info(`${green("create")}: ${path.relative(currentDir, typeFilePath)}`);
 }
 
 const green = (text: string) => `\x1b[32m${text}\x1b[39m`;
