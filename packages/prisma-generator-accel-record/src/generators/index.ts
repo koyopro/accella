@@ -2,7 +2,7 @@ import { DMMF, GeneratorOptions } from "@prisma/generator-helper";
 import path from "path";
 import { generateTypes } from "./type";
 
-export const ACCEL_RECORD_DIR = ".accel-record";
+export const ACCEL_RECORD_DIR = "accel-record-schema";
 export const SCHEMA_CONFIG_FILE = "index";
 
 export const generateIndex = async (options: GeneratorOptions) => {
