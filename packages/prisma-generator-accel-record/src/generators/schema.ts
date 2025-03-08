@@ -5,23 +5,29 @@ import path from "path";
 export const ACCEL_RECORD_DIR = ".accel-record";
 export const SCHEMA_CONFIG_FILE = "index";
 
-// スキーマ設定ファイルを書き出す関数
 export async function writeSchemaFile(options: GeneratorOptions): Promise<void> {
   const outputPath = options.generator.output!.value!;
-  const projectRoot = path.resolve(outputPath, "../.."); // node_modulesの親ディレクトリを取得
+  const projectRoot = path.resolve(outputPath, "../..");
   const accelDir = path.join(projectRoot, "node_modules", ACCEL_RECORD_DIR);
 
-  // ディレクトリが存在しない場合は作成
-  await fsPromises.mkdir(accelDir, { recursive: true });
+  await createDirectory(accelDir);
 
-  // スキーマ情報を生成
+  await writeJSFile(accelDir, options);
+  await writeTypeDefinitionFile(accelDir);
+  await writePackageJsonFile(accelDir);
+}
+
+async function createDirectory(dirPath: string): Promise<void> {
+  await fsPromises.mkdir(dirPath, { recursive: true });
+}
+
+async function writeJSFile(accelDir: string, options: GeneratorOptions): Promise<void> {
   const content = generateSchemaFileContent(options);
-
-  // index.js ファイルを書き出し
   const filePath = path.join(accelDir, SCHEMA_CONFIG_FILE + ".js");
   await fsPromises.writeFile(filePath, content, "utf8");
+}
 
-  // index.d.ts 型定義ファイルを書き出し
+async function writeTypeDefinitionFile(accelDir: string): Promise<void> {
   const typesContent = `import { type DataSource } from "@prisma/generator-helper";
 
 export const schemaDir: string;
@@ -30,8 +36,9 @@ export const dataSource: DataSource;
 `;
   const typeFilePath = path.join(accelDir, SCHEMA_CONFIG_FILE + ".d.ts");
   await fsPromises.writeFile(typeFilePath, typesContent, "utf8");
+}
 
-  // package.json を作成
+async function writePackageJsonFile(accelDir: string): Promise<void> {
   const packageJson = {
     name: "@accella-record/schema",
     version: "1.0.0",
@@ -54,9 +61,8 @@ export function generateSchemaFileContent(options: GeneratorOptions): string {
   }
 
   const { sourceFilePath, ...dataSource } = db as any;
-  const absoluteSourceFilePath = sourceFilePath; // すでに絶対パス
+  const absoluteSourceFilePath = sourceFilePath;
 
-  // 出力内容を作成
   return `
 module.exports.schemaDir = "${absoluteSchemaDir.replace(/\\/g, "\\\\")}/";
 module.exports.sourceFilePath = "${absoluteSourceFilePath.replace(/\\/g, "\\\\")}";
