@@ -1,10 +1,13 @@
+import schema from "accel-record/schema";
 import { dbConfig } from "../vitest.setup";
-import { dataSource, getDatabaseConfig, schemaDir } from "./index";
+import { getDatabaseConfig } from "./index";
+
+const { dataSource, schemaDir } = schema;
 
 test("dataSource", () => {
   switch (dbConfig().type) {
     case "mysql":
-      expect(schemaDir).toBe("../prisma_mysql/");
+      expect(schemaDir).toMatch(new RegExp("/.+/tests/prisma_mysql/"));
       expect(dataSource).toMatchObject({
         name: "db",
         provider: "mysql",

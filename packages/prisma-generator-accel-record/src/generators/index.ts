@@ -28,7 +28,7 @@ export function generateSchemaFileContent(options: GeneratorOptions): string {
 
   // 出力内容を作成
   return `
-module.exports.schemaDir = "${absoluteSchemaDir.replace(/\\/g, "\\\\")}";
+module.exports.schemaDir = "${absoluteSchemaDir.replace(/\\/g, "\\\\")}/";
 module.exports.sourceFilePath = "${absoluteSourceFilePath.replace(/\\/g, "\\\\")}";
 module.exports.dataSource = ${JSON.stringify(dataSource, null, 2)};
 `;
