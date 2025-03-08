@@ -1,5 +1,4 @@
 import { DMMF, GeneratorOptions } from "@prisma/generator-helper";
-import path from "path";
 import { generateTypes } from "./type";
 
 export const ACCEL_RECORD_DIR = ".accel-record";
@@ -13,26 +12,6 @@ export const generateIndex = async (options: GeneratorOptions) => {
     generateSchema(options),
   ].join("\n");
 };
-
-// スキーマ設定ファイルの内容を生成する関数
-export function generateSchemaFileContent(options: GeneratorOptions): string {
-  const absoluteSchemaDir = path.dirname(options.schemaPath);
-  const db = options.datasources.find((v) => v.name == "db");
-
-  if (!["mysql", "postgresql", "sqlite"].includes(db?.provider ?? "")) {
-    throw new Error(`db provider must be one of mysql, postgresql, sqlite: ${db?.provider}`);
-  }
-
-  const { sourceFilePath, ...dataSource } = db as any;
-  const absoluteSourceFilePath = sourceFilePath; // すでに絶対パス
-
-  // 出力内容を作成
-  return `
-module.exports.schemaDir = "${absoluteSchemaDir.replace(/\\/g, "\\\\")}/";
-module.exports.sourceFilePath = "${absoluteSourceFilePath.replace(/\\/g, "\\\\")}";
-module.exports.dataSource = ${JSON.stringify(dataSource, null, 2)};
-`;
-}
 
 const cautionComment = `/* eslint-disable */
 /***************************************************************

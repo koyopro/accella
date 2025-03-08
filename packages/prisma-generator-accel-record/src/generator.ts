@@ -1,18 +1,12 @@
 import { generatorHandler, GeneratorOptions } from "@prisma/generator-helper";
 import * as fs from "fs";
-import * as fsPromises from "fs/promises";
 import path from "path";
 import { GENERATOR_NAME } from "./constants";
 import { ensureApplicationRecord } from "./generators/applicationRecord";
 import { generateFactory } from "./generators/factory";
-import {
-  ACCEL_RECORD_DIR,
-  generateIndex,
-  generateSchemaFileContent,
-  SCHEMA_CONFIG_FILE,
-  toCamelCase,
-} from "./generators/index";
+import { generateIndex, toCamelCase } from "./generators/index";
 import { getModel as generateModel } from "./generators/model";
+import { writeSchemaFile } from "./generators/schema";
 import { writeFileSafely } from "./utils/writeFileSafely";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -31,9 +25,7 @@ generatorHandler({
   onGenerate: async (options: GeneratorOptions) => {
     const outputDir = options.generator.output!.value!;
 
-    // スキーマ設定ファイルの出力
     await writeSchemaFile(options);
-
     await writeFileSafely(path.join(outputDir, `_types.ts`), await generateIndex(options));
     const indexFile = path.join(outputDir, `index.ts`);
     if (!fs.existsSync(indexFile)) {
@@ -47,49 +39,6 @@ generatorHandler({
     await generateFactories(options, indexFile);
   },
 });
-
-// スキーマ設定ファイルを書き出す関数
-async function writeSchemaFile(options: GeneratorOptions): Promise<void> {
-  const outputPath = options.generator.output!.value!;
-  const projectRoot = path.resolve(outputPath, "../.."); // node_modulesの親ディレクトリを取得
-  const accelDir = path.join(projectRoot, "node_modules", ACCEL_RECORD_DIR);
-
-  // ディレクトリが存在しない場合は作成
-  await fsPromises.mkdir(accelDir, { recursive: true });
-
-  // スキーマ情報を生成
-  const content = generateSchemaFileContent(options);
-
-  // index.js ファイルを書き出し
-  const filePath = path.join(accelDir, SCHEMA_CONFIG_FILE + ".js");
-  await fsPromises.writeFile(filePath, content, "utf8");
-  console.info(`${green("create")}: ${path.relative(currentDir, filePath)}`);
-
-  // index.d.ts 型定義ファイルを書き出し
-  const typesContent = `import { type DataSource } from "@prisma/generator-helper";
-
-export const schemaDir: string;
-export const sourceFilePath: string;
-export const dataSource: DataSource;
-`;
-  const typeFilePath = path.join(accelDir, SCHEMA_CONFIG_FILE + ".d.ts");
-  await fsPromises.writeFile(typeFilePath, typesContent, "utf8");
-  console.info(`${green("create")}: ${path.relative(currentDir, typeFilePath)}`);
-
-  // package.json を作成
-  const packageJson = {
-    name: "@accella-record/schema",
-    version: "1.0.0",
-    description: "Schema information for Accella Record",
-    main: "./index.js",
-    types: "./index.d.ts",
-    private: true,
-  };
-
-  const packageJsonPath = path.join(accelDir, "package.json");
-  await fsPromises.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2), "utf8");
-  console.info(`${green("create")}: ${path.relative(currentDir, packageJsonPath)}`);
-}
 
 const green = (text: string) => `\x1b[32m${text}\x1b[39m`;
 
