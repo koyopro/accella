@@ -1,8 +1,6 @@
-import schema from "accel-record/schema";
+import { dataSource, schemaDir } from "accel-record/schema";
 import { dbConfig } from "../vitest.setup";
 import { getDatabaseConfig } from "./index";
-
-const { dataSource, schemaDir } = schema;
 
 test("dataSource", () => {
   switch (dbConfig().type) {
@@ -20,7 +18,7 @@ test("dataSource", () => {
       });
       break;
     case "sqlite":
-      expect(schemaDir).toBe("../prisma/");
+      expect(schemaDir).toMatch(new RegExp("/.+/tests/prisma/"));
       expect(dataSource).toMatchObject({
         name: "db",
         provider: "sqlite",
@@ -33,7 +31,7 @@ test("dataSource", () => {
       });
       break;
     case "postgresql":
-      expect(schemaDir).toBe("../prisma_pg/");
+      expect(schemaDir).toMatch(new RegExp("/.+/tests/prisma_pg/"));
       expect(dataSource).toMatchObject({
         name: "db",
         provider: "postgresql",
