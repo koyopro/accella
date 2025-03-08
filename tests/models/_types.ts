@@ -393,6 +393,7 @@ type SettingMeta = {
     userId: number;
     threshold: number | undefined;
     createdAt: Date;
+    data: SettingModel['data'];
   };
   CreateInput: {
     settingId?: number;
