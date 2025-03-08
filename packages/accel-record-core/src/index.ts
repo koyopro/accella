@@ -17,10 +17,6 @@ import { Query } from "./query.js";
 import "./support.js";
 import { Transaction } from "./transaction.js";
 import { Mix } from "./utils.js";
-// @ts-ignore
-import * as schema from "./schema.cjs";
-
-export { schema };
 
 export { Collection } from "./associations/collectionProxy.js";
 export { after, before } from "./callbacks.js";

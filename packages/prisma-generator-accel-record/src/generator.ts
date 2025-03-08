@@ -81,7 +81,6 @@ export const dataSource: DataSource;
     name: "@accella-record/schema",
     version: "1.0.0",
     description: "Schema information for Accella Record",
-    type: "module",
     main: "./index.js",
     types: "./index.d.ts",
     private: true,
