@@ -1,3 +1,4 @@
+import { $setting } from "tests/factories/setting";
 import { $user } from "../factories/user";
 
 test("toHash", () => {
@@ -84,4 +85,10 @@ test("toHash with include belongsTo", () => {
     // @ts-expect-error
     user.id;
   }
+});
+
+test("toHash with only Json column", () => {
+  const setting = $setting.create();
+
+  setting.toHash({ only: ["data"] });
 });

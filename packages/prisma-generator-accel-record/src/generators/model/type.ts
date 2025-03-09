@@ -121,11 +121,12 @@ const associationKey = (model: ModelWrapper) => {
 
 const columnMeta = (model: ModelWrapper) =>
   model.fields
-    .filter((f) => !f.relationName && f.type != "Json")
-    .map(
-      (field) =>
-        `\n    ${field.name}: ${field.typeName}${field.isList ? "[]" : ""}${
-          field.isRequired ? "" : " | undefined"
-        };`
-    )
+    .filter((f) => !f.relationName)
+    .map((field) => {
+      const type =
+        field.type == "Json"
+          ? `${model.baseModel}['${field.name}']`
+          : `${field.typeName}${field.isList ? "[]" : ""}`;
+      return `\n    ${field.name}: ${type}${field.isRequired ? "" : " | undefined"};`;
+    })
     .join("") + "\n  ";
