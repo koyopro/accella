@@ -1,4 +1,5 @@
 import type { PutObjectRequest } from "@aws-sdk/client-s3";
+import type { AwsCredentialIdentity } from "@aws-sdk/types";
 import type { Config } from "../index.js";
 import { actions } from "../worker/index.js";
 import { type Storage } from "./index.js";
@@ -6,7 +7,11 @@ import { type Storage } from "./index.js";
 declare module "../index.js" {
   interface Config {
     readonly s3:
-      | Readonly<{ region?: string } & Partial<Omit<PutObjectRequest, "Body" | "Key">>>
+      | Readonly<
+          { region?: string; credentials?: AwsCredentialIdentity } & Partial<
+            Omit<PutObjectRequest, "Body" | "Key">
+          >
+        >
       | undefined;
   }
 }
@@ -64,12 +69,12 @@ export class S3Storage implements Storage {
   }
 
   protected get s3ClientConfig() {
-    const { region, ..._ } = this.s3Config;
-    return { region };
+    const { region, credentials, ..._ } = this.s3Config;
+    return { region, credentials };
   }
 
   protected get requestConfig() {
-    const { region: _, ...requestConfig } = this.s3Config;
+    const { region: _, credentials: __, ...requestConfig } = this.s3Config;
     return requestConfig;
   }
 }
