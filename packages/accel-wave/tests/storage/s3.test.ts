@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { Config } from "src/config";
+import { Config } from "../../src/config";
 import { S3Storage } from "../../src/storages/s3";
 import { buildFile } from "../buildFile";
 

@@ -1,5 +1,5 @@
-import { Config } from "src/config";
-import { FileStorage } from "src/storages/file";
+import { Config } from "../../src/config";
+import { FileStorage } from "../../src/storages/file";
 import { buildFile } from "../buildFile";
 
 test("store() and delete()", () => {

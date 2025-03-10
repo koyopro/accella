@@ -1,6 +1,6 @@
-import { Config, configureAccelWave } from "src/config";
-import { FileStorage } from "src/storages/file";
-import { S3Storage } from "src/storages/s3";
+import { Config, configureAccelWave } from "../src/config";
+import { FileStorage } from "../src/storages/file";
+import { S3Storage } from "../src/storages/s3";
 
 class MyConfig extends Config {
   id: string | undefined;
