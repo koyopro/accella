@@ -15,14 +15,12 @@ export class S3Storage implements Storage {
   constructor(public config: Config) {}
 
   store(file: File, identifier: string) {
-    const config = this.config.s3;
-    if (!config) throw new Error("S3 config is not set");
-    const { region, ...putConfig } = config;
+    const { Bucket, ...putConfig } = this.requestConfig;
     actions.writeS3(
-      { region: region },
+      this.s3ClientConfig,
       {
         ...putConfig,
-        Bucket: config.Bucket,
+        Bucket,
         Key: identifier,
         ContentType: file.type,
       },
@@ -31,47 +29,47 @@ export class S3Storage implements Storage {
   }
 
   retrive(identifier: string) {
-    const config = this.config.s3;
-    if (!config) throw new Error("S3 config is not set");
-
-    const byteArray = actions.loadS3(
-      { region: config.region },
-      {
-        Bucket: config.Bucket,
-        Key: identifier,
-      }
-    );
+    const byteArray = actions.loadS3(this.s3ClientConfig, {
+      Bucket: this.s3Config.Bucket,
+      Key: identifier,
+    });
     return new File([new Blob([byteArray])], identifier);
   }
 
   delete(identifier: string) {
-    const config = this.config.s3;
-    if (!config) throw new Error("S3 config is not set");
-
-    actions.deleteS3(
-      { region: config.region },
-      {
-        Bucket: config.Bucket,
-        Key: identifier,
-      }
-    );
+    actions.deleteS3(this.s3ClientConfig, {
+      Bucket: this.s3Config.Bucket,
+      Key: identifier,
+    });
   }
 
   url(path: string) {
-    const config = this.config.s3;
-    if (!config) throw new Error("S3 config is not set");
+    const config = this.s3Config;
 
     if (config.ACL?.startsWith("public-read")) {
       return new URL(`https://${config.Bucket}.s3.${config.region}.amazonaws.com/${path}`);
     }
 
-    const url = actions.getSignedS3Url(
-      { region: config.region },
-      {
-        Bucket: config.Bucket,
-        Key: path,
-      }
-    );
+    const url = actions.getSignedS3Url(this.s3ClientConfig, {
+      Bucket: config.Bucket,
+      Key: path,
+    });
     return new URL(url);
+  }
+
+  protected get s3Config() {
+    const config = this.config.s3;
+    if (!config) throw new Error("S3 config is not set");
+    return config;
+  }
+
+  protected get s3ClientConfig() {
+    const { region, ..._ } = this.s3Config;
+    return { region };
+  }
+
+  protected get requestConfig() {
+    const { region: _, ...requestConfig } = this.s3Config;
+    return requestConfig;
   }
 }
