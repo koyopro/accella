@@ -68,7 +68,8 @@ type UserMeta = {
 };
 registerModel(User);
 
-export const schemaDir = "../../../prisma";
+export const schemaDir = "../../prisma/";
+export const sourceFilePath = "../../prisma/schema.prisma";
 export const dataSource = {
   name: "db",
   provider: "mysql",
@@ -84,4 +85,4 @@ export const dataSource = {
  * Retrieves the database connection settings based on the Prisma schema file.
  */
 export const getDatabaseConfig = () =>
-  generateDatabaseConfig(dataSource, import.meta.url, schemaDir);
+  generateDatabaseConfig(dataSource, import.meta.url, schemaDir, sourceFilePath);
