@@ -1,5 +1,13 @@
 # prisma-generator-accel-record
 
+## 2.0.3
+
+### Patch Changes
+
+- [#142](https://github.com/koyopro/accella/pull/142) [`9610569`](https://github.com/koyopro/accella/commit/9610569d6e03dcfad4fef07ece4c617825bc262b) Thanks [@koyopro](https://github.com/koyopro)! - Fix: Include json type columns in the Column
+
+- [#144](https://github.com/koyopro/accella/pull/144) [`5736ab4`](https://github.com/koyopro/accella/commit/5736ab4e9ce439605391586e7e873abbf67d6b4d) Thanks [@koyopro](https://github.com/koyopro)! - Added @ts-nocheck comment to \_types.ts
+
 ## 2.0.2
 
 ### Patch Changes
