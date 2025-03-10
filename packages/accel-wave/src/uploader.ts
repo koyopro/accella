@@ -11,6 +11,13 @@ export class Item {
   ) {}
 }
 
+/**
+ * The `BaseUploader` class provides functionality for managing file uploads.
+ * It extends the `Config` class and includes methods for storing, retrieving,
+ * and deleting files, as well as generating URLs for uploaded files.
+ *
+ * @extends Config
+ */
 export class BaseUploader extends Config {
   model: Model | undefined;
   attr: string | undefined;
@@ -50,6 +57,11 @@ export class BaseUploader extends Config {
     this.hasUpdate = true;
   }
 
+  /**
+   * Returns the URL of the uploaded file.
+   * If assetHost is defined, it constructs the URL using assetHost.
+   * Otherwise, it uses the storage's URL method.
+   */
   url() {
     if (!this.item) return undefined;
 
@@ -60,6 +72,11 @@ export class BaseUploader extends Config {
     }
   }
 
+  /**
+   * Stores the provided file. If no file is provided, it uses the existing file.
+   * If the file is null, it removes the current file.
+   * It also handles the removal of previously stored files.
+   */
   store(file?: File | undefined | null) {
     if (file) this.file = file;
     if (file === null) this.file = undefined;
@@ -73,6 +90,11 @@ export class BaseUploader extends Config {
     this.removedItems = [];
   }
 
+  /**
+   * Downloads a file from the given URL and sets it as the current file.
+   * @param url - The URL of the file to download.
+   * @returns The downloaded file.
+   */
   download(url: string): File {
     return (this.file = actions.download(url));
   }

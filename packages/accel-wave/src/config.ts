@@ -4,6 +4,24 @@ import { type Storage } from "./storages/index.js";
 
 export type ConfigOptions = DeepPartial<Config>;
 
+/**
+ * Represents the configuration settings for the application.
+ *
+ * @remarks
+ * This class allows for the configuration of storage options, directory paths, and root paths.
+ * It merges default values with global configuration and provided options.
+ *
+ * @param options - Optional configuration settings to override default values.
+ *
+ * @example
+ * ```typescript
+ * const config = new Config({
+ *   storage: CustomStorage,
+ *   storeDir: "custom_uploads",
+ *   root: "/custom/path"
+ * });
+ * ```
+ */
 export class Config {
   constructor(options?: ConfigOptions) {
     const defalutValues = {
@@ -18,15 +36,32 @@ export class Config {
 
 declare module "." {
   interface Config {
+    /**
+     * A constructor for the Storage class.
+     */
     readonly storage: new (config: Config) => Storage;
+    /**
+     * The directory where the store is located. Default is "uploads".
+     */
     readonly storeDir: string;
+    /**
+     * The root directory for the configuration. Defaults to "public" under the current working directory.
+     */
     readonly root: string;
+    /**
+     * The host for assets. Default is undefined.
+     */
     readonly assetHost: string | undefined;
   }
 }
 
 let globalConfig: ConfigOptions = {};
 
+/**
+ * Configures the global settings for AccelWave.
+ *
+ * @param config - The configuration options to set.
+ */
 export const configureAccelWave = (config: ConfigOptions) => {
   globalConfig = config;
 };
