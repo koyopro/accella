@@ -8,17 +8,16 @@ export class FileStorage implements Storage {
   constructor(public config: Config) {}
 
   store(file: File, identifier: string) {
-    const filePath = new URL(`${this.config.root}/${identifier}`, import.meta.url).pathname;
-    actions.writeFile(filePath, file);
+    actions.writeFile(this.url(identifier).pathname, file);
   }
 
   retrive(identifier: string) {
-    const filePath = new URL(`${this.config.root}/${identifier}`, import.meta.url).pathname;
+    const filePath = this.url(identifier).pathname;
     return new File([fs.readFileSync(filePath)], basename(filePath));
   }
 
   delete(identifier: string) {
-    const filePath = new URL(`${this.config.root}/${identifier}`, import.meta.url).pathname;
+    const filePath = this.url(identifier).pathname;
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
   }
 
