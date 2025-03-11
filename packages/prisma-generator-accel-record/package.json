@@ -31,7 +31,7 @@
   "dependencies": {
     "@prisma/client": ">=5.0.0",
     "@prisma/generator-helper": ">=5.0.0",
-    "esbuild": ">=0.21.0",
+    "esbuild": ">=0.25.0",
     "prettier": "^3.0.0"
   },
   "devDependencies": {
