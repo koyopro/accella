@@ -72,6 +72,8 @@ export const validateAuthenticityToken = (
   request: Request
 ) => {
   if (!["POST", "PATCH", "DELETE", "PUT"].includes(request.method)) return;
+  const path = new URL(request.url).pathname;
+  if (path.startsWith("/_actions/")) return; // Astro Actions
 
   const authenticityToken: string =
     params["authenticity_token"] ?? request.headers.get("X-CSRF-Token") ?? "";
