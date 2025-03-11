@@ -63,6 +63,6 @@
   "dependencies": {
     "accel-record-core": "^2.1.1",
     "accel-record-factory": "^2.0.0",
-    "prisma-generator-accel-record": "^2.0.1"
+    "prisma-generator-accel-record": "^2.0.3"
   }
 }
