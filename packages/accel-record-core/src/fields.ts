@@ -1,4 +1,4 @@
-import { BaseDMMF } from "prisma/prisma-client/runtime/library.js";
+import { BaseDMMF } from "@prisma/client/runtime/library";
 import { Model } from "./index.js";
 import { Association, buildAssociation } from "./model/association.js";
 import { Field } from "./model/field.js";

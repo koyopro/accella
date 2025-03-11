@@ -1,5 +1,5 @@
 import { createId as cuid } from "@paralleldrive/cuid2";
-import { DMMF } from "prisma/prisma-client/runtime/library.js";
+import { DMMF } from "@prisma/client/runtime/library";
 import { v7 as uuid7, v4 as uuidv4 } from "uuid";
 import { BooleanType, DateType, FloatType, IntegerType, StringType } from "./attributes.js";
 

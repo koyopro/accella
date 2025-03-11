@@ -1,7 +1,7 @@
-import { DMMF } from "prisma/prisma-client/runtime/library.js";
+import { DMMF } from "@prisma/client/runtime/library";
 import { dmmf } from "../fields.js";
-import { Field } from "./field.js";
 import { Models } from "../index.js";
+import { Field } from "./field.js";
 
 /**
  * Represents an association between two models.
