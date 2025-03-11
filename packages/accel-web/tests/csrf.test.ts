@@ -97,6 +97,13 @@ test("validateAuthenticityToken()", async () => {
     });
     await expect(result(request)).resolves.not.toThrow();
   }
+  {
+    // Invalid but Astro Actions
+    const request = new Request(`http://localhost/_actions/hello`, {
+      method: "POST",
+    });
+    await expect(result(request)).resolves.not.toThrow();
+  }
 });
 
 test("defineAuthenticityToken()", async () => {
