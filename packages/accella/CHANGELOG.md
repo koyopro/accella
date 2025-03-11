@@ -1,5 +1,14 @@
 # accella
 
+## 1.0.1
+
+### Patch Changes
+
+- [#147](https://github.com/koyopro/accella/pull/147) [`250f07b`](https://github.com/koyopro/accella/commit/250f07bd5a04408c06a3c7f5bda5a39c91600cd5) Thanks [@koyopro](https://github.com/koyopro)! - Exclude CSRF token validation for Astro Actions endpoints
+
+- Updated dependencies [[`250f07b`](https://github.com/koyopro/accella/commit/250f07bd5a04408c06a3c7f5bda5a39c91600cd5)]:
+  - accel-web@1.1.3
+
 ## 1.0.0
 
 ### Major Changes
