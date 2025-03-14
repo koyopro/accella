@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 import { ModelWrapper } from "./wrapper";
 
-const loadModels = async (options: GeneratorOptions) => {
+export const loadModels = async (options: GeneratorOptions) => {
   const outputDir = options.generator.output!.value!;
   const filePath = path.join(outputDir, "index.ts");
   const outfile = path.join(__dirname, "../.models.mjs");

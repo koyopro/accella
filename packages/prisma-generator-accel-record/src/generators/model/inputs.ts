@@ -1,9 +1,20 @@
+import { getInstanceMethods } from "../../utils/method";
 import { FieldWrapper, ModelWrapper } from "../wrapper";
+
+const getAssignableMethods = (model: ModelWrapper) => {
+  if (!model.class) return "";
+  return Array.from(getInstanceMethods(model.class))
+    .filter(([_, descriptor]) => descriptor.set?.isAccelRecordAssinable)
+    .map(([methodName]) => `\n    ${methodName}?: ${model.baseModel}['${methodName}'];`)
+    .join("");
+};
 
 export const createInputs = (model: ModelWrapper) => {
   const relationFromFields = model.fields
     .flatMap((f) => f.relationFromFields)
     .filter((f) => f != undefined);
+  const assignableMethods = getAssignableMethods(model);
+
   return (
     model.fields
       .filter((f) => f.relationFromFields?.[0] == undefined)
@@ -19,7 +30,9 @@ export const createInputs = (model: ModelWrapper) => {
         }
         return `\n    ${field.name}${isOptional(field) ? "?" : ""}: ${valType};`;
       })
-      .join("") + "\n  "
+      .join("") +
+    assignableMethods +
+    "\n  "
   );
 };
 

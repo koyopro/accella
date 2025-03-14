@@ -470,6 +470,7 @@ type ProfileMeta = {
     uuid7?: string;
     cuid?: string;
     avatarPath?: string;
+    avatarFile?: ProfileModel['avatarFile'];
   } & ({ user: User } | { userId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;
