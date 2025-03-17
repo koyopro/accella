@@ -1,9 +1,10 @@
 import { GeneratorOptions } from "@prisma/generator-helper";
 import { generateModelTypes } from "./model/type.js";
-import { relationMethods } from "./relation.js";
+import { loadModels, relationMethods } from "./relation.js";
 import { ModelWrapper } from "./wrapper.js";
 
 export const generateTypes = async (options: GeneratorOptions) => {
+  const modelImpls = await loadModels(options);
   return `import {
   generateDatabaseConfig,
   registerModel,
@@ -24,13 +25,13 @@ declare module "accel-record" {
 
 type Meta<T> = ${meta(options)}
                any;
-${enumData(options)}${models(options)}`;
+${enumData(options)}${models(options, modelImpls)}`;
 };
 
-const models = (options: GeneratorOptions) => {
+const models = (options: GeneratorOptions, modelImpls: any) => {
   let data = "";
   for (const model of options.dmmf.datamodel.models)
-    data += generateModelTypes(new ModelWrapper(model, options.dmmf.datamodel));
+    data += generateModelTypes(new ModelWrapper(model, options.dmmf.datamodel, modelImpls));
   return data;
 };
 

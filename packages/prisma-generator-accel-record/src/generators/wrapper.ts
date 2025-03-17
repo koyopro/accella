@@ -67,7 +67,8 @@ export class FieldWrapper {
 export class ModelWrapper {
   constructor(
     private model: DMMF.Model,
-    private datamodel: DMMF.Datamodel
+    private datamodel: DMMF.Datamodel,
+    private modelImpls: Record<string, { new (): any } | undefined> = {}
   ) {}
 
   get baseModel() {
@@ -78,6 +79,9 @@ export class ModelWrapper {
   }
   get persistedModel() {
     return `${this.model.name}`;
+  }
+  get class(): { new (): any } | undefined {
+    return this.modelImpls[this.persistedModel];
   }
   get collection() {
     return `${this.model.name}Collection`;

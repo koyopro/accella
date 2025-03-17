@@ -26,6 +26,7 @@ export { ModelBase } from "./model/base.js";
 export { hasSecurePassword } from "./model/securePassword.js";
 export { Relation } from "./relation/index.js";
 export { scope } from "./scope.js";
+export { attribute } from "./model/attribute.js";
 export { DatabaseCleaner } from "./testUtils.js";
 export { Rollback } from "./transaction.js";
 export { Errors } from "./validation/errors.js";

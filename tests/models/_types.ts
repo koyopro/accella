@@ -301,6 +301,7 @@ type PostMeta = {
     content?: string;
     published?: boolean;
     tags?: PostTagModel[];
+    hidden?: PostModel['hidden'];
   } & ({ author: User } | { authorId: number });
   WhereInput: {
     id?: number | number[] | Filter<number> | null;

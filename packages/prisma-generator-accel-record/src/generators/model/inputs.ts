@@ -1,9 +1,12 @@
+import "reflect-metadata";
+import { getInstanceMethods } from "../../utils/method";
 import { FieldWrapper, ModelWrapper } from "../wrapper";
 
 export const createInputs = (model: ModelWrapper) => {
   const relationFromFields = model.fields
     .flatMap((f) => f.relationFromFields)
     .filter((f) => f != undefined);
+
   return (
     model.fields
       .filter((f) => f.relationFromFields?.[0] == undefined)
@@ -19,8 +22,22 @@ export const createInputs = (model: ModelWrapper) => {
         }
         return `\n    ${field.name}${isOptional(field) ? "?" : ""}: ${valType};`;
       })
-      .join("") + "\n  "
+      .join("") +
+    getAttributeSetters(model) +
+    "\n  "
   );
+};
+
+const getAttributeSetters = (model: ModelWrapper) => {
+  if (!model.class) return "";
+
+  const isAttributeMethod = (target: any) =>
+    target && Reflect.getMetadata("accelRecord:attribute", target) === true;
+
+  return Array.from(getInstanceMethods(model.class))
+    .filter(([_, descriptor]) => isAttributeMethod(descriptor?.set))
+    .map(([methodName]) => `\n    ${methodName}?: ${model.baseModel}['${methodName}'];`)
+    .join("");
 };
 
 const isOptional = (field: ModelWrapper["fields"][0]) =>

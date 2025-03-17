@@ -1,4 +1,4 @@
-import { scope } from "accel-record";
+import { attribute, scope } from "accel-record";
 import { ApplicationRecord } from "./applicationRecord.js";
 
 export class PostModel extends ApplicationRecord {
@@ -8,5 +8,9 @@ export class PostModel extends ApplicationRecord {
   }
   override validateAttributes() {
     this.validates("title", { presence: true });
+  }
+  @attribute
+  set hidden(value: boolean) {
+    this.published = !value;
   }
 }
