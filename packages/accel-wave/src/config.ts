@@ -38,18 +38,26 @@ declare module "." {
   interface Config {
     /**
      * A constructor for the Storage class.
+     *
+     * @default FileStorage
      */
     readonly storage: new (config: Config) => Storage;
     /**
-     * The directory where the store is located. Default is "uploads".
+     * The directory where the store is located.
+     *
+     * @default "uploads"
      */
     readonly storeDir: string;
     /**
-     * The root directory for the configuration. Defaults to "public" under the current working directory.
+     * The root directory for the configuration.
+     *
+     * @default `${process.cwd()}/public`
      */
     readonly root: string;
     /**
-     * The host for assets. Default is undefined.
+     * The host for assets.
+     *
+     * @default undefined
      */
     readonly assetHost: string | undefined;
   }
