@@ -24,7 +24,7 @@ export class BaseUploader extends Config {
   protected hasUpdate: boolean = false;
   protected _storage: Storage;
   protected _filename: string | undefined;
-  protected item: Item | undefined;
+  protected _item: Item | undefined;
   protected removedItems: Item[] = [];
 
   constructor(options?: ConfigOptions) {
@@ -37,21 +37,29 @@ export class BaseUploader extends Config {
   }
 
   get file() {
-    if (this.item) return this.item.file;
-    if (this.model && this.attr) {
-      const identifier = (this.model as any)[this.attr];
-      const path = this.pathFor(identifier);
-      this._filename = identifier;
-      this.item = new Item(this.filename, this._storage.retrive(path));
-      return this.item.file;
-    }
+    return this.item?.file;
+  }
+
+  protected itemByModel() {
+    if (!this.model || !this.attr) return undefined;
+
+    const identifier = (this.model as any)[this.attr];
+    if (!identifier) return undefined;
+
+    const path = this.pathFor(identifier);
+    this._filename = identifier;
+    return new Item(this.filename, this._storage.retrive(path));
+  }
+
+  get item() {
+    return (this._item ||= this.itemByModel());
   }
 
   set file(file: File | undefined) {
     if (this.item) this.removedItems.push(this.item);
     this._filename = file?.name;
     const filename = this.filename;
-    this.item = file ? new Item(filename, file) : undefined;
+    this._item = file ? new Item(filename, file) : undefined;
     if (this.model && this.attr) (this.model as any)[this.attr] = filename;
 
     this.hasUpdate = true;
@@ -80,8 +88,8 @@ export class BaseUploader extends Config {
   store(file?: File | undefined | null) {
     if (file) this.file = file;
     if (file === null) this.file = undefined;
-    if (this.hasUpdate && this.item) {
-      this._storage.store(this.item.file, this.path);
+    if (this.hasUpdate && this._item) {
+      this._storage.store(this._item.file, this.path);
     }
     this.hasUpdate = false;
     for (const item of this.removedItems) {
@@ -100,7 +108,7 @@ export class BaseUploader extends Config {
   }
 
   protected get path() {
-    return this.pathFor(this.item?.identifier ?? "");
+    return this.pathFor(this._item?.identifier ?? "");
   }
 
   protected pathFor(identifier: string) {

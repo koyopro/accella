@@ -12,10 +12,17 @@ test("mount", () => {
   expect(profile.avatarPath).toBe("example.png");
 
   const p = Profile.find(profile.id);
+  expect(p.avatar.url()?.pathname).toBe(target);
   expect(p.avatar.file?.name).toBe("example.png");
 
   p.destroy();
   expect(fs.existsSync(target)).toBeFalsy();
+
+  {
+    const noAvatarProfile = $Profile.create({ user: $user.create() });
+    expect(noAvatarProfile.avatarPath).toBe(null);
+    expect(noAvatarProfile.avatar.url()).toBe(undefined);
+  }
 });
 
 test("should be able to update only the column value", () => {
