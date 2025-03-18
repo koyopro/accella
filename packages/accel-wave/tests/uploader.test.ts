@@ -54,13 +54,13 @@ test("hasUpdate", () => {
 
 test("store() with customize", () => {
   const uploader = new MyUploader({
-    root: "../tmp",
+    root: path.resolve(__dirname, "../tmp"),
     assetHost: "http://localhost",
   });
 
   uploader.store(buildFile());
 
-  expect(read("../tmp/custom/example.txt")).toBe("Hello");
+  expect(read("../tmp/custom/myfile.txt")).toBe("Hello");
   expect(uploader.url()!.href).toBe("http://localhost/custom/myfile.txt");
 });
 
