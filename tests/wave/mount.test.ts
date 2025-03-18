@@ -4,10 +4,8 @@ import { $user } from "../factories/user";
 import { Profile } from "../models";
 
 test("mount", () => {
-  const profile = $Profile.create({ user: $user.create() });
+  const profile = $Profile.create({ user: $user.create(), avatarFile: buildFile() });
   const target = `${process.cwd()}/public/uploads/example.png`;
-  profile.avatar.file = buildFile();
-  profile.save();
   expect(fs.existsSync(target)).toBeTruthy();
   expect(profile.avatarPath).toBe("example.png");
 
@@ -26,9 +24,7 @@ test("mount", () => {
 });
 
 test("should be able to update only the column value", () => {
-  const profile = $Profile.create({ user: $user.create() });
-  profile.avatar.file = buildFile();
-  profile.save();
+  const profile = $Profile.create({ user: $user.create(), avatarFile: buildFile() });
   expect(profile.avatarPath).toBe("example.png");
 
   profile.avatarPath = "example2.png";

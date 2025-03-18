@@ -1,4 +1,4 @@
-import { after, before } from "accel-record";
+import { after, attribute, before } from "accel-record";
 import { BaseUploader, mount } from "accel-wave";
 import { ApplicationRecord } from "./applicationRecord.js";
 
@@ -8,6 +8,11 @@ export class ProfileModel extends ApplicationRecord {
   data: string[] = [];
 
   avatar = mount(this, "avatarPath", BaseUploader);
+
+  @attribute
+  set avatarFile(file: File) {
+    this.avatar.file = file;
+  }
 
   @before("validation")
   beforeValidation() {
