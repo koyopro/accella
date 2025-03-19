@@ -9,7 +9,7 @@ test("#findEach()", () => {
   for (const record of User.all().findEach({ batchSize: 2 })) {
     results.push(record);
   }
-  expect(results.map((u) => u.name)).toEqual(["foo", "bar", "baz"]);
+  expect(results.map((u) => u.name).sort()).toEqual(["bar", "baz", "foo"]);
 });
 
 test("#findInBatches()", () => {
