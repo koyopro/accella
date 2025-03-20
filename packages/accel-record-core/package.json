@@ -1,6 +1,6 @@
 {
   "name": "accel-record-core",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
@@ -33,7 +33,7 @@
     "knex": "^3.0.0",
     "prisma": ">=6.5.0",
     "reflect-metadata": "^0.2.0",
-    "sync-actions": "^1.0.0",
+    "sync-actions": "^1.2.0",
     "uuid": "^11.0.0"
   },
   "optionalDependencies": {
