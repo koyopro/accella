@@ -1,0 +1,46 @@
+{
+  "name": "accel-wave",
+  "version": "0.0.2",
+  "description": "File upload solution for Accel Record models with support for local filesystem and cloud storage services like Amazon S3",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest --typecheck"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koyopro/accella.git"
+  },
+  "bugs": {
+    "url": "https://github.com/koyopro/accella/issues"
+  },
+  "homepage": "https://github.com/koyopro/accella/tree/main/packages/accel-wave",
+  "keywords": [
+    "accella",
+    "accel-record",
+    "file-upload",
+    "file-storage",
+    "aws-s3",
+    "carrierwave",
+    "uploader"
+  ],
+  "files": [
+    "dist"
+  ],
+  "author": "koyopro <koyopro2.0@gmail.com>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.0.0",
+    "@aws-sdk/s3-request-presigner": "^3.0.0",
+    "accel-record": ">=2.0.0"
+  },
+  "peerDependencies": {
+    "accel-record": ">=2.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vitest": "^3.0.0"
+  }
+}
