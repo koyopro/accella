@@ -21,6 +21,15 @@ jobs:
       - run: npm install --no-package-lock
       - run: npm run build
       - run: npm run build -w examples/web_astro
+      - run:
+          name: "test cli script"
+          command: |
+            npm install
+            cd examples/web_astro
+            echo 'DATABASE_URL="mysql://root:@localhost:3306/web_astro"' > .env
+            npx prisma migrate deploy
+            npx prisma generate
+            npx accel run src/scripts/sample.ts
       - run: npm run test -w accel-web
       - run: npm run test -w accel-wave
       - run: npm run generate:mysql
