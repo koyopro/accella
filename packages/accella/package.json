@@ -5,6 +5,9 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "accel": "dist/bin.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -29,6 +32,10 @@
     "./integration": {
       "types": "./dist/integration.d.ts",
       "default": "./dist/integration.js"
+    },
+    "./cli": {
+      "types": "./dist/cli.d.ts",
+      "default": "./dist/cli.js"
     }
   },
   "scripts": {
@@ -44,7 +51,8 @@
     "astro"
   ],
   "files": [
-    "dist"
+    "dist",
+    "bin"
   ],
   "author": "koyopro <koyopro2.0@gmail.com>",
   "license": "Apache-2.0",
