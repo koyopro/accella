@@ -14,12 +14,12 @@ export class Migration {
   knex: Knex.Knex<any, unknown[]>;
   logsMap: Map<any, any>;
 
-  static async migrate() {
+  static async migrate(options: { step?: number } = {}) {
     const migrator = this.newMigrator();
     if (process.env.NODE_ENV == "test") {
       await migrator.ensureDatabaseExists();
     }
-    return await new this(migrator).applyAllPendingMigrations();
+    return await new this(migrator).applyPendingMigrations(options.step);
   }
 
   static async hasPendingMigrations(): Promise<boolean> {
@@ -72,20 +72,24 @@ export class Migration {
     return path.resolve(this.prismaDir, `./migrations`);
   }
 
-  async applyAllPendingMigrations() {
+  async applyPendingMigrations(step?: number) {
     await this.migrator.createLogsTableIfNotExists();
     await this.resetLogsMap();
-    // let applyCount = 0;
+
+    let appliedCount = 0;
     for (const dir of fs.readdirSync(this.migrationsPath)) {
+      if (step != undefined && appliedCount >= step) break;
+
       if (await this.applyIfPending(dir)) {
-        // applyCount++;
+        appliedCount++;
       }
     }
-    // if (applyCount == 0) {
-    //   console.log(
-    //     "Already in sync, no schema change or pending migration was found."
-    //   );
-    // }
+
+    return appliedCount;
+  }
+
+  async applyAllPendingMigrations() {
+    return this.applyPendingMigrations();
   }
 
   protected async resetLogsMap() {
