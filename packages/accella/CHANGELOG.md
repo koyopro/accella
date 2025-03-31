@@ -1,5 +1,11 @@
 # accella
 
+## 1.1.0
+
+### Minor Changes
+
+- [#153](https://github.com/koyopro/accella/pull/153) [`1974ea4`](https://github.com/koyopro/accella/commit/1974ea482d8db9a6e3b55f4a1d97d69bea25023c) Thanks [@koyopro](https://github.com/koyopro)! - Added the `accel run` command to execute script ts file via the CLI.
+
 ## 1.0.1
 
 ### Patch Changes
