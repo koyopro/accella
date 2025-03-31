@@ -22,6 +22,24 @@ export class Migration {
     return await new this(migrator).applyAllPendingMigrations();
   }
 
+  static async hasPendingMigrations(): Promise<boolean> {
+    const migrator = this.newMigrator();
+    const migration = new this(migrator);
+    // TODO: logs テーブルやデータベースが存在しない場合のケア
+    await migration.resetLogsMap();
+
+    for (const dir of fs.readdirSync(migration.migrationsPath)) {
+      const sqlPath = path.resolve(migration.prismaDir, `./migrations/${dir}/migration.sql`);
+      if (!fs.existsSync(sqlPath)) continue;
+
+      if (migration.isPending(dir)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   static newMigrator() {
     switch (getConfig().type) {
       case "mysql":
