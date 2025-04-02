@@ -22,11 +22,21 @@ export class Migration {
     return await new this(migrator).applyPendingMigrations(options.step);
   }
 
+  static async ensureDatabaseExists() {
+    const migrator = this.newMigrator();
+    return await migrator.ensureDatabaseExists();
+  }
+
   static async hasPendingMigrations(): Promise<boolean> {
     const migrator = this.newMigrator();
+    if (!(await migrator.isDatabaseExists())) return true;
     const migration = new this(migrator);
-    // TODO: logs テーブルやデータベースが存在しない場合のケア
-    await migration.resetLogsMap();
+    try {
+      await migration.resetLogsMap();
+    } catch {
+      // If the _prisma_migrations table does not exist
+      return true;
+    }
 
     for (const dir of fs.readdirSync(migration.migrationsPath)) {
       const sqlPath = path.resolve(migration.prismaDir, `./migrations/${dir}/migration.sql`);
