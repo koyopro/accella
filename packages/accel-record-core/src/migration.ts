@@ -141,5 +141,8 @@ export class Migration {
 }
 
 const sha256hash = (buffer: Buffer) => {
-  return crypto.createHash("sha256").update(buffer).digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(buffer as any)
+    .digest("hex");
 };
