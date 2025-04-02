@@ -8,6 +8,10 @@ export class SqliteMigrator extends Migrator {
   async createLogsTableIfNotExists() {
     return this.knex.raw(CREATE_LOGS_TABLE_DDL);
   }
+
+  async isDatabaseExists(): Promise<boolean> {
+    return true;
+  }
 }
 
 const CREATE_LOGS_TABLE_DDL = `CREATE TABLE IF NOT EXISTS "_prisma_migrations" (

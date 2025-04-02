@@ -14,6 +14,15 @@ export class PostgresqlMigrator extends Migrator {
     knex.destroy();
   }
 
+  async isDatabaseExists(): Promise<boolean> {
+    const [database, newConfig] = parseConfig();
+    const knex = Knex(newConfig);
+    const exists = await knex.raw(`SELECT 1 FROM pg_database WHERE datname='${database}'`);
+    const result = exists.rows.length > 0;
+    knex.destroy();
+    return result;
+  }
+
   async createLogsTableIfNotExists() {
     return this.knex.raw(CREATE_LOGS_TABLE_DDL);
   }

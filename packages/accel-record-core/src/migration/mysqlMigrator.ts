@@ -14,6 +14,15 @@ export class MySQLMigrator extends Migrator {
     knex.destroy();
   }
 
+  async isDatabaseExists(): Promise<boolean> {
+    const [database, newConfig] = parseConfig();
+    const knex = Knex(newConfig);
+    const exists = await knex.raw(`SHOW DATABASES LIKE "${database}";`);
+    const result = exists[0].length > 0;
+    knex.destroy();
+    return result;
+  }
+
   async createLogsTableIfNotExists() {
     return this.knex.raw(CREATE_LOGS_TABLE_DDL);
   }

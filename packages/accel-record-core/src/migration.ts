@@ -14,12 +14,40 @@ export class Migration {
   knex: Knex.Knex<any, unknown[]>;
   logsMap: Map<any, any>;
 
-  static async migrate() {
+  static async migrate(options: { step?: number } = {}) {
     const migrator = this.newMigrator();
     if (process.env.NODE_ENV == "test") {
       await migrator.ensureDatabaseExists();
     }
-    return await new this(migrator).applyAllPendingMigrations();
+    return await new this(migrator).applyPendingMigrations(options.step);
+  }
+
+  static async ensureDatabaseExists() {
+    const migrator = this.newMigrator();
+    return await migrator.ensureDatabaseExists();
+  }
+
+  static async hasPendingMigrations(): Promise<boolean> {
+    const migrator = this.newMigrator();
+    if (!(await migrator.isDatabaseExists())) return true;
+    const migration = new this(migrator);
+    try {
+      await migration.resetLogsMap();
+    } catch {
+      // If the _prisma_migrations table does not exist
+      return true;
+    }
+
+    for (const dir of fs.readdirSync(migration.migrationsPath)) {
+      const sqlPath = path.resolve(migration.prismaDir, `./migrations/${dir}/migration.sql`);
+      if (!fs.existsSync(sqlPath)) continue;
+
+      if (migration.isPending(dir)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   static newMigrator() {
@@ -54,20 +82,24 @@ export class Migration {
     return path.resolve(this.prismaDir, `./migrations`);
   }
 
-  async applyAllPendingMigrations() {
+  async applyPendingMigrations(step?: number) {
     await this.migrator.createLogsTableIfNotExists();
     await this.resetLogsMap();
-    // let applyCount = 0;
+
+    let appliedCount = 0;
     for (const dir of fs.readdirSync(this.migrationsPath)) {
+      if (step != undefined && appliedCount >= step) break;
+
       if (await this.applyIfPending(dir)) {
-        // applyCount++;
+        appliedCount++;
       }
     }
-    // if (applyCount == 0) {
-    //   console.log(
-    //     "Already in sync, no schema change or pending migration was found."
-    //   );
-    // }
+
+    return appliedCount;
+  }
+
+  async applyAllPendingMigrations() {
+    return this.applyPendingMigrations();
   }
 
   protected async resetLogsMap() {
@@ -109,5 +141,8 @@ export class Migration {
 }
 
 const sha256hash = (buffer: Buffer) => {
-  return crypto.createHash("sha256").update(buffer).digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(buffer as any)
+    .digest("hex");
 };
