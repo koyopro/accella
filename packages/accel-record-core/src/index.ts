@@ -10,6 +10,7 @@ import { Dirty } from "./model/dirty.js";
 import { Import } from "./model/import.js";
 import { Lock, LockType } from "./model/lock.js";
 import { Searchable } from "./model/search.js";
+import { Seedable } from "./model/seed.js";
 import { Serialization } from "./model/serialization.js";
 import { Validations } from "./model/validations.js";
 import { Persistence } from "./persistence.js";
@@ -22,11 +23,11 @@ export { Collection } from "./associations/collectionProxy.js";
 export { after, before } from "./callbacks.js";
 export { getConfig, initAccelRecord, stopRpcClient as stopWorker } from "./database.js";
 export { Migration } from "./migration.js";
+export { attribute } from "./model/attribute.js";
 export { ModelBase } from "./model/base.js";
 export { hasSecurePassword } from "./model/securePassword.js";
 export { Relation } from "./relation/index.js";
 export { scope } from "./scope.js";
-export { attribute } from "./model/attribute.js";
 export { DatabaseCleaner } from "./testUtils.js";
 export { Rollback } from "./transaction.js";
 export { Errors } from "./validation/errors.js";
@@ -106,6 +107,7 @@ export class Model extends Mix(
   Persistence,
   Query,
   Searchable,
+  Seedable,
   Serialization,
   Transaction,
   Validations
