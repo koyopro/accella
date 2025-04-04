@@ -1,5 +1,14 @@
 # Accel Web
 
+## 1.1.4
+
+### Patch Changes
+
+- [#157](https://github.com/koyopro/accella/pull/157) [`2383ba9`](https://github.com/koyopro/accella/commit/2383ba94a12085ad7b34121812bf9611e74b2768) Thanks [@koyopro](https://github.com/koyopro)! - Update the version of astro-cookie-session dependency to 1.2.0 or higher
+
+- Updated dependencies [[`5844b1f`](https://github.com/koyopro/accella/commit/5844b1fe22cb9bd24637f63538214187408fa6e3), [`5844b1f`](https://github.com/koyopro/accella/commit/5844b1fe22cb9bd24637f63538214187408fa6e3)]:
+  - accel-record@2.3.0
+
 ## 1.1.3
 
 ### Patch Changes
