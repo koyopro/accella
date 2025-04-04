@@ -1,5 +1,16 @@
 # accella
 
+## 1.2.0
+
+### Minor Changes
+
+- [#155](https://github.com/koyopro/accella/pull/155) [`adbacff`](https://github.com/koyopro/accella/commit/adbacffc383d27cab96e01ffb2dc1d9d367e5ad0) Thanks [@koyopro](https://github.com/koyopro)! - Throw a PendingMigrationsError if there are pending migrations in the development environment.
+
+### Patch Changes
+
+- Updated dependencies [[`2383ba9`](https://github.com/koyopro/accella/commit/2383ba94a12085ad7b34121812bf9611e74b2768)]:
+  - accel-web@1.1.4
+
 ## 1.1.0
 
 ### Minor Changes
