@@ -53,7 +53,8 @@ export async function cli() {
     await runScript(path.resolve(process.cwd(), args[1]));
     process.exit(0);
   } else if (command === "db:seed") {
-    await runScript(path.resolve(process.cwd(), "db/seed.ts"));
+    const file = path.resolve(path.dirname(import.meta.url.replace("file:", "")), "seed.js");
+    await runScript(file);
     process.exit(0);
   } else {
     console.error("Usage: accel run <path to ts file>");
