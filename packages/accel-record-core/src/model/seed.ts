@@ -6,13 +6,20 @@ export class Seedable {
     this: T,
     ...inputs: Meta<T>["CreateInput"][]
   ): InstanceType<T>[] {
+    const primaryAttributes = this.primaryKeys.map((k) => this.columnToAttribute(k) || "");
+    return this.seedBy(primaryAttributes, ...inputs);
+  }
+
+  static seedBy<T extends typeof Model>(
+    this: T,
+    attributes: string[],
+    ...inputs: Meta<T>["CreateInput"][]
+  ): InstanceType<T>[] {
     const results: InstanceType<T>[] = [];
     Model.transaction(() => {
       for (const input of inputs) {
         const pk = Object.fromEntries(
-          Object.entries(input).filter(([key]) =>
-            this.primaryKeys.includes(this.attributeToColumn(key) || "")
-          )
+          Object.entries(input).filter(([key]) => attributes.includes(key))
         );
         const instance = this.findOrInitializeBy(pk);
         if (instance.update(input)) {

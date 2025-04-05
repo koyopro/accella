@@ -26,3 +26,24 @@ test(".seed() with invalid data", () => {
   ).toThrowError();
   expect(User.count()).toEqual(0);
 });
+
+test(".seedBy()", () => {
+  const [user] = User.seedBy(["email"], { email: "foo@example.com", name: "John" });
+  expect(User.count()).toEqual(1);
+  expect(user.email).toEqual("foo@example.com");
+  expect(user.name).toEqual("John");
+
+  // update with seed
+  User.seedBy(["email"], { email: "foo@example.com", name: "Bob" });
+  expect(User.count()).toEqual(1);
+  expect(user.reload().name).toEqual("Bob");
+
+  // multi seed data
+  const multiResult = User.seedBy(
+    ["email"],
+    { email: "bar@example.com" },
+    { email: "baz@example.com" }
+  );
+  expect(multiResult.length).toEqual(2);
+  expect(User.count()).toEqual(3);
+});
