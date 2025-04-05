@@ -22,6 +22,7 @@ export class Seedable {
           Object.entries(input).filter(([key]) => attributes.includes(key))
         );
         const instance = this.findOrInitializeBy(pk);
+        console.log(`- ${this.name} ${JSON.stringify(input)}`);
         if (instance.update(input)) {
           results.push(instance as any);
         } else {
