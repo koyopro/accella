@@ -1,5 +1,12 @@
 # accel-wave
 
+## 1.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`5844b1f`](https://github.com/koyopro/accella/commit/5844b1fe22cb9bd24637f63538214187408fa6e3), [`5844b1f`](https://github.com/koyopro/accella/commit/5844b1fe22cb9bd24637f63538214187408fa6e3)]:
+  - accel-record@2.3.0
+
 ## 0.1.0
 
 ### Minor Changes
