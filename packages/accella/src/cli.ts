@@ -1,6 +1,6 @@
 import { ViteUserConfig } from "astro";
 import { getViteConfig } from "astro/config";
-import { Command } from "commander";
+import { program } from "commander";
 import fs from "fs/promises";
 import path from "path";
 import { createServer } from "vite";
@@ -40,8 +40,6 @@ async function runScript(filepath: string): Promise<void> {
   }
 }
 
-const program = new Command();
-
 program
   .command("run")
   .description("Run a TypeScript file")
@@ -62,4 +60,4 @@ program
 
 program.name("accel").description("Accella CLI tools").version("1.0.0");
 
-export { program };
+export { program, runScript };
