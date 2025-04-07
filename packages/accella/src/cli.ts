@@ -5,11 +5,34 @@ import fs from "fs/promises";
 import path from "path";
 import { createServer } from "vite";
 
+let viteServer: Awaited<ReturnType<typeof createServer>> | null = null;
+
 const createViteServer = async (config: ViteUserConfig) => {
+  if (viteServer) {
+    return viteServer;
+  }
+
   const viteConfig = await getViteConfig(config)({ command: "serve", mode: "development" });
-  const vite = await createServer(viteConfig as any);
-  return vite;
+  viteServer = await createServer(viteConfig as any);
+  return viteServer;
 };
+
+const closeViteServer = async () => {
+  if (viteServer) {
+    await viteServer.close();
+    viteServer = null;
+  }
+};
+
+process.on("SIGINT", async () => {
+  await closeViteServer();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  await closeViteServer();
+  process.exit(0);
+});
 
 async function runScript(filepath: string): Promise<void> {
   try {
@@ -17,26 +40,22 @@ async function runScript(filepath: string): Promise<void> {
 
     const vite = await createViteServer({});
 
-    try {
-      const initializeModule = await vite.ssrLoadModule(
-        path.resolve(path.dirname(import.meta.url.replace("file:", "")), "initialize.js")
-      );
-      await initializeModule.runInitializers();
+    const initializeModule = await vite.ssrLoadModule(
+      path.resolve(path.dirname(import.meta.url.replace("file:", "")), "initialize.js")
+    );
+    await initializeModule.runInitializers();
 
-      const module = await vite.ssrLoadModule(filepath);
+    const module = await vite.ssrLoadModule(filepath);
 
-      if (typeof module.default === "function") {
-        await module.default();
-      } else if (typeof module.main === "function") {
-        await module.main();
-      }
-    } finally {
-      await vite.close();
+    if (typeof module.default === "function") {
+      await module.default();
+    } else if (typeof module.main === "function") {
+      await module.main();
     }
   } catch (error) {
     console.error(`File execution error: ${filepath}`);
     console.error(error);
-    process.exit(1);
+    throw error;
   }
 }
 
@@ -46,6 +65,7 @@ program
   .argument("<file>", "Path to the TypeScript file")
   .action(async (file) => {
     await runScript(path.resolve(process.cwd(), file));
+    await closeViteServer();
     process.exit(0);
   });
 
@@ -55,9 +75,10 @@ program
   .action(async () => {
     const file = path.resolve(path.dirname(import.meta.url.replace("file:", "")), "seed.js");
     await runScript(file);
+    await closeViteServer();
     process.exit(0);
   });
 
 program.name("accel").description("Accella CLI tools").version("1.0.0");
 
-export { program, runScript };
+export { closeViteServer, program, runScript };

@@ -2,7 +2,7 @@
 
 import fs from "fs";
 import path from "path";
-import { program, runScript } from "./cli.js";
+import { program, runScript, closeViteServer } from "./cli.js";
 
 async function importTaskFiles() {
   const tasksDir = path.join(process.cwd(), "src/tasks");
@@ -14,6 +14,7 @@ async function importTaskFiles() {
       await runScript(filepath);
     }
   }
+  await closeViteServer();
 }
 
 await importTaskFiles();
