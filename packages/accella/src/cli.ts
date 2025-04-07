@@ -39,7 +39,7 @@ process.on("SIGTERM", async () => {
   process.exit(0);
 });
 
-async function runScript(filepath: string): Promise<void> {
+async function runScript(filepath: string): Promise<any> {
   try {
     await fs.access(filepath);
 
@@ -52,6 +52,7 @@ async function runScript(filepath: string): Promise<void> {
     } else if (typeof module.main === "function") {
       await module.main();
     }
+    return module;
   } catch (error) {
     console.error(`File execution error: ${filepath}`);
     console.error(error);
