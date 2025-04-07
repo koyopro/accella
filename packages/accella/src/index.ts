@@ -1,5 +1,5 @@
 import Path from "@mojojs/path";
-export { program } from "./cli.js";
+export { program } from "./cli2.js";
 
 export const Accel = {
   get root(): Path {
