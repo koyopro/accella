@@ -1,5 +1,6 @@
 import { ViteUserConfig } from "astro";
 import { getViteConfig } from "astro/config";
+import { Command } from "commander";
 import fs from "fs/promises";
 import path from "path";
 import { createServer } from "vite";
@@ -40,24 +41,27 @@ async function runScript(filepath: string): Promise<void> {
 }
 
 export async function cli() {
-  const args = process.argv.slice(2);
+  const program = new Command();
 
-  if (args.length < 1) {
-    console.error("Usage: accel run <path to ts file>");
-    process.exit(1);
-  }
+  program.name("accel").description("Accella CLI tools").version("1.0.0");
 
-  const command = args[0];
+  program
+    .command("run")
+    .description("Run a TypeScript file")
+    .argument("<file>", "Path to the TypeScript file")
+    .action(async (file) => {
+      await runScript(path.resolve(process.cwd(), file));
+      process.exit(0);
+    });
 
-  if (command === "run" && args[1]) {
-    await runScript(path.resolve(process.cwd(), args[1]));
-    process.exit(0);
-  } else if (command === "db:seed") {
-    const file = path.resolve(path.dirname(import.meta.url.replace("file:", "")), "seed.js");
-    await runScript(file);
-    process.exit(0);
-  } else {
-    console.error("Usage: accel run <path to ts file>");
-    process.exit(1);
-  }
+  program
+    .command("db:seed")
+    .description("Run database seeding")
+    .action(async () => {
+      const file = path.resolve(path.dirname(import.meta.url.replace("file:", "")), "seed.js");
+      await runScript(file);
+      process.exit(0);
+    });
+
+  program.parse();
 }
