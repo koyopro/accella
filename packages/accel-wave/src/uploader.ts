@@ -5,10 +5,25 @@ import type { Storage } from "./storages/index.js";
 import { actions } from "./worker/index.js";
 
 export class Item {
+  protected _file: File | undefined;
+
   constructor(
     public readonly identifier: string,
-    public readonly file: File
+    protected readonly storage: Storage,
+    protected readonly uploader: BaseUploader
   ) {}
+
+  set file(file: File | undefined) {
+    this._file = file;
+  }
+
+  get file(): File {
+    return (this._file ||= this.storage.retrive(this.path));
+  }
+
+  get path(): string {
+    return pathFor(this.identifier, this.uploader.storeDir);
+  }
 }
 
 /**
@@ -46,12 +61,11 @@ export class BaseUploader extends Config {
     const identifier = (this.model as any)[this.attr];
     if (!identifier) return undefined;
 
-    const path = this.pathFor(identifier);
     this._filename = identifier;
-    return new Item(this.filename, this._storage.retrive(path));
+    return new Item(identifier, this._storage, this);
   }
 
-  get item() {
+  protected get item() {
     return (this._item ||= this.itemByModel());
   }
 
@@ -59,7 +73,12 @@ export class BaseUploader extends Config {
     if (this.item) this.removedItems.push(this.item);
     this._filename = file?.name;
     const filename = this.filename;
-    this._item = file ? new Item(filename, file) : undefined;
+    if (file) {
+      this._item = new Item(filename, this._storage, this);
+      this._item.file = file;
+    } else {
+      this._item = undefined;
+    }
     if (this.model && this.attr) (this.model as any)[this.attr] = filename;
 
     this.hasUpdate = true;
@@ -93,7 +112,7 @@ export class BaseUploader extends Config {
     }
     this.hasUpdate = false;
     for (const item of this.removedItems) {
-      this._storage.delete(this.pathFor(item.identifier));
+      this._storage.delete(item.path);
     }
     this.removedItems = [];
   }
@@ -108,10 +127,16 @@ export class BaseUploader extends Config {
   }
 
   protected get path() {
-    return this.pathFor(this._item?.identifier ?? "");
+    return this._item?.path ?? pathFor("", this.storeDir);
   }
+}
 
-  protected pathFor(identifier: string) {
-    return `${this.storeDir}/${identifier}`;
-  }
+/**
+ * Function to generate a file path from a file identifier.
+ * @param identifier The file identifier.
+ * @param storeDir The directory where the file is stored.
+ * @returns The file path.
+ */
+function pathFor(identifier: string, storeDir: string) {
+  return `${storeDir}/${identifier}`;
 }
