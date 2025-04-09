@@ -22,7 +22,7 @@ export class Item {
   }
 
   get path(): string {
-    return pathFor(this.identifier, this.uploader.storeDir);
+    return `${this.uploader.storeDir}/${this.identifier}`;
   }
 }
 
@@ -93,9 +93,9 @@ export class BaseUploader extends Config {
     if (!this.item) return undefined;
 
     if (this.assetHost) {
-      return new URL(this.path, this.assetHost);
+      return new URL(this.item.path, this.assetHost);
     } else {
-      return this._storage.url(this.path);
+      return this._storage.url(this.item.path);
     }
   }
 
@@ -108,7 +108,7 @@ export class BaseUploader extends Config {
     if (file) this.file = file;
     if (file === null) this.file = undefined;
     if (this.hasUpdate && this._item) {
-      this._storage.store(this._item.file, this.path);
+      this._storage.store(this._item.file, this._item.path);
     }
     this.hasUpdate = false;
     for (const item of this.removedItems) {
@@ -125,18 +125,4 @@ export class BaseUploader extends Config {
   download(url: string): File {
     return (this.file = actions.download(url));
   }
-
-  protected get path() {
-    return this._item?.path ?? pathFor("", this.storeDir);
-  }
-}
-
-/**
- * Function to generate a file path from a file identifier.
- * @param identifier The file identifier.
- * @param storeDir The directory where the file is stored.
- * @returns The file path.
- */
-function pathFor(identifier: string, storeDir: string) {
-  return `${storeDir}/${identifier}`;
 }
