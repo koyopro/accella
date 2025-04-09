@@ -5,10 +5,25 @@ import type { Storage } from "./storages/index.js";
 import { actions } from "./worker/index.js";
 
 export class Item {
+  protected _file: File | undefined;
+
   constructor(
     public readonly identifier: string,
-    public readonly file: File
+    protected readonly storage: Storage,
+    protected readonly uploader: BaseUploader
   ) {}
+
+  set file(file: File | undefined) {
+    this._file = file;
+  }
+
+  get file(): File {
+    return (this._file ||= this.storage.retrive(this.path));
+  }
+
+  get path(): string {
+    return `${this.uploader.storeDir}/${this.identifier}`;
+  }
 }
 
 /**
@@ -46,12 +61,11 @@ export class BaseUploader extends Config {
     const identifier = (this.model as any)[this.attr];
     if (!identifier) return undefined;
 
-    const path = this.pathFor(identifier);
     this._filename = identifier;
-    return new Item(this.filename, this._storage.retrive(path));
+    return new Item(identifier, this._storage, this);
   }
 
-  get item() {
+  protected get item() {
     return (this._item ||= this.itemByModel());
   }
 
@@ -59,7 +73,12 @@ export class BaseUploader extends Config {
     if (this.item) this.removedItems.push(this.item);
     this._filename = file?.name;
     const filename = this.filename;
-    this._item = file ? new Item(filename, file) : undefined;
+    if (file) {
+      this._item = new Item(filename, this._storage, this);
+      this._item.file = file;
+    } else {
+      this._item = undefined;
+    }
     if (this.model && this.attr) (this.model as any)[this.attr] = filename;
 
     this.hasUpdate = true;
@@ -74,9 +93,9 @@ export class BaseUploader extends Config {
     if (!this.item) return undefined;
 
     if (this.assetHost) {
-      return new URL(this.path, this.assetHost);
+      return new URL(this.item.path, this.assetHost);
     } else {
-      return this._storage.url(this.path);
+      return this._storage.url(this.item.path);
     }
   }
 
@@ -89,11 +108,11 @@ export class BaseUploader extends Config {
     if (file) this.file = file;
     if (file === null) this.file = undefined;
     if (this.hasUpdate && this._item) {
-      this._storage.store(this._item.file, this.path);
+      this._storage.store(this._item.file, this._item.path);
     }
     this.hasUpdate = false;
     for (const item of this.removedItems) {
-      this._storage.delete(this.pathFor(item.identifier));
+      this._storage.delete(item.path);
     }
     this.removedItems = [];
   }
@@ -105,13 +124,5 @@ export class BaseUploader extends Config {
    */
   download(url: string): File {
     return (this.file = actions.download(url));
-  }
-
-  protected get path() {
-    return this.pathFor(this._item?.identifier ?? "");
-  }
-
-  protected pathFor(identifier: string) {
-    return `${this.storeDir}/${identifier}`;
   }
 }
