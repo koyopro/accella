@@ -1,5 +1,11 @@
 # accel-wave
 
+## 1.0.1
+
+### Patch Changes
+
+- [#159](https://github.com/koyopro/accella/pull/159) [`9dd673b`](https://github.com/koyopro/accella/commit/9dd673b97ebfba0c0a46ea5fd293f5daac4e5335) Thanks [@koyopro](https://github.com/koyopro)! - To improve performance, the actual file content will be loaded lazily.
+
 ## 1.0.0
 
 ### Patch Changes
