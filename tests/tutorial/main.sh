@@ -18,17 +18,6 @@ check_status_code() {
   fi
 }
 
-# Start the server
-npm run dev &
-sleep 1
-pids=$(ps ax | grep 'astro dev' | grep -v grep | awk '{print $1}')
-
-check_status_code "http://localhost:4321/" 200
-
-cat ${dir}/tests/tutorial/about.astro >> src/pages/about.astro
-sleep 1
-check_status_code "http://localhost:4321/about" 200
-
 check_exit_status() {
   if [ $1 -ne 0 ]; then
     echo "$2 failed"
@@ -53,6 +42,17 @@ check_exit_status $? "Run test"
 npx astro add node --yes
 npm run build
 check_exit_status $? "Run build"
+
+# Start the server
+npm run dev &
+sleep 1
+pids=$(ps ax | grep 'astro dev' | grep -v grep | awk '{print $1}')
+
+check_status_code "http://localhost:4321/" 200
+
+cat ${dir}/tests/tutorial/about.astro >> src/pages/about.astro
+sleep 1
+check_status_code "http://localhost:4321/about" 200
 
 echo "All tests passed"
 kill $pids
