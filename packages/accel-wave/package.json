@@ -1,6 +1,6 @@
 {
   "name": "accel-wave",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "File upload solution for Accel Record models with support for local filesystem and cloud storage services like Amazon S3",
   "type": "module",
   "main": "dist/index.js",
