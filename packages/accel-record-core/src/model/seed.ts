@@ -22,7 +22,7 @@ export class Seedable {
           Object.entries(input).filter(([key]) => attributes.includes(key))
         );
         const instance = this.findOrInitializeBy(pk);
-        console.log(`- ${this.name} ${JSON.stringify(input)}`);
+        seedLog(`- ${this.name} ${JSON.stringify(input)}`);
         if (instance.update(input)) {
           results.push(instance as any);
         } else {
@@ -33,3 +33,9 @@ export class Seedable {
     return results;
   }
 }
+
+const seedLog = (...args: any[]) => {
+  if (process.env.SEED_QUIET) return;
+  if (process.env.NODE_ENV === "test") return;
+  console.log(...args);
+};
