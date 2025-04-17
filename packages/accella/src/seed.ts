@@ -1,5 +1,6 @@
 export type Options = {
   filter?: string;
+  quiet?: boolean;
 };
 
 async function runCommonSeeds(options: Options) {
@@ -32,6 +33,7 @@ const seedLog = (...args: any[]) => {
 };
 
 export default async (options: Options) => {
+  if (options.quiet) process.env.SEED_QUIET = "1";
   await runCommonSeeds(options);
   await runEnvironmentSpecificSeeds(options);
 };

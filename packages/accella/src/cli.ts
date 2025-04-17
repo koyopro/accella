@@ -7,6 +7,7 @@ program
   .command("db:seed")
   .description("Execute database seeding")
   .option("-f, --filter <filter>", "Specify a filter for the seed file path")
+  .option("-q, --quiet", "Suppress output")
   .action((options) => seed(options));
 
 export { program };
