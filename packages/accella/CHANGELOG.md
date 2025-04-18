@@ -1,5 +1,11 @@
 # accella
 
+## 1.3.0
+
+### Minor Changes
+
+- [#162](https://github.com/koyopro/accella/pull/162) [`f89173c`](https://github.com/koyopro/accella/commit/f89173c138c7ec5a9f5d3164c461375ccfb1b849) Thanks [@koyopro](https://github.com/koyopro)! - Added support for custom commands
+
 ## 1.2.0
 
 ### Minor Changes
