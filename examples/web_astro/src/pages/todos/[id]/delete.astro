@@ -1,0 +1,13 @@
+---
+import { RequestParameters } from "accel-web";
+import { Todo } from "src/models";
+
+if (Astro.request.method === "POST") {
+  const params = await RequestParameters.from(Astro.request, Astro.params);
+  const todo = Todo.find(params.id);
+  if (todo.destroy()) {
+    return Astro.redirect("/todos");
+  }
+}
+return new Response(null, { status: 405 });
+---
