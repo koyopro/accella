@@ -29,6 +29,10 @@
       "types": "./dist/initialize.d.ts",
       "default": "./dist/initialize.js"
     },
+    "./ujs": {
+      "types": "./dist/ujs.d.ts",
+      "default": "./dist/ujs.js"
+    },
     "./integration": {
       "types": "./dist/integration.d.ts",
       "default": "./dist/integration.js"

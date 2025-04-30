@@ -46,6 +46,16 @@ const { Nav, PageEntriesInfo, records } = paginate(search.result().order("id", "
             {todo.estimate ? <span>｜{todo.estimate}</span> : null}
             {todo.dueDate ? <span>{todo.dueDate.toISOString().slice(0, 10)}迄</span> : null}
             <span>({todo.status})</span>
+            <span>
+              <a
+                data-confirm="Are you sure you want to delete this?"
+                data-method="post"
+                href={`/todos/${todo.id}/delete`}
+                class="btn btn-link"
+              >
+                削除
+              </a>
+            </span>
           </li>
         ))
       }
