@@ -45,13 +45,13 @@ check_exit_status $? "Run build"
 
 # Start the server
 npm run dev &
-sleep 1
+sleep 3
 pids=$(ps ax | grep 'astro dev' | grep -v grep | awk '{print $1}')
 
 check_status_code "http://localhost:4321/" 200
 
 cat ${dir}/tests/tutorial/about.astro >> src/pages/about.astro
-sleep 1
+sleep 3
 check_status_code "http://localhost:4321/about" 200
 
 echo "All tests passed"
