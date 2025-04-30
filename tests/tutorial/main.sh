@@ -39,6 +39,11 @@ check_exit_status $? "Prisma migrate dev"
 npx vitest run
 check_exit_status $? "Run test"
 
+mkdir -p src/commands
+cat ${dir}/tests/tutorial/hello.ts >> src/commands/hello.ts
+npx accel hello
+check_exit_status $? "Custom command"
+
 npx astro add node --yes
 npm run build
 check_exit_status $? "Run build"
