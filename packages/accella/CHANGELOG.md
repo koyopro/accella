@@ -1,5 +1,11 @@
 # accella
 
+## 1.4.0
+
+### Minor Changes
+
+- [#164](https://github.com/koyopro/accella/pull/164) [`29fcda3`](https://github.com/koyopro/accella/commit/29fcda3b3e2ac29a704fb28072bf4df54f2e1c10) Thanks [@koyopro](https://github.com/koyopro)! - Add UJS: Use `data-confirm` to prompt confirmation before form submission.
+
 ## 1.3.0
 
 ### Minor Changes
